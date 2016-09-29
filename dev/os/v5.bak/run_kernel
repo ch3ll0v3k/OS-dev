@@ -1,0 +1,16 @@
+#!/bin/bash
+
+BIN="./bin"
+
+# ---------------------------------------------------------------------
+#CMD="qemu -hda ../rootfs.fat32 -m 64 -kernel $BIN/kernel.bin";
+CMD="qemu -hda ../rootfs.msdos -m 64 -kernel $BIN/kernel.bin";
+#CMD="qemu -hda ../FAT32.fs -hdb ../FAT32.fs -m 64 -kernel $BIN/kernel.bin";
+#CMD="qemu -hda ../FAT32.fs -hdb ../rootfs.msdos -m 64 -kernel $BIN/kernel.bin";
+
+echo "$CMD"; $($CMD);
+
+# ../FAT32.fs
+# ../rootfs.fat32
+# ../rootfs.msdos
+# ---------------------------------------------------------------------
