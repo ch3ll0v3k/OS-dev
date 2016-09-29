@@ -1,0 +1,899 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - update keyboard leds</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - update keyboard leds" href="http://forum.osdev.org/feed.php?f=1&amp;t=10053" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Sun Sep 25, 2016 8:27 pm<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered">View unanswered posts</a> | <a href="./search.php?search_id=active_topics">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=10053&amp;start=0">update keyboard leds</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=10053"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 7 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=10053&amp;start=0&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=10053&amp;view=previous">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=10053&amp;view=next">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p64639"></a>
+				<b class="postauthor">bubach</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64639#p64639"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Nov 24, 2004 5:58 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=35_1328026145.jpg" width="60" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Oct 23, 2004 11:00 pm<br /><b>Posts:</b> 1220<br /><b>Location:</b> Sweden
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hello, i recently added code in my keyboard irq to update teh leds when caps, num or scroll lock is pressed..<br /><br />the problem is that bosch gives me a &quot;keyboard buffer full&quot;-error when i have this function enabled..<br /><br />something i am missing?<br />thanks in advance..<br /><br />/ Christoffer</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Simplicity is the ultimate sophistication.&quot;<br /><a href="http://bos.asmhackers.net/" class="postlink">http://bos.asmhackers.net/</a> - <a href="https://github.com/bubach/BOS" class="postlink">GitHub</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=35"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p64640"></a>
+				<b class="postauthor">distantvoices</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64640#p64640"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Nov 24, 2004 6:37 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 18, 2006 11:59 am<br /><b>Posts:</b> 1600<br /><b>Location:</b> Vienna/Austria
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">i wouldn&#039;t do this kind of operation in the isr. I&#039;d do it in a sort of task - or a tasklet, which does the work after the isr has fetched the scancodes from kbd port 60 (iirc)<br /><br />are you still reading scancodes from port 60?<br /><br />If not, no wonder that bochs doesn&#039;t like it. <br /><br />are you issueing the correct combo of command/data sequence? I don&#039;t know it by heart, but can lookup. <br /><br />is your code caught in a condition which never/always becomes true?<br /><br />just check it out. Without more info about *how* your kbd isr looks like (a rough sketch in human language or pseudocode suffices), we canna give that much help as we want to. <img src="./images/smilies/icon_smile.gif" alt=":-)" title="Smile" /><br /><br />ha en bra dag</div>
+
+					
+						<span class="postbody"><br />_________________<br />... the osdever formerly known as <span style="font-style: italic">beyond infinity</span> ...
+<br /><a href="http://www.distantvoices.org/download/blueillusion.iso.gz" class="postlink">BlueillusionOS iso image</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1917"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p64641"></a>
+				<b class="postauthor">bubach</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64641#p64641"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Nov 24, 2004 7:01 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=35_1328026145.jpg" width="60" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Oct 23, 2004 11:00 pm<br /><b>Posts:</b> 1220<br /><b>Location:</b> Sweden
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hmm. I?ll try to describe the process..<br /><br />I read the scan code from port 0x60<br /><br />I check if key is released or pressed. save status as bit in &quot;special-byte&quot;<br />If ctrl is pressed or not, saved as bit in the &quot;special-byte&quot;<br />if shift   - ||-<br />if alt - || -<br />if ctrl+alt+del is pressed, add bit in special-byte..<br /><br />if caps is pressed, save status in &quot;status-byte&quot;<br />if num - || -<br />if scroll - || -<br /><br />at the end i add the scan code to a buffer, and updates the status and special bytes, after that i &quot;call update_leds&quot; and exits the isr as usual; ack to pic(?) with out 0x20 something..<br /><br />the update_leds function is adapted from a swedish os, that have a keyboard isr that looks almost excatly like mine.<br />it sends some bytes (the status-byte and maybe something else) and call a simple &quot;kbd_wait&quot; function 2(?) times in between..<br /><br />to bad i don?t have my source with me..<br /><br />[edit] to cold in sweden right now for a &quot;bra dag&quot; (eng: good day).. <img src="./images/smilies/icon_smile.gif" alt=":-)" title="Smile" /></div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Simplicity is the ultimate sophistication.&quot;<br /><a href="http://bos.asmhackers.net/" class="postlink">http://bos.asmhackers.net/</a> - <a href="https://github.com/bubach/BOS" class="postlink">GitHub</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=35"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p64642"></a>
+				<b class="postauthor">distantvoices</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64642#p64642"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Nov 24, 2004 7:23 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 18, 2006 11:59 am<br /><b>Posts:</b> 1600<br /><b>Location:</b> Vienna/Austria
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Below are the crucial pieces of code from my own kbd led handling. <br /><br />Basically you send a bitmask to the controller which tells, which led is on and which one is off.<br /><br />How are you setting the corresponding bit in status byte say for caps lock?<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void kbd_ack&#40;void&#41;&#123; <br />&nbsp; while&#40;!&#40;inport&#40;0x60&#41;==0xfa&#41;&#41;;<br />&#125;<br /><br /><br />void kbd_led_handling&#40;uchar_t ledstatus&#41;&#123;;<br />&nbsp; outport&#40;0x60,0xed&#41;; <br />&nbsp; kbd_ack&#40;&#41;;<br />&nbsp; outport&#40;0x60,ledstatus&#41;;<br />&#125;<br /></div><br /><br />Here in vienna, sun shines but it is cooold as in devils arse.<br /><br />But that shall not hinder us from enjoying a biiig snow feast. <img src="./images/smilies/icon_smile.gif" alt=":-)" title="Smile" /></div>
+
+					
+						<span class="postbody"><br />_________________<br />... the osdever formerly known as <span style="font-style: italic">beyond infinity</span> ...
+<br /><a href="http://www.distantvoices.org/download/blueillusion.iso.gz" class="postlink">BlueillusionOS iso image</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1917"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p64643"></a>
+				<b class="postauthor">bubach</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64643#p64643"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Nov 24, 2004 7:27 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=35_1328026145.jpg" width="60" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Oct 23, 2004 11:00 pm<br /><b>Posts:</b> 1220<br /><b>Location:</b> Sweden
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">hmm. can?t remeber the right order right now, but its something like:<br />bit 1= 1 for num on, 0 for num off<br />bit 2= 1 for scroll on, 0 for scroll off<br />bit 3= 1 for caps on, 0 for caps off<br />bits 4-8 = 0<br /><br />i think thats how it?s done.. but as i don?t have my sources right here...</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Simplicity is the ultimate sophistication.&quot;<br /><a href="http://bos.asmhackers.net/" class="postlink">http://bos.asmhackers.net/</a> - <a href="https://github.com/bubach/BOS" class="postlink">GitHub</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=35"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p64644"></a>
+				<b class="postauthor">bubach</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64644#p64644"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Nov 26, 2004 4:42 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=35_1328026145.jpg" width="60" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Oct 23, 2004 11:00 pm<br /><b>Posts:</b> 1220<br /><b>Location:</b> Sweden
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Okay, now i have my source.<br />Lets see.. Here?s how i check and set the bits in the &quot;kbd_status&quot; byte... (u can?t turn them of yet..)<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">;----------------------;<br />;&nbsp; &nbsp;Keyboard IRQ&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;;<br />;----------------------;<br />keyboard_isr:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; push&nbsp; &nbsp; eax<br />&nbsp; &nbsp; &nbsp;;-----------------------------------;<br />&nbsp; &nbsp; &nbsp;; get the scancode and statusbyte&nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;-----------------------------------;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xor&nbsp; &nbsp; &nbsp;eax, eax<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; in&nbsp; &nbsp; &nbsp; al, 0x60<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;ah, byte &#91;kbd_special&#93;&nbsp; &nbsp; ; for ctrl+alt+del etc..<br /><br />&nbsp; &nbsp; &nbsp;;------------------------------;<br />&nbsp; &nbsp; &nbsp;;&nbsp; check if key was released&nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;------------------------------;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; test&nbsp; &nbsp; al, 0x80<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jz&nbsp; &nbsp; &nbsp; .key_down<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; or&nbsp; &nbsp; &nbsp; ah, 10000000b <br /><br />;............... some code..............<br /><br />&nbsp; &nbsp; &nbsp;;----------------------------------------------;<br />&nbsp; &nbsp; &nbsp;;&nbsp; a key was pressed, check for special keys&nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;----------------------------------------------;<br />&nbsp; &nbsp; &nbsp;.key_down:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; and&nbsp; &nbsp; &nbsp;ah, 01111111b&nbsp; &nbsp; &nbsp;<br /><br />;............... some code..............<br /><br />&nbsp; &nbsp; &nbsp;.check_caps:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmp&nbsp; &nbsp; &nbsp;al, 58<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jnz&nbsp; &nbsp; &nbsp;.check_num<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; or&nbsp; &nbsp; &nbsp; byte &#91;kbd_status&#93;, 00000100b<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jmp&nbsp; &nbsp; &nbsp;.end<br /><br />&nbsp; &nbsp; &nbsp;.check_num:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmp&nbsp; &nbsp; &nbsp;al, 69<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jnz&nbsp; &nbsp; &nbsp;.check_scroll<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; or&nbsp; &nbsp; &nbsp; byte &#91;kbd_status&#93;, 00000010b<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jmp&nbsp; &nbsp; &nbsp;.end<br /><br />&nbsp; &nbsp; &nbsp;.check_scroll:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmp&nbsp; &nbsp; &nbsp;al, 70<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jnz&nbsp; &nbsp; &nbsp;.end<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; or&nbsp; &nbsp; &nbsp; byte &#91;kbd_status&#93;, 00000001b<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jmp&nbsp; &nbsp; &nbsp;.end <br /><br />;.............. some more code...................<br /><br />&nbsp; &nbsp; .end:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;&#91;kbd_raw_buffer&#93;, al<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;&#91;kbd_special&#93;, ah<br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; movzx&nbsp; &nbsp;eax, &#91;kbd_status&#93;&nbsp; ; to check if the statusbyte was correct..<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; call&nbsp; &nbsp; print_hex32<br /><br /><br />;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; call&nbsp; &nbsp; update_leds<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;al, 0x20<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; out&nbsp; &nbsp; &nbsp;0x20, al<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pop&nbsp; &nbsp; &nbsp;eax<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ret</div><br />the (current) update_leds function<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">;------------------------------;<br />;&nbsp; Update the keyboard LED?s&nbsp; &nbsp;;<br />;------------------------------;<br />update_leds:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; push&nbsp; &nbsp; ax<br /><br />&nbsp; &nbsp; &nbsp;.l1:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; in&nbsp; &nbsp; &nbsp; al, 0x64<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; and&nbsp; &nbsp; &nbsp;al, 0x02<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jnz&nbsp; &nbsp; &nbsp;.l1<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;al, 0xED<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; out&nbsp; &nbsp; &nbsp;0x60, al<br /><br />&nbsp; &nbsp; &nbsp;.l2:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; in&nbsp; &nbsp; &nbsp; al, 0x64<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; and&nbsp; &nbsp; &nbsp;al, 02<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; jnz&nbsp; &nbsp; &nbsp;.l2<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mov&nbsp; &nbsp; &nbsp;al,&#91;kbd_status&#93;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; out&nbsp; &nbsp; &nbsp;0x60, al<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pop&nbsp; &nbsp; &nbsp;ax<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ret</div><br />Do you have any links to information about &quot;advanced&quot; keyboard programming? Becasue i would also like to know how to test the type of keyboard, know how to set diffrent &quot;scan-modes(?) etc.<br /><br />/ Christoffer</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Simplicity is the ultimate sophistication.&quot;<br /><a href="http://bos.asmhackers.net/" class="postlink">http://bos.asmhackers.net/</a> - <a href="https://github.com/bubach/BOS" class="postlink">GitHub</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=35"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p64645"></a>
+				<b class="postauthor">bubach</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re:update keyboard leds</div><div style="float: right;"><a href="./viewtopic.php?p=64645#p64645"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Nov 26, 2004 2:44 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=35_1328026145.jpg" width="60" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Oct 23, 2004 11:00 pm<br /><b>Posts:</b> 1220<br /><b>Location:</b> Sweden
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">[EDIT] For future forum viewers with the same problem, i now update this post with the correct and fully working code.. <img src="./images/smilies/icon_biggrin.gif" alt=":-D" title="Very Happy" /><br /><br />variable defined:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp; &nbsp;;-------------------------------------------------------------------------;<br />&nbsp; &nbsp; &nbsp;; _________________&nbsp; &nbsp; &nbsp; &nbsp; LED status byte:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;; |0|0|0|0|0|1|1|1|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;; +---------------+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1 = True&nbsp; &nbsp;0 = False&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ;<br />&nbsp; &nbsp; &nbsp;;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | | +---&gt;&nbsp; scroll lock&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | +-----&gt;&nbsp; num lock&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ;<br />&nbsp; &nbsp; &nbsp;;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; +-------&gt;&nbsp; caps lock&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;-------------------------------------------------------------------------;<br />&nbsp;&nbsp;&nbsp;&nbsp; kbd_status&nbsp;&nbsp;&nbsp;&nbsp; db&nbsp; &nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; ; LED statusbyte</div><br /><br />In the keyboard IRQ:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp; &nbsp;;-------------------------------------;<br />&nbsp; &nbsp; &nbsp;;&nbsp; toggle caps, num and scroll lock&nbsp; &nbsp;;<br />&nbsp; &nbsp; &nbsp;;-------------------------------------;<br />&nbsp; &nbsp; &nbsp;.check_caps:<br />&nbsp;&nbsp;&nbsp;&nbsp; cmp&nbsp;&nbsp;&nbsp;&nbsp; al, 58<br />&nbsp;&nbsp;&nbsp;&nbsp; jnz&nbsp;&nbsp;&nbsp;&nbsp; .check_num<br />&nbsp;&nbsp;&nbsp;&nbsp; xor&nbsp;&nbsp;&nbsp;&nbsp; byte &#91;kbd_status&#93;, 4<br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; update_leds<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; .end<br /><br />&nbsp; &nbsp; &nbsp;.check_num:<br />&nbsp;&nbsp;&nbsp;&nbsp; cmp&nbsp;&nbsp;&nbsp;&nbsp; al, 69<br />&nbsp;&nbsp;&nbsp;&nbsp; jnz&nbsp;&nbsp;&nbsp;&nbsp; .check_scroll<br />&nbsp;&nbsp;&nbsp;&nbsp; xor&nbsp;&nbsp;&nbsp;&nbsp; byte &#91;kbd_status&#93;, 2<br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; update_leds<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; .end<br /><br />&nbsp; &nbsp; &nbsp;.check_scroll:<br />&nbsp;&nbsp;&nbsp;&nbsp; cmp&nbsp;&nbsp;&nbsp;&nbsp; al, 70<br />&nbsp;&nbsp;&nbsp;&nbsp; jnz&nbsp;&nbsp;&nbsp;&nbsp; .end<br />&nbsp;&nbsp;&nbsp;&nbsp; xor&nbsp;&nbsp;&nbsp;&nbsp; byte &#91;kbd_status&#93;, 1<br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; update_leds<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; .end</div><br /><br />And the functions required to change the LEDs:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">;------------------------------;<br />;&nbsp; Update the keyboard LED?s&nbsp; &nbsp;;<br />;------------------------------;<br />update_leds:<br />&nbsp;&nbsp;&nbsp;&nbsp; push&nbsp;&nbsp;&nbsp;&nbsp; ax<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; kbd_wait<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; mov&nbsp;&nbsp;&nbsp;&nbsp; al, 0xED<br />&nbsp;&nbsp;&nbsp;&nbsp; out&nbsp;&nbsp;&nbsp;&nbsp; 0x60, al<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; kbd_wait<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; mov&nbsp;&nbsp;&nbsp;&nbsp; al, &#91;kbd_status&#93;<br />&nbsp;&nbsp;&nbsp;&nbsp; out&nbsp;&nbsp;&nbsp;&nbsp; 0x60, al<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; call&nbsp;&nbsp;&nbsp;&nbsp; kbd_wait<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; pop&nbsp;&nbsp;&nbsp;&nbsp; ax<br />&nbsp;&nbsp;&nbsp;&nbsp; ret<br /><br /><br /><br />;------------------;<br />;&nbsp; keyboard wait&nbsp; &nbsp;;<br />;------------------;<br />kbd_wait:<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; $+2<br />&nbsp;&nbsp;&nbsp;&nbsp; in&nbsp;&nbsp;&nbsp;&nbsp; al,64h<br />&nbsp;&nbsp;&nbsp;&nbsp; test&nbsp;&nbsp;&nbsp;&nbsp; al,1<br />&nbsp;&nbsp;&nbsp;&nbsp; jz&nbsp;&nbsp;&nbsp;&nbsp; .ok<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; $+2<br />&nbsp;&nbsp;&nbsp;&nbsp; in&nbsp;&nbsp;&nbsp;&nbsp; al,60h<br />&nbsp;&nbsp;&nbsp;&nbsp; jmp&nbsp;&nbsp;&nbsp;&nbsp; kbd_wait<br />&nbsp; &nbsp; &nbsp;.ok:<br />&nbsp;&nbsp;&nbsp;&nbsp; test&nbsp;&nbsp;&nbsp;&nbsp; al,2<br />&nbsp;&nbsp;&nbsp;&nbsp; jnz&nbsp;&nbsp;&nbsp;&nbsp; kbd_wait<br />&nbsp;&nbsp;&nbsp;&nbsp; ret</div><br /><br /><br />anyway, thanks for the help and major input..  <img src="./images/smilies/icon_razz.gif" alt=":P" title="Razz" />  <img src="./images/smilies/icon_wink.gif" alt=";)" title="Wink" /><br /><br />/ Christoffer</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Simplicity is the ultimate sophistication.&quot;<br /><a href="http://bos.asmhackers.net/" class="postlink">http://bos.asmhackers.net/</a> - <a href="https://github.com/bubach/BOS" class="postlink">GitHub</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=35"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=10053&amp;start=0"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=10053"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 7 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: No registered users and 1 guest</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=10053"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

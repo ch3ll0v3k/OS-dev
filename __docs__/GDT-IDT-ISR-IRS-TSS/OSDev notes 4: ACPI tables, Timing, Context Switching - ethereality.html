@@ -1,0 +1,577 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 4: ACPI tables, Timing, Context Switching - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 4: ACPI tables, Timing, Context Switching</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>It shouldn't be a surprise that timing is important to a multitasking kernel.
+After all, threads need to be swapped out, a system clock should be maintained,
+and it's required for interfacing with some more complicated hardware.</p>
+<p>We'll start off with a discussion of the ACPI tables and why we care about
+them. After that, the different options one has for measuring the passage of
+time. In particular, we'll talk about the PIT, HPET, and local APIC timers.
+Finally, we'll  move onto the topic of context-switching. So, then . . .</p>
+<h3 id="acpi-tables">ACPI tables</h3>
+<p>Remember in the last set of notes that the blind assumption that the I/O APIC
+could be accessed at address <code>0xfec00000</code>? The ACPI tables are what actually
+provides that sort of information. We'll need the same kind of information for
+the HPET later on as well, so now seems like as good of a time as any to
+discuss the ACPI tables.</p>
+<p>Not to be confused with the rest of the ACPI specification -- which is long and
+complicated -- the ACPI tables provide a set of pretty basic information about
+the hardware setup, essentially what is needed to get a kernel up and running,
+but not enough to provide any specifics on the hardware installed. Which is
+fine for our purposes right about now . . . so!</p>
+<p>There are a couple of parts to the ACPI tables. The first is the RSDP ("Root
+Structure Data Pointer"), the second is the RSDT ("Root Structure Data Table"),
+then there are the individual descriptor tables themselves.</p>
+<p>The RSDP is essentially a pointer that is in a known location that references
+the RSDT. The RSDT in turn contains the list of system descriptor tables
+present, and the system descriptor tables contain useful information. What kind
+of useful information, you ask?</p>
+<p>The two that we're particularly interested in right now are the APIC tables and
+the HPET tables. We'll discuss the contents of the HPET table when we talk
+about the HPET proper, so let's jump straight into the APIC tables right now as
+part of our motivation for being interested in the ACPI tables.</p>
+<p>The format of an APIC table is pretty simple; there's a header that contains,
+at the beginning, the signature string "APIC", plus some other information such
+as the length (bytes 4:7). At bytes 36:39 is the content of the <code>APIC_BASE</code> MSR
+(page-aligned, so without the extended bits), in case you need that for some
+reason. Bit 0 of byte 40 is set if the system supports legacy 8259 PIC
+emulation mode; if this bit is not set, you do not need to disable the PICs as
+was done in the last set of notes (I'm yet to actually run into a system where
+this bit is clear, but it's good to know about nonetheless). The interesting
+content starts at offset 44, with packed structures containing information
+about the APICs located on the system -- I/O APICs and local APICs alike --
+plus various other things that we'll not worry about until we get to talking
+about running on real hardware.</p>
+<p>Each of these structures begins with a two-byte header: first, the type of the
+structure that follows. Second, the length of the structure, including the
+header. The two types that we're interested in are types zero and one,
+indicating a local APIC entry and an I/O APIC entry, respectively. Type 2 will
+be interesting when you move to real hardware, as it describes how the ISA
+interrupts are mapped onto the I/O APIC; for now we'll leave that alone.</p>
+<p>For a local APIC entry, the structure is eight bytes long. The two fields we're
+interested in for now are in byte 3 and byte 4. Byte 3 contains the APIC ID of
+the local APIC ID in question (the content of local APIC register index 2).
+This is useful when we get around to sending SIPIs for SMP, but for now just
+know that you can get the list of all local APICs present on the system --- one
+for each processor. Bit 0 of byte 4 contains the "enabled" bit; this is set if
+the particular CPU the local APIC is a part of is enabled. Later, we'll use the
+APIC IDs here to select which secondary processors to boot up to provide us
+with additional processing capabilities. Note that you should not attempt to
+use any processor marked as disabled.</p>
+<p>The I/O APIC entrie(s) (note the plural!) are twelve bytes long. As before,
+there are two fields we're interested in; first of all, bytes 4:7 contain the
+physical address that we can access the I/O APIC at (<code>0xfec00000</code>, usually).
+However, a system can contain multiple I/O APICs if support for more than 24
+IRQs is desired, and while we can poll the I/O APIC for the number of IRQs it
+supports, we cannot get the offset (as it is unaware of this). The field at
+bytes 8:11 contains the "base" IRQ for this I/O APIC; that is to say, what the
+I/O APIC thinks is IRQ 7 is actually IRQ (7 + value of bytes 8:11).</p>
+<p>As mentioned before, we'll discuss the HPET table when we get around to talking 
+about the HPET itself. So now that we know, at least partially, how to parse
+the content of the ACPI tables, how about finding them in the first place?</p>
+<h4 id="rsdp-and-rsdtxsdt">RSDP and RSDT/XSDT</h4>
+<p>The RSDT is a table that follows a similar format to the MADT ("APIC") table
+above. Bytes 4:7 contain the length of the overall RSDT, while the 32-bit
+entries starting at offset 36 are pointers to the actual ACPI tables
+themselves. So if you have two tables, say an HPET table and a APIC table,
+you'll find the (physical) addresses of the HPET and APIC tables present at
+bytes 36:39 and 40:43 in the RSDT.</p>
+<p>There's also an extended version of the RSDT called the XSDT, which should be
+used if present. It's identical to the RSDT except that each field pointing to
+an ACPI table is eight bytes wide instead.</p>
+<p>Both the RSDT and XSDT are referenced by the RSDP, which is a small structure
+in memory primarily identified by its first eight bytes, which are the string
+"RSD PTR " and the fact that when you sum the first 20 bytes of the structure
+(including the signature) in an eight-bit register, you should get zero. At
+bytes 20:23 is the length attribute of the structure; if this is 20, there is
+no XSDT present on the system, so reference the RSDT specified by bytes 16:19.
+If this is more than 24, there is an XSDT present at the address referenced by
+the bytes 24:31.</p>
+<p>Finally, how to find the RSDP? This is a little trickier; it's either located
+in the BIOS memory in the range <code>[0xe0000, 0xfffff]</code> or within the EBDA. The
+EBDA is 1KB long and starts at the address <code>(*(uint16_t *)(0x40e)) << 4</code>. It is
+guaranteed to be 16-byte-aligned.</p>
+<p>Because I'm sure that makes perfect sense, take a look at the file
+<code>find_rsdp.c</code> in the refcode repository to clear things up. To point out the
+obvious; be careful to run this procedure before overwriting the EBDA or the
+pointer to the EBDA. And, as before, you'll probably need to wrap the physical
+memory accesses into something appropriate.</p>
+<p>So now, onto the timers.</p>
+<h3 id="the-pit">The PIT</h3>
+<p>The simplest of the clocks that we'll encounter is the PIT, or Programmable
+Interrupt Timer. This is a legacy device (another relic of the IBM PC/XT) but
+is still surprisingly useful. Its role is simple: send an IRQ after a certain
+amount of time has elapsed, optionally recurring. This is accomplished by
+attaching a register and comparator to a constant clock rate. That is to say, a
+register is incremented by one each time a constant-speed clock passes; when
+the value in the register is equal to a programmed value, the IRQ is fired.
+Pretty simple. It can also be automatically reset to a programmed value,
+producing a periodic timer.</p>
+<p>The first complication comes into play when you realize that the "constant
+clock rate" isn't something sensible like you'd expect. No, instead of being a
+nice 1MHz (or even 32768 Hz) it has the strange value of about 1,193,180 Hz.
+<sup id="fnref:pitfreq"><a class="footnote-ref" href="#fn:pitfreq" rel="footnote">1</a></sup> This is annoying, but it's certainly possible to work around; for
+example, by dividing by 1193 you get a frequency of 1000.151 Hz, which is close
+enough to 1000 Hz for our purposes right now.</p>
+<p>The next complication is that you only have one usable PIT channel. So if you
+want to time two things, you'll have to multiplex the one timer. Finally, the
+PIT isn't terribly accurate; the drift can be a couple tenths of a percent.
+That might not sound like much, but over long periods it can be a bit of a
+problem.</p>
+<p>So: enough about that. How can we actually use the PIT? Like other legacy
+hardware, the PIT is controlled using ports. In this case, the interesting
+ports are <code>0x40</code> and <code>0x43</code> (ports <code>0x41</code> and <code>0x42</code> are used to control PIT
+channels 1 and 2, which aren't useful right now<sup id="fnref:pit-channels"><a class="footnote-ref" href="#fn:pit-channels" rel="footnote">2</a></sup>); <code>0x40</code> acts as
+the data port and <code>0x43</code> as the control port. The PIT operates in six different
+modes, of which we are interested in only one right now, mode 2.</p>
+<h4 id="pit-mode-2">PIT Mode 2</h4>
+<p>Mode 2 on the PIT is the "rate generator" mode; it produces periodic IRQs as
+described earlier. The general flow for programming Mode 2 on the PIT is as
+follows:</p>
+<ul>
+<li>Set the PIT mode to 2.</li>
+<li>Write the "reload" register (i.e. reset value)</li>
+<li>Sit back and enjoy.</li>
+</ul>
+<p>To set the PIT mode, we'll want to write the value <code>00110100b</code> (<code>0x68</code>) to port
+<code>0x43</code>. Bit 0 instructs the PIT to interpret the 16-bit value it is about to
+receive as a 16-bit binary value (if bit 0 is set, it's interpreted as a BCD
+value instead). Bits 1 through 3 represent the mode; we want mode 2. Bits 4 and
+5 set the data channel mode to request two sequential 8-bit writes to the port
+(a single 16-bit write will not work, sadly). Finally, bits 6 and 7 select the
+channel (0).</p>
+<p>Then we simply need to write the appropriate reset value into the register and
+we shall be finished. It was noted earlier that 1193 (<code>0x04a9</code>) produces a
+1000Hz timer, which we'll run with for now.</p>
+<p>That produces something like the following code:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">init_pit</span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="function">out_port</span><span class="symbol">(</span><span class="number">0x43</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0x68</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">out_port</span><span class="symbol">(</span><span class="number">0x40</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xa9</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">out_port</span><span class="symbol">(</span><span class="number">0x40</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0x04</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">// PIT initialized!</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>The PIT is attached to IRQ 2 (or IRQ 0 if you're using the legacy PIC instead),
+so you'll want to route it appropriately to an interrupt and do something with
+it (increment a tick counter, for example).</p>
+<h3 id="the-local-apic-timer">The Local APIC timer</h3>
+<p>For events where the PIT is simply not accurate or fast enough (what if you
+want a 5MHz timer?), there's the option to use the local APIC timer. Unlike the
+PIT, the local APIC timer is extremely fine-grained. Even better, it's
+processor-specific and not global, so the I/O APIC doesn't get involved ---
+everything is handled internally within the processor.</p>
+<p>The downside is that it does not have an <em>a priori</em> known -- or even constant
+-- clock frequency. It's typically clocked off of the external CPU clock (which
+is 99.75MHz on my laptop), but may also be off of the internal CPU clock
+(significantly higher). Even worse, as the processor changes speeds (for e.g.
+power saving) the frequency of the local APIC timer may also change. Modern
+CPUs provide a constant-frequency local APIC timer, which is nice, but not all
+will. You should probably assume the worst here.</p>
+<p>If you're willing to assume that the local APIC timer runs at a constant speed
+(or that you can adjust the speed appropriately by, e.g. noticing when you
+change clock frequencies) then you will get a very nice timer out of the deal.
+The problem with not knowing the frequency can be fixed by synchronizing the
+local APIC timer with another clock source; say, the PIT.</p>
+<p>Let's first talk about how to program the local APIC timer, then we'll move on
+to synchronization.</p>
+<h4 id="programming-the-local-apic-timer">Programming the local APIC timer</h4>
+<p>As with the rest of the local APIC, the local APIC timer is controlled by means
+of registers accessed via memory-mapped I/O. Since the same set of registers is
+used, the same access code can also be shared. In particular, we're really only
+interested in four local APIC registers:</p>
+<ol>
+<li>The Timer LVT register, at index <code>0x32</code>.</li>
+<li>The Divide Configuration register, at index <code>0x3e</code>.</li>
+<li>The Initial Count register, at index <code>0x38</code>.</li>
+<li>The Current Count register, at index <code>0x39</code>.</li>
+</ol>
+<p>The local APIC functions in the same manner as the PIT, so the Initial/Current
+Count registers (ICR/CCR) should be self-explanatory. Unlike the PIT, however,
+the local APIC allows you to attach a "divider" to the input clock so that an
+increment of the CCR only occurs every 2<sup>n</sup> ticks.</p>
+<p>The Timer LVT register contains other control information about the local APIC
+timer. In particular, it has four fields of interest; bits 0:7 contain the
+interrupt vector to deliver upon firing. Bit 12 can be read to see if a timer
+event is pending (i.e. if contention has caused another interrupt to be handled
+first), and bit 16 contains the mask bit. If you set bit 16 (which is the
+default at reset) then the timer will not fire. The last interesting field is
+bits 17 and 18, which taken as a two-bit value set the timer mode: 0 for
+one-shot, 1 for periodic.<sup id="fnref:lapic-modes"><a class="footnote-ref" href="#fn:lapic-modes" rel="footnote">3</a></sup></p>
+<p>The Divide Configuration register has a weird format; the divider itself is
+controlled by bits 0, 1, and 3 of the register: (Figure 10-10 from Intel SDM)</p>
+<p><img alt="Timer DCR" class="centre-img" src="static/TimerDCR.png" /></p>
+<p>So to initialize the local APIC timer, you need to:</p>
+<ul>
+<li>Set the timer interrupt delivery vector and mode (periodic/one-shot) in the
+    timer LVT.</li>
+<li>Set the Divide Configuration register.</li>
+<li>Set the Initial Count register.</li>
+<li>Unmask the timer interrupt in the timer LVT.</li>
+</ul>
+<p>Of course, we still haven't solved the problem of knowing exactly how long each
+local APIC timer tick is. To do that, we'll need to synchronize it with some
+external time source.</p>
+<h4 id="synchronizing-with-the-pit-or-other-clock-source">Synchronizing with the PIT (or other clock source)</h4>
+<p>The general idea is to let a known number of time pass, and count how many APIC
+ticks have occurred. This can be done as follows:</p>
+<ul>
+<li>Set up the PIT at a known frequency (the 1000.15 Hz setup from above works
+    nicely).</li>
+<li>Have the PIT IRQ interrupt handler increment a global variable each time it
+    is invoked.</li>
+<li>Set up the local APIC timer to one-shot mode on a very long countdown.</li>
+<li>Read the current PIT count.</li>
+<li>Read the current local APIC timer count.</li>
+<li>Busy-wait until the PIT count is equal to some value (100, say).</li>
+<li>Read the current local APIC timer count.</li>
+<li>The difference between the local APIC timer counts provides enough
+    information to calculate the ratio.</li>
+</ul>
+<p>You can now use the local APIC timer ratio to set up a periodic timer at a
+particular real-time interval.</p>
+<h3 id="the-high-performance-event-timer-hpet">The High-Performance Event Timer (HPET)</h3>
+<p>The HPET is a modern replacement for the PIT. Unfortunately, it's both more
+complicated to use and also is not currently supported by Bochs. However, if
+you are willing to stick to qemu (or other virtual machines), using the HPET
+provides you with a fine-gradation, highly accurate timer that is everything
+the PIT is not. Something to keep in mind is that Bochs does not support HPET
+emulation. If you want to use the HPET, you'll be stuck using qemu or other
+similar virtual machines. If this doesn't bother you, read on . . .</p>
+<p>The HPET, unlike the PIT <sup id="fnref:pit-channels"><a class="footnote-ref" href="#fn:pit-channels" rel="footnote">2</a></sup> or local APIC, has multiple
+independent timer channels --- at least three, and at most 32, but it's
+possible to have multiple HPETs on a single motherboard, so essentially the
+maximum number of timers is unlimited. Practically speaking, you should expect
+to have three. The idea of a timer channel is pretty simple; there is a single
+main counter that increments at a known rate, and a timer "channel" is simply
+a comparator with some interrupt-sending and resetting logic. Timers can either
+be 32 bits wide or 64 bits wide, and 64-bit timers can be put into a 32-bit
+mode. The only real difference between the two is the maximum period that you
+can specify between triggers.</p>
+<p>Unlike the PIT, where the clock frequency is fixed, the main clock frequency
+varies for the HPET. The interval between increments is given in part of the
+configuration as a number of femptoseconds (10<sup>-15</sup> seconds). So be
+aware that you will have to do some calculations at boot time to use the HPET.
+The HPET specification states that the frequency swing must be no more than 500
+ppm over a period more than 1ms, and 2000 ppm across a 100μs or less period.
+This makes it excellent for use as an accurate system clock source as well as
+timing sound and video events (its original purpose, hence the old name
+"Multimedia Timer" that you'll still see referenced occasionally).</p>
+<p>Now, for interfacing. Similarly to the I/O APIC, the HPET is controlled via use
+of memory-mapped registers located at a physical address specified by the HPET
+ACPI table. There are only two fields of interest in the HPET table; at bytes
+45:52 is the base address of the HPET registers. The other interesting field is
+at bytes 53:54 and contains the minimum length of a timer (in main clock ticks)
+in order for an interrupt to be fired. This is, essentially, the minimum delay
+for a trigger.</p>
+<p>Registers on the HPET are eight bytes wide, packed tightly (unlike the local
+APIC or I/O APIC), so that HPET register <code>i</code> is at address <code>0xfed00000 + i*8</code>.
+With that in mind, here are the interesting HPET registers:</p>
+<ul>
+<li>Register <code>0x00</code>, the "General Capabilities and ID register (GCIDR)."</li>
+<li>Register <code>0x02</code>, the "General Configuration register (GCR)."</li>
+<li>Register <code>0x1e</code>, the "Main Counter register (MCR)."</li>
+<li>Register <code>0x20 + 4n</code>, the "Configuration and Capability register (CCR)" for
+    the nth timer channel.</li>
+<li>Register <code>0x21 + 4n</code>, the "Comparator Value register (CVR)" for the nth timer
+    channel.</li>
+</ul>
+<p>The GCIDR is read-only and contains useful information such as the width of the
+main counter (bit 13, set for 64-bit counters), the number of counters
+available (bits 8:12, the index of the last counter, so the number of counters
+minus one), and the period between ticks in femptoseconds (bits 32:63).</p>
+<p>The GCR contains two bits of interest; first is the primary enable bit (bit 0),
+which must be set for the main counter to increment. The second is the "legacy
+replacement route" bit, which determines how the timers should be routed.
+Setting this bit forces timer 0 to go to IRQ2 and timer 1 to go to IRQ8.
+Clearing it allows a more flexible IRQ routing procedure that we'll get to in a
+moment.</p>
+<p>The MCR contains the value of the master counter. Reading this gives the number
+of ticks since the enable bit was set in the GCR.</p>
+<p>The CCR and CVR for a particular timer are, as you might guess, closely
+related. The HPET has a bit of trickiness that relates to periodic timers, so
+for the moment let's assume that we only want one-shot mode. Then we'll move on
+to periodic mode . . . the CCR bits, then, in order. Bit 1 contains the
+interrupt type (level or edge-triggered), which you'll want to set to
+edge-triggered (0) right now, unless you know the difference. Bit 2 contains
+the "interrupt enable" field; if clear, no interrupts will be generated, though
+the timer will continue to run nonetheless. Bit 3 contains the timer type,
+either one-shot or periodic; clear for one-shot and set for periodic. Bit 4
+contains the "periodic capable" bit --- if this bit is clear, then this HPET
+comparator does not support periodic mode; so don't try to use it, heh. Bit 5
+contains the size of the timer, clear for 32 bits and set for 64 bits. Bit 6
+is the "timer value set" config bit, ignore it for now and set it to be clear.
+Bit 8 contains the "force 32 bit mode" setting, somewhat self-explanatory; set
+for forced 32-bit mode. Bits 9:13 contain the IRQ that should be used for this
+comparator, and bits 32:64 contain a bitmask describing the IRQs that can be
+routed to (i.e. if bit 50 is set, then IRQ 18 is a valid value for bits 9:13).
+Finally, bits 14 and 15 have to do with FSB interrupt delivery, which we're not
+interested in right now.</p>
+<p>That . . . was a long paragraph. I'll try a pre-emptive strike against
+confusion and describe how to set up a one-shot timer for a number of ticks in
+the future:</p>
+<ol>
+<li>Set the CCR for an appropriate IRQ, timer width, type, and one-shot-ness,
+    but don't enable interrupts yet.</li>
+<li>Read the MCR, add the number of ticks to pause to it, and write that value
+    into the CVR.</li>
+<li>Set the enabled bit in the CCR.</li>
+</ol>
+<p>Now, for periodic timers. The problem with the HPET is that you have a single
+up-counting main value to compare against. With the PIT, there's just a single
+channel to worry about at any given time; with the HPET, to implement a
+periodic timer you need to both have a period as well as a base offset to begin
+counting the periods from.</p>
+<p>That is the role of bit 6 of the CCR. If you set bit 6 of the CCR, then by
+writing into the CVR you set the period base offset. If it is clear, then you
+set the period via a write.</p>
+<p>So, to set up a periodic timer:</p>
+<ol>
+<li>Set the CCR for an appropriate IRQ, timer width, type, periodic-ness, and
+    base-offset flag set, but don't enable interrupts yet.</li>
+<li>Read the MCR, add the periodic pause to it, and write that value into the
+    CVR.</li>
+<li>Write the period into the CVR.</li>
+<li>Set the enabled bit in the CCR.</li>
+</ol>
+<p>That's pretty much everything you need to know about the HPET, I think. If I've
+missed something of importance, please let me know and I'll add it in here.</p>
+<h3 id="process-context-switching">Process context-switching</h3>
+<p>Now that we have the ability to know how much time has passed, the next thing
+we really need for multitasking is the ability to actually change to another
+process.</p>
+<p>There are, really, three parts of state that a thread has:</p>
+<ol>
+<li>The contents of the CPU registers while it is executing,</li>
+<li>The contents of the virtual address space it lies within,</li>
+<li>Any kernel state stored about the thread (execution time, open files, etc.).</li>
+</ol>
+<p>The second is easy enough to address; we already know how to set up the paging
+structures, and changing virtual address spaces is as simple as changing which
+PML4 <code>cr3</code> is pointing to. The third we'll set aside for the moment, as we
+don't actually have any sort of kernel state yet . . .</p>
+<p>So that leaves us with the first: CPU registers. There are two scenarios that
+we need to concern ourselves with: first, saving the registers into a memory
+region so we can switch back later. Second, restoring registers to actually
+restore the thread. Ideally, we want to do this without changing the content
+of either registers or memory.</p>
+<p>Well, what scenarios do we actually care about changing the context? The two
+that I have are voluntary context-switches (à la cooperative multitasking or
+Linux's <code><span class="normal"> </span><span class="function">sched_yield</span><span class="symbol">()</span></code>) and pre-emptive context switches (that is,
+when the scheduler switches to a new process). In the case of the first, some
+small side-effects are acceptable, such as the content of the stack below the
+stack pointer changing. In the latter, such things are not acceptable, but will
+be executed from an interrupt-handler context, which gives us significantly
+more flexibility for implementation.</p>
+<p>The former scenario is easy enough to envision; we simply start saving the
+contents of registers into some known location for the thread. The latter is a
+little more confusing, so here's the general sequence of events to hopefully
+clear things up:</p>
+<ul>
+<li>Thread A is running.</li>
+<li>Timer IRQ occurs.</li>
+<li>Kernel interrupt handler begins execution; saves contents of current
+    registers (mostly the same as Thread A with the exception of <code>ss</code>, <code>cs</code>,
+    <code>rsp</code>, etc.) to memory set aside for Thread A's registers.</li>
+<li>Kernel interrupt handler copies contents of stack (with <code>ss</code> etc.) into
+    storage location for Thread A.</li>
+<li>Kernel interrupt handler selects Thread B for execution next.</li>
+<li>Kernel interrupt handler modifies stack to put Thread B's <code>ss</code>, <code>cs</code>, <code>rsp</code>,
+    etc. onto stack.</li>
+<li>Kernel interrupt handler reads Thread B's saved registers
+    and sets its own registers appropriately.</li>
+<li>Kernel interrupt handler executes <code>iretq</code>, restoring the last registers
+    (<code>ss</code>, <code>cs</code>, <code>rsp</code>, etc.) to be equal to Thread B.</li>
+<li>Thread B is now running, as its state has been restored.</li>
+</ul>
+<p>To be pedantic, the contents of registers saved by the interrupt handler
+process are <code>ss</code>, <code>rsp</code>, <code>rflags</code>, <code>cs</code>, and <code>rip</code>, in order. Everything else
+you'll want to save: <code>rax</code>, <code>rbx</code>, <code>rcx</code>, <code>rdx</code>, <code>rsi</code>, <code>rdi</code>, <code>rbp</code>, <code>r8</code>,
+<code>r9</code>, <code>r10</code>, <code>r11</code>, <code>r12</code>, <code>r13</code>, <code>r14</code>, <code>r15</code>, <code>ds</code>, <code>es</code>, <code>fs</code>, and <code>gs</code>.
+Eventually, you'll also want to save the contents of the <code>FS_BASE</code> and
+<code>GS_BASE</code> MSRs, which we'll talk about in much more detail in the next set of
+notes.</p>
+<p>There are a number of ways to do this. For the moment, let's assume that you
+have some sort of fixed address for where to save the registers of the
+interrupted thread. Clearly this doesn't work for a multi-processor system, or
+with nested interrupt handlers, but it suits our purposes (i.e. simplicity)
+nicely right about now.</p>
+<p>So then you'll want your interrupt handler to start with something like this:</p>
+<pre><code><span class="normal">interrupt_handler</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">push</span><span class="normal">    rdi</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rdi</span><span class="symbol">,</span><span class="normal"> thread_save_target</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x00</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x08</span><span class="symbol">],</span><span class="normal"> rbx</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x10</span><span class="symbol">],</span><span class="normal"> rcx</span>
+<span class="normal">        </span><span class="comment">; and so forth . . .</span>
+
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> rdi_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+
+<span class="normal">        </span><span class="comment">; pop off rip, cs, rflags, rsp, and ss in order and save them</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> rip_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> cs_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> rflags_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> rsp_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rax</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> ss_save_offset</span><span class="symbol">],</span><span class="normal"> rax</span>
+
+<span class="normal">        </span><span class="comment">; all integer registers saved</span>
+</code></pre>
+<p>Remember that this will be executing on an IST, so the <code><span class="normal"> </span><span class="keyword">push</span><span class="normal"> rdi</span></code>
+will not touch the target thread's stack. To restore it's pretty much the
+opposite:</p>
+<pre><code><span class="normal">context_switch_into_via_iretq</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rdi</span><span class="symbol">,</span><span class="normal"> thread_load_target</span>
+
+<span class="normal">        </span><span class="comment">; push on ss, rsp, rflags, cs, and rip</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> ss_save_offset</span><span class="symbol">]</span>
+<span class="normal">        </span><span class="keyword">push</span><span class="normal">    rax</span>
+<span class="normal">        </span><span class="comment">; ...</span>
+
+<span class="normal">        </span><span class="comment">; save because we need to keep using rdi as a memory address as</span>
+<span class="normal">        </span><span class="comment">; long as possible</span>
+<span class="normal">        </span><span class="keyword">push</span><span class="normal">    </span><span class="type">qword</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> rdi_save_offset</span><span class="symbol">]</span>
+<span class="normal">        </span><span class="comment">; restore regular registers</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">rdi </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x00</span><span class="symbol">]</span>
+<span class="normal">        </span><span class="comment">; ...</span>
+
+<span class="normal">        </span><span class="comment">; grab the saved value of rdi</span>
+<span class="normal">        </span><span class="keyword">pop</span><span class="normal">     rdi</span>
+
+<span class="normal">        </span><span class="comment">; stack now contains all the last registers appropriately, was set</span>
+<span class="normal">        </span><span class="comment">; up above after all . . .</span>
+<span class="normal">        iretq</span>
+</code></pre>
+<p>And there you have it --- context-switching, in a nutshell. Of course, if
+you're switching between threads in different virtual address spaces, remember
+to reload <code>cr3</code> to get the new PML4 into place.</p>
+<p>You'll want to create some sort of data structure in your kernel to store
+information related to the thread, such as some sort of ID, the last saved
+state of registers, and so forth.</p>
+<p>It would probably be useful to mention briefly how to select a new thread; I
+suggest implementing a "round-robin" mechanism that simply iterates through all
+available threads and, upon reaching the end of a scheduling timeslice, simply
+selects the next available thread. This will be a little more complicated when
+we get to conditional thread execution in the next set of notes, but for now it
+will suffice.</p>
+<h4 id="creating-a-new-thread">Creating a new thread</h4>
+<p>Something that hasn't been mentioned yet is how to actually start a new thread
+of execution. The way to do this with the approach outlined above is to
+essentially construct a snapshot of the initial state of the thread. We'll
+gloss over what the virtual address space should be, as that's likely fairly
+obvious. However, what is less obvious are the contents of, say, the registers.</p>
+<p>The general-purpose registers are pretty obvious: if your "entry point"
+(initial instruction pointer) is the beginning of a function, you likely want
+to pass any arguments to the function in via the general-purpose registers, in
+<code>rdi</code> for example; the stack pointer should likely be set to the high address
+of a region of memory that the thread can use as its stack (sharing stacks
+between threads is a bad idea and should really be avoided if at all possible).</p>
+<p>The segment registers are a slightly different story. Obstensibly, <code>cs</code> should
+be set to the offset inside your GDT that contains a 64-bit code segment, and
+<code>ds/es/fs/gs/ss</code> likewise for a 64-bit data segment. However, in kernel mode,
+this isn't strictly necessary for anything other than <code>cs</code>, as the others can
+safely be set to zero (the null segment). This will be necessary for userspace
+threads, however, and so you may want to get it set up early.</p>
+<p>The last register that we have to deal with is the <code>rflags</code> register. Here, our
+work is already cut in half by the fact that <code>rflags</code> is really just a
+zero-extended version of the 32-bit register <code>eflags</code>. Figure 3-8 of the Intel
+SDM volume 1 provides the map of <code>eflags</code> registers:</p>
+<p><img alt="eflags bit description" class="centre-img" src="static/eflags.png" /></p>
+<p>The only content-optional bit that's really important right now is that of
+<code>IF</code>; this is what the <code>cli</code> and <code>sti</code> instructions change --- when set,
+external interrupts are enabled, and when clear, external interrupts are
+disabled. So I suggest you start with the value <code>0x202</code> and work your way out
+from there.</p>
+<h3 id="suggested-work">Suggested work</h3>
+<p>I would strongly suggest getting the PIT or HPET up and running on a periodic
+interrupt; it will be very useful for scheduling threads. Reading the ACPI
+tables will be required if you want to add support for SMP in the next set of
+notes; but for now hardcoding the addresses of the I/O APIC and HPET are
+probably sufficient. Synchronizing the local APIC timer and using that instead
+of external hardware would be an extra step to take if you're feeling up to it;
+this would allow you to have per-CPU scheduling intervals; could be useful for
+eventually moving long-running computational tasks onto dedicated CPUs and
+whatnot.</p>
+<p>Implementing a context-switch mechanism is pretty much required for any sort of
+multi-tasking OS; as such, I would suggest you implement something along these
+lines. If you have difficulties with your implementation, the Aelius reference
+kernel is a place to look for a working version to study.</p>
+<h3 id="further-reading">Further reading</h3>
+<p>The <a href="http://acpi.info/DOWNLOADS/ACPI_5_Errata%20A.pdf">ACPI specification</a> has
+more details on the exact format of the ACPI tables; see section 5.2 (in
+particular subsections 5.2.5, 5.2.7, 5.2.8, and 5.2.12).</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:pitfreq">
+<p>This is what you get when you divide a 14,317,180 Hz crystal,
+commonly used in (analog) televisions of the era, by 12.&#160;<a class="footnote-backref" href="#fnref:pitfreq" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:pit-channels">
+<p>Strictly speaking, the PIT does have three channels, so the
+HPET isn't unique in this regard. However, only one of the PIT channels is
+actually usable for us, so really the PIT can be regarded as being a
+single-timer device.&#160;<a class="footnote-backref" href="#fnref:pit-channels" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:lapic-modes">
+<p>There is another mode, called TSC deadline mode, that can also
+be very useful. The idea is that, instead of providing a countdown for when to
+trigger an interrupt, you provide an absolute time. Not very useful right now,
+but keep in mind that it exists.&#160;<a class="footnote-backref" href="#fnref:lapic-modes" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:08 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

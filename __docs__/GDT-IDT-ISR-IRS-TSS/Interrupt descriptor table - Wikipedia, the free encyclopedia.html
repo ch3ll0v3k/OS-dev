@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Interrupt descriptor table - Wikipedia, the free encyclopedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Interrupt_descriptor_table","wgTitle":"Interrupt descriptor table","wgCurRevisionId":724754157,"wgRevisionId":724754157,"wgArticleId":3877859,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Articles to be merged from August 2014","All articles to be merged","Articles lacking in-text citations from September 2013","All articles lacking in-text citations","X86 architecture","Interrupts","Memory management"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Interrupt_descriptor_table","wgRelevantArticleId":3877859,"wgRequestId":"V@ZBCQpAMEoAAJEQ9BcAAAAS","wgIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgWikiEditorEnabledModules":{"toolbar":true,"dialogs":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":true,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":false},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgFlaggedRevsParams":{"tags":{"status":{"levels":1,"quality":2,"pristine":3}}},"wgStableRevisionId":null,"wgWikibaseItemId":"Q2530360","wgCentralAuthMobileDomain":false,"wgVisualEditorToolbarScrollOffset":0,"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user.cssprefs":"ready","user":"ready","user.options":"loading","user.tokens":"loading","ext.pygments":"ready","ext.cite.styles":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.tmh.thumbnail.styles":"ready","ext.wikimediaBadges":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.options",function($,jQuery,require,module){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/;
+
+});mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","ext.centralauth.centralautologin","mmv.head","ext.visualEditor.desktopArticleTarget.init","ext.uls.interface","ext.quicksurveys.init","mw.MediaWikiPlayer.loader","mw.PopUpMediaTransform","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.cite.styles%7Cext.gadget.DRN-wizard%2CReferenceTooltips%2Ccharinsert%2Cextra-toolbar-buttons%2Cfeatured-articles-links%2CrefToolbar%2Cswitcher%2Cteahouse%2Cwatchlist-notice%7Cext.pygments%2CwikimediaBadges%7Cext.tmh.thumbnail.styles%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta name="generator" content="MediaWiki 1.28.0-wmf.20"/>
+<meta name="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Interrupt_descriptor_table"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="copyright" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Interrupt_descriptor_table rootpage-Interrupt_descriptor_table skin-vector action-view feature-page-action-bar-v2">		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+							<div id="siteNotice"><!-- CentralNotice --></div>
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">Interrupt descriptor table</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">From Wikipedia, the free encyclopedia</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><table class="metadata plainlinks ambox ambox-move" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/thumb/5/52/Merge-arrows.svg/50px-Merge-arrows.svg.png" width="50" height="20" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/5/52/Merge-arrows.svg/75px-Merge-arrows.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/5/52/Merge-arrows.svg/100px-Merge-arrows.svg.png 2x" data-file-width="50" data-file-height="20" /></div>
+</td>
+<td class="mbox-text"><span class="mbox-text-span">It has been suggested that this article be <a href="/wiki/Wikipedia:Merging" title="Wikipedia:Merging">merged</a> with <i><a href="/wiki/INT_(x86_instruction)" title="INT (x86 instruction)">INT (x86 instruction)</a></i>. (<a href="/wiki/Talk:INT_(x86_instruction)#Proposed_merge_with_Interrupt_descriptor_table" title="Talk:INT (x86 instruction)">Discuss</a>) <small><i>Proposed since August 2014.</i></small></span></td>
+</tr>
+</table>
+<table class="metadata plainlinks ambox ambox-style ambox-More_footnotes" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/40px-Text_document_with_red_question_mark.svg.png" width="40" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/60px-Text_document_with_red_question_mark.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/80px-Text_document_with_red_question_mark.svg.png 2x" data-file-width="48" data-file-height="48" /></div>
+</td>
+<td class="mbox-text"><span class="mbox-text-span">This article includes a <a href="/wiki/Wikipedia:Citing_sources" title="Wikipedia:Citing sources">list of references</a>, but <b>its sources remain unclear</b> because it has <b>insufficient <a href="/wiki/Wikipedia:Citing_sources#Inline_citations" title="Wikipedia:Citing sources">inline citations</a></b>. <span class="hide-when-compact">Please help to <a href="/wiki/Wikipedia:WikiProject_Fact_and_Reference_Check" title="Wikipedia:WikiProject Fact and Reference Check">improve</a> this article by <a href="/wiki/Wikipedia:When_to_cite" title="Wikipedia:When to cite">introducing</a> more precise citations.</span> <small><i>(September 2013)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></span></td>
+</tr>
+</table>
+<p>The <b>Interrupt Descriptor Table</b> (<b>IDT</b>) is a data structure used by the <a href="/wiki/X86_architecture" class="mw-redirect" title="X86 architecture">x86 architecture</a> to implement an <a href="/wiki/Interrupt_vector" class="mw-redirect" title="Interrupt vector">interrupt vector</a> table. The IDT is used by the processor to determine the correct response to <a href="/wiki/Interrupts" class="mw-redirect" title="Interrupts">interrupts</a> and <a href="/wiki/Exception_handling" title="Exception handling">exceptions</a>.</p>
+<p>The details in the description below apply specifically to the x86 architecture and the <a href="/wiki/AMD64" class="mw-redirect" title="AMD64">AMD64</a> architecture. Other architectures have similar data structures, but may behave differently.</p>
+<p>Use of the IDT is triggered by three types of events: hardware interrupts, software interrupts, and processor exceptions, which together are referred to as "interrupts". The IDT consists of 256 <a href="/wiki/Interrupt_vector" class="mw-redirect" title="Interrupt vector">interrupt vectors</a>–the first 32 (0-31 or 00-1F) of which are reserved for processor exceptions.</p>
+<p></p>
+<div id="toc" class="toc">
+<div id="toctitle">
+<h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Real_mode"><span class="tocnumber">1</span> <span class="toctext">Real mode</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Protected_mode"><span class="tocnumber">2</span> <span class="toctext">Protected mode</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Hardware-generated_exceptions"><span class="tocnumber">3</span> <span class="toctext">Hardware-generated exceptions</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Hooking"><span class="tocnumber">4</span> <span class="toctext">Hooking</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#References"><span class="tocnumber">5</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#External_links"><span class="tocnumber">6</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" id="Real_mode">Real mode</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=1" title="Edit section: Real mode">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>In the <a href="/wiki/Intel_8086" title="Intel 8086">8086</a> processor, the interrupt table is called IVT (interrupt vector table). The IVT always resides at the same location in memory, ranging from <code>0x0000</code> to <code>0x03ff</code>, and consists of 256 four-byte <a href="/wiki/Real_mode" title="Real mode">real mode</a> far pointers (256 × 4 = 1024 bytes of memory).</p>
+<p>A real mode pointer is defined as a 16-bit segment and a 16-bit offset into that segment. The segment is expanded internally by the processor to 20 bits by shifting it 4 bits to the left, thus limiting real mode interrupt handlers to the first 1 megabyte of memory. The first 32 vectors are reserved for the processor's internal exceptions, and hardware interrupts may be mapped to any of the vectors by way of a programmable interrupt controller.</p>
+<p>On the <a href="/wiki/80286" class="mw-redirect" title="80286">80286</a> and later, the size and locations of the IVT can be changed in the same way as it is done with the IDT in <a href="/wiki/Protected_mode" title="Protected mode">protected mode</a>, i.e. via the LIDT instruction, though it does not change the format of it. The 80286 also introduced the <a href="/wiki/High_memory_area" title="High memory area">high memory area</a>, which raises the address limit in real mode by 65520 bytes.</p>
+<p>A commonly used x86 real mode interrupt is <a href="/wiki/INT_10" class="mw-redirect" title="INT 10"><code class="mw-highlight" id="" style="" dir="ltr">INT 10</code></a>, the <a href="/wiki/Video_BIOS" title="Video BIOS">Video BIOS</a> code to handle primitive screen drawing functions such as pixel drawing and changing the screen resolution.</p>
+<h2><span class="mw-headline" id="Protected_mode">Protected mode</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=2" title="Edit section: Protected mode">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>In <a href="/wiki/Protected_mode" title="Protected mode">protected mode</a>, the IDT is an array of 8-byte descriptors stored consecutively in memory and indexed by an interrupt vector. These descriptors may be either interrupt gates, trap gates or task gates. Interrupt and trap gates point to a memory location containing code to execute by specifying both a segment (present in either the <a href="/wiki/Global_Descriptor_Table" title="Global Descriptor Table">GDT</a> or <a href="/wiki/Local_Descriptor_Table" class="mw-redirect" title="Local Descriptor Table">LDT</a>) and an offset within that segment. The only difference between these two is that an interrupt gate will disable further processor handling of hardware interrupts, making it especially suitable to service hardware interrupts, while a trap gate will leave hardware interrupts enabled and is thus mainly used for handling software interrupts and exceptions. Finally, a task gate will cause the currently active task-state segment to be switched, using the hardware task switch mechanism to effectively hand over use of the processor to another program, thread or process.</p>
+<p>The protected mode IDT may reside anywhere in physical memory. The processor has a special register (<code class="mw-highlight" id="" style="" dir="ltr">IDTR</code>) to store both the physical base address and the length in bytes of the IDT. When an interrupt occurs, the processor multiplies the interrupt vector by 8 and adds the result to the IDT base address. With help of the IDT length, the resulting memory address is then verified to be within the table; if it is too large, an exception is generated. If everything is okay, the 8-byte descriptor stored at the calculated memory location is loaded and actions are taken according to the descriptor's type and contents.</p>
+<p>A fully populated IDT is 2 KB (256 entries of 8 bytes each) in length. It is not necessary to use all of the possible entries: it is sufficient to populate the IDT up to the highest interrupt vector used, and set the IDT length portion of the <code class="mw-highlight" id="" style="" dir="ltr">IDTR</code> accordingly. Vectors 0-31 are reserved by Intel for processor generated exceptions (<a href="/wiki/General_protection_fault" title="General protection fault">general protection fault</a>, <a href="/wiki/Page_fault" title="Page fault">page fault</a>, etc.). Though currently only vectors 0-18 are used by the processor, future processors may create incompatibilities for broken software which use these vectors for other purposes.</p>
+<h2><span class="mw-headline" id="Hardware-generated_exceptions">Hardware-generated exceptions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=3" title="Edit section: Hardware-generated exceptions">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>All INT_NUM between 0x0 and 0x1F, inclusive, are reserved for exceptions; INT_NUM bigger than 0x1F are used for interrupt routines. (Note that the <a href="/wiki/IBM_PC" class="mw-redirect" title="IBM PC">IBM PC</a> did not always obey this rule, for instance using interrupt 5 to indicate the <a href="/wiki/Print_Screen" class="mw-redirect" title="Print Screen">Print Screen</a> key was pressed.)</p>
+<table class="wikitable">
+<tr>
+<th>INT_NUM</th>
+<th>Short Description PM</th>
+</tr>
+<tr>
+<td>0x00</td>
+<td><a href="/wiki/Division_by_zero#Computer_arithmetic" title="Division by zero">Division by zero</a></td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>Debugger</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td><a href="/wiki/Non-maskable_interrupt" title="Non-maskable interrupt">NMI</a></td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>Breakpoint</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>Overflow</td>
+</tr>
+<tr>
+<td>0x05</td>
+<td>Bounds</td>
+</tr>
+<tr>
+<td>0x06</td>
+<td>Invalid Opcode</td>
+</tr>
+<tr>
+<td>0x07</td>
+<td>Coprocessor not available</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td><a href="/wiki/Double_fault" title="Double fault">Double fault</a></td>
+</tr>
+<tr>
+<td>0x09</td>
+<td>Coprocessor Segment Overrun <i>(386 or earlier only)</i></td>
+</tr>
+<tr>
+<td>0x0A</td>
+<td>Invalid Task State Segment</td>
+</tr>
+<tr>
+<td>0x0B</td>
+<td>Segment not present</td>
+</tr>
+<tr>
+<td>0x0C</td>
+<td>Stack Fault</td>
+</tr>
+<tr>
+<td>0x0D</td>
+<td><a href="/wiki/General_protection_fault" title="General protection fault">General protection fault</a></td>
+</tr>
+<tr>
+<td>0x0E</td>
+<td><a href="/wiki/Page_fault" title="Page fault">Page fault</a></td>
+</tr>
+<tr>
+<td>0x0F</td>
+<td><i>reserved</i></td>
+</tr>
+<tr>
+<td>0x10</td>
+<td>Math Fault</td>
+</tr>
+<tr>
+<td>0x11</td>
+<td>Alignment Check</td>
+</tr>
+<tr>
+<td>0x12</td>
+<td>Machine Check</td>
+</tr>
+<tr>
+<td>0x13</td>
+<td><a href="/wiki/SIMD" title="SIMD">SIMD</a> Floating-Point Exception</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>Virtualization Exception</td>
+</tr>
+<tr>
+<td>0x15</td>
+<td>Control Protection Exception</td>
+</tr>
+</table>
+<h2><span class="mw-headline" id="Hooking">Hooking</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=4" title="Edit section: Hooking">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Some <a href="/wiki/Windows" class="mw-redirect" title="Windows">Windows</a> programs <a href="/wiki/Hooking" title="Hooking">hook</a> calls to the IDT. This involves writing a kernel mode <a href="/wiki/Device_driver" title="Device driver">driver</a> that intercepts calls to the IDT and adds in its own processing. This has never been officially supported by <a href="/wiki/Microsoft" title="Microsoft">Microsoft</a>, but was not programatically prevented on its operating systems until <a href="/wiki/64-bit" class="mw-redirect" title="64-bit">64-bit</a> versions of Windows, where a driver that attempts to use a <a href="/wiki/Kernel_mode#Supervisor_mode" class="mw-redirect" title="Kernel mode">kernel mode</a> hook will cause the machine to <a href="/wiki/Bug_check" class="mw-redirect" title="Bug check">bug check</a>.<sup id="cite_ref-Patching_Policy_for_x64-Based_Systems_1-0" class="reference"><a href="#cite_note-Patching_Policy_for_x64-Based_Systems-1">[1]</a></sup></p>
+<h2><span class="mw-headline" id="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=5" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;">
+<ol class="references">
+<li id="cite_note-Patching_Policy_for_x64-Based_Systems-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-Patching_Policy_for_x64-Based_Systems_1-0">^</a></b></span> <span class="reference-text"><cite class="citation web"><a rel="nofollow" class="external text" href="http://www.microsoft.com/whdc/driver/kernel/64bitPatching.mspx">"Patching Policy for x64-Based Systems"</a>. <q>If the operating system detects one of these modifications or any other unauthorized patch, it will generate a bug check and shut down the system.</q></cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3AInterrupt+descriptor+table&amp;rft.btitle=Patching+Policy+for+x64-Based+Systems&amp;rft.genre=unknown&amp;rft_id=http%3A%2F%2Fwww.microsoft.com%2Fwhdc%2Fdriver%2Fkernel%2F64bitPatching.mspx&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+</ol>
+</div>
+<dl>
+<dt>General</dt>
+</dl>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://www.intel.com/products/processor/manuals/index.htm">Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 3: System Programming Guide</a></li>
+</ul>
+<h2><span class="mw-headline" id="External_links">External links</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit&amp;section=6" title="Edit section: External links">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://download.intel.com/design/processor/manuals/253668.pdf">Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 3A:System Programming Guide, Part 1</a> (see CHAPTER 6, INTERRUPT AND EXCEPTION HANDLING and CHAPTER 10, ADVANCED PROGRAMMABLE INTERRUPT CONTROLLER)]</li>
+<li><a rel="nofollow" class="external text" href="http://wiki.osdev.org/Interrupt_Descriptor_Table">Interrupt Descriptor Table</a> at OSDev.org</li>
+</ul>
+
+
+<!-- Saved in parser cache with key enwiki:pcache:idhash:3877859-0!*!0!!en!4!* and timestamp 20160907085906 and revision id 724754157
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=Interrupt_descriptor_table&amp;oldid=724754157">https://en.wikipedia.org/w/index.php?title=Interrupt_descriptor_table&amp;oldid=724754157</a>"					</div>
+				<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:X86_architecture" title="Category:X86 architecture">X86 architecture</a></li><li><a href="/wiki/Category:Interrupts" title="Category:Interrupts">Interrupts</a></li><li><a href="/wiki/Category:Memory_management" title="Category:Memory management">Memory management</a></li></ul></div><div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:Articles_to_be_merged_from_August_2014" title="Category:Articles to be merged from August 2014">Articles to be merged from August 2014</a></li><li><a href="/wiki/Category:All_articles_to_be_merged" title="Category:All articles to be merged">All articles to be merged</a></li><li><a href="/wiki/Category:Articles_lacking_in-text_citations_from_September_2013" title="Category:Articles lacking in-text citations from September 2013">Articles lacking in-text citations from September 2013</a></li><li><a href="/wiki/Category:All_articles_lacking_in-text_citations" title="Category:All articles lacking in-text citations">All articles lacking in-text citations</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-anonuserpage">Not logged in</li><li id="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li id="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li id="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Interrupt+descriptor+table" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li id="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Interrupt+descriptor+table" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+															<li  id="ca-nstab-main" class="selected"><span><a href="/wiki/Interrupt_descriptor_table"  title="View the content page [c]" accesskey="c">Article</a></span></li>
+															<li  id="ca-talk"><span><a href="/wiki/Talk:Interrupt_descriptor_table"  title="Discussion about the content page [t]" accesskey="t" rel="discussion">Talk</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label">
+							<span>Variants</span><a href="#"></a>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="/wiki/Interrupt_descriptor_table" >Read</a></span></li>
+															<li id="ca-edit"><span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=edit"  title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+													</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 id="p-cactions-label"><span>More</span><a href="#"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" id="searchform">
+							<div id="simpleSearch">
+							<input type="search" name="search" placeholder="Search" title="Search Wikipedia [f]" accesskey="f" id="searchInput"/><input type="hidden" value="Special:Search" name="title"/><input type="submit" name="fulltext" value="Search" title="Search Wikipedia for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" id='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 id='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li id="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li id="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li id="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 id='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li id="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-tb' aria-labelledby='p-tb-label'>
+			<h3 id='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Interrupt_descriptor_table" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Interrupt_descriptor_table" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=Interrupt_descriptor_table&amp;oldid=724754157" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=Interrupt_descriptor_table&amp;action=info" title="More information about this page">Page information</a></li><li id="t-wikibase"><a href="https://www.wikidata.org/wiki/Q2530360" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li id="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Interrupt_descriptor_table&amp;id=724754157" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 id='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li id="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Interrupt+descriptor+table">Create a book</a></li><li id="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:Book&amp;bookcmd=render_article&amp;arttitle=Interrupt+descriptor+table&amp;returnto=Interrupt+descriptor+table&amp;oldid=724754157&amp;writer=rdf2latex">Download as PDF</a></li><li id="t-print"><a href="/w/index.php?title=Interrupt_descriptor_table&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-lang' aria-labelledby='p-lang-label'>
+			<h3 id='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+						<li class="interlanguage-link interwiki-cs"><a href="https://cs.wikipedia.org/wiki/Tabulka_vektor%C5%AF_p%C5%99eru%C5%A1en%C3%AD" title="Tabulka vektorů přerušení – Czech" lang="cs" hreflang="cs">Čeština</a></li><li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/Interrupt_Descriptor_Table" title="Interrupt Descriptor Table – French" lang="fr" hreflang="fr">Français</a></li><li class="interlanguage-link interwiki-ko"><a href="https://ko.wikipedia.org/wiki/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8_%EC%84%9C%EC%88%A0%EC%9E%90_%ED%85%8C%EC%9D%B4%EB%B8%94" title="인터럽트 서술자 테이블 – Korean" lang="ko" hreflang="ko">한국어</a></li><li class="interlanguage-link interwiki-it"><a href="https://it.wikipedia.org/wiki/Interrupt_Descriptor_Table" title="Interrupt Descriptor Table – Italian" lang="it" hreflang="it">Italiano</a></li><li class="interlanguage-link interwiki-he"><a href="https://he.wikipedia.org/wiki/%D7%98%D7%91%D7%9C%D7%AA_%D7%A4%D7%A1%D7%99%D7%A7%D7%95%D7%AA" title="טבלת פסיקות – Hebrew" lang="he" hreflang="he">עברית</a></li><li class="interlanguage-link interwiki-ru"><a href="https://ru.wikipedia.org/wiki/%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0_%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BE%D0%B2_%D0%BF%D1%80%D0%B5%D1%80%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9" title="Таблица векторов прерываний – Russian" lang="ru" hreflang="ru">Русский</a></li><li class="uls-p-lang-dummy"><a href="#"></a></li>					</ul>
+				<div class='after-portlet after-portlet-lang'><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Q2530360#sitelinks-wikipedia" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 11 June 2016, at 07:42.</li>
+											<li id="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li id="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li id="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li id="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li id="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=Interrupt_descriptor_table&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li id="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.loader.load(["ext.cite.a11y","mediawiki.toc","mediawiki.action.view.postEdit","site","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.gadget.featured-articles-links","mmv.bootstrap.autostart","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.centralNotice.geoIP","ext.centralNotice.startUp"]);});</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set( {
+    "wgPageParseReport": {
+        "limitreport": {
+            "cputime": "0.090",
+            "walltime": "0.149",
+            "ppvisitednodes": {
+                "value": 416,
+                "limit": 1000000
+            },
+            "ppgeneratednodes": {
+                "value": 0,
+                "limit": 1500000
+            },
+            "postexpandincludesize": {
+                "value": 8804,
+                "limit": 2097152
+            },
+            "templateargumentsize": {
+                "value": 330,
+                "limit": 2097152
+            },
+            "expansiondepth": {
+                "value": 12,
+                "limit": 40
+            },
+            "expensivefunctioncount": {
+                "value": 2,
+                "limit": 500
+            },
+            "timingprofile": [
+                "100.00%  124.392      1 -total",
+                " 56.24%   69.958      1 Template:Merge",
+                " 32.83%   40.832      1 Template:Reflist",
+                " 30.22%   37.589      1 Template:Mbox",
+                " 29.64%   36.870      1 Template:Cite_web",
+                "  9.53%   11.852      1 Template:DMC",
+                "  6.63%    8.242      1 Template:More_footnotes",
+                "  6.14%    7.638      1 Template:FULLROOTPAGENAME",
+                "  5.31%    6.611      1 Template:Pagelist",
+                "  4.51%    5.604      1 Template:Ns_has_subpages"
+            ]
+        },
+        "scribunto": {
+            "limitreport-timeusage": {
+                "value": "0.034",
+                "limit": "10.000"
+            },
+            "limitreport-memusage": {
+                "value": 1811513,
+                "limit": 52428800
+            }
+        },
+        "EntityAccessCount": 0,
+        "cachereport": {
+            "origin": "mw1256",
+            "timestamp": "20160907085906",
+            "ttl": 2592000,
+            "transientcontent": false
+        }
+    }
+} );});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":74,"wgHostname":"mw1239"});});</script>
+	</body>
+</html>

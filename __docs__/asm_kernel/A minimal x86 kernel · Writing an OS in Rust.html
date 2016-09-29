@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="sameorigin">
+<title>
+A minimal x86 kernel &middot; Writing an OS in Rust
+</title>
+<script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"e651c847106425523a1a8e78b125ef02",petok:"a25746163a1973826efb42a6dcdd4243c9bf2669-1474724699-1800",zone:"phil-opp.com",rocket:"a",apps:{},sha2test:0}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=0489c402f5/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+//]]>
+</script>
+<link rel="canonical" href="http://os.phil-opp.com/multiboot-kernel.html">
+<link rel="stylesheet" href="/css/poole.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-precomposed.png">
+<link rel="shortcut icon" href="/images/favicon.ico">
+<script data-rocketsrc="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js" type="text/rocketscript"></script>
+<script data-rocketsrc="js/toc.min.js" type="text/rocketscript"></script>
+<script data-rocketsrc="js/main.js" type="text/rocketscript"></script>
+<script type="text/rocketscript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65296949-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script type="text/rocketscript">
+    if (window.location.hostname == "phil-opp.github.io") {
+      window.location.href = "http://os.phil-opp.com/";
+    }
+  </script>
+</head>
+<body>
+<div class="container content">
+<header class="masthead">
+<h3 class="masthead-title">
+<a href="/" title="Home">Writing an OS in Rust</a>
+<span class="navigation">
+<small><a href="/atom.xml"><img src="/images/feed-icon.png" alt="RSS"></a></small>
+</span>
+<small>Philipp&nbsp;Oppermann's&nbsp;blog</small>
+</h3>
+</header>
+<main>
+<article class="post">
+<h1 class="post-title">A minimal x86 kernel</h1>
+<time datetime="2015-08-18" class="post-date">
+Aug 18, 2015
+</time>
+<p>This post explains how to create a minimal x86 operating system kernel. In fact, it will just boot and print <code>OK</code> to the screen. The following blog posts we will extend it using the <a href="http://www.rust-lang.org/">Rust</a> programming language.</p>
+<aside id="toc"></aside>
+<p>I tried to explain everything in detail and to keep the code as simple as possible. If you have any questions, suggestions or other issues, please leave a comment or <a href="https://github.com/phil-opp/blog_os/issues">create an issue</a> on Github. The source code is available in a <a href="https://github.com/phil-opp/blog_os/tree/multiboot_bootstrap/src/arch/x86_64">repository</a>, too.</p>
+<p>Note that this tutorial is written mainly for Linux. For some known problems on OS X see the comment section and <a href="https://github.com/phil-opp/blog_os/issues/55">this issue</a>. If you want to use a virtual Linux machine, you can find instructions and a Vagrantfile in Ashley Willams&rsquo;s <a href="https://github.com/ashleygwilliams/x86-kernel">x86-kernel repository</a>.</p>
+<h2 id="overview">Overview</h2>
+<p>When you turn on a computer, it loads the <a href="https://en.wikipedia.org/wiki/BIOS">BIOS</a> from some special flash memory. The BIOS runs self test and initialization routines of the hardware, then it looks for bootable devices. If it finds one, the control is transferred to its <em>bootloader</em>, which is a small portion of executable code stored at the device&rsquo;s beginning. The bootloader has to determine the location of the kernel image on the device and load it into memory. It also needs to switch the CPU to the so-called <a href="https://en.wikipedia.org/wiki/Protected_mode">protected mode</a> because x86 CPUs start in the very limited <a href="http://wiki.osdev.org/Real_Mode">real mode</a> by default (to be compatible to programs from 1978).</p>
+<p>We won&rsquo;t write a bootloader because that would be a complex project on its own (if you really want to do it, check out <a href="http://wiki.osdev.org/Rolling_Your_Own_Bootloader"><em>Rolling Your Own Bootloader</em></a>). Instead we will use one of the <a href="https://en.wikipedia.org/wiki/Comparison_of_boot_loaders">many well-tested bootloaders</a> out there. But which one?</p>
+<h2 id="multiboot">Multiboot</h2>
+<p>Fortunately there is a bootloader standard: the <a href="https://en.wikipedia.org/wiki/Multiboot_Specification">Multiboot Specification</a>. Our kernel just needs to indicate that it supports Multiboot and every Multiboot-compliant bootloader can boot it. We will use the Multiboot 2 specification (<a href="http://nongnu.askapache.com/grub/phcoder/multiboot.pdf">PDF</a>) together with the well-known <a href="http://wiki.osdev.org/GRUB_2">GRUB 2</a> bootloader.</p>
+<p>To indicate our Multiboot 2 support to the bootloader, our kernel must start with a <em>Multiboot Header</em>, which has the following format:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>magic number</td>
+<td>u32</td>
+<td><code>0xE85250D6</code></td>
+</tr>
+<tr>
+<td>architecture</td>
+<td>u32</td>
+<td><code>0</code> for i386, <code>4</code> for MIPS</td>
+</tr>
+<tr>
+<td>header length</td>
+<td>u32</td>
+<td>total header size, including tags</td>
+</tr>
+<tr>
+<td>checksum</td>
+<td>u32</td>
+<td><code>-(magic + architecture + header_length)</code></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>variable</td>
+<td></td>
+</tr>
+<tr>
+<td>end tag</td>
+<td>(u16, u16, u32)</td>
+<td><code>(0, 0, 8)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Converted to a x86 assembly file it looks like this (Intel syntax):</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">section</span> <span class="nv">.multiboot_header</span>
+<span class="nl">header_start:</span>
+    <span class="kd">dd</span> <span class="mh">0xe85250d6</span>                <span class="c1">; magic number (multiboot 2)</span>
+    <span class="kd">dd</span> <span class="mi">0</span>                         <span class="c1">; architecture 0 (protected mode i386)</span>
+    <span class="kd">dd</span> <span class="nv">header_end</span> <span class="o">-</span> <span class="nv">header_start</span> <span class="c1">; header length</span>
+    <span class="c1">; checksum</span>
+    <span class="kd">dd</span> <span class="mh">0x100000000</span> <span class="o">-</span> <span class="p">(</span><span class="mh">0xe85250d6</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="p">(</span><span class="nv">header_end</span> <span class="o">-</span> <span class="nv">header_start</span><span class="p">))</span>
+
+    <span class="c1">; insert optional multiboot tags here</span>
+
+    <span class="c1">; required end tag</span>
+    <span class="kd">dw</span> <span class="mi">0</span>    <span class="c1">; type</span>
+    <span class="kd">dw</span> <span class="mi">0</span>    <span class="c1">; flags</span>
+    <span class="kd">dd</span> <span class="mi">8</span>    <span class="c1">; size</span>
+<span class="nl">header_end:</span>
+</code></pre></div>
+<p>If you don&rsquo;t know x86 assembly, here is some quick guide:</p>
+<ul>
+<li>the header will be written to a section named <code>.multiboot_header</code> (we need this later)</li>
+<li><code>header_start</code> and <code>header_end</code> are <em>labels</em> that mark a memory location, we use them to calculate the header length easily</li>
+<li><code>dd</code> stands for <code>define double</code> (32bit) and <code>dw</code> stands for <code>define word</code> (16bit). They just output the specified 32bit/16bit constant.</li>
+<li>the additional <code>0x100000000</code> in the checksum calculation is a small hack<sup class="footnote-ref" id="fnref:fn-checksum-hack"><a rel="footnote" href="#fn:fn-checksum-hack">1</a></sup> to avoid a compiler warning</li>
+</ul>
+<p>We can already <em>assemble</em> this file (which I called <code>multiboot_header.asm</code>) using <code>nasm</code>. It produces a flat binary by default, so the resulting file just contains our 24 bytes (in little endian if you work on a x86 machine):</p>
+<pre><code>&gt; nasm multiboot_header.asm
+&gt; hexdump -x multiboot_header
+0000000    50d6    e852    0000    0000    0018    0000    af12    17ad
+0000010    0000    0000    0008    0000
+0000018
+</code></pre>
+<h2 id="the-boot-code">The Boot Code</h2>
+<p>To boot our kernel, we must add some code that the bootloader can call. Let&rsquo;s create a file named <code>boot.asm</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">global</span> <span class="nv">start</span>
+
+<span class="k">section</span> <span class="nv">.text</span>
+<span class="k">bits</span> <span class="mi">32</span>
+<span class="nl">start:</span>
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">mov</span> <span class="kt">dword</span> <span class="p">[</span><span class="mh">0xb8000</span><span class="p">],</span> <span class="mh">0x2f4b2f4f</span>
+    <span class="nf">hlt</span>
+</code></pre></div>
+<p>There are some new commands:</p>
+<ul>
+<li><code>global</code> exports a label (makes it public). As <code>start</code> will be the entry point of our kernel, it needs to be public.</li>
+<li>the <code>.text</code> section is the default section for executable code</li>
+<li><code>bits 32</code> specifies that the following lines are 32-bit instructions. It&rsquo;s needed because the CPU is still in <a href="https://en.wikipedia.org/wiki/Protected_mode">Protected mode</a> when GRUB starts our kernel. When we switch to <a href="https://en.wikipedia.org/wiki/Long_mode">Long mode</a> in the <a href="/entering-longmode.html">next post</a> we can use <code>bits 64</code> (64-bit instructions).</li>
+<li>the <code>mov dword</code> instruction moves the 32bit constant <code>0x2f4b2f4f</code> to the memory at address <code>b8000</code> (it prints <code>OK</code> to the screen, an explanation follows in the next posts)</li>
+<li><code>hlt</code> is the halt instruction and causes the CPU to stop</li>
+</ul>
+<p>Through assembling, viewing and disassembling we can see the CPU <a href="https://en.wikipedia.org/wiki/Opcode">Opcodes</a> in action:</p>
+<pre><code>&gt; nasm boot.asm
+&gt; hexdump -x boot
+0000000    05c7    8000    000b    2f4b    2f4f    00f4
+000000b
+&gt; ndisasm -b 32 boot
+00000000  C70500800B004B2F  mov dword [dword 0xb8000],0x2f4b2f4f
+         -4F2F
+0000000A  F4                hlt
+</code></pre>
+<h2 id="building-the-executable">Building the Executable</h2>
+<p>To boot our executable later through GRUB, it should be an <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> executable. So we want <code>nasm</code> to create ELF <a href="http://wiki.osdev.org/Object_Files">object files</a> instead of plain binaries. To do that, we simply pass the <code>‑f elf64</code> argument to it.</p>
+<p>To create the ELF <em>executable</em>, we need to <a href="https://en.wikipedia.org/wiki/Linker_(computing)">link</a> the object files together. We use a custom <a href="https://sourceware.org/binutils/docs/ld/Scripts.html">linker script</a> named <code>linker.ld</code>:</p>
+<pre><code>ENTRY(start)
+
+SECTIONS {
+    . = 1M;
+
+    .boot :
+    {
+        /* ensure that the multiboot header is at the beginning */
+        *(.multiboot_header)
+    }
+
+    .text :
+    {
+        *(.text)
+    }
+}
+</code></pre>
+<p>Let&rsquo;s translate it:</p>
+<ul>
+<li><code>start</code> is the entry point, the bootloader will jump to it after loading the kernel</li>
+<li><code>. = 1M;</code> sets the load address of the first section to 1 MiB, which is a conventional place to load a kernel<sup class="footnote-ref" id="fnref:Linker-1M"><a rel="footnote" href="#fn:Linker-1M">2</a></sup></li>
+<li>the executable will have two sections: <code>.boot</code> at the beginning and <code>.text</code> afterwards</li>
+<li>the <code>.text</code> output section contains all input sections named <code>.text</code></li>
+<li>Sections named <code>.multiboot_header</code> are added to the first output section (<code>.boot</code>) to ensure they are at the beginning of the executable. This is necessary because GRUB expects to find the Multiboot header very early in the file.</li>
+</ul>
+<p>So let&rsquo;s create the ELF object files and link them using our new linker script:</p>
+<pre><code>&gt; nasm -f elf64 multiboot_header.asm
+&gt; nasm -f elf64 boot.asm
+&gt; ld -n -o kernel.bin -T linker.ld multiboot_header.o boot.o
+</code></pre>
+<p>It&rsquo;s important to pass the <code>-n</code> (or <code>--nmagic</code>) flag to the linker, which disables the automatic section alignment in the executable. Otherwise the linker may page align the <code>.boot</code> section in the executable file. If that happens, GRUB isn&rsquo;t able to find the Multiboot header because it isn&rsquo;t at the beginning anymore.</p>
+<p>We can use <code>objdump</code> to print the sections of the generated executable and verify that the <code>.boot</code> section has a low file offset:</p>
+<pre><code>&gt; objdump -h kernel.bin
+kernel.bin:     file format elf64-x86-64
+
+Sections:
+Idx Name      Size      VMA               LMA               File off  Algn
+  0 .boot     00000018  0000000000100000  0000000000100000  00000080  2**0
+              CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .text     0000000b  0000000000100020  0000000000100020  000000a0  2**4
+              CONTENTS, ALLOC, LOAD, READONLY, CODE
+</code></pre>
+<p><em>Note</em>: The <code>ld</code> and <code>objdump</code> commands are platform specific. If you&rsquo;re <em>not</em> working on x86_64 architecture, you will need to <a href="/cross-compile-binutils.html">cross compile binutils</a>. Then use <code>x86_64‑elf‑ld</code> and <code>x86_64‑elf‑objdump</code> instead of <code>ld</code> and <code>objdump</code>.</p>
+<h2 id="creating-the-iso">Creating the ISO</h2>
+<p>The last step is to create a bootable ISO image with GRUB. We need to create the following directory structure and copy the <code>kernel.bin</code> to the right place:</p>
+<pre><code>isofiles
+└── boot
+    ├── grub
+    │   └── grub.cfg
+    └── kernel.bin
+
+</code></pre>
+<p>The <code>grub.cfg</code> specifies the file name of our kernel and its Multiboot 2 compliance. It looks like this:</p>
+<pre><code>set timeout=0
+set default=0
+
+menuentry &quot;my os&quot; {
+    multiboot2 /boot/kernel.bin
+    boot
+}
+</code></pre>
+<p>Now we can create a bootable image using the command:</p>
+<pre><code>grub-mkrescue -o os.iso isofiles
+</code></pre>
+<p><em>Note</em>: <code>grub-mkrescue</code> causes problems on some platforms. If it does not work for you, try the following steps:</p>
+<ul>
+<li>try to run it with <code>--verbose</code></li>
+<li>make sure <code>xorriso</code> is installed (<code>xorriso</code> or <code>libisoburn</code> package)</li>
+<li>If you&rsquo;re using an EFI-system, <code>grub-mkrescue</code> tries to create an EFI image by default. You can either pass <code>-d /usr/lib/grub/i386-pc</code> to avoid EFI or install the <code>mtools</code> package to get a working EFI image</li>
+<li>on some system the command is named <code>grub2-mkrescue</code></li>
+</ul>
+<h2 id="booting">Booting</h2>
+<p>Now it&rsquo;s time to boot our OS. We will use <a href="https://en.wikipedia.org/wiki/QEMU">QEMU</a>:</p>
+<pre><code>qemu-system-x86_64 -cdrom os.iso
+</code></pre>
+<p><img src="/images/qemu-ok.png" alt="qemu output"/></p>
+<p>Notice the green <code>OK</code> in the upper left corner. If it does not work for you, take a look at the comment section.</p>
+<p>Let&rsquo;s summarize what happens:</p>
+<ol>
+<li>the BIOS loads the bootloader (GRUB) from the virtual hard drive (the ISO)</li>
+<li>the bootloader reads the kernel executable and finds the Multiboot header</li>
+<li>it copies the <code>.boot</code> and <code>.text</code> sections to memory (to addresses <code>0x100000</code> and <code>0x100020</code>)</li>
+<li>it jumps to the entry point (<code>0x100020</code>, you can obtain it through <code>objdump -f</code>)</li>
+<li>our kernel prints the green <code>OK</code> and stops the CPU</li>
+</ol>
+<p>You can test it on real hardware, too. Just burn the ISO to a disk or USB stick and boot from it.</p>
+<h2 id="build-automation">Build Automation</h2>
+<p>Right now we need to execute 4 commands in the right order everytime we change a file. That&rsquo;s bad. So let&rsquo;s automate the build using a <a href="http://mrbook.org/blog/tutorials/make/">Makefile</a>. But first we should create some clean directory structure for our source files to separate the architecture specific files:</p>
+<pre><code>…
+├── Makefile
+└── src
+    └── arch
+        └── x86_64
+            ├── multiboot_header.asm
+            ├── boot.asm
+            ├── linker.ld
+            └── grub.cfg
+</code></pre>
+<p>The Makefile looks like this (indented with tabs instead of spaces):</p>
+<div class="highlight"><pre><code class="language-Makefile" data-lang="Makefile"><span></span><span class="nv">arch</span> <span class="o">?=</span> x86_64
+<span class="nv">kernel</span> <span class="o">:=</span> build/kernel-<span class="k">$(</span>arch<span class="k">)</span>.bin
+<span class="nv">iso</span> <span class="o">:=</span> build/os-<span class="k">$(</span>arch<span class="k">)</span>.iso
+
+<span class="nv">linker_script</span> <span class="o">:=</span> src/arch/<span class="k">$(</span>arch<span class="k">)</span>/linker.ld
+<span class="nv">grub_cfg</span> <span class="o">:=</span> src/arch/<span class="k">$(</span>arch<span class="k">)</span>/grub.cfg
+<span class="nv">assembly_source_files</span> <span class="o">:=</span> <span class="k">$(</span>wildcard src/arch/<span class="k">$(</span>arch<span class="k">)</span>/*.asm<span class="k">)</span>
+<span class="nv">assembly_object_files</span> <span class="o">:=</span> <span class="k">$(</span>patsubst src/arch/<span class="k">$(</span>arch<span class="k">)</span>/%.asm, <span class="se">\</span>
+	build/arch/<span class="k">$(</span>arch<span class="k">)</span>/%.o, <span class="k">$(</span>assembly_source_files<span class="k">)</span><span class="o">)</span>
+
+<span class="nf">.PHONY</span><span class="o">:</span> <span class="n">all</span> <span class="n">clean</span> <span class="n">run</span> <span class="n">iso</span>
+
+<span class="nf">all</span><span class="o">:</span> <span class="k">$(</span><span class="nv">kernel</span><span class="k">)</span>
+
+<span class="nf">clean</span><span class="o">:</span>
+	@rm -r build
+
+<span class="nf">run</span><span class="o">:</span> <span class="k">$(</span><span class="nv">iso</span><span class="k">)</span>
+	@qemu-system-x86_64 -cdrom <span class="k">$(</span>iso<span class="k">)</span>
+
+<span class="nf">iso</span><span class="o">:</span> <span class="k">$(</span><span class="nv">iso</span><span class="k">)</span>
+
+<span class="nf">$(iso)</span><span class="o">:</span> <span class="k">$(</span><span class="nv">kernel</span><span class="k">)</span> <span class="k">$(</span><span class="nv">grub_cfg</span><span class="k">)</span>
+	@mkdir -p build/isofiles/boot/grub
+	@cp <span class="k">$(</span>kernel<span class="k">)</span> build/isofiles/boot/kernel.bin
+	@cp <span class="k">$(</span>grub_cfg<span class="k">)</span> build/isofiles/boot/grub
+	@grub-mkrescue -o <span class="k">$(</span>iso<span class="k">)</span> build/isofiles 2&gt; /dev/null
+	@rm -r build/isofiles
+
+<span class="nf">$(kernel)</span><span class="o">:</span> <span class="k">$(</span><span class="nv">assembly_object_files</span><span class="k">)</span> <span class="k">$(</span><span class="nv">linker_script</span><span class="k">)</span>
+	@ld -n -T <span class="k">$(</span>linker_script<span class="k">)</span> -o <span class="k">$(</span>kernel<span class="k">)</span> <span class="k">$(</span>assembly_object_files<span class="k">)</span>
+
+<span class="c"># compile assembly files</span>
+<span class="nf">build/arch/$(arch)/%.o</span><span class="o">:</span> <span class="n">src</span>/<span class="n">arch</span>/<span class="k">$(</span><span class="nv">arch</span><span class="k">)</span>/%.<span class="n">asm</span>
+	@mkdir -p <span class="k">$(</span>shell dirname <span class="nv">$@</span><span class="k">)</span>
+	@nasm -felf64 $&lt; -o <span class="nv">$@</span>
+</code></pre></div>
+<p>Some comments (see the <a href="http://mrbook.org/blog/tutorials/make/">Makefile tutorial</a> if you don&rsquo;t know <code>make</code>):</p>
+<ul>
+<li>the <code>$(wildcard src/arch/$(arch)/*.asm)</code> chooses all assembly files in the src/arch/$(arch)` directory, so you don&rsquo;t have to update the Makefile when you add a file</li>
+<li>the <code>patsubst</code> operation for <code>assembly_object_files</code> just translates <code>src/arch/$(arch)/XYZ.asm</code> to <code>build/arch/$(arch)/XYZ.o</code></li>
+<li>the <code>$&lt;</code> and <code>$@</code> in the assembly target are <a href="https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html">automatic variables</a></li>
+<li>if you&rsquo;re using <a href="/cross-compile-binutils.html">cross-compiled binutils</a> just replace <code>ld</code> with <code>x86_64‑elf‑ld</code></li>
+</ul>
+<p>Now we can invoke <code>make</code> and all updated assembly files are compiled and linked. The <code>make iso</code> command also creates the ISO image and <code>make run</code> will additionally start QEMU.</p>
+<h2 id="what-s-next">What&rsquo;s next?</h2>
+<p>In the <a href="/entering-longmode.html">next post</a> we will create a page table and do some CPU configuration to switch to the 64-bit <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a>.</p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:fn-checksum-hack">The formula from the table, <code>-(magic + architecture + header_length)</code>, creates a negative value that doesn&rsquo;t fit into 32bit. By subtracting from <code>0x100000000</code> (= 2^(32)) instead, we keep the value positive without changing its truncated value. Without the additional sign bit(s) the result fits into 32bit and the compiler is happy :).
+<a class="footnote-return" href="#fnref:fn-checksum-hack"><sup>[return]</sup></a></li>
+<li id="fn:Linker-1M">We don&rsquo;t want to load the kernel to e.g. <code>0x0</code> because there are many special memory areas below the 1MB mark (for example the so-called VGA buffer at <code>0xb8000</code>, that we use to print <code>OK</code> to the screen).
+<a class="footnote-return" href="#fnref:Linker-1M"><sup>[return]</sup></a></li>
+</ol>
+</div>
+</article>
+<hr>
+<div class="PageNavigation">
+<a class="next" href="/entering-longmode.html">Entering Long Mode &raquo;</a>
+</div>
+<hr>
+<div id="disqus_thread"></div>
+<script type="text/rocketscript">
+  (function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var d = document, s = d.createElement('script');
+
+    s.src = '//phil-opp.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<script type="text/rocketscript">
+  anchors.options = {
+    placement: 'left',
+  };
+  anchors.add('article h2, article h3, article h4, article h5, article h6');
+</script>
+</main>
+<footer class="footer">
+<small>
+&copy;
+<time datetime="2016">2016</time>. All rights reserved.
+<a href="/contact.html">Contact</a>
+</small>
+</footer>
+</div>
+</body>
+</html>

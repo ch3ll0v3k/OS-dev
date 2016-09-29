@@ -1,0 +1,639 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 2: Memory management - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 2: Memory management</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>We have ourselves a basic kernel now. We can execute code, manipulate the
+contents of the screen, and really, that's about it --- because we can't
+control what memory we can access just yet. That will be the subject, and
+focus, of this set of notes: how can we manage and control access to memory?</p>
+<h3 id="physical-page-management">Physical page management</h3>
+<p>Before we can start managing the virtual address space, we need to manage the
+physical memory available on the computer. Why? Because to use a new range of
+virtual memory, we need to have some physical memory to "back" it with; and so
+a prerequisite for virtual memory management is physical page management.</p>
+<p>By "physical page management", I mean the ability to request a new
+previously-unallocated page, and the ability to return a page to the
+unallocated state. I'll refer to these actions as request and release.</p>
+<p>In order to provide a new page upon a request, we need to know what pages are
+currently available for use. The obvious way to do this is to simply store a
+flat list of available pages; however, at 8 bytes per page address, this
+introduces a rather significant overhead: per GB of physical memory on the
+machine, we need 2MB to store the list of available pages. That's not
+unreasonable, per se, especially as the size of this list shrinks as more
+memory is used. However, we can do better.</p>
+<p>Suppose that, instead of a flat list, we use a linked list. While this is
+actually <em>worse</em> in terms of overhead (we need two pointers per page now, so
+4MB per GB of RAM!), it turns out we can be a little clever -- we can use the
+first couple bytes of each of the unused pages as where we store the next
+pointer. Ta-da! No memory overhead, constant-time request and release
+fulfillment, and not very complicated code. It's also possible, through a small
+amount of effort, to turn this into a wait-free data structure for when we get
+around to supporting multiple processors. Very useful!</p>
+<p>There are some issues with this approach, though; for example, it's difficult
+to sort the pages into contiguous regions for when we want 2MB page support.
+<sup id="fnref:skiplists"><a class="footnote-ref" href="#fn:skiplists" rel="footnote">1</a></sup> Unless you're careful, It also plays merry havoc with caching when
+we're requesting multiple pages within a short timespan. For the moment,
+though, it's simple enough that we'll run with it.</p>
+<h4 id="physical-memory-map">Physical memory map</h4>
+<p>There's a problem that we haven't really addressed yet. As was mentioned
+previously (and as you'll see in the next set of notes), several pieces of
+hardware use memory-mapped I/O. That is to say, certain ranges of the physical
+address space are actually used for communication, not storage. How do we know
+which address ranges are used for storage, and which for communication? We need
+a map of the physical address space.</p>
+<p>Luckily, part of the Multiboot specification is that the bootloader must
+provide this information. The provided assembly wrapper provides a subset of
+this as the first argument to <code><span class="normal"> </span><span class="function">kmain</span><span class="symbol">()</span></code>, which is a list of pairs
+of <code>uint64_t</code>s; the first of which is the address, and the second is the size.
+The wrapper will filter out the non-available portions of physical memory and
+only passes on those that are usable. Note that this will include the physical
+memory that the kernel is loaded to --- we'll need to figure out exactly where
+that is so that the physical memory manager doesn't accidentally allocate that
+for use elsewhere. Kernel code being overwritten is bad. Unless you're
+hotpatching.</p>
+<p>You can get the starting and ending physical addresses of the kernel if you use
+the reference linker script by use of the symbols <code>kernel_pbase</code> and
+<code>_data_phy_end</code>.</p>
+<h3 id="paging-structures">Paging structures</h3>
+<p>Now, let's revisit the topic of how the paging data structures actually work.
+To restate the problem that we're trying to solve: we want each program to
+behave as if it was the only program running on the CPU, with an entirely
+separate memory address space. The way we do this is by setting up a mapping
+between the "virtual" address space of the program and the actual physical
+memory of the computer. Since a byte-by-byte mapping is rather overkill (and
+expensive to store!), memory is divided into 4KB chunks called pages, and
+instead a mapping from virtual pages to physical pages is provided, something
+like this:</p>
+<p><img alt="Graph generated by dot" class="centre-img" src="/img/gen/5a7d4391a0c4206c679746000c5143ab.png" /></p>
+<p>For the sake of conciseness, I'll represent this in the future like so: (i.e.
+the virtual pages with the physical page index inside)</p>
+<p><img alt="Graph generated by dot" class="centre-img" src="/img/gen/d52e6323f3adef17005fd922e0fd7ac6.png" /></p>
+<p>However, the number of pages is huge (about 2<sup>36</sup>, or ~64 billion) and
+so a linear vector map of virtual page indices to physical page indices is
+simply not feasible. As such, a fixed-depth segment tree is used instead. That
+is to say, we turn the previous figure into something like this scenario
+instead:</p>
+<p><img alt="Graph generated by dot" class="centre-img" src="/img/gen/3229cb7443e548f1cf2caa3a1a50bd36.png" /></p>
+<p>While at first this seems even worse -- not only do we have to store all the
+mapped elements, but we also have to store the rest of the tree structure! --
+it has one major advantage: it doesn't have to be a complete tree. So we can
+remove internal nodes and hence mark entire regions of memory inaccessible at
+the same time, something like:</p>
+<p><img alt="Graph generated by dot" class="centre-img" src="/img/gen/8c7baf8e87c6bd390f89088398f49cb1.png" /></p>
+<p>When walking the tree, we can see at a much higher level that those pages are
+not mapped. This is excellent, as it caters to our current situation: the vast
+majority of the pages are not going to be mapped.</p>
+<p>I mentioned above that it was a fixed-depth segment tree<sup id="fnref:segtree-note"><a class="footnote-ref" href="#fn:segtree-note" rel="footnote">2</a></sup>. What
+kind of depth are we talking about, exactly? Depending on how you count
+"depth", but I call it 4. At the lowest level, we have pages (the square nodes
+on the trees above); above them we have page tables (circular nodes). Above
+those are page directories (triangles), page directory pointer tables
+(diamond), and finally there's also the PML4 ("Page Management Level 4")
+tables, not shown on the above trees.</p>
+<p>You'll also see them referred to as PTEs, PDEs, PDPTEs, and PML4Es; this means
+"Page Table Entry" and so forth. I personally prefer this nomenclature, for a
+reason that will hopefully be clear in a moment.</p>
+<p>Now that you hopefully can see how the page tables are organized, let's talk
+about how they're actually represented. Each level of the paging structure (PT,
+PD, PDPT, PML4) contains 512 8-byte elements (PTE/PDE/PDPTE/PML4E). Each
+element contains both a 64-bit pointer and a group of flags. This is possible
+because the smallest measure of memory is a 4KB page (which, conveniently, is
+the size of a paging structure -- 512 * 8 = 4096) , which means that for the
+target address, the lowest 12 bits are always zero (2<sup>12</sup> bytes =
+4KB). So there is space for 12 flags.</p>
+<p>However, to make things a little more complicated, there's also the concept of
+2MB and 1GB pages. Essentially, since each page table stores 512 references to
+4KB pages, the folks at Intel noted that sometimes people would want to, you
+know, use all 512 of those pages at the same time. Out comes the concept of a
+2MB page (4KB * 512 = 2MB): instead of having a PDE point to a page table (to
+point to 512 different pages), you can have a PDE point to a region of memory
+to use as a 2MB page. The same thing applies to 1GB pages (2MB * 512 = 1GB) for
+PDPTEs.</p>
+<p>So, I said there was space for 12 flags. Not all of that space is used, and
+a bit is actually stolen from elsewhere, which I think will lead to issues if
+we ever move to a full 64-bit virtual address space, but whatever. Here's the
+format of the various page table structures straight from the Intel SDM (Figure
+4-11); note that M is the number of physical addressing bits, which is 39 on my
+processor but will vary between:</p>
+<p><img alt="Figure 4-11" class="centre-img" src="static/64BitPages.png" /></p>
+<p>Let's go through these in order.</p>
+<ul>
+<li>Bit 0 is the present bit; if this bit is cleared, then the rest of the entry
+    should be ignored, as it is to be considered as not referencing anything.
+    Think of it as a NULL pointer, if that helps.</li>
+<li>Bit 1 is the read/write bit; if the bit is cleared, then any write to the
+    represented virtual address range will cause a page fault exception.</li>
+<li>Bit 2 is the user/supervisor bit; if the bit is cleared on any paging
+    structure controlling the virtual address, then only kernelspace can access
+    the memory at that location.</li>
+<li>Bits 3 and 4 control caching behaviour for the represented virtual address,
+    by providing the PWT and PCD bits respectively. We'll talk about caching
+    in a moment, but the lowest-level paging structure relevant to a particular
+    translation is the one that gets used, for reference.</li>
+<li>Bit 5 stores the "accessed" bit, which is set by the processor the first time
+    the page is read from. Bit 6 stores the "dirty" bit, which is set the first
+    time the page is modified. <sup id="fnref:changenote"><a class="footnote-ref" href="#fn:changenote" rel="footnote">3</a></sup></li>
+<li>Bit 7 stores the "page size" bit; this is set for PDEs and PDPTEs that are
+    referencing non-4KB pages. That is to say, it's how a PDE/PDPTE referencing
+    a PT/PD is differentiated from a 2MB/1GB page PDE/PDPTE. It also stores the
+    PAT bit for PTEs, which is (like bits 3 and 4) used to control caching.</li>
+<li>Bit 8 is the "global" bit; the details on this bit are found in section
+    4.10.2.4 of the Intel SDM. The gist is that it's used to control page
+    structure caching behaviour, to indicate pages that should be mapped in all
+    processes.</li>
+<li>Bit 12 stores the PAT bit for PDEs and PDPTEs that reference pages.</li>
+<li>Bit 63 is the "execute disable" (XD) bit. When set, and when the appropriate
+    control bit is set in the EFER MSR (NXE, bit 11), any instruction fetches
+    from the appropriate virtual address range will trigger a page fault.
+    If the NXE bit is not set, setting the XD bit will cause a PF.</li>
+</ul>
+<p>The rest of the bits are currently ignored. However, to maintain forwards
+compatibility with future changes, you should write back any values that you 
+find there.</p>
+<p>Finally, there's one point that we haven't touched on yet: how does the
+processor know where to find the PML4? The answer is that the physical address
+of the 4KB-aligned PML4 should be placed in the <code>cr3</code> control register. This
+can be done with the following inline assembly helper functions:</p>
+<pre><code><span class="usertype">uint64_t</span><span class="normal"> </span><span class="function">read_cr3</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint64_t</span><span class="normal"> value</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="function">__asm__</span><span class="symbol">(</span><span class="string">"mov rax, cr3"</span><span class="normal"> </span><span class="symbol">:</span><span class="normal"> </span><span class="string">"=a"</span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">));</span>
+<span class="normal">    </span><span class="comment">/* AT&amp;T syntax: __asm__("mov %%cr3, %%rax" : "=a"(value)); */</span>
+<span class="normal">    </span><span class="keyword">return</span><span class="normal"> value</span><span class="symbol">;</span>
+<span class="cbracket">}</span>
+
+<span class="type">void</span><span class="normal"> </span><span class="function">write_cr3</span><span class="symbol">(</span><span class="usertype">uint64_t</span><span class="normal"> value</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="function">__asm__</span><span class="symbol">(</span><span class="string">"mov cr3, rax"</span><span class="normal"> </span><span class="symbol">:</span><span class="normal"> </span><span class="symbol">:</span><span class="normal"> </span><span class="string">"a"</span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">));</span>
+<span class="normal">    </span><span class="comment">/* AT&amp;T syntax: __asm__("mov %%rax, %%cr3" : : "a"(value)); */</span>
+<span class="cbracket">}</span>
+</code></pre>
+<h4 id="clarifying-example">Clarifying example</h4>
+<p>Let's say that you have <code>cr3 = 0x1000</code>. This means that the page that contains
+the (single) PML4 is located at <code>0x1000</code>. Suppose further that we want to map
+the virtual 4KB page <code>0xabcde000</code> to the physical address <code>0xfedcb000</code>.</p>
+<p>The PML4 governs a full 256 TB of RAM, so each entry (of which there are 512)
+represents 512GB. Since <code>0xabcde000</code> falls into the lowest 512GB of the virtual
+address space, it hence follows that the PDPT that controls <code>0xabcde000</code> is the
+first PDPT, i.e. the first PML4E. Each PD (or PDPTE) represents a single GB of
+RAM, and so because <code>0xabcde000</code> lies within the 3rd GB of RAM, the 3rd PDPTE
+(or PD) is the governor.</p>
+<p>However, within the 3rd GB, <code>0xabcde000</code> is at an offset of <code>0x2bcde000</code>, or
+slightly over 700MB in. That is to say, it is controlled by the 350th PDE (PT).
+Within the PT, the offset from the beginning of the governed range is
+<code>0xde000</code>, and so -- because each page is <code>0x1000</code> bytes long -- it falls into
+the 222 (<code>0xde</code>)th entry.</p>
+<p>Note that the index into each paging structure is determined by nine bits of
+the virtual address. So, to access the virtual address <code>0xabcde000</code>, the paging
+structures are walked as follows:</p>
+<ul>
+<li>Read <code>cr3</code> to find PML4.</li>
+<li>Note that <code>0xabcde000 / 2^39 = 0</code>, so read first PML4E to find where the 
+    appropriate PDPT is for <code>0xabcde000</code>.</li>
+<li>Note that <code>(0xabcde000 / 2^30) & 0xfff = 2</code>, so read third PDPTE of the
+    appropriate PDPT to get the appropriate PD.</li>
+<li>Note that <code>(0xabcde000 / 2^21) & 0xfff = 350</code>, so read 351st PDE of the
+    appropriate PD to get the PT that governs <code>0xabcde000</code>.</li>
+<li>Note that <code>(0xabcde000 / 2^12) & 0xfff = 222</code>, so read the 223rd PTE 
+    of the PT that governs <code>0xabcde000</code>.</li>
+</ul>
+<p>This final PTE will now contain something along the lines of <code>0xfedcb003</code> ---
+marking it as being backed by the physical address <code>0xfedbc000</code>, being both
+present and writable.</p>
+<p>Suppose, for the moment, that this is the only physical page mapped into
+memory. Suppose further that while the PML4 is located at address <code>0x1000</code>,
+we also have the single required PDPT at address <code>0x2000</code>, the required PD at
+<code>0x3000</code>, and the required PT at <code>0x4000</code>; we then note that all values of the
+paging structures would be zero except for the following 8-byte values:</p>
+<pre><code>[0x1000] = 0x2003       (phy. addr 0x2000, present, writable)
+[0x2018] = 0x3003       (phy. addr 0x3000, present, writable)
+[0x3af0] = 0x4003       (phy. addr 0x4000, present, writable)
+[0x46f0] = 0xfedcb003   (phy. addr 0xfedbc000, present, writable)
+
+</code></pre>
+<p>Because when you take the value <code>0xabcde000</code> and split it into the
+nine-bit-wide indexes, you get:</p>
+<pre><code>(0xabcde000 & 0xff8000000000) >> 39 = 0x000 = 0
+(0xabcde000 & 0x007fc0000000) >> 30 = 0x002 = 2
+(0xabcde000 & 0x00003fe00000) >> 21 = 0x15e = 350
+(0xabcde000 & 0x0000001ff000) >> 12 = 0x0de = 222
+
+</code></pre>
+<p>Hence the indices into the various paging structures.</p>
+<h4 id="paging-structures-provided-by-multiboot-wrapper">Paging structures provided by Multiboot wrapper</h4>
+<p>If you're using the Multiboot wrapper provided in the reference code
+repository, the following paging structures are set up:</p>
+<ul>
+<li>The first 2MB of RAM are identity-mapped (virtual address is same as physical
+    address) via a single 2MB page.</li>
+<li>Another 2MB page at 0x1000000 is also identity-mapped; this is used as part
+    of the multiboot wrapper and can be removed once the stack has been
+    switched.</li>
+<li>4GB of virtual memory at 0xffffc00000000000 is mapped to the first 4GB of
+    physical memory via four PDs containing 512 2MB pages each. This is
+    intended to make paging structures easier to manage.</li>
+<li>The kernel code, data, and bss segments (note that the BSS is not zeroed!)
+    are mapped into memory starting at 0xffffffff80000000 with 2MB pages.</li>
+</ul>
+<p>Please note that to remove (or change) these mappings, you'll have to have
+support for 2MB pages in your virtual memory manager.</p>
+<h4 id="page-structure-caching">Page structure caching</h4>
+<p>As you can imagine, reading all of these paging structures can get expensive,
+introducing a not-so-unnoticeable overhead for the use of virtual memory.
+However, most problems in computer science can be solved via the application
+of a cache, and this happens to be one of them.</p>
+<p>The CPU has the "translation-lookaside buffer" (TLB), which stores the results
+of previous paging-structure resolutions. In particular, it caches PDPTEs,
+PDEs, and PTEs. Unfortunately, no guarantees are made for consistency between
+the paging structures and the TLB; the kernel is responsible for that.</p>
+<p>There are two methods of controlling the content of the TLB. The first is by
+reloading the content of <code>cr3</code>; doing so clears all the TLB contents. The
+second, more targeted, approach is the use of the <code>invlpg</code> instruction, which
+ensures that a single TLB element is cleared. This will be important later on,
+when we get to actually implementing a virtual memory manager.</p>
+<h4 id="memory-caching-and-write-combining-behaviour">Memory caching and write-combining behaviour</h4>
+<p>The three cache-control bits (bits PCD, PWT, and PAT) can be used in one of two
+ways: with the PAT, or without the PAT. Confusing, because this PAT is not the
+PAT bit in the paging data structures, it's a different table. We'll talk about
+the PAT here.</p>
+<p>An important aspect of modern processors are the caches; these are used, as you
+would expect from the name, to locally mirror the content of memory for faster
+access times; x86_64 Intel systems are set up as follows with respect to
+caching. There are up to three levels of cache (L1, L2, and L3), plus the main
+memory; L1 caches are typically extremely small (32KB each for data and code),
+while L2 caches are usually larger (256KB or so). L3 caches, if present, are
+much larger (6MB). To give you an idea of the speed differences between the
+caches, on my personal laptop the access bandwidths are roughly 155 GB/s,
+38GB/s, and 28GB/s to access the L1, L2, and L3 caches, respectively. Main
+memory has an access bandwidth of about 16GB/s.</p>
+<p>Caches are divided into <em>cache lines</em>, which are essentially the unit of
+measure for data placed in the caches. 64 bytes is a common size for modern
+processors. The act of filling a cache line with contents from memory is called
+a cache line fill (or cache fill).</p>
+<p>However, it's not only bandwidth that's important --- we also have to consider
+latency. This is where caches really shine; my laptop has RAM with CAS timings
+9-9-9-24; this means that it is about a 26ns turnaround between realizing that
+the memory is desired and actually receiving the content. To put things in
+perspective, that is roughly 62 processor cycles. So the time taken to execute
+this code: (<code>lfence</code> ensures that all loads have finished and hence no
+out-of-order execution can follow until the read has completed)</p>
+<pre><code><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="type">dword</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">rsp </span><span class="symbol">+</span><span class="normal"> </span><span class="number">8</span><span class="symbol">]</span>
+<span class="normal">lfence</span>
+<span class="keyword">mov</span><span class="normal">     rbx</span><span class="symbol">,</span><span class="normal"> rax</span>
+</code></pre>
+<p>Would be about 64 cycles to execute if <code>dword [rsp + 8]</code> was in main memory. If
+it were in L1 cache instead, then it would be more like 3 cycles. That, as a
+professor of mine put it once, is significantly better.</p>
+<p>Since memory access latencies are high -- at least, when compared to processor
+cycle times -- the concept of a cache is useful. However, there are some issues
+with cache coherency. In order to maintain the low latency, L1 and L2 caches
+are typically housed on-die on a per-processor basis. If you have two
+processors on a computer (and hence two different L1 caches) you can run into
+this problem: (assume memory contains all zeroes to start with)</p>
+<ul>
+<li>Processor 0 fills L1 cache line with memory addresses from <code>0x1000</code> to
+    <code>0x1040</code>.</li>
+<li>Processor 1 fills L1 cache line with memory addresses from <code>0x1000</code> to
+    <code>0x1040</code>.</li>
+<li>Processor 1 writes value <code>0x1</code> into address <code>0x1000</code>.</li>
+<li>Processor 1 flushes cache line, writing its cached values back into main
+    memory.</li>
+<li>Processor 0 writes value <code>0x2</code> into address <code>0x1001</code>.</li>
+<li>Processor 0 flushes cache line, writing its cached values back into main
+    memory.</li>
+</ul>
+<p>Now main memory has just the values that Processor 0 wrote, because the cache
+line flush overwrites all 64 bytes. Obviously, this is problematic.</p>
+<p>Cache coherency is solved on x86_64 systems by broadcasting writes across the
+processor bus. That is to say, as soon as Processor 1 writes into the cache,
+Processor 0 would receive a message saying that its contents have been
+invalidated, and so it would re-read the memory at that point. <sup id="fnref:coherency"><a class="footnote-ref" href="#fn:coherency" rel="footnote">4</a></sup>
+As you can guess, this leads to inefficient behaviour when two processors are
+continuously writing to the same memory region.</p>
+<p>There is also another caching-type mechanism present on x86_64 systems: the
+write combining buffer. This is, essentially, a way to cache writes so that
+multiple writes can be written out at once. This is, ultimately, only important
+due to the way SDRAM operates; while writing one address is as high as 26ns on
+my laptop, writing two consecutive addresses is only about 27ns. So combining
+adjacent writes has a big advantage; a similar advantage persists even with
+non-adjacent writes, where two non-adjacent writes on the same bank and row
+can be done in roughly 39ns.</p>
+<p>There are six different caching behaviours that one can select between on
+x86_64. They are:</p>
+<ul>
+<li>Strong Uncacheable (UC). This bypasses the caches entirely for this memory
+    access. This is useful for accessing devices that use memory-mapped I/O
+    (see next set of notes) and for when you need deterministic memory
+    behaviour.</li>
+<li>Uncacheable (UC-). Identical to Strong Uncacheable, except that it can be
+    changed to WC if some configuration registers are changed (the MTRRs, not
+    discussed here for brevity.)</li>
+<li>Write Combining (WC). Caches are not allowed, but writes are now unordered as
+    the WC buffer is now in use. Speculative reads by the processor are also
+    allowed. WC is often used for memory-mapped I/O buffers, where the order
+    of operations is not important, as long as all writes finish by a known
+    point.</li>
+<li>Write Through (WT). Uses the cache for reads, writes go to the cache and then
+    immediately to main memory, though the write combining buffer is used.
+    Compared to WP, WT enforces coherency not only between caches but also
+    between caches and system memory.</li>
+<li>Write Back (WB). Full caching is in use for both reads and writes.</li>
+<li>Write Protected (WP). Uses the cache for reads, but not writes. Does not
+    enforce coherency between system memory and caches, so relies on all 
+    devices involved implementing the cache coherency protocol ("snooping").
+    Used for some memory-mapped hardware.</li>
+</ul>
+<p>There are different ways to choose which caching behaviour is in use. The
+method I will describe, and the one I suggest you use, is the PAT (Page
+Attribute Table). With the PAT, the PAT bit, PWT bit, and PCD bit (LSB-first)
+describe an index into an eight-element table (the PAT). The table itself is
+stored in a 64-bit MSR (the IA32_PAT MSR) that has the following format (Intel
+SDM figure 11-9):</p>
+<p><img alt="PAT register" class="centre-img" src="static/64bitPAT.png" /></p>
+<p>The default values for PA0 through PA7 are</p>
+<pre><code>PA0:    WB  (6)
+PA1:    WT  (4)
+PA2:    UC- (7)
+PA3:    UC  (0)
+PA4:    WB  (6)
+PA5:    WT  (4)
+PA6:    UC- (7)
+PA7:    UC  (0)
+
+</code></pre>
+<p>Note that there is, by default, no WP entry in the PAT. Since the two most
+common caching modes are UC and WT, you don't have to modify the PAT for the
+most part. Just use indices 1 and 3. For reference, here is the complete list
+of PAT entry types: (all values not specified here are reserved)</p>
+<pre><code>UC:  0
+WC:  1
+WT:  4
+WP:  5
+WB:  6
+UC-: 7
+
+</code></pre>
+<p>Let's talk about how to actually write a virtual memory manager, then, shall
+we? Enough background information.</p>
+<h3 id="writing-a-virtual-memory-manager">Writing a virtual memory manager</h3>
+<p>A virtual memory manager can really be as simple as some code that provides two
+operations: <code><span class="normal"> </span><span class="function">map</span><span class="symbol">(</span><span class="normal">phy_addr</span><span class="symbol">,</span><span class="normal"> virt_addr</span><span class="symbol">,</span><span class="normal"> flags</span><span class="symbol">)</span></code> and <code><span class="function">clear</span><span class="symbol">(</span><span class="normal">virt_addr</span><span class="symbol">)</span></code>. Oftentimes you'll want a bit more code around this, but
+that's the core functionality that we'll need for the moment.</p>
+<p>To implement the <code><span class="normal"> </span><span class="function">map</span><span class="symbol">()</span></code> functionality, you'll need to build the
+paging structures appropriately. <code><span class="normal"> </span><span class="function">clear</span><span class="symbol">()</span></code> is significantly easier.
+The trick, in my opinion, is setting up some helper functions to make these
+implementations easier.</p>
+<p>The helper function I like the most is <code><span class="normal"> uint64_t</span>
+<span class="symbol">*</span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="normal">address</span><span class="symbol">,</span><span class="normal"> level</span><span class="symbol">)</span></code>. This returns a pointer to the appropriate
+paging structure's table entry for the given index. It's used like this:</p>
+<pre><code><span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">pml4e </span><span class="symbol">=</span><span class="normal"> </span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="number">0xc001cafe</span><span class="symbol">,</span><span class="normal"> </span><span class="number">3</span><span class="symbol">);</span>
+<span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">pdpte </span><span class="symbol">=</span><span class="normal"> </span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="number">0xc001cafe</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">);</span>
+<span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">pde   </span><span class="symbol">=</span><span class="normal"> </span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="number">0xc001cafe</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
+<span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">pte   </span><span class="symbol">=</span><span class="normal"> </span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="number">0xc001cafe</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+</code></pre>
+<p>Note that it is possible to implement <code><span class="normal"> </span><span class="function">get_entry_for</span><span class="symbol">()</span></code>
+recursively, though I personally prefer the iterative version. A sketch of the
+implementation:</p>
+<pre><code><span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="function">get_entry_for</span><span class="symbol">(</span><span class="usertype">uint64_t</span><span class="normal"> address</span><span class="symbol">,</span><span class="normal"> </span><span class="type">int</span><span class="normal"> level</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint64_t</span><span class="normal"> index </span><span class="symbol">=</span><span class="normal"> address </span><span class="symbol">/</span><span class="normal"> </span><span class="number">0x1000</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint64_t</span><span class="normal"> indices</span><span class="symbol">[</span><span class="number">4</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        index </span><span class="symbol">%</span><span class="normal"> </span><span class="number">512</span><span class="symbol">,</span>
+<span class="normal">        </span><span class="symbol">(</span><span class="normal">index </span><span class="symbol">&gt;&gt;</span><span class="normal"> </span><span class="number">9</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">%</span><span class="normal"> </span><span class="number">512</span><span class="symbol">,</span>
+<span class="normal">        </span><span class="symbol">(</span><span class="normal">index </span><span class="symbol">&gt;&gt;</span><span class="normal"> </span><span class="number">18</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">%</span><span class="normal"> </span><span class="number">512</span><span class="symbol">,</span>
+<span class="normal">        </span><span class="symbol">(</span><span class="normal">index </span><span class="symbol">&gt;&gt;</span><span class="normal"> </span><span class="number">27</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">%</span><span class="normal"> </span><span class="number">512</span>
+<span class="normal">    </span><span class="cbracket">}</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">latest </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uint64_t </span><span class="symbol">*)</span><span class="normal">cr3_contents</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">for</span><span class="symbol">(</span><span class="type">int</span><span class="normal"> l </span><span class="symbol">=</span><span class="normal"> </span><span class="number">3</span><span class="symbol">;</span><span class="normal"> l </span><span class="symbol">&gt;=</span><span class="normal"> level</span><span class="symbol">;</span><span class="normal"> l </span><span class="symbol">--)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="usertype">uint64_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">followed </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uint64_t </span><span class="symbol">*)(*</span><span class="normal">latest </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="symbol">~</span><span class="number">0xfff</span><span class="symbol">);</span>
+<span class="normal">        </span><span class="comment">// if the present bit (P) is clear and we have more to go, then error.</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="symbol">(</span><span class="normal">l </span><span class="symbol">!=</span><span class="normal"> level </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(*</span><span class="normal">latest </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="number">1</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="number">0</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">            </span><span class="keyword">return</span><span class="normal"> NULL</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="cbracket">}</span>
+<span class="normal">        </span><span class="comment">// TODO: check for size bit here</span>
+<span class="normal">        latest </span><span class="symbol">=</span><span class="normal"> followed </span><span class="symbol">+</span><span class="normal"> indices</span><span class="symbol">[</span><span class="normal">l</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="keyword">return</span><span class="normal"> latest</span><span class="symbol">;</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>Please note that this does not work directly, as the paging structures will not
+be mapped into memory at their canonical addresses. Exactly how to modify this
+so it works in your kernel will depend on the design you've chosen.</p>
+<p>There are a couple of decisions that you'll need to make in order to implement
+your virtual memory manager:</p>
+<ul>
+<li>When, and where, will you allocate new internal nodes in the paging tree? On
+    demand? Ahead of time? Do you want to do speculative allocation?</li>
+<li>When will you remove empty internal nodes? How will you detect when nodes are
+    empty?</li>
+<li>At what level will you put the access control bits? Will you use the
+    optimization of specifying high up in the tree to allow searches to
+    potentially terminate early?</li>
+<li>How will you handle overwriting an existing mapping in the paging structure?
+    Is this a kernel bug? Undefined behaviour? Perfectly acceptable and normal
+    behaviour?</li>
+<li>Will the virtual memory manager have an alternate representation of what
+    memory has been mapped? How will you tell when a physical page that you've
+    allocated is no longer being used? Is it the responsibility of the caller
+    to provide this functionality? Do you not want to release physical pages
+    for now?</li>
+</ul>
+<p>I suggest that, for the moment, you go the simplest possible route and then make
+things more complicated later. Leave yourself wiggle room in your API so you can
+do this properly.</p>
+<h3 id="heaps">Heaps</h3>
+<p>Well, now that we have the ability to go and back arbitrary virtual addresses
+with physical memory, let's do something with that. Shall we write a heap? No,
+not the data structures binary-heap kind, the <code>malloc</code>/<code>free</code> kind.</p>
+<p>As you probably know, the heap is where you put long-lived objects that should
+exist outside the lifespan of a function invocation. It's extremely useful, and
+programming without a heap feels like trying to program with only one hand.
+Yes, you can do it. No, it's neither fun nor quick.</p>
+<p>So, let's start off with the basics. Where do we put the heap, for one? The
+answer is pretty simple: wherever you like! You're writing the kernel, you have
+full control over where things go. I suggest picking a high memory address like
+<code>0xffffc00000000000</code> as the kernel heap starting location, but you are of
+course free to choose whatever you like. Just, please, don't put it at address
+zero. <code>NULL</code> being a valid pointer makes my head hurt sometimes.</p>
+<h3 id="allocators">Allocators</h3>
+<p>There are two types of allocators that I'd probably suggest you consider. To
+start with, the "watermark" allocator is probably a good one; it can be summed
+up as "there <em>is</em> no free." That is to say, to allocate something, you just
+grab the next chunk of memory after the previous allocation. To free something?
+Well, you don't.</p>
+<p>The watermark allocator is horrible and you should never use it in anything
+past testing purposes. But, really, it's good enough for the moment, and I'd
+suggest implementing it and moving on, then revisiting this topic in a couple
+of weeks when a good allocator turns out to be necessary.</p>
+<p>The other allocator I'll recommend for the moment is the pool allocator. The
+basic idea is to reuse the same approach that was outlined above for the
+physical page manager. Create a list of pools, such that each pool can satisfy
+<code>malloc</code> requests for a particular element size. Then we can simply resize each
+pool by adding more memory whenever a pool runs out.</p>
+<h3 id="the-gdt">The GDT</h3>
+<p>The last memory-related topic to talk about for now is that of the GDT, or
+Global Descriptor Table. This is a very small part of a much larger topic, that
+of protection and segmentation; we'll only touch on the bare essentials for
+now, because we won't care about most of this until we get around to
+implementing userspace.</p>
+<p>Essentially, there are different ways of looking at the contents of memory: it
+can be considered as a source of code, as a stack, or as data. The distinction
+these days (especially on x86_64) is not very important, as we have a very wide
+address bus. However, in the days of yore (i.e. the 8086), one had a 20-bit
+address bus but only 16-bit registers. The problem was partially solved with
+the concept of a <em>segment</em>: essentially, address <code>0</code> on one segment is not
+necessarily the same as address <code>0</code> on another segment. They also had limits,
+i.e. enforced maximum addresses. This was a precursor to paging, allowing
+limited viewpoints onto physical memory. </p>
+<p>These days, however, except for two special cases (<code>fs</code> and <code>gs</code>, discussed
+when we get to SMP) segmentation has no base offsets or limit checking. "What
+use are segments, then?" you might ask. "Not much" is the answer. However,
+segments are used for a couple of other things (e.g. the TSS, see next notes)
+and mostly have to be kept around for backwards compatibility.</p>
+<p>Segmentation on real-mode x86 works differently than long-mode x86_64; we'll
+detail the latter and leave the former up to you to read about if you're
+curious. The GDT stores a list of segment descriptors (hence the name
+"descriptor table"); descriptors have a couple of bits present, such as the
+type (code or data?), the "size" (32-bit or 64-bit?), and privilege level (0-3,
+which we'll talk about when we get to userspace). The segment registers (<code>cs</code>
+through <code>ss</code>, skipping a few) are loaded with offsets within the GDT. So the
+first descriptor would be at offset <code>0x0</code>, the second at <code>0x8</code>, and the sixth
+at <code>0x28</code>.</p>
+<p>The provided Multiboot wrapper sets up a provisional GDT, with three segments:
+the required NULL segment (the very first element in the GDT has to be an
+invalid "NULL" segment, to make a segment register loaded with <code>0x0</code> invalid),
+a code segment (at offset <code>0x8</code>), and a data segment (at offset <code>0x10</code>, of
+course). The format of segment descriptor entries has to be one of the weirdest
+formats ever. Instead of something sensible, we get these, for code and data
+respectively: (AMD APM Volume 2 Figures 4-20 and 4-21)</p>
+<p><img alt="64-bit code descriptor entry" class="centre-img" src="static/64bitCodeDTE.png" /></p>
+<p><img alt="64-bit data descriptor entry" class="centre-img" src="static/64bitDataDTE.png" /></p>
+<p>Greyed-out entries are unused. Yes, you're reading those correctly --- there's
+only one useful bit on the data segment descriptor, and six bits on the code
+descriptor, according to the figures. Let's look at these bits in a little more
+detail.</p>
+<p>The <code>P</code> bit is the Present bit. This should be set in order to use the
+segment. The two DPL bits should both be cleared right now (until we get to 
+talking about protection rings and userspace). The <code>D</code> bit should be clear for
+64-bit code. The <code>C</code> bit (conforming bit) is another we'll talk about later,
+and right now can be either. The <code>L</code> bit determines whether the code in this
+segment should be interpreted as 32-bit or 64-bit code; set it as we'd like
+64-bit code.</p>
+<p>An important thing to note: the AMD manuals specify no value for the <code>W</code> bit,
+and it suggests that all greyed-out values should be zero. The Intel manuals,
+however, specify that the <code>W</code> bit should be set for a writable data segment,
+or clear for a read-only data segment. Since we'll be using paging to determine
+writability, you should set the <code>W</code> bit on your selectors.</p>
+<p>Finally, we need to talk about how to tell the processor about the GDT; in
+particular, the virtual address it's located at and the size of the table (in
+bytes). The processor uses the <code>lgdt</code> instruction to do this. However, rather
+than being sensible, the <code>lgdt</code> instruction takes a pointer to a 10-byte region
+of memory.  The last eight bytes of this are a pointer to the GDT, and the
+first two bytes are the length in bytes of the GDT, minus one. Here's some code
+with inline assembly that does that, for clarification:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">load_gdt</span><span class="symbol">(</span><span class="usertype">uint64_t</span><span class="normal"> address</span><span class="symbol">,</span><span class="normal"> </span><span class="usertype">uint64_t</span><span class="normal"> addressable</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> ptr</span><span class="symbol">[</span><span class="number">10</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="symbol">*(</span><span class="normal">uint16_t </span><span class="symbol">*)(</span><span class="normal">ptr </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> addressable </span><span class="symbol">-</span><span class="normal"> </span><span class="number">1</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="symbol">*(</span><span class="normal">uint64_t </span><span class="symbol">*)(</span><span class="normal">ptr </span><span class="symbol">+</span><span class="normal"> </span><span class="number">2</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> address</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="function">__asm__</span><span class="symbol">(</span><span class="string">"lgdt [rax]"</span><span class="normal"> </span><span class="symbol">:</span><span class="normal"> </span><span class="symbol">:</span><span class="normal"> </span><span class="string">"a"</span><span class="symbol">(</span><span class="normal">ptr</span><span class="symbol">));</span>
+<span class="cbracket">}</span>
+</code></pre>
+<h3 id="debugging-a-virtual-memory-manager">Debugging a virtual memory manager</h3>
+<p>One thing that's worth noting at this stage is that debugging a virtual memory
+manager can be extremely difficult. I recommend that you familiarize yourself
+with your VM of choice's debugging faculties, and you may also want to make use
+of the serial port for debugging, as its contents can often be redirected to a
+file or some other location readable after a reset. As an example, see
+<code>dserial.c</code> in the refcode repo.</p>
+<h3 id="further-reading">Further reading</h3>
+<ul>
+<li>Intel SDM chapters 4, 5, and 11</li>
+<li>AMD APM Volume 2 chapters 4 and 5</li>
+</ul>
+<h3 id="suggested-work">Suggested work</h3>
+<p>At this point, you should know (roughly speaking) the important parts of how
+x86_64 virtual memory operates.</p>
+<p>What I'd suggest working on before the next set of notes is to implement a
+simple physical page allocator, and a virtual memory mapper (i.e. the
+<code><span class="normal"> </span><span class="function">map</span><span class="symbol">()</span></code> and <code><span class="normal"> </span><span class="function">clear</span><span class="symbol">()</span></code> functionality from earlier),
+in addition to a simple GDT manager that lets you add new segments to the GDT
+as you want.</p>
+<p>I would also recommend implementing a simple heap using your virtual memory
+manager. A watermark allocator is fine for now, but you'll want a pool
+allocator or something else similar in the long run.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:skiplists">
+<p>I suggest the use of a modified skiplist and representative page 
+system for solving this particular problem. It's a little complicated (and is
+<img alt="Generated by LaTeX" src="/img/gen/0d4b7f5b66e994af32a32cfa26868d53.png" style="vertical-align: -5px;" /> instead of constant time) and so I'll discuss it later if we have
+time.&#160;<a class="footnote-backref" href="#fnref:skiplists" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:segtree-note">
+<p>It's kind of like a segment tree, but not quite, because the
+leaf nodes are actually indices instead of ranges. However, to me it feels like
+a segment tree because each internal node represents the root of a subtree
+containing elements within a particular range, as opposed to a binary search
+tree where an internal node actually stores data.&#160;<a class="footnote-backref" href="#fnref:segtree-note" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:changenote">
+<p>Actually, the dirty bit is set upon the first write to the
+memory contents, even if the already-stored value is written back to the same
+location.&#160;<a class="footnote-backref" href="#fnref:changenote" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:coherency">
+<p>Aha, you might say, but what if two processors execute a write
+simultaneously? Yes, yes, fine. The actual mechanism is more complicated than
+this. But this is a good enough approximation; the actual method used is
+speculative consideration of cache lines filled on other processors and write
+intentions. See Chapter 11 of the Intel SDM for details.&#160;<a class="footnote-backref" href="#fnref:coherency" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:08 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

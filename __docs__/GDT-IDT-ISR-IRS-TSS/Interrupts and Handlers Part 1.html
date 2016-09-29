@@ -1,0 +1,815 @@
+<html><head><title>Interrupts and Handlers Part 1</title>
+<base href="http://www.delorie.com/djgpp/doc/ug/interrupts/inthandlers1.html">
+</head><body><center><iframe src="http://rcm.amazon.com/e/cm?t=deloriesoftware&o=1&p=48&l=ur1&category=electronicsrot&f=ifr" width="728" height="90" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe>
+<table width="100%" border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/ug/interrupts/inthandlers1.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>Interrupts and Handlers Part 1</b></big></big></p></center>
+
+
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any Questions/Comments/Criticisms/Praises/Threats, please feel free to E-Mail the author of
+this section, <A HREF="mailto:DarkRealms@netcabo.pt">Frederico Jer&oacute;nimo</A>.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And, why not visit his site as well where you can find other tutorials : <A HREF="http://mega.ist.utl.pt/~fjds/">Dark Realms</A><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This tutorial has been split in two due to its length. Check <A HREF="inthandlers2.html">Part 2</A> as well.
+</P>
+
+<A NAME="#ABSTRACT">
+<H2>Abstract</H2></A>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Study! The sound of this word alone is enough to strike fear into the heart of even the most seasoned and devoted student. This unavoidable and time consuming demon seems to creep out of nowhere and usually hits us in the most unappropriated of times. And if you're forced or the study contents are truly unpleasant, it hits you even harder. So, either you flee and abandon yourself into the bottomless pit of ignorance or allow yourself to be dragged into study hell where your task is to get out as quickly and efficiently as possible. How to accomplish this? Use a study technique. Of course, everyone has its own personal favourite study technique. Mine for instance is leaving everything to the last day and then study to death while cursing my foolishness. Ok, not much of a technique I agree... and unfortunately not very original either. But back in my old high school days I had a friend that had a very peculiar and unique way of studying.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;He thought that since we had so many different disciplines and each demanded some amount of study, why not study them all at once. When he had to study a given subject, for example maths, he proceeded to opening his math book and then reading it for a couple of minutes. So far nothing strange. But, he would then mark his position with a pencil and jump to another book, for example history, which he would read for a few minutes. Then, he returned to the marked position in the maths book and read a little more. He moved on to yet another book, let's say biology, before returning to the newly marked position in the maths book. This <I>ritual</I> continued until he decided study was over. He claimed that this method allowed him to distance himself from the subject at hand (in this case maths) so he could better absorb what he had just read and at the same time learn a little bit of other disciplines in the process, gaining a better understanding of what he was sure he had to study in the near future (for an exam of a different subject).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Without trying to figure out if this is an efficient technique (although somehow it seemed to work...), let's just say that it's a good thing that computers work in a similar way. You can have a program running that is <I>interrupted</I> somewhere along its execution so it can perform for example a system command. The processor keeps track of where the program stopped, carries out the system command by jumping to the right address and when this is over jumps back to the previous location and resumes program execution. If, at a later stage, it needs to be interrupted again the process is repeated. If an <I>interrupt</I> wasn't issued and instructions were always carried out in a linear sequential way this kind of operation would be impossible to perform. And the whole idea of a computer system as we conceive it would collapse.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Of course, a program may be interrupted by a multitude of reasons other than the execution of a system command. For example, interrupts can occur when there is an I/O device request, when a memory protection violation is detected or when there is an hardware malfunction or a power failure. All these events trigger the arrest of program execution and transfer of control to another piece of code, often called an handler or ISR (Interrupt Service Routine).  The handler takes care of everything required by the interrupt and then returns to original program.
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thus, interrupts and handlers are a vital part of any computer system. Unfortunately, the terminology to describe exceptional situations where the normal execution order of instruction is changed varies among machines and authors. Terms like interrupt, fault, trap and exceptions are used, though not in a consistent fashion. So, in the first part of this tutorial I'll start by providing a description of an interrupt and then I'll cover the various types of interrupts. I'll then move on to handlers and the care you must take when designing one. Next, I'll explore the hardware responsible or directly affected by interrupts. Afterwards, I'll take you on a guided tour through the pitfalls of protected mode interrupt design in the second part of this tutorial, giving full coverage to this delicate subject and offering plenty of useful examples. This section is without question the most empirical of all. Finally, I'll discuss some miscellaneous related issues of interest. This HTML document was split in two due to space constraints.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The third and final part of this tutorial is as if not more important. And it comes in a form of a zipped file. This compressed file contains essential coded elements and examples. And not only that, but it works as a full tutorial of its own. The code is exhaustively commented and accompanies you step by step as you unravel the deepest secrets of interrupt and handler control. So please, download this file so we can get down to serious business...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I'll be using Djggp (The DOS&#174; version of the GNU gcc compiler) 2.03 and NASM 0.98 in the protected-mode section of this document and in the zipped tutorial files. However, most of the notions can be applied to other DPMI compilers. You can get Djgpp <A HREF="http://www.delorie.com" TARGET=_top>here</A> and
+NASM <A HREF="http://www.web-sites.co.uk/nasm/" TARGET=_top>here</A>.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This tutorial would not have been possible without the invaluable help of a few people. Please check the <A HREF="inthandlers2.html#ACKNOWLEDGE">acknowledgements</A> section for further details.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;One final word of warning, this tutorial is quite long. So, grab some hot chocolate and get ready to jump into the fire of hell study...</P>
+<BR>
+
+<A NAME="#LEGALCRAP">
+<H2>Legal Stuff</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This section is a bore. Unfortunately, nowadays, it is also a necessity...</P>
+<P><I>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This text is provided "as is", without warranty of any kind or fitness for a particular purpose, either expressed or implied, all of are hereby explicitly disclaimed. In no way can the author of this text be made liable for any damages that are caused by it. You are using this document at your own risk!</I></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now for the good news. Nothing that comes in this document ever made my computer crash and I personally
+think that all information within is absolutely harmless. I wrote this to
+help out fellow programmers and I sincerely hope it is not a pointless
+article. Please send some feedback.</P><BR>
+
+<A NAME="#INTERRUPTS">
+<H2>Interrupts</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An interrupt is a request of the processor to suspend its current program and transfer control to a new program called the <I>Interrupt Service Routine</I> (ISR). Special hardware mechanisms that are designed for maximum speed force the transfer. The ISR determines the cause of the interrupt, takes the appropriate action, and then returns control to the original process that was suspended.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Why do you need interrupts? The structure of the processor of any computer is conceived so it can carry out instructions endlessly. As soon as an instruction has been executed, the next one is loaded and executed. Even if it appears the computer is inactive, when it is waiting in the DOS prompt or in Windows for your next action, it does not mean it has stopped working , only to start again when instructed to. No, not at all. In fact, many routines are always running in the background independently of your instructions , such as checking the keyboard to determine whether a character has been typed in. Thus, a program loop is carried out. To interrupt the processor in its never-ending execution of these instructions, a so-called <I>interrupt</I> is issued. That is why it is possible for you to reactivate the CPU whenever you press a key (fortunately...). Another example, this time an internal one, is the timer interrupt, a periodic interrupt, that is used to activate the resident program PRINT regularly for a short time.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For the 80x86 256 different interrupts (ranging from 0-255) are available in total. Intel has reserved the first 32 interrupts for exclusive use by the processor but this unfortunately hasn't prevented IBM from placing all hardware interrupts and the interrupts of the PC BIOS in exactly this region which can give rise to some strange situations.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Speaking of hardware interrupts, you can distinguish three types of interrupts:<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Software Interrupts<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Hardware Interrupts<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Exceptions</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I will give a brief description of the previous categories but a detailed analysis is beyond the scope of this document. Please consult a reference manual, like the excellent "The Indispensable PC Hardware Book" by Hans-Peter Messmer and published by Addisson-Wesley (see the <A HREF="inthandlers2.html#REFERENCES">reference</A> section), or send me an <A HREF="mailto:DarkRealms@netcabo.pt">email</A> if you wish to know further details.</P></B></BR>
+
+<A NAME="#SOFTINTS">
+<H3>1) Software Interrupts</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Software interrupts are initiated with an INT instruction and, as the name implies, are triggered via software. For example, the instruction INT 33h issues the interrupt with the hex number 33h.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In the real mode address space of the i386, 1024 (1k) bytes are reserved for the <I>interrupt vector table</I> (IVT). This table contains an interrupt vector for each of the 256 possible interrupts. Every interrupt vector in real mode consists of four bytes and gives the jump address of the ISR (also known as <I>interrupt handler</I>) for the particular interrupt in segment:offset format.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When an interrupt is issued, the processor automatically transfers the current flags, the code segment CS and the instruction pointer EIP (or IP in 16-bit mode) onto the stack. The interrupt number is internally multiplied by four and then provides the offset in the segment 00h where the interrupt vector for handling the interrupt is located. The processor then loads EIP and CS with the values in the table. That way, CS:EIP of the interrupt vector gives the entry point of the interrupt handler. The return to the original program that launched the interrupt occurs with an IRET instruction.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Software interrupts are always synchronized with program execution; this means that every time the program gets to a point where there is an INT instruction, an interrupt is issued. This is very different from hardware interrupts and exceptions as you'll soon find out.</P></B><BR>
+
+<A NAME="#HARDINTS">
+<H3>2) Hardware Interrupts</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As the name suggests, these interrupts are set by hardware components (like for instance the timer component) or by peripheral devices such as a hard disk. There are two basic types of hardware interrupts: <I>Non Maskable Interrupts</I> (NMI) and (maskable) <I>Interrupt Requests</I> (IRQ).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An NMI in the PC is, generally, not good news as it is often the result of a serious hardware problem, such as a memory parity error or a erroneous bus arbitration. An NMI cannot be suppressed (or masked as the name suggests). This is quite easy to understand since it normally indicates a serious failure and a computer with incorrectly functioning hardware must be prevented from destroying data.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Interrupt requests, on the other hand, can be masked with a CLI instruction that ignores all interrupt requests. The opposite STI instruction reactivates these interrupts. Interrupt requests are generally issued by a peripherical device.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hardware interrupts (NMI or IRQ) are, contrary to software interrupts, asynchronous to the program execution. This is understandable because, for example, a parity error does not always occur at the same program execution point. This makes the detection of program errors very difficult if they only occur in connection with hardware interrupts.</P></B><BR>
+
+<A NAME="#EXCEPTIONS">
+<H3>3) Exceptions</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This particular type of interrupt originates in the processor itself. The production of an exception corresponds to that of a software interrupt. This means that an interrupt whose number is set by the processor itself is issued.  When do exceptions occur? Generally, when the processor can't handle alone an internal error caused by system software.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There are three main classes of exceptions which I will discuss briefly.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <B>Fault</B> : A fault issues an exception prior to completing the instruction. The saved EIP value then points to the same instruction that created the exception. Thus, it is possible to reload the EIP (with IRET for instance) and the processor will be able to re-execute the instruction, hopefully without another exception.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <B>Trap</B> : A trap issues an exception after completing the instruction execution. The saved EIP points to the instruction immediately following the one that gave rise to the exception. The instruction is therefore not re-executed again. Why would you need this? Traps are useful when, despite the fact the instruction was processed without errors, program execution should be stopped as with the case of debugger breakpoints.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <B>Abort</B> : This is not a good omen. Aborts usually translate very serious failures, such as hardware failures or invalid system tables. Because of this, it may happen that the address of the error cannot be found. Therefore, recovering program execution after an abort is not always possible.</P></B><BR>
+
+<A NAME="#SIGNALS">
+<H2>Signals</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A signal is an notification to a process that an event has occurred. Signals are sometimes called <I>software interrupts</I>. And this, causes a few problems... Are signals different from the software interrupts we treated above? Or only a different name for the same thing? Before answering to those questions, you should know that the concept of an interrupt (in particular a software interrupt) has expanded in scope over the years. The problem is that this expansion has not been an organized one, but rather a 'I'll do as I please' rampage. The 80x86 family has only added to the confusion surrounding interrupts by introducing the INT (software interrupts) instruction discussed above. The result of all this mess? There is no clear consensus of what terms to use in a given situation and different authors adopted different terms to their own use. So, words like <I>software interrupts</I>, <I>signals</I>, <I>exceptions</I>, <I>traps</I>,etc came bouncing around in completely different contexts.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order to avoid further confusion, this document will attempt to use the most common meaning for these terms. Also, in order to differentiate between signals and software interrupts, we'll consider that :</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <B>Software interrupts</B> - Are explicitly triggered with an INT instruction and are therefore synchronous, as discussed previously.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <B>Signals</B> - Don't make use of the INT instruction and usually occur asynchronously, that is, the process doesn't know ahead of time exactly when a signal will make its appearance.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now that we've cleared the pathway, let's dive into the pool. The concept of signal handling was born (or at least it gained strength) with the Unix platform, a protected mode and multi-threaded system. Therefore, I will start by providing a general overview of signal handling and only afterwards will I explain what changes occur in a real-mode system like MS-DOS using a protected mode compiler like Djgpp. So, get ready for a thrill...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A signal is said to be generated for (or sent to) a process when the event associated with that signal first occurs. Signals can be sent by one process to another process ( or to itself) or by the OS to a process. And what kind of events can raise a signal? Here are a few examples :
+<UL>
+<LI>A program error such as dividing by zero or issuing an address outside the valid range.
+<LI>A user request to interrupt or terminate the program.
+<LI>The termination of a child process.
+<LI>Expiration of a timer or alarm.
+<LI>A call to kill from another (or the same) process.
+<LI>An attempt to perform an illegal I/O operation like for instance reading from a pipe when the link is broken...
+</UL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As you can easily see, the events that generate signals fall into three major categories : Errors, external events and explicit requests.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An error means that the program performed something invalid. But not all kinds of errors generate signals--in fact, most do not. For example, trying to open a nonexistent file is an error but it does not raise a signal. This error is associated with a specific library call. The errors which raise signals are those that can happen anywhere in the program, not just in library calls. These include division by zero and invalid memory addresses.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An external event generally has to do with I/O or other processes. These include the arrival of input, the expiration of a timer or the termination of a child process.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An explicit request means the use of a library function such as kill whose purpose is specifically to generate a signal.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Signals can be generated synchronously or asynchronously (the latter being more common). If you try to reference an unmapped, protected or bad memory address a SIGSEV or SIGBUS can be issued, a floating point exception can generate a SIGFPE, and the execution of an illegal instruction can generate SIGILL. All the previous events, called errors if you recall, generate synchronous signals. </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Events such as keyboard interrupts generate signals (SIGINT) which are sent to the target process. Such events generate asynchronous signals.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We now know how signals are generated and how about delivery? Well, when a signal is generated, it becomes pending. Normally, it remains pending for just a short period of time and then is delivered to the process that was signaled. However, if that kind of signal is currently blocked, it may remain pending indefinitely--until signals of that kind are unblocked. Once unblocked, it will be delivered immediately. Once a signal has been delivered, the target program has a choice : Ignore the signal, specify an handler function or accept the default action for that kind of signal. If the first option is selected, any signal that is generated is discarded immediately, even if blocked at the time. Building handler functions will be examined in closer detail later on. Finally, if a signal arrives which the program has neither handled nor ignored, its default action takes place. Each kind of action has its own default action : It can be to terminate the process (the most common one) or for certain "harmless" events, to do nothing.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There are few other things concerning signals that might interest you, but for our purpose we're done. If you wish to know more, check any Unix reference manual (see the <A HREF="inthandlers2.html#REFERENCES">reference</A> section) or give <A HREF="mailto:DarkRealms@netcabo.pt">me</A> a ring. Also, I decided not to give a complete listing of standard signals here as it would fill too much space, but I'll cover quite a few that are accepted by Djgpp, the DOS version of the GNU gcc compiler, on the next section of this document.</P>
+<BR><BR>
+
+<A NAME="#DOSSIGNALS">
+<H2>Signals and MS-DOS</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As with so many other things, signal handling in Djgpp under MS_DOS brings a few additional complications. Therefore, as described in the info docs, due to the subtleties of protected-mode behaviour in MS-DOS programs, signal handlers cannot be safely called from within hardware interrupt handlers. In reality, what happens is that signal handler is only called when the program hits protected-mode and starts messing with its data. So, if the signal is raised while the processor is in real-mode, like when calling DOS services, the signal handler won't be called until the call returns. An example of this is if you try to press 'CTRL-C' in the middle of a gets() instruction, you will need to press 'ENTER' before the signal handler for SIGINT (CTRL-C) is called. Another consequence of this implementation is that when the program isn't touching any of its data (like in very tight loops which only use values in the registers), it can't be interrupted.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;But how do you incorporate signal handling in your programs? This is when the signal() function steps in. Here's its rather complicated prototype :</P>
+<I>
+<UL>
+#include &lt;signal.h&gt;<BR>
+void (*signal (int sig, void (*func)(int)))(int);<BR>
+</UL>
+</I>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The first argument is the signal number that you want to address. Every signal has a mnemonic that you should use for portable programs, but we'll get back to that in a second. The second argument is the name of the function that will be registered as the signal handler for the signal given by the first argument. After you call signal() and register the function as a signal handler, it will be called when that signal occurs. The execution of the program will then be suspended until the handler returns or calls 'longjmp'.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instead of passing a function name as the second argument, you have other options at your disposal. You may pass SIG_DFL as the value of 'func' to reset the signal handling for signal number 'sig' to default., SIG_ERR to force an error when the signal is raised or SIG_IGN to ignore that signal.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If <I>signal</I> can't honor the request, that is if its first argument is outside valid limits for signal numbers, it returns SIG_ERR instead.</P> 
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I promised in the previous section that I would give you a list of supported signals in Djgpp. I also told you that every signal number has a mnemonic associated with it. So, here are the items you should use as signal numbers and their corresponding description :</P>
+<UL>
+<LI><B>SIGABRT</B> - Abnormal termination. Only used in Djgpp by the assert() function to terminate the program when an assertion fails and by the abort() function.<BR>
+<LI><B>SIGALRM</B> - Alarm clock expiration. Generated after a certain time period has passed after a call to the library function alarm(). Not ANSI.<BR>
+<LI><B>SIGFPE</B> - Floating-Point Exception / Erroneous Arithmetic Operation. Generated in case of a divide by zero exception ( int 00h), overflow exception (int 04h), and any x87 co-processor exception, either generated by the CPU (int 10h) or by the co-processor itself (int 75h).<BR>
+<LI><B>SIGHUP</B> - Hangup on controlling-terminal. Currently unused. Not ANSI.<BR>
+<LI><B>SIGILL</B> - Illegal hardware instruction. Currently only generated for unknown/invalid exceptions.<BR>
+<LI><B>SIGINT</B> - Terminal interrupt signal. One of the most useful signals. Generated when an INTR key ('CTRL-C' by default) or a 'CTRL-BREAK' key (int 1Bh) is hit.<BR>
+<LI><B>SIGKILL</B> - Termination signal (cannot be caught, blocked or ignored). Currently unused. Not ANSI.<BR>
+<LI><B>SIGNOFP</B> - The no co-processor signal. Generated if a co-processor (floating point) instruction is encountered when no co-processor is installed (int 07h). Not ANSI nor POSIX.<BR>
+<LI><B>SIGPIPE</B> - Write on a pipe that has no reading process (broken pipe). Currently unused. Not ANSI.<BR>
+<LI><B>SIGPROF</B> - The profiler signal. Used by the execution profile gathering code in a program compiled with the '-pg' option. Not ANSI nor POSIX.<BR>
+<LI><B>SIGQUIT</B> - Interactive termination. Generated when the QUIT key ( 'CTRL-\' by default) is hit. Not ANSI.<BR>
+<LI><B>SIGSEV</B> - The invalid storage access (segmentation violation) signal. Generated in response to any of the following exceptions : bound range exceeded in BOUND instruction (int 05h), double exception or an exception in the exception handler (int 08h), segment boundary violation by the co-processor (int 09h), invalid TSS (int 0Ah), segment not present (int 0Bh), stack fault (int 0Ch), general protection violation (int 0Dh) or page fault (int 0Eh).<BR>
+<LI><B>SIGTERM</B> - Termination request signal. Currently unused.<BR>
+<LI><B>SIGTIMR</B> -  The timer signal. Used by the setitimer() and alarm() functions. Not ANSI nor POSIX.<BR>
+<LI><B>SIGTRAP</B> - Trace/Breakpoint trap. Generated in response to the debugger exception (int 01h) or breakpoint exception (int 03h). Not ANSI nor POSIX.<BR>
+<LI><B>SIGUSR1</B> - User-defined signal 1. Not ANSI.<BR>
+<LI><B>SIGUSR2</B> - User-defined signal 2. Not ANSI.<BR>
+</UL>
+<BR>
+<BR>
+
+<A NAME="#HANDLERS">
+<H2>Handlers</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An handler, also known as callback, is in fact the routine that is called by an interrupt, or in other words, it's the ISR itself. So, why a different name? Well, the word handler is normally used for ISRs created by you, the programmer, as opposed to those that are pre-built either in the OS or BIOS.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The next question is why create an handler if the ISRs are already present? The answer is simple : To have more control and flexibility. Without handlers, your programs would have to abide by strict and rigid rules which would limit their usefulness. Handlers are indispensable in several situations as you will soon find out. Keep on reading.</P>
+
+<A NAME="#CREATEHANDLER">
+<H2>Creating Handlers</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The creation of interrupt handlers has traditionally been considered one of the most arcane of programming tasks, suitable only for the elite cadre of system hackers. However, writing an interrupt handler in itself is quite straightforward. Let's hope that the following guidelines will help clear the myth...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A program preparing to handle interrupts must do the following :<BR>
+<OL>
+<LI>Disable interrupts, if they were previously enabled, to prevent them from occurring while interrupt vectors are being modified.<BR>
+<LI>Initialize the vector for the interrupt of interest to point to the program's interrupt handler.<BR>
+<LI>Ensure that, if interrupts were previously disabled, all other vectors point to some valid handler routine.<BR>
+<LI>Enable interrupts once again.
+</OL></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The interrupt handler must observe the following sequence of steps :<BR>
+<OL>
+<LI>Save the system context (registers, flags and anything else that the handler is suitable of modifying and that wasn't saved automatically by the CPU), normally by pushing the desired elements into the stack or saving them into variables.<BR>
+<LI>Block any interrupts that might cause interference if they are allowed to occur during this handler's processing. Please note that sometimes you'll have to disable all interrupts.<BR>
+<LI>Enable any interrupts that should still be allowed to occur during this handler's execution.<BR>
+<LI>Determine the cause of the interrupt.<BR>
+<LI>Take the appropriate action(s) for the interrupt.<BR>
+<LI>Restore the system context, usually by popping the elements from the stack or by reading the variables.<BR>
+<LI>Reenable all interrupts blocked.<BR>
+<LI>Resume execution of the interrupted process.<BR>
+</OL></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When writing an interrupt handler, take it easy and try to cover all the bases. The main reason interrupt handlers have acquired such a mystical reputation is that they are so difficult to debug when they contain obscure errors. Because interrupts can occur asynchronously - that is, because they can be caused by external events without regard to the state of the currently executing process - bugs can be a real problem to detect and correct. This means that an error can manifest its presence in the program much later than it actually occurs, thus leading to a true quest of the Holy Grail.</P>
+
+<BR>
+<BR>
+
+<A NAME="#DOSHANDLERS">
+<H2>Handlers and MS-DOS</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This section is only to inform you of some restrictions and rules that apply to a handler for hardware interrupts under MS-DOS :
+<UL>
+<LI>Because MS-DOS is not reentrant, a hardware interrupt handler should never call any MS-DOS functions during the actual interrupt process.<BR>
+<LI>If your program is not the only process in the system that uses this interrupt level, chain back to the previous handler after performing your own processing on an interrupt.<BR>
+<LI>Remember to fetch and save the initial contents of the interrupt vector before modifying it and then restore the original contents when your program exits.<BR>
+<LI>Try to keep the time that interrupts are disabled and the total length of the service routine to an absolute minimum.
+</UL></P>
+<BR>
+<BR>
+
+<A NAME="#HARDWARE">
+<H2>Hardware Zone</H2></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For all of you hardware freaks out there, we'll start by examining in close detail the chip that allows the existence of interrupts : The 8259A PIC.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Afterwards, we'll explore each of the 8259A PIC input lines, that is, the interrupts that can trigger a reaction from this device. A brief explanation of each input will be given, but since this is a tutorial about interrupts (and quite a big one might I add) everything not directly related with interrupts will only be approached lightly. However, stay tuned for a hardware section on this site that will not avoid such issues.</P>
+
+<A NAME="#PIC8259A">
+<H3>1) The 8259A PIC</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As explained in the <A HREF="inthandlers2.html#INTPOLL">Interrupt Driven I/O vs. Polling</A> section I/O devices can be serviced in two different ways : The CPU <I>polling</I> method and the <I>interrupt</I> based technique. The 8259A <B>P</B>rogrammable <B>I</B>nterrupt <B>C</B>ontroller (PIC) allows for the later. It is designed to permit prioritizing and handling of hardware interrupt requests from peripheral devices, mainly in a PC environment.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As the processor usually only has a single interrupt input but requires data exchange with several interrupt-driven devices, the 8259A PIC is implemented to manage them. The 8259A PIC acts like a bridge between the processor and the interrupt-requesting components, that is, the interrupt requests are first transferred to the 8259A PIC, which in turn drives the interrupt line to the processor. Thus, the microprocessor is saved the overhead of determining the source and priority of the interrupting device.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;How does it work? The PIC receives an interrupt request from an I/O device and informs the microprocessor. The CPU completes whatever instruction it is currently executing and then fetches a new routine (ISR) that will service the requesting device. Once this peripheral service is completed, the CPU resumes doing exactly what it was doing when the interrupt request occurred (as explained throughout this entire document). The PIC functions as an overall manager of hardware interrupt requests in an interrupt driven system environment.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In case you're wondering how is accomplished the interrupt acknowledge sequence, here's a quick overview :</P>
+<OL>
+<LI>Eight interrupt lines IR0-IR7 are connected to the <I>interrupt request register</I> (IRR). The IRR is eight bits wide, where every bit corresponds to one of the lines IR0-IR7. The device requiring service signals the PIC via one of the eight pins IR0-IR7 setting it to a high level. The 8259A then sets the corresponding bit in the IRR.<BR><BR>
+<LI>At the same time, the PIC activates its output INT line to inform the processor about the interrupt request. The INT line is directly connected to the INTR input of the processor. This starts an <I>interrupt acknowledge sequence</I>.<BR><BR>
+<LI>The CPU receives the INT signal, finishes the currently executing instruction and outputs a first <I>interrupt acknowledge</I> (INTA) pulse if the IE flag is set (that is, if the interrupts are not masked at the CPU).<BR><BR>
+<LI>Upon receival of the first INTA pulse from the CPU the highest priority in the IRR register is cleared and the corresponding bit in the <I>in-service register</I> (ISR) register is set.There is no PIC activity on the data bus in this cycle.<BR><BR>
+<LI>The processor initiates a second INTA pulse and thus causes the 8259A to put an 8-bit number onto the data bus. The CPU reads this number as the number of the interrupt handler to call, which is then fetched and executed.<BR><BR>
+<LI>In the <I>Automatic End Of Interrupt</I> (AEOI) Mode the ISR bit is reset at the end of the second INTA pulse. Otherwise, the CPU must issue an <I>End of Interrupt</I> (EOI) to the 8259A PIC when executing the interrupt handler to clear the ISR bit manually.<BR><BR>
+</OL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The EOI command has two forms, specific and non-specific. The controller responds to a non-specific EOI command by resetting the highest in-service bit of those set. In a mode that uses a fully-nested interrupt structure, the highest in-service bit set is the level that was just acknowledged and serviced. This is the default mode for PCs. In a mode that can use other than the fully-nested interrupt structure, a Specific EOI command is required to define which in-service bit to reset.</P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is this all there is to it? Usually, yes. But things can get a little trickier depending on the environment. For example, as the name indicates the 8259A programmable interrupt controller can be programmed under several different modes and for a defined operation it needs to be initialized first. For instance,
+it can be programmed to mask certain interrupt request lines. In order to do that the <I>interrupt mask register</I> is implemented. A set bit in this register masks all the interrupt requests of the corresponding peripheral, that is, all requests on the line allocated the set bit are ignored; all others are not affected by the masking.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And what happens if an interrupt comes when another is being processed, and the EOI for it wasn't issued yet? This really depends on interrupt priorities. If a certain interrupt request is in-service (that is, the corresponding bit in the ISR is set), all interrupts of a lower priority are disabled because the in-service request is serviced first. Only an interrupt of a higher priority pushes its way to the front immediately after the INTA sequence of the serviced interrupt. In this case the current INTA sequence is completed and the new interrupt request is already serviced before the old request has been completed by an EOI. Thus, interrupt requests of a lower priority are serviced once the processor has informed the PIC by an EOI that the request has been serviced. Please note that, under certain circumstances, it is favourable also to enable requests of a lower priority using the PIC programming abilities to set the <I>special mask mode</I> (if you're curious check the <A HREF="inthandlers2.html#REFERENCES">reference</A> section for further reading). The next table shows the priority among simultaneous interrupts and exceptions :</P>
+<BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="60%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="80%">
+<B><FONT COLOR="#0a1d68">Class of interrupts and exceptions</FONT></B>
+</TD>
+<TD WIDTH="70%">
+<B><FONT COLOR="#0a1d68">Priority</FONT></B>
+</TD>
+</TR>
+<TR>
+<TD>
+Faults except debug faults
+</TD>
+<TD>
+Highest
+</TD>
+</TR>
+<TD>
+Trap instructions INTO, INT n, INT 3
+</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>
+Debug traps for this instruction
+</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>
+Debug faults for next instruction
+</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>
+NMI interrupt
+</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>
+INTR interrupt
+</TD>
+<TD>Lowest</TD>
+</TR>
+</TABLE>
+<BR>
+Table 1 : Priority Among Simultaneous Interrupts and Exceptions
+</CENTER>
+ 
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Another characteristic of the 8259A PIC is its <I>cascading</I> capability, that is, the possibility to interconnect one master and up to eight slave PIC's in an application. But these subjects could build a tutorial of their own, so I'll forward you to any serious hardware book if you need more details (alternately, you can always <A HREF="mailto:DarkRealms@netcabo.pt">mail</A> me).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For our purposes we only need to know that a typical PC uses two PICs to provide 15 interrupt inputs (7 on the master PIC and 8 on the slave one). The sections following this one will describe the devices connected to each of those inputs. In the meantime, the following table lists the interrupt sources on the PC (sorted in descending order of priority) :</P>
+<BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="95%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="21%">
+<B><FONT COLOR="#0a1d68">Input on<BR>8259A</FONT></B>
+</TD>
+<TD WIDTH="12%">
+<B><FONT COLOR="#0a1d68">Priority</FONT></B>
+</TD>
+<TD WIDTH="11%">
+<B><FONT COLOR="#0a1d68">80x86<BR>INT</FONT></B>
+</TD>
+<TD WIDTH="56%">
+<B><FONT COLOR="#0a1d68">Device</FONT></B>
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 0
+</TD>
+<TD>Highest</TD>
+<TD>
+08h
+</TD>
+<TD>
+Timer Chip
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 1
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+09h
+</TD>
+<TD>
+Keyboard
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 2
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+0Ah
+</TD>
+<TD>
+Cascade for controller 2 (IRQ 8-15)
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 9/1
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+71h
+</TD>
+<TD>
+CGA vertical retrace (and other IRQ 2 devices)
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 8/0
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+70h
+</TD>
+<TD>
+Real-time clock
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 10/2
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+72h
+</TD>
+<TD>
+Reserved
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 11/3
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+73h
+</TD>
+<TD>
+Reserved
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 12/4
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+74h
+</TD>
+<TD>
+Reserved in AT, auxiliary device on PS/2 systems
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 13/5
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+75h
+</TD>
+<TD>
+FPU interrupt
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 14/6
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+76h
+</TD>
+<TD>
+Hard disk controller
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 15/7
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+77h
+</TD>
+<TD>
+Reserved
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 3
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+0Bh
+</TD>
+<TD>
+Serial Port 2
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 4
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+0Ch
+</TD>
+<TD>
+Serial Port 1
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 5
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+0Dh
+</TD>
+<TD>
+Parallel port 2 in AT, reserved in PS/2 systems
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 6
+</TD>
+<TD>&nbsp;</TD>
+<TD>
+0Eh
+</TD>
+<TD>
+Diskette drive
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+IRQ 7
+</TD>
+<TD>Lowest</TD>
+<TD>
+0Fh
+</TD>
+<TD>
+Parallel Port 1
+</TD>
+</TR>
+</TABLE>
+<BR>
+Table 2 : 8259A Programmable Interrupt Controller Inputs
+</CENTER>
+<BR><BR>
+
+<A NAME="#TIMER">
+<H3>2) The timer interrupt (int 08h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I'll assume you've all played old games, back in the days where gameplay and plot were far more important that fancy graphics and nice box-sets... (although these concepts are all important and shouldn't be mutually exclusive one can't help but notice that priorities shifted to uncanny and greedy grounds). Game programmers of the period, often one-man teams with lots of imagination, were sometimes confronted with the problem of implementing certain delays in the game (damn, that enemy plane is closing in too fast... evasive maneuvers... I'll ne...arghhhhhhh). Often, <I>dummy</I> loops of the following form were employed :</P>
+<I><UL>for(i=0;i<10000;i++);</UL></I>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This seemed to work. However, this kind of work-around has a significant disadvantage : It relies on processor speed. What a surprise to find out that the powerful hero <I>Kill Them All</I> of our favourite platform game, so deft and gracious on our 20MHZ i386, now, with a 600MHZ Pentium III running a GeForce beast,  helplessly dashes against every kind of inoffensive and pitiful obstacle before you even can operate a single key!</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Summarizing, we need a way to generate exactly defined time intervals. And what better way than by hardware? Thus, the PC's designers have implemented one (PC/XT and most ATs) or sometimes two (some new ATs or EISA) <I>Programmable Interval Timers</I> (PITs).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The PIT 8253/8254 generates programmable time intervals from an external clock signal of a crystal oscillator that are defined independently from the CPU. It's very flexible and has six modes of operation in all (these modes will not be explained in this tutorial, maybe in a future less generic one).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The 8253/8254 chip comprises three independently and separately programmable counters 0-2, each of which is 16 bits wide. Each counter, or channel, is supplied with its own clock signal (CLK0-CLK2) which serves as the time base for each counter. Each channel is responsible for a different task on the PC :</P>
+<UL>
+<LI><B>Channel 0</B> : This channel is responsible for updating the system clock, generating interrupts every 55ms (approximately). This is about once every 1/18.2 seconds. Sometimes this is called the "eighteenth second clock" but we will refer to it as the timer interrupt. We'll discuss this channel in more detail in a little while.<BR><BR>
+<LI><B>Channel 1</B> : This channel controls DMA memory refreshing, instructing all 18 CLK cycles on a DMA chip to carry out a dummy read cycle. In the course of this dummy cycle, data is read from memory onto the data bus and the address buffers, and address decoders and sense amplifiers in the memory chips are activated to refresh one memory cell row. But the data is not read by any peripheral. Instead, it's discarded in the next bus cycle. This is done because DRAM's memory cells must be periodically refreshed or they quickly lose their charge. One interesting thing that should be noted is that most system designers lay out the memory refresh rather carefully, that is, the memory is refreshed more often that is really necessary. This so-called <I>refresh overhead</I> can reach 10% or more. Reprogramming channel 1 to refresh memory at a slower rate can sometimes speed up system performance, but don't overdue it or data losses might incur (giving rise to parity errors upon reading main memory).<BR><BR>
+<LI><B>Channel 2</B> : This channel is dedicated to the tone frequency generation for the installed speaker. It's normally programmed to generate
+a square wave so a continuous tone is heard. Reprogramming it for "Interrupt
+on Terminal Count" mode is a nifty trick which can be used to play 8-bit
+samples from the PC speaker. You may generate various frequencies with it. The audible range of tones lies between about 16Hz and 16kHz. Frequencies above and below this range are called infra- or supersonic: Your Pc's amplifier is probably unable to generate such tones.
+</UL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The timer interrupt vector (channel 0) is probably the most commonly patched interrupt in the system. However, it turns out there are <I>two</I> of these vectors in the system. The first one, int 08h, is the hardware vector associated with the timer interrupt. Unless you're willing to taunt fate, it's not a good idea to patch this interrupt. If you want to build a timer handler, go for the second interrupt, interrupt 1ch. The BIOS' timer ISR (int 08h) always executes an <I>int 1ch</I> instruction before it returns. Catching it, assuming control and chain back to the old ISR is the best way to design your timer handler. Unless you're willing to duplicate the BIOS and DOS timer code, you should never completely replace the existing timer ISR with one of your own. Twiddling with int 1ch can be very dangerous and misuse can cause your system to crash or otherwise malfunction.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finally, without entering into too much detail, I'll leave you with the port addresses of the various 8253/8254 PIT registers (the control register loads the counters and controls the various operation modes) :</P><BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="75%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="20%">
+<B><FONT COLOR="#0a1d68">Port<BR>(1st PIT)</FONT></B>
+</TD>
+<TD WIDTH="20%">
+<B><FONT COLOR="#0a1d68">Port<BR>(2nd PIT)</FONT></B>
+</TD>
+<TD WIDTH="30%">
+<B><FONT COLOR="#0a1d68">Register</FONT></B>
+</TD>
+<TD WIDTH="30%">
+<B><FONT COLOR="#0a1d68">Access Type</FONT></B>
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+040h
+</TD>
+<TD>
+048h
+</TD>
+<TD>
+Counter 0
+</TD>
+<TD>
+Read/Write
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+041h
+</TD>
+<TD>
+049h
+</TD>
+<TD>
+Counter 1
+</TD>
+<TD>
+Read/Write
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+042h
+</TD>
+<TD>
+04ah
+</TD>
+<TD>
+Counter 2
+</TD>
+<TD>
+Read/Write
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+043h
+</TD>
+<TD>
+04bh
+</TD>
+<TD>
+Control Register
+</TD>
+<TD>
+Write-only
+</TD>
+</TR>
+</TABLE>
+<BR>
+Table 3 : 8253/8254 register ports in a PC
+</CENTER>
+<BR><BR>
+
+<A NAME="#KEYBOARD">
+<H3>3) The Keyboard Interrupt (int 09h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The keyboard is the most common and most important input device for PCs (excluding the mouse). Despite the birth and rise of many new "hi-tech" input devices such as scanners and voice input systems, the keyboard still plays the major role if commands are to be issued or data input to a computer.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contrary to popular belief, <I>every</I> keyboard has a keyboard chip, even the old "dumb" PC/XT keyboard with the 8048. This chip supervises the detection of key presses or releases. When you press a key, the keyboard generates a so-called <I>make-code</I> interrupt. If, on the other hand, you release a pressed key then the keyboard generates a so-called <I>break-code</I> interrupt. This occurs on IRQ 1 of master 8259A PIC. The BIOS responds to these interrupts by reading the key's <I>scan code</I> (1 byte code that identifies each keyboard key), converting this to an ASCII character , and storing the scan and ASCII codes away in the system <I>type ahead buffer</I>.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The keyboard really deserves a tutorial of its own and I won't let it down... So, please be patient or send me an <A HREF="mailto:DarkRealms@netcabo.pt">email</A>.</P>
+<BR><BR>
+
+<A NAME="#SERIALPORT">
+<H3>4) The Serial Port Interrupts (int 0Bh and 0Ch)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The serial interface is essential in a PC because of its flexibility. Various devices such as a plotter, modem, mouse and, of course, a printer can be connected to a serial interface. This document will not cover the structure, functioning and programming of the serial interface, but will take a quick look instead at its interrupt driven serial communication capabilities.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The PC uses two interrupts, IRQ 3 and IRQ 4, to support interrupt driven serial communications, as seen in the following table :</P><BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="75%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="30%">
+<B><FONT COLOR="#0a1d68">Interface</FONT></B>
+</TD>
+<TD WIDTH="40%">
+<B><FONT COLOR="#0a1d68">Base Address</FONT></B>
+</TD>
+<TD WIDTH="30%">
+<B><FONT COLOR="#0a1d68">IRQ</FONT></B>
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+COM 1
+</TD>
+<TD>
+3F8h
+</TD>
+<TD>
+IRQ 4
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+COM 2
+</TD>
+<TD>
+2F8h
+</TD>
+<TD>
+IRQ 3
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+COM 3
+</TD>
+<TD>
+3E8h
+</TD>
+<TD>
+IRQ 4
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+COM 4
+</TD>
+<TD>
+2E8h
+</TD>
+<TD>
+IRQ 3
+</TD>
+</TR>
+</TABLE>
+<BR>
+Table 4 : COMx base addresses and IRQ channels
+</CENTER><BR><BR>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Just like the LPT ports, the base addresses for the COM ports can be read from the BIOS Data Area.</P><BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="75%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="40%">
+<B><FONT COLOR="#0a1d68">Start Address</FONT></B>
+</TD>
+<TD WIDTH="60%">
+<B><FONT COLOR="#0a1d68">Function</FONT></B>
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:0400
+</TD>
+<TD>
+COM1's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:0402
+</TD>
+<TD>
+COM2's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:0404
+</TD>
+<TD>
+COM3's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:0406
+</TD>
+<TD>
+COM4's Base Address
+</TD>
+</TR>
+</TABLE>
+<BR>
+Table 5 : COMx Port Addresses in the BIOS Data Area
+</CENTER><BR><BR>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <I>Universal Asynchronous Receiver/Transmitter</I> (UART) 8250 (or compatible) generates an interrupt in one of four situations : a character arriving over the serial line, the UART finished the transmission of a character and is requesting another, an error occurs or a status change is requested. The UART activates the same interrupt line (IRQ 3 or IRQ 4) for all four interrupt sources. This means that the ISR needs to determine the exact nature of the interrupt interrogating the UART.</P>
+<BR><BR>
+
+<A NAME="#PARALLEL PORT">
+<H3> 5) The Parallel Port Interrupts (int 0Dh and 0Fh)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Every PC is equipped with at least one parallel and one serial interface. Unlike the serial interface, for which a lot of applications exist, the parallel interface ekes out its existence as a wallflower, as it's only used to serve a parallel printer. In a similar way to what was done in the <A HREF="inthandlers1.html#SERIALPORT">serial port</A> section, we'll only concern ourselves with the basics of interrupt driven parallel communications.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BIOS and DOS can usually serve up to four parallel interfaces in a PC, denoted LPT1, LPT2, LPT3 and LPT4 (for <I>line printer</I>). The abbreviation PRN (for printer) is a synonym (an alias) for LPT1. When BIOS assigns addresses to your printer devices, it stores the address at specific locations in memory, so we can find them as listed in the following table :</P><BR>
+<CENTER>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="75%">
+<TR BGCOLOR="#3677fc" ALIGN="center">
+<TD WIDTH="40%">
+<B><FONT COLOR="#0a1d68">Start Address</FONT></B>
+</TD>
+<TD WIDTH="60%">
+<B><FONT COLOR="#0a1d68">Function</FONT></B>
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:0408
+</TD>
+<TD>
+LPT1's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:040A
+</TD>
+<TD>
+LPT2's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:040C
+</TD>
+<TD>
+LPT3's Base Address
+</TD>
+</TR>
+<TR ALIGN="center">
+<TD>
+0000:040E
+</TD>
+<TD>
+LPT4's Base Address
+</TD>
+</TR>
+</TABLE>
+<BR>
+Table 6 : LPT Addresses in the BIOS Data Area
+</CENTER><BR><BR>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now that we've come to parallel ports interrupts we face a little enigma. Why did IBM design the original system to allow
+two parallel port interrupts and then promptly designed a printer interface card that
+didn’t support the use of interrupts? As a result, almost no DOS based software today uses
+the parallel port interrupts (IRQ 5 and IRQ 7). Actually, DOS based software is almost harder to find than diamonds nowadays but we'll not go that way...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Great, now that we have some useless interrupts hanging around..." Wait! These interrupts were not dumped into the scrap hill! In fact, many devices make use of them. Examples include SCSI and sound cards. Because of this, many devices today include <I>interrupt jumpers</I> that let you select IRQ 5 or IRQ 7 on installation.</P>
+<BR><BR>
+
+<A NAME="#DISK">
+<H3>6) The Diskette and Hard Drive Interrupts (int 0Eh and 76h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I will not explain what floppy and hard disk drives are or how they work or what their structure is. Although these are all interesting topics to cover in this text, this article is already long enough. I will explore their relationship with interrupts however. But before I do that I need to ask you a little question : Do you think that your hard disk is the most important and valuable part of your PC? You do? Why? What? You haven't made a single data backup and all the past three years's work is on the hard disk? I'll just leave you with a serious piece of advice : <I>Always have a backup handy!</I> You never know...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The floppy and hard disk drives generate interrupts at the completion of a disk operation. This is a very useful feature for multitasking systems like OS/2, Linux, or Windows. While the disk is reading or writing data, the CPU can go execute instructions for another process. When the disk finishes the read or write operation, it interrupts the CPU so it can resume the original task.</P>
+<BR><BR>
+
+<A NAME="#CLOCK">
+<H3>7) The Real-Time Clock Interrupt (int 70h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Before IBM made the <I>Real Time Clock</I> (RTC) chip standard equipment on its PC AT in 1984, users were prompted to enter the date manually every time they turned on their computers. Why? Because at every boot process the PC initialized itself to 01.01.1980, 0:00 o'clock. The user had to input the current date and time via the DOS commands DATE and TIME. DOS managed all times relative to this time and date.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not very practical, was it? So the RTC was born. The RTC chip is powered by an accumulator or an in-built battery to ensure it can keep time even when the PC is turned off. The RTC is independent of the CPU and all other chips (including the 8253/8254 that deals with internal system clock)and keeps on updating time, day, month, and 2-digit year. It typically contains seven registers that store time and date values. Six of the registers are updated automatically. Each one of them stores a different value: seconds, minutes, hours, days, months, and years. The year register stores the last two digits – "99" in 1999 or "00" in 2000. A seventh one, the century register, stores the first two digits of the 4-digit year. The century register reads either "19" in 1999 or "20" in 2000 and is not updated automatically. It will change only if updated by either the BIOS or the operating system.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The real-time clock interrupt (int 70h) is called 1024 times per second for periodic and alarm functions. By default, it is disabled. You should only enable this interrupt if you have an int 70h ISR installed.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;One last thing. If you notice that the system clock is not accurate losing a number of minutes each day, or not incrementing the time when the system is turned off, then the problem might be the RTC battery. The power consumption by the CMOS RAM and the RTC is so low that usually it plays no role in the lifetime of the batteries or accumulators. Instead, the life expectancy is determined by the self-discharge time of the accumulator or battery, and is about 3 years (or 10 years for lithium batteries). Also, the quality of components these days is rather questionable sometimes. So, if you have a PC, old or not, that keeps losing track of time, take it for a visit at the local computer store.</P>
+<BR><BR>
+
+<A NAME="#FPU">
+<H3>8) The FPU Interrupt (int 75h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Floating-Point Unit (FPU), also known as a maths co-processor, provides high-performance floating-point processing capabilities. Floating point operations such as decimals and logarithms can take many instruction steps on the main processor. Such calculations can be handled more efficiently if passed on to a co-processor. The FPU executes instructions from the processor's normal instruction stream and greatly improves its efficiency in handling the types of high-precision floating-point processing operations commonly found in scientific, engineering, and business applications.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Before the advent of the 80486, the FPU was an optional chip with a reserved slot on the motherboard, close to the CPU. Nowadays, all PCs come with in-built FPU.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The 80x87 FPU generates an interrupt whenever a floating point exception occurs. On CPUs with built-in FPUs (80486DX and better) there is a bit in one of the control register you can set to simulate a vectored interrupt. BIOS generally initializes such bits for compatibility with existing systems.</P>
+<BR><BR>
+
+<A NAME="#NMI">
+<H3>9) Nonmaskable Interrupts (int 02h)</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>Non-maskable interrupts</I> (NMI) are critical interrupts such as those generated after a power failure (memory parity error) that cannot be blocked by the CPU. This is in contrast to most common device interrupts such as disk and network adapter interrupts, which are considered maskable (you can enable or disable them with <I>sti</I> and <I>cli</I> instructions).</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This interrupt (int 02h) is always enabled by default  since it cannot be masked.</P>
+<BR><BR>
+
+<A NAME="#RESERVED">
+<H3>10) Reserved Interrupts</H3></A>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As mentioned in the section on the <A HREF="#PIC8259A">8259A PIC</A>, there are several interrupts reserved by IBM. Many systems use the reserved interrupts for the mouse or for other purposes. Since such interrupts are inherently system dependent, we will not describe them here.</P>
+<BR><BR>
+<CENTER>[ <FONT SIZE="4"><A HREF="inthandlers2.html">Go to Part 2</A></FONT> ]<BR><BR><BR>
+By <A HREF="mailto:DarkRealms@netcabo.pt">Frederico Jer&oacute;nimo</A>, Copyright 1999-2000
+<BR><BR>
+<FONT SIZE="4">Click <A HREF="tuthistory.html#INTHANDLERS">here</A> to view this tutorial's revision history</FONT>
+</CENTER>
+</BODY>
+</HTML>
+
+
+
+
+
+<br clear=all></p>
+<a href="bulktrap.html"></a><table width="100%" border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2000</a> &nbsp;
+<a href="/users/dj/" target="_top">by DJ Delorie</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Dec 2000 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe src="http://rcm.amazon.com/e/cm?t=deloriesoftware&o=1&p=13&l=ez&f=ifr&f=ifr" width="468" height="60" scrolling="no" marginwidth="0" marginheight="0" border="0" frameborder="0" style="border:none;"></iframe>
+</center>
+</body></html>
+

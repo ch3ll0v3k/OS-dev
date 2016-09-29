@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<script>var __pbpa = true;</script><script>var translated_warning_string = 'Warning: Never enter your Tumblr password unless \u201chttps://www.tumblr.com/login\u201d\x0ais the address in your web browser.\x0a\x0aYou should also see a green \u201cTumblr, Inc.\u201d identification in the address bar.\x0a\x0aSpammers and other bad guys use fake forms to steal passwords.\x0a\x0aTumblr will never ask you to log in from a user\u2019s blog.\x0a\x0aAre you absolutely sure you want to continue?';</script><script type="text/javascript" language="javascript" src="http://assets.tumblr.com/assets/scripts/pre_tumblelog.js?_v=81465be7ec0ee40855d0652f7673c1c2"></script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+    <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# blog: http://ogp.me/ns/blog#">
+        <title>Kernel 101 &ndash; Let&rsquo;s write a Kernel - Arjun Sreedharan</title>
+        
+        <meta name="description" content="Kernel 101 &ndash; Let&#039;s write a Kernel Hello World, Let us write a simple kernel which could be loaded with the GRUB bootloader on an x86 system. This kernel will display a message on the screen and then..." />
+        
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="Arjun Sreedharan,UMass,UMass Amherst,NIT Calicut,C,C++,OS,kernel,linux,OS,drivers,Python,blog,Arjun,Sreedharan" />
+        <meta name="google-site-verification" content="N_5z8pFnSm7eaIAyhkOd1QTEMesiFpagQzpKmHGAfXE" />
+        <meta name="color:Links" content="#3689B3"/>
+        <meta name="color:Links hover" content="#1F4E66"/>
+        <meta name="if:Show search" content="1"/>
+        
+        
+        <meta name="if:Show theme credit" content="1"/>
+        <meta name='text:Disqus Shortname' content='arjun024' />
+        
+        <style>body.voter-registration-interstitial-open{overflow:hidden}.tmblr-iframe--voter-registration-interstitial{opacity:0;position:fixed;width:100%;height:100%;top:0;z-index:2147483646}.tmblr-iframe--voter-registration-interstitial.ready{opacity:1}figure{margin:0}.tmblr-iframe{position:absolute}.tmblr-iframe.hide{display:none}</style>
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"/>
+       
+        <link rel="shortcut icon" href="http://67.media.tumblr.com/avatar_3aa7a772673a_128.png">
+        <link rel="alternate" type="application/rss+xml" href="http://arjunsreedharan.org/rss">
+        <!-- google code prettify -->  
+        <!--<link rel="stylesheet" type="text/css" href="http://jmblog.github.io/color-themes-for-google-code-prettify/css/themes/tomorrow-night.css" />-->
+        <!-- google code prettify -->
+        <!--<link rel="stylesheet" type="text/css" media="screen" href="//static.tumblr.com/gltvynn/8ezmk3w0s/docs.css" />-->
+        <style type="text/css">
+            body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym {border:0;font-variant:normal;}sup {vertical-align:text-top;}sub {vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}legend{color:#000;}a{outline:none;}
+            
+            body {
+                background: white;
+                /* medium */
+                /*font-family: "freight-text-pro",Georgia,Cambria,"Times New Roman",Times,serif;*/
+                /*font-size: 13px !important;*/
+                /*color: black;*/
+                -webkit-font-smoothing: antialiased;
+                -moz-font-smoothing: antialiased;
+                font-smoothing: antialiased;
+                font-family: arial,sans-serif;
+            }
+
+            /* avoid medium style for the bootstrap stuff */
+            div.navbar {
+                /*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+            }
+            
+            hgroup {
+                position: relative;
+                left: 80px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ddd;
+                width: 500px;
+            }
+            
+            h1 {
+                font-size: 22px;
+                -webkit-font-smoothing: subpixel-antialiased;
+                /*font-family: Georgia, Palatino, serif;*/
+                width: 500px;
+                float: left;
+                top: 3px;
+                position: relative;
+            }
+            
+            h1 a {
+                color: black;
+                text-decoration: none;
+            }
+            
+            h2 {
+                font-size: 12px;
+                color: #444;
+                line-height: 18px;
+                padding: 15px 0px;
+                border-bottom: 1px solid #ddd;
+                border-top: 1px solid #ddd;
+            }
+            
+            h2 p {
+                font-size: 12px;
+                line-height: 18px;
+                margin-bottom: 5px;
+            }
+            
+            h2 p:last-child {
+                margin-bottom: 0px;
+            }
+            
+            h3 {
+                margin-bottom: 10px;
+                font-weight: bold;
+                color: #333;
+                font-size: 18px;
+            }
+            
+            h3 a {
+                text-decoration: none;
+                color: #222;
+            }
+            
+            nav a {
+                padding: 12px 10px !important;
+                font-size: 14px;
+                height: 16px;
+                text-decoration: none;
+                display: block;
+                color: black;
+            }
+            
+            nav a:hover {
+                background: #f8f8f8;
+                color: black;
+            }
+            
+            nav .tab {
+                padding-left: 5px;
+                bottom: 2px;
+                position: relative;
+            }
+            
+            nav .icon, .meta .icon, #search span {
+                background-image: url(http://static.tumblr.com/2krww0e/twXlg1v7c/side.png);
+                display: block;
+                background-repeat: no-repeat;
+                width: 16px;
+                height: 16px;
+                display: inline-block;
+            }
+            
+            em {
+                font-style: italic;
+            }
+            
+            strong {
+                font-weight: bold;
+            }
+            
+            a {
+                color: #0f6692;
+                text-decoration: none;
+                -webkit-transition: .2s color linear;
+                -moz-transition: .2s color linear;
+                transition: .2s color linear;
+            }
+            
+            a:hover {
+                color: #dd60b9;
+            }
+            
+            a:active {
+                color: #3689B3;
+            }
+            
+            p {
+                margin-bottom: 10px;
+                line-height: 1.23;
+                /*font-family: "PT Serif",serif;*/
+                /*font-size: 17px;*/
+                line-height: 1.4;
+                word-wrap: break-word;
+                font-size: small;
+                font-weight: normal;
+            }
+            
+            blockquote {
+                font-size: 18px;
+                font-weight: bold;
+                color: #444;
+                margin: 15px 0px;
+                border-left: 5px solid #ddd;
+                padding-left: 10px;
+            }
+            
+            blockquote, .quote, .question, .link, h3 {
+               /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+            }
+            /*
+            .prettyprint{
+                display: inline-block;
+                width: auto;
+                overflow: auto;
+                /* done coz somehow tomorrow night eighties seem to have some issues. hm*//*
+                background: none !important;
+                padding-left: 2% !important;
+                background: #D3D3D3 !important;
+                border: none !important;
+                border-radius: 7px;
+            }*/
+            
+            #tumblr_controls {
+                position: fixed !important;
+                top: 0px;
+                right: 0px;
+            }
+                        
+            
+            #subheader {
+                border-bottom: 1px solid #ddd;
+                position: relative;
+                padding: 18px 0px 10px;
+                left: 80px;
+                margin-bottom: 40px;
+                width: 500px;
+                color: #222;
+                /*font-family: Georgia, Palatino, serif;*/
+                font-size: 15px;
+                line-height: 28px;
+                -webkit-font-smoothing: subpixel-antialiased;
+                -moz-font-smoothing: subpixel-antialiased;
+                font-smoothing: subpixel-antialiased;
+            }
+            
+            #subheader .links span:after {
+                content: "/";
+                padding-left: 6px;
+                padding-right: 4px;
+                color: #bbb;
+            }
+            
+            #subheader .links span:last-child:after {
+                content: "";
+                padding: 0;
+            }
+            
+            #subheader a {
+                color: #444;
+                border-bottom: 1px solid #bbb;
+                padding-bottom: 1px;
+            }
+            
+            #subheader a:hover {
+                color: black;
+            }
+            
+            
+            
+            #search {
+                float: left;
+                padding: 5px;
+                background: #eee;
+                border-radius: 5px;
+                width: 136px;
+            }
+            
+            #search span {
+                position: relative;
+                top: 1px;
+                left: 2px;
+                z-index: 5;
+            }
+            
+            #search form {
+                display: inline;
+            }
+            
+            #search .searchbar {
+                background: #eee;
+                outline: none;
+                border: none;
+                width: 120px;
+                -webkit-appearance: none;
+                font-size: 14px;
+                height: 16px;
+                position: relative;
+                left: -3px;
+                bottom: 1px;
+            }
+            
+            #search .submit {
+                visibility: hidden;
+                width: 0;
+                height: 0;
+                padding: 0;
+                border: none;
+                -webkit-appearance: none;
+                outline: none;
+            }
+            
+            #pagination {
+                /*margin-left: 80px;
+                width: 500px;*/
+                position: relative;
+                height: 64px;
+                /*this is to neutralize credits overlapping with this*/
+                top: 58px;
+            }
+            
+            #pagination a {
+                /*text-indent: -9999px;
+                color: rgba(0, 0, 0, 0);
+                background: url(http://static.tumblr.com/2krww0e/yL9lg1v8a/nav.png) center center no-repeat;
+                width: 64px;
+                height: 64px;
+                display: display;
+                position: absolute;
+                border-radius: 32px;*/
+                font-size: 1.1 rem;
+            }
+            
+            #pagination a:hover {
+                opacity: .5;
+            }
+            
+            #pagination a.next {
+                top: 0px;
+                right: 0px;
+            }
+            
+            #pagination a.previous {
+                top: 0px;
+                left: 0px;
+                -webkit-transform: rotate(180deg);
+                -moz-transform: rotate(180deg);
+                transform: rotate(180deg);
+            }
+            
+            #pagination + .credit {
+                top: -45px;
+            }
+            
+            .post {
+                /*margin-left: 80px;*/
+            }
+            
+            .text ul {
+                color: #222;
+                margin: 15px 0px;
+                margin-left: 20px;
+            }
+            
+            .text ul li {
+                list-style: disc;
+                margin: 8px 0px;
+            }
+            
+            .link {
+                font-weight: bold;
+                font-size: 20px;
+                text-decoration: none;
+            }
+            
+            .quote, .question {
+                font-size: 24px;
+                line-height: 30px;
+                text-indent: -10px;
+            }
+            
+            .asker {
+                margin-bottom: 20px;
+            }
+            
+            .pic {
+                border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+            }
+            
+            .chat h3 {
+                margin-bottom: 20px;
+            }
+            
+            .chat ul {
+                color: #222;
+            }
+            
+            .chat li {
+                padding: 5px 8px;
+            }
+            
+            .chat li.odd {
+                padding: 10px 8px;
+            }
+            
+            .chat li.odd:first-child {
+                padding-top: 0px;
+            }
+            
+            .chat li.even {
+                background: #eee;
+                border-radius: 5px;
+            }
+            
+            .type {
+                display: block;
+                width: 32px;
+                height: 32px;
+                color: rgba(0, 0, 0, 0);
+                text-indent: -9999px;
+                position: relative;
+                top: 0px;
+                left: -60px;
+                margin-bottom: -32px;
+                /*background-image: url(http://static.tumblr.com/2krww0e/wUUlg24wz/type.png);*/
+                background-image: url(http://static.tumblr.com/gltvynn/RDgmx8lb7/open_book.png);
+                background-position-y: 15px;
+                background-repeat: no-repeat;
+            }
+            
+            .meta {
+                font-size: 12px;
+                color: #222;
+                display: block;
+                /*width: 500px;*/
+                position: relative;
+                left: 80px;
+                height: 20px;
+                margin-top: 30px;
+                padding-bottom: 20px;
+                /*margin-bottom: 50px;*/
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .meta a {
+                text-decoration: none;
+                margin-right: 8px;
+                color: #222;
+            }
+            
+            .meta a:hover {
+                color: #222;
+            }
+            
+            .meta .metathing {
+                opacity: .4;
+                -webkit-transition: .2s opacity linear;
+                -moz-transition: .2s opacity linear;
+                transition: .2s opacity linear;
+            }
+            
+            .meta .metathing:hover {
+                opacity: 1;
+                color: #222 !important;
+            }
+            
+            .meta .icon {
+                background-image: url(http://static.tumblr.com/2krww0e/Lfslg1v8q/meta.png);
+                position: relative;
+                top: 3px;
+                right: 3px;
+            }
+            
+            .clear { clear: both; display: block; overflow: hidden; visibility: hidden; width: 0; height: 0; }
+            
+            ol.notes {
+                padding-top: 30px;
+                margin: -40px 0px 20px;
+                position: relative;
+                left: 80px;
+                list-style-type: none;
+                width: 500px;
+                font-size: 14px;
+                /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+            }
+            
+            ol.notes a {
+                text-decoration: none;
+            }
+            
+            ol.notes .more_notes_link {
+                font-weight: bold;
+            }
+
+            ol.notes li.note {
+                padding: 10px 0px;
+                color: #444;
+            }
+
+            ol.notes li.note img.avatar {
+                vertical-align: -4px;
+                margin-right: 10px;
+                width: 16px;
+                height: 16px;
+            }
+            
+            ol.notes li.note span.action a {
+                border-bottom: 1px solid #ddd;
+                color: black;
+            }
+
+            ol.notes li.note .answer_content {
+                font-weight: normal;
+            }
+
+            ol.notes li.note blockquote {
+                border-color: #eee;
+                padding: 4px 10px;
+                font-size: 14px;
+                font-weight: normal;
+                margin: 10px 0px 0px 25px;
+                line-height: 20px;
+            }
+
+            ol.notes li.note blockquote a {
+                text-decoration: none;
+                border-bottom: none;
+                color: black;
+            }
+            
+            .credit {
+                font-size: 13px;
+                text-align: center;
+                width: 500px;
+                position: relative;
+                left: 80px;
+            }
+            
+            .credit a {
+                background: #eee;
+                border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                padding: 5px 8px;
+                color: #444;
+                -webkit-transition: .2s background linear;
+                -moz-transition: .2s background linear;
+                transition: .2s background linear;
+            }
+            
+            .credit a:hover {
+                background: #ddd;
+            }
+
+            table#postsPlusRecent{
+                border-collapse: separate;
+                border-spacing: 7px;
+            }
+
+            .atss {
+                top: 45% !important;
+            }
+
+            .pace .pace-progress {
+                background: #cc181e;
+                position: fixed;
+                z - index: 2000;
+                top: 0;
+                left: 0;
+                height: 2px; - webkit - transition: width 1s; - moz - transition: width 1s; - o - transition: width 1s;
+                transition: width 1s;
+            }
+            .pace.pace-inactive {
+                display: none;
+            }
+            .pace.pace-active{
+                z-index: 9999;
+                position: relative;
+            }
+            .at4-follow-container{
+                height: 104px !important;
+            }
+            .at4-icon-fw {
+                width: 64px !important;
+                height: 64px !important;
+            }
+            .at4-follow{
+                top: 31px !important;
+                right: -24px !important;
+            }
+            .at4-logo{
+                display: none !important;
+            }
+            .mycode{
+                background: #D3D3D3 !important;
+                border-radius: 3px;
+            }
+            .italic{
+                font-style: italic;
+            }
+            /* so that follow icons are always shown */
+            .fadeOutRight {
+                -webkit-animation: none !important;
+                -moz-animation: none !important;
+                -o-animation: none!important;
+                animation: none !important;
+            }
+            .fadeInRight {
+                -webkit-animation: none !important;
+                -moz-animation: none !important;
+                -o-animation: none!important;
+                animation: none !important;
+            }
+            .slideOutRight {
+                -webkit-animation: none !important;
+                -moz-animation: none !important;
+                -o-animation: none!important;
+                animation: none !important;
+            }
+            .slideInRight {
+                -webkit-animation: none !important;
+                -moz-animation: none !important;
+                -o-animation: none!important;
+                animation: none !important;
+            }
+            .at4-hide {
+                display: block!important;
+            }
+            #conversation li.post{
+                background-color: lightsteelblue;
+                border-radius: 34px;
+                margin-bottom: 5px;
+            }
+            
+            #conversation li.post ul.children{
+                background-color: lightgrey;
+                border-radius: 34px;
+                margin-bottom: 5px;
+            }
+
+            /* formatting disqus */
+            #disqus_thread .post{
+                border: 1px solid #ccc;
+                -webkit-border-radius: 3px;
+                -ms-border-radius: 3px;
+                border-radius: 3px;
+                -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                -ms-box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                margin-bottom: 7px;
+            }
+
+            /*post headings*/
+            .post-heading {
+            }
+            code {
+                /* medium */
+               color: #21D;
+            }
+            /*indent for answers*/
+            .indent5 {
+                padding-left: 5%;
+            }
+            /*rm dirty arrow*/
+            #at4m-dock-toggle {
+                display: none;
+            }
+            .article-tag {
+                font-size: 10px;
+                height: 20px;
+                line-height: 20px;
+                margin: 3px 3px 3px 0;
+                padding: 0 6px;
+                -moz-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                border-radius: 3px;
+                background: #B2DFEE;
+                display: inline-block;
+                /*float: left;*/
+                max-width: 80px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                cursor: pointer;
+            }
+
+            .rotate-mirror {
+                -moz-transform: scale(-1, 1);
+                -webkit-transform: scale(-1, 1);
+                -o-transform: scale(-1, 1);
+                -ms-transform: scale(-1, 1);
+                transform: scale(-1, 1);
+            }
+
+            .color-green {
+                color: green;
+            }
+
+            .color-red {
+                color: red;
+            }
+
+            sup.valign-super {
+                vertical-align: middle;/*super;*/
+            }
+
+            /* my own media queries */
+           @media screen and (min-device-width:1024px){
+                    #wrapper {
+                            margin: auto;
+                            width: 70%;/*65%;*/
+                            padding: 0px;
+                            }
+                    .table-cell{
+                        display: table-cell !important;
+                    }
+            }
+
+            @media screen and (min-device-width:768px) and (max-device-width:1024px){
+                    #wrapper {
+                            margin: auto;
+                            width: 701px;
+                            padding: 0px;
+                            }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            @media screen and (min-device-width:479px) and (max-device-width:767px){
+                    #wrapper {
+                            margin: 0;
+                        
+                            padding: 0;
+                            }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            @media screen and (max-device-width:480px){
+                    #wrapper {
+                            margin: 0;                        
+                            padding: 0;
+                            }
+                    .post {
+                            margin-left: 2px;
+                            }
+                    body, #posts{
+                            overflow-x: hidden;
+                        }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            @media screen and (min-width:1024px){
+                    #wrapper {
+                            margin: auto;
+                            width: 70%;/*65%*/
+                            padding: 0px;
+                            }
+                    .table-cell{
+                        display: table-cell !important;
+                    }
+            }
+
+            @media screen and (min-width:768px) and (max-width:1024px){
+                    #wrapper {
+                            margin: auto;
+                            width: 701px;
+                            padding: 0px;
+                            }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            @media screen and (min-width:479px) and (max-width:767px){
+                    #wrapper {
+                            margin: 0;
+                        
+                            padding: 0;
+                            }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            @media screen and (max-width:480px){
+                    #wrapper {
+                            margin: 0;                        
+                            padding: 0;
+                            }
+                    .post {
+                            margin-left: 2px;
+                            }
+                    body, #posts {
+                            overflow-x: hidden;
+                        }
+                    img#banner-img-techi{
+                            display: none;
+                        }
+                    .visible-desktop{
+                        display: none !important;
+                    }
+            }
+            
+            /* mozilla fix - not reqd anymore
+            @-moz-document url-prefix() {
+                .post {
+                    width: 500px;
+                }
+            } */
+
+
+            /* new title css follows */
+            @media screen and (max-device-width : 480px) {
+              
+              .title {
+                padding: 50px 0 !important;
+              }
+              
+              .title section.text {
+                width: 75% !important;
+              }
+              
+              .title h3 {
+                width: 85% !important;
+                font: 800 32px/32px "open sans" !important;
+                margin: 0 0 16px 0 !important;
+              }
+              
+              .title h3 a {
+                font: 800 30px/30px "gentium book basic" sans-serif !important;
+                text-transform: none !important;
+                color: #222;
+                line-height: 0.8;
+              }
+              
+              .title h6 {
+                width: 85% !important;
+                font: 800 14px/14px "open sans" !important;
+              }
+
+              table#postsPlusRecent {
+                border-collapse: collapse;
+              }
+            }
+
+            .title {
+              background: rgb(227, 227, 227); /*#098D43;*/
+              padding: 40px 0 10px 0;
+            }
+
+            .title section.text {
+              margin: 0 auto;
+              width: 50%;
+            }
+
+            .title h3 {
+              color: #222;
+              font: 800 64px/64px "open sans";
+              margin: 0 0 32px 0;
+              text-align: center;
+              text-transform: uppercase;
+              width: 100%;
+            }
+
+            .title h3 a {
+              font: 600 50px/70px Monaco, "Lucida Sans";
+              text-transform: none;
+              color: #222;
+              line-height: 0.1;
+              letter-spacing: -0.07em;
+            }
+
+            .title h6 {
+              /*border-top: 1px solid #222222;*/
+              color: #222;
+              font: 800 20px/20px Monaco, "Lucida Sans";
+              margin: 0 0 20px 0;
+              text-align: center;
+            }
+
+            .title h6 a {
+              color: #222;
+              text-decoration: none;
+              background: rgb(227, 227, 227);/*#098D43;*/
+              padding: 0 20px;
+              position: relative;
+              top: -10px;
+            }
+
+            .navbar-fixed-top {
+          margin-bottom: 0px;
+        }
+        pre.prettyprint {
+            padding-left: 2%;
+        }
+        .height350 {
+            height: 350px;
+        }
+            /* end of my own*/
+            
+        </style>
+        
+        
+    <link rel="alternate" href="android-app://com.tumblr/tumblr/x-callback-url/blog?blogName=arjunsreedharan%26postID=82710718100" />
+<link rel="alternate" href="ios-app://305343404/tumblr/x-callback-url/blog?blogName=arjunsreedharan&postID=82710718100" />
+<link rel="alternate" type="application/json+oembed" href="https://www.tumblr.com/oembed/1.0?url=http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel" title="Kernel 101 &ndash; Let&#039;s write a Kernel
+Hello World,
+Let us write a simple kernel which could be loaded with the GRUB bootloader on an x86 system. This kernel will display a message on the screen and then hang.
+How does an x86 machine boot
+Before we think..."/>
+<script src="http://assets.tumblr.com/assets/scripts/tumblelog_post_message_queue.js?_v=cf140c0f1704d59bad98d3be7adddfde"></script>
+
+<meta name="keywords" content="kernel,operating system,c,asm,assembly" />
+
+<!-- BEGIN TUMBLR FACEBOOK OPENGRAPH TAGS --><!-- If you'd like to specify your own Open Graph tags, define the og:url and og:title tags in your theme's HTML. --><!-- Read more: http://ogp.me/ --><meta property="fb:app_id" content="48119224995" /><meta property="og:site_name" content="Arjun Sreedharan" /><meta property="og:title" content="Kernel 101 &ndash; Let&#039;s write a Kernel" /><meta property="og:url" content="http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel" /><meta property="og:description" content="Hello World,
+Let us write a simple kernel which could be loaded with the GRUB bootloader on an x86 system. This kernel will display a message on the screen and then hang.
+How does an x86 machine..." /><meta property="og:determiner" content="a" /><meta property="og:type" content="tumblr-feed:entry" /><meta property="og:image" content="//static.tumblr.com/gltvynn/MDYn443cj/one-does-not-kernel.jpg" /><meta property="og:image" content="//static.tumblr.com/gltvynn/yOdn443dr/mkernel.png" /><meta property="al:ios:url" content="tumblr://x-callback-url/blog?blogName=arjunsreedharan&amp;postID=82710718100" /><meta property="al:ios:app_name" content="Tumblr" /><meta property="al:ios:app_store_id" content="305343404" /><meta property="al:android:url" content="tumblr://x-callback-url/blog?blogName=arjunsreedharan&amp;postID=82710718100" /><meta property="al:android:app_name" content="Tumblr" /><meta property="al:android:package" content="com.tumblr" /><!-- END TUMBLR FACEBOOK OPENGRAPH TAGS -->
+
+
+<!-- GOOGLE CAROUSEL --><script type="application/ld+json">{"@type":"SocialMediaPosting","url":"http:\/\/arjunsreedharan.org\/post\/82710718100\/kernel-101-lets-write-a-kernel","mainEntityOfPage":true,"datePublished":"2014-04-14T19:12:00-04:00","author":"arjunsreedharan","image":{"@list":["\/\/static.tumblr.com\/gltvynn\/MDYn443cj\/one-does-not-kernel.jpg","\/\/static.tumblr.com\/gltvynn\/yOdn443dr\/mkernel.png"]},"headline":"Kernel 101 \u2013 Let\u0027s write a Kernel","articleBody":"Hello World,\nLet us write a simple kernel which could be loaded with the GRUB bootloader on an x86 system. This kernel will display a message on the screen and then hang.\nHow does an x86 machine boot\nBefore we think about writing a kernel, let\u2019s see how the machine boots up and transfers control to...","@context":"http:\/\/schema.org"}</script>
+<link rel="canonical" href="http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel" />
+
+</head>
+    
+    <body>
+    <!-- Hero nav bar
+    ================================================== -->
+     <div class="navbar navbar-inverse navbar-fixed-top navbar-static-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="//arjunsreedharan.org" style="padding: 10px 20px 10px !important; margin-left: -20px !important; float: left !important; color: #999 !important; font-weight:normal;">&nbsp;&nbsp;&nbsp;arjunsreedharan.org</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Blog</a></li>
+              <li><a href="/about#about">About</a></li>
+              <li><a href="/about#contact">Contact</a></li>
+              <li><a href="/archives">Archives</a></li>
+            </ul>
+            <a rel="author" class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//plus.google.com/114343156450474164385?rel=author">Google+</a>
+            <a class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//linkedin.com/pub/arjun-sreedharan/5b/89/8a9">LinkedIn</a>
+            <a class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//github.com/arjun024">Github</a>
+            <a class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//facebook.com/arjun024">Facebook</a>
+            <a class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//twitter.com/arjun024">Twitter</a>
+            <a class="btn btn-primary pull-right hidden-desktop" target="_blank" href="//cs.umass.edu/~asreedharan">UMass Amherst</a>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <!--<img id="banner-img-techi" alt="Welcome to ArjunSreedharan.org" class="mymeg meg" width="100%" src="//static.tumblr.com/gltvynn/fhgmym28k/mymeg.jpg">-->
+
+
+    <!--  ================================================== -->
+    <div id="wrapper">
+        <table id="postsPlusRecent">
+            <tbody>
+                <tr>
+                    <td class="post_and_comments" style="width:80%;vertical-align: top;">
+                        <ol id="posts">
+                                           
+                                <li class="post text">
+                                    <span class="type" style="background-position-x: 0px;"></span>
+
+                                    
+
+                                    <div class="title" style="position: absolute;left: 0;right: 0;z-index: 1;">
+                                        <section class="text">
+                                            <h3><a style="text-decoration: none !important;" href="http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel">Kernel 101 &ndash; Let&rsquo;s write a Kernel</a></h3>
+                                            <h6 style="margin-top: 17px !important;"><span><a href="//arjunsreedharan.org">Arjun Sreedharan</a></span></h6>
+                                        </section>
+                                    </div>
+
+                                    <br/>
+                                    
+                                    <!-- align with absolute title above -->
+                                    <p class="title_height_filler" style="padding-top: 500px;"></p>
+                                    
+                                    <p>Hello World,</p><p>Let us write a simple kernel which could be loaded with the GRUB bootloader on an x86 system. This kernel will display a message on the screen and then hang.</p>
+
+<p></p><img src="//static.tumblr.com/gltvynn/MDYn443cj/one-does-not-kernel.jpg" alt="One does simply write a kernel" width="75%"><p><br><br></p>
+<p><b>How does an x86 machine boot</b></p>
+<p>Before we think about writing a kernel, let&rsquo;s see how the machine boots up and transfers control to the kernel:</p>
+<p>Most registers of the x86 CPU have well defined values after power-on. The Instruction Pointer (EIP) register holds the memory address for the instruction being executed by the processor. EIP is hardcoded to the value <b>0xFFFFFFF0</b>. Thus, the x86 CPU is hardwired to begin execution at the physical address 0xFFFFFFF0. It is in fact, the last 16 bytes of the 32-bit address space. This memory address is called reset vector.</p>
+<p>Now, the chipset&rsquo;s memory map makes sure that 0xFFFFFFF0 is mapped to a certain part of the BIOS,
+not to the RAM. Meanwhile, the BIOS copies itself to the RAM for faster access. This is called <b>shadowing</b>. The address 0xFFFFFFF0 will contain just a jump instruction to the address in memory where BIOS has copied itself.</p>
+<p>Thus, the BIOS code starts its execution.&nbsp; BIOS first searches for a bootable device in the configured boot device order. It checks for a certain magic number to determine if the device is bootable or not. (whether bytes 511 and 512 of first sector are <b>0xAA55</b>)</p>
+<p>Once the BIOS has found a bootable device, it copies the contents of the device&rsquo;s first sector into RAM starting from physical address <b>0x7c00</b>; and then jumps into the address and executes the code just loaded. This code is called the <b>bootloader</b>.</p>
+<p>The bootloader then loads the kernel at the physical address <b>0x100000</b>. The address 0x100000 is used as the start-address for all big kernels on x86 machines.</p>
+<p>All x86 processors begin in a simplistic 16-bit mode called <b>real mode</b>. The GRUB bootloader makes the switch to 32-bit <b>protected mode</b> by setting the lowest bit of <code>CR0</code> register to <b>1</b>. Thus the kernel loads in 32-bit protected mode.</p>
+<p>Do note that in case of linux kernel, GRUB detects linux boot protocol and loads linux kernel in real mode. Linux kernel itself <a href="http://t.umblr.com/redirect?z=%2F%2Fgithub.com%2Ftorvalds%2Flinux%2Fblob%2Fmaster%2Farch%2Fx86%2Fboot%2Fmain.c%23L181&amp;t=YTBjMmUxNjZkYmIwYzg3NGM5OTIxYWVjMWE0ZWExZDczNTYwMzM3YyxJVHNWb3BUUw%3D%3D" data-href="//github.com/torvalds/linux/blob/master/arch/x86/boot/main.c#L181" target="_blank">makes the switch</a> to protected mode.</p>
+<p><br><br></p>
+<p><b>What all do we need?</b></p>
+<p>* An x86 computer (of course)<br> * Linux <br> * <a href="http://t.umblr.com/redirect?z=%2F%2Fwww.nasm.us%2F&amp;t=NGRjYjU1M2M1MTQ1NDQxNzExNTllZWQ5ZGFmODljOTA1ODQ0M2YyMCxJVHNWb3BUUw%3D%3D" data-href="//www.nasm.us/" target="_blank">NASM assembler</a><br> * gcc<br> * ld (GNU Linker)<br> * grub</p>
+
+<p><br><br></p>
+<p><b>Source Code</b></p>
+<p>Source code is available at my <a href="http://t.umblr.com/redirect?z=%2F%2Fgithub.com%2Farjun024%2Fmkernel&amp;t=MjAxNjJlMTZhZmMyNjExYWUxMGE1YjEyZWFjYTJmZTI2NzkxOWNmNyxJVHNWb3BUUw%3D%3D" data-href="//github.com/arjun024/mkernel" target="_blank">Github repository - mkernel</a></p>
+
+<p><br><br></p>
+<p><b>The entry point using assembly</b></p>
+<p>We like to write everything in C, but we cannot avoid a little bit of assembly. We will write a small file in x86 assembly-language that serves as the starting point for our kernel. All our assembly file will do is invoke an external function which we will write in C, and then halt the program flow.</p>
+<p>How do we make sure that this assembly code will serve as the starting point of the kernel?</p>
+<p class="indent5">We will use a linker script that links the object files to produce the final kernel executable. (more explained later) &nbsp;In this linker script, we will explicitly specify that we want our binary to be loaded at the address 0x100000. This address, as I have said earlier, is where the kernel is expected to be. Thus, the bootloader will take care of firing the kernel&rsquo;s entry point.</p>
+
+<p>Here&rsquo;s the assembly code:</p>
+
+<pre class="prettyprint lang-asm">;;kernel.asm
+bits 32			;nasm directive - 32 bit
+section .text
+
+global start
+extern kmain	        ;kmain is defined in the c file
+
+start:
+  cli 			;block interrupts
+  mov esp, stack_space	;set stack pointer
+  call kmain
+  hlt		 	;halt the CPU
+
+section .bss
+resb 8192		;8KB for stack
+stack_space:
+</pre>
+<p>The first instruction <code>bits 32</code> is not an x86 assembly instruction. It&rsquo;s a directive to the NASM assembler that specifies it should generate code to run on a processor operating in 32 bit mode. It is not mandatorily required in our example, however is included here as it&rsquo;s good practice to be explicit.</p>
+<p>The second line begins the text section (aka code section). This is where we put all our code.</p>
+<p><code>global</code> is another NASM directive to set symbols from source code as global. By doing so, the linker knows where the symbol <code>start</code> is; which happens to be our entry point.</p>
+<p><code>kmain</code> is our function that will be defined in our <code>kernel.c</code> file. <code>extern</code> declares that the function is declared elsewhere.</p>
+<p>Then, we have the <code>start</code> function, which calls the <code>kmain</code> function and halts the CPU using the <code>hlt</code> instruction. Interrupts can awake the CPU from an <code>hlt</code> instruction. So we disable interrupts beforehand using <code>cli</code> instruction. <code>cli</code> is short for clear-interrupts.</p>
+<p>We should ideally set aside some memory for the stack and point the stack pointer (<code>esp</code>) to it. However, it seems like GRUB does this for us and the stack pointer is already set at this point. But, just to be sure, we will allocate some space in the BSS section and point the stack pointer to the beginning of the allocated memory. We use the <code>resb</code> instruction which reserves memory given in bytes. After it, a label is left which will point to the edge of the reserved piece of memory. Just before the <code>kmain</code> is called, the stack pointer (<code>esp</code>) is made to point to this space using the <code>mov</code> instruction.</p>
+
+<p>&nbsp;</p>
+
+<p><b>The kernel in C</b></p>
+<p>In <code>kernel.asm</code>, we made a call to the function <code>kmain()</code>. So our C code will start executing at <code>kmain()</code>:</p>
+<pre class="prettyprint lang-c">/*
+*  kernel.c
+*/
+void kmain(void)
+{
+	const char *str = "my first kernel";
+	char *vidptr = (char*)0xb8000; 	//video mem begins here.
+	unsigned int i = 0;
+	unsigned int j = 0;
+
+	/* this loops clears the screen
+	* there are 25 lines each of 80 columns; each element takes 2 bytes */
+	while(j &lt; 80 * 25 * 2) {
+		/* blank character */
+		vidptr[j] = ' ';
+		/* attribute-byte - light grey on black screen */
+		vidptr[j+1] = 0x07; 		
+		j = j + 2;
+	}
+
+	j = 0;
+
+	/* this loop writes the string to video memory */
+	while(str[j] != '\0') {
+		/* the character's ascii */
+		vidptr[i] = str[j];
+		/* attribute-byte: give character black bg and light grey fg */
+		vidptr[i+1] = 0x07;
+		++j;
+		i = i + 2;
+	}
+	return;
+}
+</pre>
+<p>All our kernel will do is clear the screen and write to it the string &ldquo;my first kernel&rdquo;.</p>
+<p>First we make a pointer <code>vidptr</code> that points to the address <b>0xb8000</b>. This address is the start of video memory in protected mode. The screen&rsquo;s text memory is simply a chunk of memory in our address space. The memory mapped input/output for the screen starts at 0xb8000 and supports 25 lines, each line contain 80 ascii characters.</p>
+<p>Each character element in this text memory is represented by 16 bits (2 bytes), rather than 8 bits (1 byte) which we are used to. &nbsp;The first byte should have the representation of the character as in ASCII. The second byte is the <code>attribute-byte</code>. This describes the formatting of the character including attributes such as color.</p>
+<p>To print the character <code>s</code> in green color on black background, we will store the character <code>s</code> in the first byte of the video memory address and the value 0x02 in the second byte. <br><code>0</code> represents black background and <code>2</code> represents green foreground.</p>
+<p><br> Have a look at table below for different colors:</p>
+<pre>0 - Black, 1 - Blue, 2 - Green, 3 - Cyan, 4 - Red, 5 - Magenta, 6 - Brown, 7 - Light Grey, 8 - Dark Grey, 9 - Light Blue, 10/a - Light Green, 11/b - Light Cyan, 12/c - Light Red, 13/d - Light Magenta, 14/e - Light Brown, 15/f &ndash; White.</pre>
+<p><br><br></p>
+
+<p>In our kernel, we will use light grey character on a black background. So our attribute-byte must have the value 0x07.</p>
+<p>In the first while loop, the program writes the blank character with 0x07 attribute all over the 80 columns of the 25 lines. This thus clears the screen.</p>
+<p>In the second while loop, characters of the null terminated string &ldquo;my first kernel&rdquo; are written to the chunk of video memory with each character holding an attribute-byte of 0x07.</p>
+<p>This should display the string on the screen.</p>
+
+<p><br><br></p>
+<p><b>The linking part</b></p>
+<p>We will assemble <code>kernel.asm</code> with NASM to an object file; and then using GCC we will compile <code>kernel.c</code> to another object file. Now, our job is to get these objects linked to an executable bootable kernel.<br><br> For that, we use an explicit linker script, which can be passed as an argument to <code>ld</code> (our linker).</p>
+<pre class="prettyprint lang-ld">/*
+*  link.ld
+*/
+OUTPUT_FORMAT(elf32-i386)
+ENTRY(start)
+SECTIONS
+ {
+   . = 0x100000;
+   .text : { *(.text) }
+   .data : { *(.data) }
+   .bss  : { *(.bss)  }
+ }
+</pre>
+<p>First, we set the <b>output format</b> of our output executable to be 32 bit <a href="http://t.umblr.com/redirect?z=%2F%2Felinux.org%2FExecutable_and_Linkable_Format_%28ELF%29&amp;t=NmQ1ZmZmZTI3ZDk2NWEyZmM3NmUzMTU0OTJjYzEzZTYyN2E0N2UyZSxJVHNWb3BUUw%3D%3D" data-href="//elinux.org/Executable_and_Linkable_Format_(ELF)" target="_blank">Executable and Linkable Format</a> (ELF). ELF is the standard binary file format for Unix-like systems on x86 architecture.</p>
+<p><b>ENTRY</b> takes one argument. It specifies the symbol name that should be the entry point of our executable.</p>
+<p><b>SECTIONS</b> is the most important part for us. Here, we define the layout of our executable. We could specify how the different sections are to be merged and at what location each of these is to be placed.</p>
+<p>Within the braces that follow the SECTIONS statement, the period character (.) represents the<b> location counter</b>.<br> The location counter is always initialized to 0x0 at beginning of the SECTIONS block. It can be modified by assigning a new value to it.</p>
+<p>Remember, earlier I told you that kernel&rsquo;s code should start at the address 0x100000. So, we set the location counter to 0x100000.</p>
+<p>Have look at the next line <b>.text : { *(.text) }</b></p>
+<p>The asterisk (*) is a wildcard character that matches any file name. The expression<code> *(.text)</code> thus means all <code>.text</code> input sections from all input files.<br><br> So, the linker merges all text sections of the object files to the executable&rsquo;s text section, at the address stored in the location counter. Thus, the code section of our executable begins at 0x100000.</p>
+<p>After the linker places the text output section, the value of the location counter will become <br> 0x1000000 + the size of the text output section.</p>
+<p>Similarly, the data and bss sections are merged and placed at the then values of location-counter.</p>
+
+<p><br><br></p>
+<p><b>Grub and Multiboot</b></p>
+<p>Now, we have all our files ready to build the kernel. But, since we like to boot our kernel with the <a href="http://t.umblr.com/redirect?z=%2F%2Fwww.gnu.org%2Fsoftware%2Fgrub%2F&amp;t=MDIzMGFkODQ3ZTZiMWE2YWUxODI2ZjgwZTMzMWI0MzY1OWNjM2I4MixJVHNWb3BUUw%3D%3D" data-href="//www.gnu.org/software/grub/" target="_blank">GRUB bootloader</a>, there is one step left.</p>
+<p>There is a standard for loading various x86 kernels using a boot loader; called as <b>Multiboot specification</b>.</p>
+<p>GRUB will only load our kernel if it complies with the <a href="http://t.umblr.com/redirect?z=%2F%2Fwww.gnu.org%2Fsoftware%2Fgrub%2Fmanual%2Fmultiboot%2Fmultiboot.html&amp;t=MTg1NDA4ZWFhMWI3NzRjNjU0ZDkxODI3MmRhYzZkYWU2YjBiYTY0NixJVHNWb3BUUw%3D%3D" data-href="//www.gnu.org/software/grub/manual/multiboot/multiboot.html" target="_blank">Multiboot spec</a>.</p>
+<p>According to the spec, the kernel must contain a header (known as Multiboot header) within its first 8 KiloBytes.</p>
+<p>Further, This Multiboot header must contain 3 fields that are 4 byte aligned namely:</p>
+<ul><li>a <b>magic</b> field: containing the magic number <b>0x1BADB002</b>, to identify the header.</li>
+<li>a <b>flags</b> field: We will not care about this field. We will simply set it to zero.</li>
+<li>a <b>checksum</b> field: the checksum field when added to the fields &lsquo;magic&rsquo; and &lsquo;flags&rsquo; must give zero.</li>
+</ul><p>So our <code>kernel.asm</code> will become:</p>
+<pre class="prettyprint lang-asm">;;kernel.asm
+
+;nasm directive - 32 bit
+bits 32
+section .text
+        ;multiboot spec
+        align 4
+        dd 0x1BADB002            ;magic
+        dd 0x00                  ;flags
+        dd - (0x1BADB002 + 0x00) ;checksum. m+f+c should be zero
+
+global start
+extern kmain	        ;kmain is defined in the c file
+
+start:
+  cli 			;block interrupts
+  mov esp, stack_space	;set stack pointer
+  call kmain
+  hlt		 	;halt the CPU
+
+section .bss
+resb 8192		;8KB for stack
+stack_space:
+</pre>
+<p>The <b>dd</b> defines a double word of size 4 bytes. <br><br></p>
+<p><b>Building the kernel</b></p>
+<p>We will now create object files from <code>kernel.asm</code> and <code>kernel.c</code> and then link it using our linker script.</p>
+<pre class="prettyprint lang-sh">nasm -f elf32 kernel.asm -o kasm.o
+</pre>
+<p>will run the assembler to create the object file kasm.o in ELF-32 bit format.</p>
+<pre class="prettyprint lang-sh">gcc -m32 -c kernel.c -o kc.o
+</pre>
+<p>The &rsquo;-c &rsquo; option makes sure that after compiling, linking doesn&rsquo;t implicitly happen.</p>
+<pre class="prettyprint lang-sh">ld -m elf_i386 -T link.ld -o kernel kasm.o kc.o
+</pre>
+<p>will run the linker with our linker script and generate the executable named <b>kernel</b>.</p>
+<p><br><br></p>
+<p><b>Configure your grub and run your kernel</b></p>
+<p>GRUB requires your kernel to be of the name pattern <code>kernel-&lt;version&gt;</code>. So, rename the kernel. I renamed my kernel executable to kernel-701.</p>
+<p>Now place it in the <b>/boot</b> directory. You will require superuser privileges to do so.</p>
+<p>In your GRUB configuration file <code>grub.cfg</code> you should add an entry, something like:</p>
+<pre>title myKernel
+	root (hd0,0)
+	kernel /boot/kernel-701 ro
+</pre>
+<p><br><br></p>
+<p>Don&rsquo;t forget to remove the directive <code>hiddenmenu</code> if it exists.</p>
+
+<p>Reboot your computer, and you&rsquo;ll get a list selection with the name of your kernel listed.</p>
+<p>Select it and you should see:</p>
+<img src="//static.tumblr.com/gltvynn/yOdn443dr/mkernel.png" alt="image"><p></p>
+<p>That&rsquo;s your kernel!!</p>
+
+<p><br><br></p>
+<p><b>PS:<br></b>
+</p>* It&rsquo;s always advisable to get yourself a virtual machine for all kinds of kernel hacking.
+* To run this on <b>grub2&nbsp;</b>which is the default bootloader for newer distros, your config should look like this:
+<pre class="prettyprint">menuentry 'kernel 7001' {
+	set root='hd0,msdos1'
+	multiboot /boot/kernel-7001 ro
+}
+</pre>
+<p><br><br></p>
+* Also, if you want to run the kernel on the <code>qemu</code> emulator instead of booting with GRUB, you can do so by:
+<pre class="prettyprint lang-sh">qemu-system-i386 -kernel kernel</pre>
+
+<p>Also, see the next article in the Kernel series:<br><a href="http://arjunsreedharan.org/post/99370248137/kernel-201-lets-write-a-kernel-with-keyboard-and" target="_blank">Kernel 201 - Let&rsquo;s write a Kernel with keyboard and screen support</a></p>
+<br><br><p><b>References and Thanks</b></p>
+<ol><li>1. <a href="http://t.umblr.com/redirect?z=%2F%2Fwiki.osdev.org%2F&amp;t=MzEzYzdiMDE0YjA4NTM2YzdmMWFmMzU1YmFhYzg4YzE1Yzg5N2ViMyxJVHNWb3BUUw%3D%3D" data-href="//wiki.osdev.org/" target="_blank">wiki.osdev.org</a></li>
+<li>2. <a href="http://t.umblr.com/redirect?z=%2F%2Fwww.osdever.net%2F&amp;t=YmU1YWRlYzNkMGJjMjQzNmE1N2Y3NGU4MjE3MzRkMzViNDc3MDExMyxJVHNWb3BUUw%3D%3D" data-href="//www.osdever.net/" target="_blank">osdever.net</a></li>
+<li>3. <a href="http://t.umblr.com/redirect?z=http%3A%2F%2Fwww.gnu.org%2Fsoftware%2Fgrub%2Fmanual%2Fmultiboot%2Fmultiboot.html&amp;t=OTM4YTFhZmM4YzRhOGUzNjEzZjQ4ZWIzMjAwZTkyMWFkMTkyNGJlMSxJVHNWb3BUUw%3D%3D" data-href="http://www.gnu.org/software/grub/manual/multiboot/multiboot.html" target="_blank">Multiboot spec</a></li>
+<li>4. Thanks to <a href="http://t.umblr.com/redirect?z=%2F%2Frubenlaguna.com%2F&amp;t=ODI3YTk4NzliNjMyNTA5M2I1MWU2MzMzZmNlOWQyNDQ5NGYyZjUxNixJVHNWb3BUUw%3D%3D" data-href="//rubenlaguna.com/" target="_blank">Rub&eacute;n Laguna</a> from comments for grub2 config</li>
+</ol>
+                                </li>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                <div class="meta" style="left: 0px;">
+                                    <span class="metathing"><span class="icon" style="background-position: 0px 0px;"></span><a href="http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel">3:12 PM 14th April 2014</a></span>
+                                    <span class="metathing"><span class="icon" style="background-position: -32px 0px;"></span><a href="http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel#notes">64 notes</a></span>
+                                    
+                                    
+                                </div>
+                                
+                                
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/kernel">kernel</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/operating-system">operating system</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/c">c</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/asm">asm</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/assembly">assembly</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/x86">x86</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/cpu">cpu</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/booting">booting</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/programming">programming</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/bootloader">bootloader</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/grub">grub</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/nasm">nasm</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/ld">ld</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/gcc">gcc</a>
+                                   
+                                      <a rel="tag" class="article-tag" href="http://arjunsreedharan.org/tagged/technology">technology</a>
+                                   
+                                
+                                <br/><br/><br/><br/><br/><br/><br/><br/>
+                            
+                            <p class="credit disclaimer visible-desktop" style="line-height: 14px; left:0px">Disclaimer: The views expressed here are solely those of the author in his private capacity and do not in any way represent the views of the author's employer or any organization associated with the author.</p>
+                            <!-- reddit count -->
+                            <div id="reddit-stuff">
+                                <a class="reddit-article-links" href=""><span id="reddit-point-count" style="font-weight:bold;font-size:30px;"></span> points</a>
+                                <a class="reddit-article-links" href=""><img style="height:40px;width:40px;" src="//www.redditstatic.com/icon-touch.png"></a>
+                            </div>
+                            <!-- start disqus -->
+                            
+                                <div id="disqus_thread"></div>
+                                <script type="text/javascript">
+                                    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                                    var disqus_identifier = window.location.pathname;
+                                    var disqus_shortname = 'arjun024'; // Required - Replace example with your forum shortname
+                        if(disqus_identifier != "/" && !(/page\/\d/.test(disqus_identifier))){ // i wrote this to avoid comments on home screen or during pagination
+                                    /* * * DON'T EDIT BELOW THIS LINE * * */
+                                    (function() {
+                                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                    })();
+                        }
+                                </script>
+                            
+                            <!-- end disqus -->
+                            <ol class="notes"><!-- START NOTES --><li class="note like tumblelog_funckeee without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://funckeee.tumblr.com/" title=" " rel="nofollow"><img src="http://assets.tumblr.com/images/default_avatar/sphere_closed_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://funckeee.tumblr.com/" title="" rel="nofollow">funckeee</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_hacktheblog without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://hacktheblog.tumblr.com/" title="Hack the Blog " rel="nofollow"><img src="http://assets.tumblr.com/images/default_avatar/octahedron_open_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://hacktheblog.tumblr.com/" title="Hack the Blog" rel="nofollow">hacktheblog</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_feelzonwheelz without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://feelzonwheelz.tumblr.com/" title=" " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_4073986b62b1_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://feelzonwheelz.tumblr.com/" title="" rel="nofollow">feelzonwheelz</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_sputnik-schlaeft without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://sputnik-schlaeft.tumblr.com/" title="Hang the DJ " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_580526e4dd1b_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://sputnik-schlaeft.tumblr.com/" title="Hang the DJ" rel="nofollow">sputnik-schlaeft</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_the-friend-with-little-benefits without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://the-friend-with-little-benefits.tumblr.com/" title="The Friend With Little Benefits " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_fc9c41411a6f_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://the-friend-with-little-benefits.tumblr.com/" title="The Friend With Little Benefits" rel="nofollow">the-friend-with-little-benefits</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_katrona without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://katrona.tumblr.com/" title="Cats Are Weird? " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_e72c951dee21_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://katrona.tumblr.com/" title="Cats Are Weird?" rel="nofollow">katrona</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_saken-mx without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://saken-mx.tumblr.com/" title="Untitled " rel="nofollow"><img src="http://assets.tumblr.com/images/default_avatar/cube_open_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://saken-mx.tumblr.com/" title="Untitled" rel="nofollow">saken-mx</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_abducode without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://abducode.tumblr.com/" title="كود يومي " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_640f9f4c49ab_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://abducode.tumblr.com/" title="كود يومي" rel="nofollow">abducode</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_blackmesasecurity without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://blackmesasecurity.tumblr.com/" title="Kilroy Was Here " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_373c4bdd63ee_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://blackmesasecurity.tumblr.com/" title="Kilroy Was Here" rel="nofollow">blackmesasecurity</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_optiklab without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://optiklab.tumblr.com/" title="ВоITи и выITи " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_050f50854542_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://optiklab.tumblr.com/" title="ВоITи и выITи" rel="nofollow">optiklab</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_rconnor without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://rconnor.tumblr.com/" title="Not yet " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_752e29d1214e_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://rconnor.tumblr.com/" title="Not yet" rel="nofollow">rconnor</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_asaphprado without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://asaphprado.tumblr.com/" title="HOME.MD " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_5582e22a60ef_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://asaphprado.tumblr.com/" title="HOME.MD" rel="nofollow">asaphprado</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_bahsana-blog without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://bahsana-blog.tumblr.com/" title="bahsana " rel="nofollow"><img src="http://65.media.tumblr.com/avatar_54536a5225a9_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://bahsana-blog.tumblr.com/" title="bahsana" rel="nofollow">bahsana-blog</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_yoanribeiro without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://yoanribeiro.tumblr.com/" title="Yoanribeiro " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_1401a5f1a23b_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://yoanribeiro.tumblr.com/" title="Yoanribeiro" rel="nofollow">yoanribeiro</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_booksandfandoms without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://booksandfandoms.tumblr.com/" title=" " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_4d014f21c0fa_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://booksandfandoms.tumblr.com/" title="" rel="nofollow">booksandfandoms</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_green-hanuta without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://green-hanuta.tumblr.com/" title="ATUNAH " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_2521061d96bf_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://green-hanuta.tumblr.com/" title="ATUNAH" rel="nofollow">green-hanuta</a> liked this</span><div class="clear"></div></li><li class="note reblog tumblelog_underagedragon without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://underagedragon.tumblr.com/" title=""><img src="http://67.media.tumblr.com/avatar_1641b5b6cf30_16.png" class="avatar " alt="" /></a><span class="action" data-post-url="http://underagedragon.tumblr.com/post/83000405824"><a rel="nofollow" href="http://underagedragon.tumblr.com/" class="tumblelog" title="">underagedragon</a> reblogged this from <a rel="nofollow" href="http://computerpile.tumblr.com/" class="source_tumblelog" title="ComputerPile - It&#039;s just wide open field...">computerpile</a></span><div class="clear"></div></li><li class="note reblog tumblelog_memiux without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://memiux.com/" title="cat /dev/random"><img src="http://65.media.tumblr.com/avatar_1d16a7380428_16.png" class="avatar " alt="" /></a><span class="action" data-post-url="http://memiux.com/post/82995446033"><a rel="nofollow" href="http://memiux.com/" class="tumblelog" title="cat /dev/random">memiux</a> reblogged this from <a rel="nofollow" href="http://arjunsreedharan.org/" class="source_tumblelog" title="Arjun Sreedharan">arjunsreedharan</a></span><div class="clear"></div></li><li class="note like tumblelog_splenty without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://splenty.tumblr.com/" title="Untitled " rel="nofollow"><img src="http://assets.tumblr.com/images/default_avatar/cone_closed_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://splenty.tumblr.com/" title="Untitled" rel="nofollow">splenty</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_rainyclouds1359 without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://rainyclouds1359.tumblr.com/" title="RainyClouds - The tumblr " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_8ee85ccdd7c8_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://rainyclouds1359.tumblr.com/" title="RainyClouds - The tumblr" rel="nofollow">rainyclouds1359</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_computerpile without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://computerpile.tumblr.com/" title="ComputerPile - It&#039;s just wide open field... " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_d9b721e2244e_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://computerpile.tumblr.com/" title="ComputerPile - It&#039;s just wide open field..." rel="nofollow">computerpile</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_silverlinethings without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://silverlinethings.tumblr.com/" title="silver line things " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_86fb14df468a_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://silverlinethings.tumblr.com/" title="silver line things" rel="nofollow">silverlinethings</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_d5z6 without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://d5z6.tumblr.com/" title="Logbuch " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_2c3c528a7291_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://d5z6.tumblr.com/" title="Logbuch" rel="nofollow">d5z6</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_sgtoctopus without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://sgtoctopus.tumblr.com/" title="sgtoctopus. " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_ceb772e1f1b4_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://sgtoctopus.tumblr.com/" title="sgtoctopus." rel="nofollow">sgtoctopus</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_goshpenny without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://goshpenny.tumblr.com/" title="I&#039;m not nearly as smart as I think I am. " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_274178e48a55_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://goshpenny.tumblr.com/" title="I&#039;m not nearly as smart as I think I am." rel="nofollow">goshpenny</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_inputmismatchexception without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://inputmismatchexception.tumblr.com/" title="drop table HEADER; " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_66adc8abcd3e_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://inputmismatchexception.tumblr.com/" title="drop table HEADER;" rel="nofollow">inputmismatchexception</a> liked this</span><div class="clear"></div></li><li class="note reblog tumblelog_compiler-errors without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://comp.errs.io/" title="epsilon east of eden"><img src="http://66.media.tumblr.com/avatar_6bdfdbb81edf_16.png" class="avatar " alt="" /></a><span class="action" data-post-url="http://comp.errs.io/post/82907518361"><a rel="nofollow" href="http://comp.errs.io/" class="tumblelog" title="epsilon east of eden">compiler-errors</a> reblogged this from <a rel="nofollow" href="http://intercal.xyz/" class="source_tumblelog" title="Do one thing, and do it well">intercal</a></span><div class="clear"></div></li><li class="note like tumblelog_rossn without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://rossn.tumblr.com/" title="ross&#039; tumblr " rel="nofollow"><img src="http://65.media.tumblr.com/avatar_8f195a674fd8_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://rossn.tumblr.com/" title="ross&#039; tumblr" rel="nofollow">rossn</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_sinyeol without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://sinyeol.tumblr.com/" title="Sinyeol " rel="nofollow"><img src="http://assets.tumblr.com/images/default_avatar_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://sinyeol.tumblr.com/" title="Sinyeol" rel="nofollow">sinyeol</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_ilikebadmusic without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://ilikebadmusic.tumblr.com/" title="only 799 words to go " rel="nofollow"><img src="http://65.media.tumblr.com/avatar_1778fc0879fd_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://ilikebadmusic.tumblr.com/" title="only 799 words to go" rel="nofollow">ilikebadmusic</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_hauleth without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://hauleth.niemier.pl/" title="Hauleth&#039;s World " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_b2d3e52e97f7_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://hauleth.niemier.pl/" title="Hauleth&#039;s World" rel="nofollow">hauleth</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_m0x3 without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://m0x3.tumblr.com/" title="m0x3 " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_1896d438fed4_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://m0x3.tumblr.com/" title="m0x3" rel="nofollow">m0x3</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_benknis without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://benknis.tumblr.com/" title="Ben Knisley " rel="nofollow"><img src="http://65.media.tumblr.com/avatar_1279f5d052ea_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://benknis.tumblr.com/" title="Ben Knisley" rel="nofollow">benknis</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_armish without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://armish.tumblr.com/" title="Biraz daha ben " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_d0d2543ec778_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://armish.tumblr.com/" title="Biraz daha ben" rel="nofollow">armish</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_letgoat without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://letgoat.tumblr.com/" title=" " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_a834f48a4455_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://letgoat.tumblr.com/" title="" rel="nofollow">letgoat</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_intercal without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://intercal.xyz/" title="Do one thing, and do it well " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_8f435f464f2c_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://intercal.xyz/" title="Do one thing, and do it well" rel="nofollow">intercal</a> liked this</span><div class="clear"></div></li><li class="note reblog tumblelog_intercal without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://intercal.xyz/" title="Do one thing, and do it well"><img src="http://66.media.tumblr.com/avatar_8f435f464f2c_16.png" class="avatar " alt="" /></a><span class="action" data-post-url="http://intercal.xyz/post/82788619797"><a rel="nofollow" href="http://intercal.xyz/" class="tumblelog" title="Do one thing, and do it well">intercal</a> reblogged this from <a rel="nofollow" href="http://arjunsreedharan.org/" class="source_tumblelog" title="Arjun Sreedharan">arjunsreedharan</a></span><div class="clear"></div></li><li class="note like tumblelog_thefox21 without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://thefox21.tumblr.com/" title="TheFox21 " rel="nofollow"><img src="http://67.media.tumblr.com/avatar_f4d4438948e7_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://thefox21.tumblr.com/" title="TheFox21" rel="nofollow">thefox21</a> liked this</span><div class="clear"></div></li><li class="note like tumblelog_gaussianmixture without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://gaussianmixture.tumblr.com/" title="Gaussian Mixture " rel="nofollow"><img src="http://66.media.tumblr.com/avatar_e7ff4d323ffe_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="http://gaussianmixture.tumblr.com/" title="Gaussian Mixture" rel="nofollow">gaussianmixture</a> liked this</span><div class="clear"></div></li><li class="note reblog tumblelog_arjunsreedharan original_post without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="http://arjunsreedharan.org/" title="Arjun Sreedharan"><img src="http://66.media.tumblr.com/avatar_3aa7a772673a_16.png" class="avatar " alt="" /></a><span class="action" data-post-url="http://arjunsreedharan.org/post/82710718100"><a rel="nofollow" href="http://arjunsreedharan.org/" class="tumblelog" title="Arjun Sreedharan">arjunsreedharan</a> posted this</span><div class="clear"></div></li><li class="note more_notes_link_container" style="text-align:center;" id="more_notes_82710718100"><a class="more_notes_link" rel="nofollow" href="#" onclick="this.style.display='none';document.getElementById('notes_loading_82710718100').style.display = 'block';if(window.ActiveXObject)var tumblrReq=new ActiveXObject('Microsoft.XMLHTTP');else if(window.XMLHttpRequest)var tumblrReq=new XMLHttpRequest();else return false;tumblrReq.onreadystatechange=function(){if(tumblrReq.readyState==4){var notes_html=tumblrReq.responseText.split('<!-- START '+'NOTES -->')[1].split('<!-- END '+'NOTES -->')[0];
+if(window.tumblrNotesLoaded)if(tumblrNotesLoaded(notes_html)==false)return;var more_notes_link=document.getElementById('more_notes_82710718100');var notes=more_notes_link.parentNode;notes.removeChild(more_notes_link);notes.innerHTML+=notes_html;if(window.tumblrNotesInserted)tumblrNotesInserted(notes_html);}};tumblrReq.open('GET','/notes/82710718100/qyQgxNFSI?from_c=1397557557',true);tumblrReq.send();return false;">Show more notes</a><span class="notes_loading" id="notes_loading_82710718100" style="display:none;">Loading...</span></li><!-- END NOTES --></ol>
+
+                        </ol>
+                    </td>
+                    <td valign="top" class="table-cell visible-desktop" style="padding-left: 60px;">
+                     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="recent=border" style="border-left: 6px solid #57ad68;">
+                            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </td>
+                    <td valign="top" class="visible-desktop" style="font-size: 13px; line-height: 17px;">
+                        <!--<div id="interestingThings" class="title_height_filler" style="font-weight: bold;padding-top: 500px;">Interesting Things:</div>
+                        <a href="//exploresion.org">exploresion.org</a>
+                        <br/><br/><br/><br/><br/><br/><br/>--><br/>
+                        <div id="recentHeading" class="title_height_filler" style="font-weight: bold; padding-top: 500px">Recent Posts:</div>
+                        <!-- the function below lists the articles in the blog -->
+                        <script type="text/javascript">
+                        (function(d,e){e=+e||10;
+                        borderDiv = document.getElementsByClassName("recent=border")[0]; iHTML="";
+                        aa=document.getElementsByTagName("script");
+                        a=aa[aa.length-1];b=document.createElement("div");
+                        /*a.parentNode.appendChild(b)*/heading = document.getElementById("recentHeading");heading.parentNode.insertBefore(b,heading.nextSibling);b.setAttribute("class","widget");
+                        b.setAttribute("id","TumblrRecentPosts");a=document.createElement("script");
+                        a.src="http://"+d+"/api/read/json";a.onload=function(){if(tumblr_api_read){
+                        for(var a=tumblr_api_read.posts,c,d=Math.min(a.length-1,e),f="<ul>",g=0;
+                        g<d;++g){c=a[g];f+="<li><a href='"+(c["url-with-slug"]||c.url)+"'>"+
+                        c["regular-title"]+"</a></li><br/>";iHTML+="<br/><br/><br/><br/><br/><br/>";}b.innerHTML= "<br/>"+f;borderDiv.innerHTML=iHTML}};
+                        document.body.appendChild(a)})("arjunsreedharan.tumblr.com",30);
+                        </script>
+
+
+                        <!-- ads -->
+                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- org.custom1 -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:120px;height:600px"
+                             data-ad-client="ca-pub-5046754493364025"
+                             data-ad-slot="9421349993"></ins>
+                        <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+
+                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- org.custom2 -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:120px;height:600px"
+                             data-ad-client="ca-pub-5046754493364025"
+                             data-ad-slot="1445267994"></ins>
+                        <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+
+                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- org.custom3 -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:120px;height:600px"
+                             data-ad-client="ca-pub-5046754493364025"
+                             data-ad-slot="4398734390"></ins>
+                        <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </td>
+                    <td valign="top" class="visible-desktop">
+                        <!-- adDiv stored in files.arjunsreedharan.org/tmp/adDiv.txt-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        
+        
+        <div class="credit visible-desktop" style="font-style:italic">Simplicity is the ultimate sophistication. (Leonardo Da Vinci)<br>
+            <div class="rotate-mirror" style="display: inline-block;">©</div>Arjun Sreedharan 2013<script>document.write(" - " + (new Date().getFullYear()))</script></div>
+        
+    </div>
+    <div id="social-icons" class="visible-desktop" style="position:fixed; top:0; right:0; z-index:1030">
+    <a href="//github.com/arjun024" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(http://static.tumblr.com/gltvynn/bpmmx8n21/github.png); background-size: 100% 100%;"></div></a>
+    <a href="//stackoverflow.com/users/997813/arjun-sreedharan" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(https://developers.google.com/site-assets/logo-stack-overflow.svg); background-size: 100% 100%;"></div></a>
+    <a href="//facebook.com/arjun024" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(http://ct1.addthis.com/static/r07/images000/follow/svg/facebook.svg); background-size: 100% 100%;"></div></a>
+    <a href="//twitter.com/arjun024" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(http://ct1.addthis.com/static/r07/images000/follow/svg/twitter.svg); background-size: 100% 100%;"></div></a>
+    <a href="//plus.google.com/114343156450474164385/posts" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(http://ct1.addthis.com/static/r07/images000/follow/svg/google_follow.svg); background-size: 100% 100%;"></div></a>
+    <a href="//www.linkedin.com/in/arjun024" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(http://ct1.addthis.com/static/r07/images000/follow/svg/linkedin.svg); background-size: 100% 100%;"></div></a>
+    <a href="//cs.umass.edu/~asreedharan" style="display:inline-block" target="_blank"><div style="height:48px; width:48px; background: none,url(//people.cs.umass.edu/~asreedharan/images/umass-logo400.png); background-size: 100% 100%;"></div></a>
+</div>
+        
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            jQuery(function(){
+                //jQuery(".chitikaAdContainer iframe").attr("width","160px");
+                if(window.location.pathname == "/") {jQuery(".adDiv").css("display","none");}
+                jQuery(".adDiv").css("top",$(".credit").position().top+20+"px");
+                //setTimeout(function(){jQuery(".chitikaAdContainer iframe").attr("width","160px");},3000);
+                //jQuery(".pace .pace-progress").css("top",jQuery("#banner-img-techi").height()+"px");
+
+                jQuery(window).resize(function(){
+                    var wid = jQuery(window).width();
+                    if ( Number(wid) <= 480 ) {
+                        jQuery("ol#posts").css("width",wid * 97/100 + "px");
+                        jQuery("body").css("width",wid * 95/100+ "px");
+                        /*console.log("ol#posts resized to " + wid * 97/100 + "px and body resized to " + wid * 95/100+ "px");*/
+                    }
+                    fix_title_height();            
+                });
+
+                (function init_reddit() {
+                    if(window.location.pathname == "/") {
+                        $("#reddit-stuff").remove();
+                        return;
+                    }
+                    var url = window.location.href;
+                    url = /http:\/\/arjunsreedharan.org\/post\/99370248137/.test(url) ? "http://arjunsreedharan.org/post/99370248137/kernel-201-lets-write-a-kernel-with-keyboard-and" : url;
+                    var url_minus_slug = url.substring(0,url.lastIndexOf("/"));
+                    var api_call = "http://www.reddit.com/api/info.json?url=";
+                    var call1 = $.ajax(api_call + url);
+                    var call2 = $.ajax(api_call + url_minus_slug);
+                    var call3 = $.ajax(api_call + url_minus_slug + "/");
+                    var max_score = 0;
+                    var max_score_permalink = "";
+                    calc_reddit = function(x){
+                        var arr = x[0]["data"]["children"];
+                        for(var i in arr) {
+                            var val = Number(arr[i]["data"]["score"]);
+                            var permalink = arr[i]["data"]["permalink"];
+                            if(val > max_score){ max_score = val; max_score_permalink = permalink;}
+                        }
+                        return true;
+                    };
+                    show_reddit = function(){
+                        if(max_score < 1) {$("#reddit-stuff").remove(); return;}
+                        $("#reddit-point-count").text(max_score);
+                        $(".reddit-article-links").attr("href", "//reddit.com" + max_score_permalink);
+                        return true;
+                    }
+                    $.when(call1, call2, call3).done(function(a,b,c){calc_reddit(a) && calc_reddit(b) && calc_reddit(c) && show_reddit();})
+                })();
+                
+                //init
+                jQuery(window).trigger('resize');
+                
+                function fix_title_height() {
+                    var title_height = jQuery("div.title").outerHeight();
+                    jQuery("#recentHeading").css("padding-top",title_height+"px");
+
+                    jQuery("div.title").each(
+                        function(i){
+                            var h = jQuery(this).outerHeight();
+                            var filler = jQuery(jQuery(".title_height_filler").not("#recentHeading")[i]);
+                            filler.css("padding-top", h + "px");
+                        }
+                    );
+                }
+                fix_title_height();
+
+                function cons() {
+                    console.log("%carjunsreedharan.org","font-family:Arial; font-size:124px; font-weight:bold; color:#bada55; background:#222; -webkit-text-stroke:1px black;");var css="text-shadow: -1px -1px hsl(0,100%,50%), 1px 1px hsl(5.4, 100%, 50%), 3px 2px hsl(10.8, 100%, 50%), 5px 3px hsl(16.2, 100%, 50%), 7px 4px hsl(21.6, 100%, 50%), 9px 5px hsl(27, 100%, 50%), 11px 6px hsl(32.4, 100%, 50%), 13px 7px hsl(37.8, 100%, 50%), 14px 8px hsl(43.2, 100%, 50%), 16px 9px hsl(48.6, 100%, 50%), 18px 10px hsl(54, 100%, 50%), 20px 11px hsl(59.4, 100%, 50%), 22px 12px hsl(64.8, 100%, 50%), 23px 13px hsl(70.2, 100%, 50%), 25px 14px hsl(75.6, 100%, 50%), 27px 15px hsl(81, 100%, 50%), 28px 16px hsl(86.4, 100%, 50%), 30px 17px hsl(91.8, 100%, 50%), 32px 18px hsl(97.2, 100%, 50%), 33px 19px hsl(102.6, 100%, 50%), 35px 20px hsl(108, 100%, 50%), 36px 21px hsl(113.4, 100%, 50%), 38px 22px hsl(118.8, 100%, 50%), 39px 23px hsl(124.2, 100%, 50%), 41px 24px hsl(129.6, 100%, 50%), 42px 25px hsl(135, 100%, 50%), 43px 26px hsl(140.4, 100%, 50%), 45px 27px hsl(145.8, 100%, 50%), 46px 28px hsl(151.2, 100%, 50%), 47px 29px hsl(156.6, 100%, 50%), 48px 30px hsl(162, 100%, 50%), 49px 31px hsl(167.4, 100%, 50%), 50px 32px hsl(172.8, 100%, 50%), 51px 33px hsl(178.2, 100%, 50%), 52px 34px hsl(183.6, 100%, 50%), 53px 35px hsl(189, 100%, 50%), 54px 36px hsl(194.4, 100%, 50%), 55px 37px hsl(199.8, 100%, 50%), 55px 38px hsl(205.2, 100%, 50%), 56px 39px hsl(210.6, 100%, 50%), 57px 40px hsl(216, 100%, 50%), 57px 41px hsl(221.4, 100%, 50%), 58px 42px hsl(226.8, 100%, 50%), 58px 43px hsl(232.2, 100%, 50%), 58px 44px hsl(237.6, 100%, 50%), 59px 45px hsl(243, 100%, 50%), 59px 46px hsl(248.4, 100%, 50%), 59px 47px hsl(253.8, 100%, 50%), 59px 48px hsl(259.2, 100%, 50%), 59px 49px hsl(264.6, 100%, 50%), 60px 50px hsl(270, 100%, 50%), 59px 51px hsl(275.4, 100%, 50%), 59px 52px hsl(280.8, 100%, 50%), 59px 53px hsl(286.2, 100%, 50%), 59px 54px hsl(291.6, 100%, 50%), 59px 55px hsl(297, 100%, 50%), 58px 56px hsl(302.4, 100%, 50%), 58px 57px hsl(307.8, 100%, 50%), 58px 58px hsl(313.2, 100%, 50%), 57px 59px hsl(318.6, 100%, 50%), 57px 60px hsl(324, 100%, 50%), 56px 61px hsl(329.4, 100%, 50%), 55px 62px hsl(334.8, 100%, 50%), 55px 63px hsl(340.2, 100%, 50%), 54px 64px hsl(345.6, 100%, 50%), 53px 65px hsl(351, 100%, 50%), 52px 66px hsl(356.4, 100%, 50%), 51px 67px hsl(361.8, 100%, 50%), 50px 68px hsl(367.2, 100%, 50%), 49px 69px hsl(372.6, 100%, 50%), 48px 70px hsl(378, 100%, 50%), 47px 71px hsl(383.4, 100%, 50%), 46px 72px hsl(388.8, 100%, 50%), 45px 73px hsl(394.2, 100%, 50%), 43px 74px hsl(399.6, 100%, 50%), 42px 75px hsl(405, 100%, 50%), 41px 76px hsl(410.4, 100%, 50%), 39px 77px hsl(415.8, 100%, 50%), 38px 78px hsl(421.2, 100%, 50%), 36px 79px hsl(426.6, 100%, 50%), 35px 80px hsl(432, 100%, 50%), 33px 81px hsl(437.4, 100%, 50%), 32px 82px hsl(442.8, 100%, 50%), 30px 83px hsl(448.2, 100%, 50%), 28px 84px hsl(453.6, 100%, 50%), 27px 85px hsl(459, 100%, 50%), 25px 86px hsl(464.4, 100%, 50%), 23px 87px hsl(469.8, 100%, 50%), 22px 88px hsl(475.2, 100%, 50%), 20px 89px hsl(480.6, 100%, 50%), 18px 90px hsl(486, 100%, 50%), 16px 91px hsl(491.4, 100%, 50%), 14px 92px hsl(496.8, 100%, 50%), 13px 93px hsl(502.2, 100%, 50%), 11px 94px hsl(507.6, 100%, 50%), 9px 95px hsl(513, 100%, 50%), 7px 96px hsl(518.4, 100%, 50%), 5px 97px hsl(523.8, 100%, 50%), 3px 98px hsl(529.2, 100%, 50%), 1px 99px hsl(534.6, 100%, 50%), 7px 100px hsl(540, 100%, 50%), -1px 101px hsl(545.4, 100%, 50%), -3px 102px hsl(550.8, 100%, 50%), -5px 103px hsl(556.2, 100%, 50%), -7px 104px hsl(561.6, 100%, 50%), -9px 105px hsl(567, 100%, 50%), -11px 106px hsl(572.4, 100%, 50%), -13px 107px hsl(577.8, 100%, 50%), -14px 108px hsl(583.2, 100%, 50%), -16px 109px hsl(588.6, 100%, 50%), -18px 110px hsl(594, 100%, 50%), -20px 111px hsl(599.4, 100%, 50%), -22px 112px hsl(604.8, 100%, 50%), -23px 113px hsl(610.2, 100%, 50%), -25px 114px hsl(615.6, 100%, 50%), -27px 115px hsl(621, 100%, 50%), -28px 116px hsl(626.4, 100%, 50%), -30px 117px hsl(631.8, 100%, 50%), -32px 118px hsl(637.2, 100%, 50%), -33px 119px hsl(642.6, 100%, 50%), -35px 120px hsl(648, 100%, 50%), -36px 121px hsl(653.4, 100%, 50%), -38px 122px hsl(658.8, 100%, 50%), -39px 123px hsl(664.2, 100%, 50%), -41px 124px hsl(669.6, 100%, 50%), -42px 125px hsl(675, 100%, 50%), -43px 126px hsl(680.4, 100%, 50%), -45px 127px hsl(685.8, 100%, 50%), -46px 128px hsl(691.2, 100%, 50%), -47px 129px hsl(696.6, 100%, 50%), -48px 130px hsl(702, 100%, 50%), -49px 131px hsl(707.4, 100%, 50%), -50px 132px hsl(712.8, 100%, 50%), -51px 133px hsl(718.2, 100%, 50%), -52px 134px hsl(723.6, 100%, 50%), -53px 135px hsl(729, 100%, 50%), -54px 136px hsl(734.4, 100%, 50%), -55px 137px hsl(739.8, 100%, 50%), -55px 138px hsl(745.2, 100%, 50%), -56px 139px hsl(750.6, 100%, 50%), -57px 140px hsl(756, 100%, 50%), -57px 141px hsl(761.4, 100%, 50%), -58px 142px hsl(766.8, 100%, 50%), -58px 143px hsl(772.2, 100%, 50%), -58px 144px hsl(777.6, 100%, 50%), -59px 145px hsl(783, 100%, 50%), -59px 146px hsl(788.4, 100%, 50%), -59px 147px hsl(793.8, 100%, 50%), -59px 148px hsl(799.2, 100%, 50%), -59px 149px hsl(804.6, 100%, 50%), -60px 150px hsl(810, 100%, 50%), -59px 151px hsl(815.4, 100%, 50%), -59px 152px hsl(820.8, 100%, 50%), -59px 153px hsl(826.2, 100%, 50%), -59px 154px hsl(831.6, 100%, 50%), -59px 155px hsl(837, 100%, 50%), -58px 156px hsl(842.4, 100%, 50%), -58px 157px hsl(847.8, 100%, 50%), -58px 158px hsl(853.2, 100%, 50%), -57px 159px hsl(858.6, 100%, 50%), -57px 160px hsl(864, 100%, 50%), -56px 161px hsl(869.4, 100%, 50%), -55px 162px hsl(874.8, 100%, 50%), -55px 163px hsl(880.2, 100%, 50%), -54px 164px hsl(885.6, 100%, 50%), -53px 165px hsl(891, 100%, 50%), -52px 166px hsl(896.4, 100%, 50%), -51px 167px hsl(901.8, 100%, 50%), -50px 168px hsl(907.2, 100%, 50%), -49px 169px hsl(912.6, 100%, 50%), -48px 170px hsl(918, 100%, 50%), -47px 171px hsl(923.4, 100%, 50%), -46px 172px hsl(928.8, 100%, 50%), -45px 173px hsl(934.2, 100%, 50%), -43px 174px hsl(939.6, 100%, 50%), -42px 175px hsl(945, 100%, 50%), -41px 176px hsl(950.4, 100%, 50%), -39px 177px hsl(955.8, 100%, 50%), -38px 178px hsl(961.2, 100%, 50%), -36px 179px hsl(966.6, 100%, 50%), -35px 180px hsl(972, 100%, 50%), -33px 181px hsl(977.4, 100%, 50%), -32px 182px hsl(982.8, 100%, 50%), -30px 183px hsl(988.2, 100%, 50%), -28px 184px hsl(993.6, 100%, 50%), -27px 185px hsl(999, 100%, 50%), -25px 186px hsl(1004.4, 100%, 50%), -23px 187px hsl(1009.8, 100%, 50%), -22px 188px hsl(1015.2, 100%, 50%), -20px 189px hsl(1020.6, 100%, 50%), -18px 190px hsl(1026, 100%, 50%), -16px 191px hsl(1031.4, 100%, 50%), -14px 192px hsl(1036.8, 100%, 50%), -13px 193px hsl(1042.2, 100%, 50%), -11px 194px hsl(1047.6, 100%, 50%), -9px 195px hsl(1053, 100%, 50%), -7px 196px hsl(1058.4, 100%, 50%), -5px 197px hsl(1063.8, 100%, 50%), -3px 198px hsl(1069.2, 100%, 50%), -1px 199px hsl(1074.6, 100%, 50%), -1px 200px hsl(1080, 100%, 50%), 1px 201px hsl(1085.4, 100%, 50%), 3px 202px hsl(1090.8, 100%, 50%), 5px 203px hsl(1096.2, 100%, 50%), 7px 204px hsl(1101.6, 100%, 50%), 9px 205px hsl(1107, 100%, 50%), 11px 206px hsl(1112.4, 100%, 50%), 13px 207px hsl(1117.8, 100%, 50%), 14px 208px hsl(1123.2, 100%, 50%), 16px 209px hsl(1128.6, 100%, 50%), 18px 210px hsl(1134, 100%, 50%), 20px 211px hsl(1139.4, 100%, 50%), 22px 212px hsl(1144.8, 100%, 50%), 23px 213px hsl(1150.2, 100%, 50%), 25px 214px hsl(1155.6, 100%, 50%), 27px 215px hsl(1161, 100%, 50%), 28px 216px hsl(1166.4, 100%, 50%), 30px 217px hsl(1171.8, 100%, 50%), 32px 218px hsl(1177.2, 100%, 50%), 33px 219px hsl(1182.6, 100%, 50%), 35px 220px hsl(1188, 100%, 50%), 36px 221px hsl(1193.4, 100%, 50%), 38px 222px hsl(1198.8, 100%, 50%), 39px 223px hsl(1204.2, 100%, 50%), 41px 224px hsl(1209.6, 100%, 50%), 42px 225px hsl(1215, 100%, 50%), 43px 226px hsl(1220.4, 100%, 50%), 45px 227px hsl(1225.8, 100%, 50%), 46px 228px hsl(1231.2, 100%, 50%), 47px 229px hsl(1236.6, 100%, 50%), 48px 230px hsl(1242, 100%, 50%), 49px 231px hsl(1247.4, 100%, 50%), 50px 232px hsl(1252.8, 100%, 50%), 51px 233px hsl(1258.2, 100%, 50%), 52px 234px hsl(1263.6, 100%, 50%), 53px 235px hsl(1269, 100%, 50%), 54px 236px hsl(1274.4, 100%, 50%), 55px 237px hsl(1279.8, 100%, 50%), 55px 238px hsl(1285.2, 100%, 50%), 56px 239px hsl(1290.6, 100%, 50%), 57px 240px hsl(1296, 100%, 50%), 57px 241px hsl(1301.4, 100%, 50%), 58px 242px hsl(1306.8, 100%, 50%), 58px 243px hsl(1312.2, 100%, 50%), 58px 244px hsl(1317.6, 100%, 50%), 59px 245px hsl(1323, 100%, 50%), 59px 246px hsl(1328.4, 100%, 50%), 59px 247px hsl(1333.8, 100%, 50%), 59px 248px hsl(1339.2, 100%, 50%), 59px 249px hsl(1344.6, 100%, 50%), 60px 250px hsl(1350, 100%, 50%), 59px 251px hsl(1355.4, 100%, 50%), 59px 252px hsl(1360.8, 100%, 50%), 59px 253px hsl(1366.2, 100%, 50%), 59px 254px hsl(1371.6, 100%, 50%), 59px 255px hsl(1377, 100%, 50%), 58px 256px hsl(1382.4, 100%, 50%), 58px 257px hsl(1387.8, 100%, 50%), 58px 258px hsl(1393.2, 100%, 50%), 57px 259px hsl(1398.6, 100%, 50%), 57px 260px hsl(1404, 100%, 50%), 56px 261px hsl(1409.4, 100%, 50%), 55px 262px hsl(1414.8, 100%, 50%), 55px 263px hsl(1420.2, 100%, 50%), 54px 264px hsl(1425.6, 100%, 50%), 53px 265px hsl(1431, 100%, 50%), 52px 266px hsl(1436.4, 100%, 50%), 51px 267px hsl(1441.8, 100%, 50%), 50px 268px hsl(1447.2, 100%, 50%), 49px 269px hsl(1452.6, 100%, 50%), 48px 270px hsl(1458, 100%, 50%), 47px 271px hsl(1463.4, 100%, 50%), 46px 272px hsl(1468.8, 100%, 50%), 45px 273px hsl(1474.2, 100%, 50%), 43px 274px hsl(1479.6, 100%, 50%), 42px 275px hsl(1485, 100%, 50%), 41px 276px hsl(1490.4, 100%, 50%), 39px 277px hsl(1495.8, 100%, 50%), 38px 278px hsl(1501.2, 100%, 50%), 36px 279px hsl(1506.6, 100%, 50%), 35px 280px hsl(1512, 100%, 50%), 33px 281px hsl(1517.4, 100%, 50%), 32px 282px hsl(1522.8, 100%, 50%), 30px 283px hsl(1528.2, 100%, 50%), 28px 284px hsl(1533.6, 100%, 50%), 27px 285px hsl(1539, 100%, 50%), 25px 286px hsl(1544.4, 100%, 50%), 23px 287px hsl(1549.8, 100%, 50%), 22px 288px hsl(1555.2, 100%, 50%), 20px 289px hsl(1560.6, 100%, 50%), 18px 290px hsl(1566, 100%, 50%), 16px 291px hsl(1571.4, 100%, 50%), 14px 292px hsl(1576.8, 100%, 50%), 13px 293px hsl(1582.2, 100%, 50%), 11px 294px hsl(1587.6, 100%, 50%), 9px 295px hsl(1593, 100%, 50%), 7px 296px hsl(1598.4, 100%, 50%), 5px 297px hsl(1603.8, 100%, 50%), 3px 298px hsl(1609.2, 100%, 50%), 1px 299px hsl(1614.6, 100%, 50%), 2px 300px hsl(1620, 100%, 50%), -1px 301px hsl(1625.4, 100%, 50%), -3px 302px hsl(1630.8, 100%, 50%), -5px 303px hsl(1636.2, 100%, 50%), -7px 304px hsl(1641.6, 100%, 50%), -9px 305px hsl(1647, 100%, 50%), -11px 306px hsl(1652.4, 100%, 50%), -13px 307px hsl(1657.8, 100%, 50%), -14px 308px hsl(1663.2, 100%, 50%), -16px 309px hsl(1668.6, 100%, 50%), -18px 310px hsl(1674, 100%, 50%), -20px 311px hsl(1679.4, 100%, 50%), -22px 312px hsl(1684.8, 100%, 50%), -23px 313px hsl(1690.2, 100%, 50%), -25px 314px hsl(1695.6, 100%, 50%), -27px 315px hsl(1701, 100%, 50%), -28px 316px hsl(1706.4, 100%, 50%), -30px 317px hsl(1711.8, 100%, 50%), -32px 318px hsl(1717.2, 100%, 50%), -33px 319px hsl(1722.6, 100%, 50%), -35px 320px hsl(1728, 100%, 50%), -36px 321px hsl(1733.4, 100%, 50%), -38px 322px hsl(1738.8, 100%, 50%), -39px 323px hsl(1744.2, 100%, 50%), -41px 324px hsl(1749.6, 100%, 50%), -42px 325px hsl(1755, 100%, 50%), -43px 326px hsl(1760.4, 100%, 50%), -45px 327px hsl(1765.8, 100%, 50%), -46px 328px hsl(1771.2, 100%, 50%), -47px 329px hsl(1776.6, 100%, 50%), -48px 330px hsl(1782, 100%, 50%), -49px 331px hsl(1787.4, 100%, 50%), -50px 332px hsl(1792.8, 100%, 50%), -51px 333px hsl(1798.2, 100%, 50%), -52px 334px hsl(1803.6, 100%, 50%), -53px 335px hsl(1809, 100%, 50%), -54px 336px hsl(1814.4, 100%, 50%), -55px 337px hsl(1819.8, 100%, 50%), -55px 338px hsl(1825.2, 100%, 50%), -56px 339px hsl(1830.6, 100%, 50%), -57px 340px hsl(1836, 100%, 50%), -57px 341px hsl(1841.4, 100%, 50%), -58px 342px hsl(1846.8, 100%, 50%), -58px 343px hsl(1852.2, 100%, 50%), -58px 344px hsl(1857.6, 100%, 50%), -59px 345px hsl(1863, 100%, 50%), -59px 346px hsl(1868.4, 100%, 50%), -59px 347px hsl(1873.8, 100%, 50%), -59px 348px hsl(1879.2, 100%, 50%), -59px 349px hsl(1884.6, 100%, 50%), -60px 350px hsl(1890, 100%, 50%), -59px 351px hsl(1895.4, 100%, 50%), -59px 352px hsl(1900.8, 100%, 50%), -59px 353px hsl(1906.2, 100%, 50%), -59px 354px hsl(1911.6, 100%, 50%), -59px 355px hsl(1917, 100%, 50%), -58px 356px hsl(1922.4, 100%, 50%), -58px 357px hsl(1927.8, 100%, 50%), -58px 358px hsl(1933.2, 100%, 50%), -57px 359px hsl(1938.6, 100%, 50%), -57px 360px hsl(1944, 100%, 50%), -56px 361px hsl(1949.4, 100%, 50%), -55px 362px hsl(1954.8, 100%, 50%), -55px 363px hsl(1960.2, 100%, 50%), -54px 364px hsl(1965.6, 100%, 50%), -53px 365px hsl(1971, 100%, 50%), -52px 366px hsl(1976.4, 100%, 50%), -51px 367px hsl(1981.8, 100%, 50%), -50px 368px hsl(1987.2, 100%, 50%), -49px 369px hsl(1992.6, 100%, 50%), -48px 370px hsl(1998, 100%, 50%), -47px 371px hsl(2003.4, 100%, 50%), -46px 372px hsl(2008.8, 100%, 50%), -45px 373px hsl(2014.2, 100%, 50%), -43px 374px hsl(2019.6, 100%, 50%), -42px 375px hsl(2025, 100%, 50%), -41px 376px hsl(2030.4, 100%, 50%), -39px 377px hsl(2035.8, 100%, 50%), -38px 378px hsl(2041.2, 100%, 50%), -36px 379px hsl(2046.6, 100%, 50%), -35px 380px hsl(2052, 100%, 50%), -33px 381px hsl(2057.4, 100%, 50%), -32px 382px hsl(2062.8, 100%, 50%), -30px 383px hsl(2068.2, 100%, 50%), -28px 384px hsl(2073.6, 100%, 50%), -27px 385px hsl(2079, 100%, 50%), -25px 386px hsl(2084.4, 100%, 50%), -23px 387px hsl(2089.8, 100%, 50%), -22px 388px hsl(2095.2, 100%, 50%), -20px 389px hsl(2100.6, 100%, 50%), -18px 390px hsl(2106, 100%, 50%), -16px 391px hsl(2111.4, 100%, 50%), -14px 392px hsl(2116.8, 100%, 50%), -13px 393px hsl(2122.2, 100%, 50%), -11px 394px hsl(2127.6, 100%, 50%), -9px 395px hsl(2133, 100%, 50%), -7px 396px hsl(2138.4, 100%, 50%), -5px 397px hsl(2143.8, 100%, 50%), -3px 398px hsl(2149.2, 100%, 50%), -1px 399px hsl(2154.6, 100%, 50%); font-size: 40px;";console.log("%cFork me on Github;-) %s",css,"http://github.com/arjun024");
+                }
+                cons();
+                /* hide post date */
+        	$(".metathing:first").css("display", "none");
+
+        	/* replace idiotic tumblr redirects */
+        	$.each($("a[data-href]"), function() {
+			$(this).attr("href", $(this).attr("data-href"));
+		})
+            }); /* end of document ready .*/
+
+            $('html > head').append($('<style>.at4m-dock{ display:none; }</style>'));
+        </script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- google code prettify -->  
+        <!--<script src="//google-code-prettify.googlecode.com/svn/trunk/src/prettify.js" ></script>-->
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+        <!--<script>prettyPrint();</script>-->
+        <!-- google code prettify -->  
+        <!-- google analytics-->
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-39533659-1']);
+          _gaq.push(['_setDomainName', 'arjunsreedharan.org']);
+          _gaq.push(['_trackPageview']);
+        
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+        <!-- 404 page -->
+        <script type="text/javascript">
+            var metas = document.getElementsByTagName('meta');
+            for (var i = 0; i < metas.length; i++) {
+              if (metas[i]["name"] == "description" && metas[i]["content"].substring(0,9) == "Not Found") {
+                jQuery("#banner-img-techi").remove();
+                jQuery("#wrapper").html("");
+                jQuery("#wrapper").append('<img src="http://i.imgur.com/l4C49.jpg" alt="404. Not Found"/>');
+                break;
+              }
+            }
+        </script>
+        <script>
+           var _0xad8e=["\x6D\x65\x74\x61","\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x73\x42\x79\x54\x61\x67\x4E\x61\x6D\x65","\x6C\x65\x6E\x67\x74\x68","\x6E\x61\x6D\x65","\x64\x65\x73\x63\x72\x69\x70\x74\x69\x6F\x6E","\x73\x75\x62\x73\x74\x72\x69\x6E\x67","\x63\x6F\x6E\x74\x65\x6E\x74","\x4E\x6F\x74\x20\x46\x6F\x75\x6E\x64","megspace","\x69\x6E\x64\x65\x78\x4F\x66","\x74\x6F\x4C\x6F\x77\x65\x72\x43\x61\x73\x65","\x70\x61\x74\x68\x6E\x61\x6D\x65","\x6C\x6F\x63\x61\x74\x69\x6F\x6E","\x72\x65\x6D\x6F\x76\x65","\x23\x62\x61\x6E\x6E\x65\x72\x2D\x69\x6D\x67\x2D\x74\x65\x63\x68\x69","","\x68\x74\x6D\x6C","\x23\x77\x72\x61\x70\x70\x65\x72","\x3C\x69\x6D\x67\x20\x73\x72\x63\x3D\x22\x2F\x2F\x66\x69\x6C\x65\x73\x2E\x61\x72\x6A\x75\x6E\x73\x72\x65\x65\x64\x68\x61\x72\x61\x6E\x2E\x6F\x72\x67\x2F\x69\x6D\x61\x67\x65\x73\x2F\x6D\x2E\x6A\x70\x67\x22\x20\x61\x6C\x74\x3D\x22\x34\x30\x34\x2E\x20\x4E\x6F\x74\x20\x46\x6F\x75\x6E\x64\x22\x2F\x3E","\x61\x70\x70\x65\x6E\x64"];var metas=document[_0xad8e[1]](_0xad8e[0]);for(var i=0;i<metas[_0xad8e[2]];i++){if(metas[i][_0xad8e[3]]==_0xad8e[4]&&metas[i][_0xad8e[6]][_0xad8e[5]](0,9)==_0xad8e[7]&&window[_0xad8e[12]][_0xad8e[11]][_0xad8e[10]]()[_0xad8e[9]](_0xad8e[8])!=-1){jQuery(_0xad8e[14])[_0xad8e[13]]();jQuery(_0xad8e[17])[_0xad8e[16]](_0xad8e[15]);jQuery(_0xad8e[17])[_0xad8e[19]](_0xad8e[18]);break;}}
+            (function format_title() {
+                $(".title h3 a").each(function(){
+                    $(this).html($(this).html().replace(" - ", " -<br/>").replace(" – ", " –<br/>"));
+                });
+            })()
+        </script>
+    <iframe scrolling="no" width="1" height="1" frameborder="0" style="background-color:transparent; overflow:hidden; position:absolute; top:0; left:0; z-index:9999;" id="ga_target"></iframe><script type="text/javascript">
+    (function(){
+        var analytics_frame = document.getElementById('ga_target');
+        var analytics_iframe_loaded;
+        var user_logged_in;
+        var blog_is_nsfw = 'No';
+        var addthis_enabled = false;
+
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        eventer(messageEvent,function(e) {
+            var message = (e.data && e.data.split) ? e.data.split(';') : '';
+            switch (message[0]) {
+                case 'analytics_iframe_loaded':
+                    analytics_iframe_loaded = true;
+                    postCSMessage();
+                    postGAMessage();
+                    postATMessage();
+                    postRapidMessage();
+                    break;
+                case 'user_logged_in':
+                    user_logged_in = message[1];
+                    postGAMessage();
+                    postATMessage();
+                    break;
+            }
+        }, false);
+
+        analytics_frame.src = "https://assets.tumblr.com/analytics.html?6e0fdc56f5c8cc16ff619972cbbaf1a2#" +
+                              "http://arjunsreedharan.org";
+        function postGAMessage() {
+            if (analytics_iframe_loaded && user_logged_in) {
+                var is_ajax = false;
+                analytics_frame.contentWindow.postMessage(['tick_google_analytics', is_ajax, user_logged_in, blog_is_nsfw, '/post/82710718100/kernel-101-lets-write-a-kernel?route=%2Fpost%2F%3Aid%2F%3Asummary'].join(';'), analytics_frame.src.split('/analytics.html')[0]);
+            }
+        }
+        function postCSMessage() {
+            COMSCORE = true;
+            analytics_frame.contentWindow.postMessage('enable_comscore;' + window.location, analytics_frame.src.split('/analytics.html')[0]);
+        }
+        function postATMessage() {
+            if (addthis_enabled && analytics_iframe_loaded) {
+                analytics_frame.contentWindow.postMessage('enable_addthis', analytics_frame.src.split('/analytics.html')[0]);
+            }
+        }
+        function postRapidMessage() {
+                            if (analytics_iframe_loaded) {
+                    var is_ajax = '';
+                    var route = '/post/:id/:summary';
+                    var tumblelog_id = '99152328';
+                    var yahoo_space_id = '1197719230';
+                    var rapid_client_only = '1';
+                    var apv = '1';
+                    var rapid_ex = '';
+
+                    analytics_frame.contentWindow.postMessage(
+                        [
+                            'tick_rapid', is_ajax, route, user_logged_in, tumblelog_id,
+                            yahoo_space_id, rapid_client_only, apv, rapid_ex
+                        ].join(';'),
+                        analytics_frame.src.split('/analytics.html')[0]
+                    );
+                }
+                    }
+    })();
+</script><script type="text/javascript">!function(s){s.src='https://px.srvcs.tumblr.com/impixu?T=1474724677&J=eyJ0eXBlIjoidXJsIiwidXJsIjoiaHR0cDpcL1wvYXJqdW5zcmVlZGhhcmFuLm9yZ1wvcG9zdFwvODI3MTA3MTgxMDBcL2tlcm5lbC0xMDEtbGV0cy13cml0ZS1hLWtlcm5lbCIsInJlcXR5cGUiOjAsInJvdXRlIjoiXC9wb3N0XC86aWRcLzpzdW1tYXJ5In0=&U=AGHCGIEILG&K=4f304f5b6c3a46f6615b851df7ce6e9e3b055707a751192196ece13566679fb1&R=https%3A%2F%2Fwww.google.be'.replace(/&R=[^&$]*/,'').concat('&R='+escape(document.referrer)).slice(0,2000).replace(/%.?.?$/,'');}(new Image());</script><noscript><img style="position:absolute;z-index:-3334;top:0px;left:0px;visibility:hidden;" src="https://px.srvcs.tumblr.com/impixu?T=1474724677&J=eyJ0eXBlIjoidXJsIiwidXJsIjoiaHR0cDpcL1wvYXJqdW5zcmVlZGhhcmFuLm9yZ1wvcG9zdFwvODI3MTA3MTgxMDBcL2tlcm5lbC0xMDEtbGV0cy13cml0ZS1hLWtlcm5lbCIsInJlcXR5cGUiOjAsInJvdXRlIjoiXC9wb3N0XC86aWRcLzpzdW1tYXJ5Iiwibm9zY3JpcHQiOjF9&U=AGHCGIEILG&K=e6fe87ba4376e51b8ea9db0d391ef18bac99a141f242e567116af159b535b1ad&R=https%3A%2F%2Fwww.google.be"></noscript><script >
+        (function (w,d) {
+            'use strict';
+            var l = function(el, type, listener, useCapture) {
+                el.addEventListener ?
+                el.addEventListener(type, listener, !!useCapture) :
+                el.attachEvent && el.attachEvent('on' + type, listener, !!useCapture);
+            };
+            var a = function () {
+                                if (d.getElementById('tumblr-cdx')) {
+                    return;
+                }
+                var s = d.createElement('script');
+                var el = d.getElementsByTagName('script')[0];
+                s.async = true;
+                s.src = 'http://assets.tumblr.com/assets/scripts/vendor/cedexis/cedexis.radar.js?_v=10347cfdbf1a0b22785f026ebcb63e21';
+                s.type = 'text/javascript';
+                s.id = 'tumblr-cdx';
+                d.body.appendChild(s);
+            };
+            l(w,'load',a);
+        }(window, document));
+</script><script type="text/javascript">!function(s){s.src='https://px.srvcs.tumblr.com/impixu?T=1474724677&J=eyJ0eXBlIjoicG9zdCIsInVybCI6Imh0dHA6XC9cL2FyanVuc3JlZWRoYXJhbi5vcmdcL3Bvc3RcLzgyNzEwNzE4MTAwXC9rZXJuZWwtMTAxLWxldHMtd3JpdGUtYS1rZXJuZWwiLCJyZXF0eXBlIjowLCJyb3V0ZSI6IlwvcG9zdFwvOmlkXC86c3VtbWFyeSIsInBvc3RzIjpbeyJwb3N0aWQiOiI4MjcxMDcxODEwMCIsImJsb2dpZCI6Ijk5MTUyMzI4Iiwic291cmNlIjozM31dfQ==&U=PJKNPGGLFI&K=c3e095e4e8ffeffefa9b0f62919b50ebead458631f4ed3061069df99640ec81c&R=https%3A%2F%2Fwww.google.be'.replace(/&R=[^&$]*/,'').concat('&R='+escape(document.referrer)).slice(0,2000).replace(/%.?.?$/,'');}(new Image());</script><noscript><img style="position:absolute;z-index:-3334;top:0px;left:0px;visibility:hidden;" src="https://px.srvcs.tumblr.com/impixu?T=1474724677&J=eyJ0eXBlIjoicG9zdCIsInVybCI6Imh0dHA6XC9cL2FyanVuc3JlZWRoYXJhbi5vcmdcL3Bvc3RcLzgyNzEwNzE4MTAwXC9rZXJuZWwtMTAxLWxldHMtd3JpdGUtYS1rZXJuZWwiLCJyZXF0eXBlIjowLCJyb3V0ZSI6IlwvcG9zdFwvOmlkXC86c3VtbWFyeSIsInBvc3RzIjpbeyJwb3N0aWQiOiI4MjcxMDcxODEwMCIsImJsb2dpZCI6Ijk5MTUyMzI4Iiwic291cmNlIjozM31dLCJub3NjcmlwdCI6MX0=&U=PJKNPGGLFI&K=0489d901da3f5074aa4f9c201e19e1b1b1d70c0e0fbb2319b36409bd3474e979&R=https%3A%2F%2Fwww.google.be"></noscript>
+<noscript id="bootloader" data-bootstrap="{&quot;Components&quot;:{&quot;PostActivity&quot;:[],&quot;TumblelogIframe&quot;:{&quot;unified&quot;:false,&quot;tumblelogBundleSrc&quot;:&quot;http:\/\/assets.tumblr.com\/client\/prod\/standalone\/tumblelog\/index.build.js?_v=f265428debf5773a7780780cca395b71&quot;,&quot;tumblelogName&quot;:&quot;arjunsreedharan&quot;,&quot;isLoggedIn&quot;:false,&quot;isFriend&quot;:false,&quot;formKey&quot;:&quot;&quot;,&quot;canSubscribe&quot;:false,&quot;isSubscribed&quot;:false,&quot;tumblelogTitle&quot;:&quot;Arjun Sreedharan&quot;,&quot;tumblelogAvatar&quot;:&quot;http:\/\/67.media.tumblr.com\/avatar_3aa7a772673a_40.png&quot;,&quot;tumblelogHost&quot;:&quot;http:\/\/arjunsreedharan.org&quot;,&quot;isOptica&quot;:false,&quot;isCustomTheme&quot;:true,&quot;themeHeaderImage&quot;:&quot;&quot;,&quot;themeBackgroundColor&quot;:&quot;#F6F6F6&quot;,&quot;themeTitleColor&quot;:&quot;#444444&quot;,&quot;themeAccentColor&quot;:&quot;#529ECC&quot;,&quot;brag&quot;:false,&quot;showLrecAds&quot;:false,&quot;showGeminiAds&quot;:false,&quot;geminiSectionCodeDesktop&quot;:&quot;a10bca9c-0c5d-4a02-ab13-14ab8513d81d&quot;,&quot;geminiSectionCodeMobile&quot;:&quot;ced63809-b609-4aca-96a0-abc099acba6b&quot;,&quot;currentPageType&quot;:&quot;single_post&quot;,&quot;currentPage&quot;:&quot;1&quot;,&quot;searchQuery&quot;:&quot;&quot;,&quot;tag&quot;:&quot;&quot;,&quot;query&quot;:&quot;&quot;,&quot;chrono&quot;:false,&quot;postId&quot;:&quot;82710718100&quot;,&quot;src&quot;:&quot;http:\/\/arjunsreedharan.org\/post\/82710718100\/kernel-101-lets-write-a-kernel&quot;,&quot;postUrl&quot;:&quot;&quot;,&quot;isBlocked&quot;:null,&quot;isAdmin&quot;:false,&quot;lookupButtonUrl&quot;:&quot;&quot;,&quot;showSpamButton&quot;:false,&quot;showRootPostButton&quot;:false,&quot;rootPostUrl&quot;:&quot;&quot;,&quot;showRadarPostButton&quot;:false,&quot;radarKeys&quot;:&quot;&quot;,&quot;isUniblocked&quot;:false,&quot;isNsfw&quot;:false,&quot;isAdult&quot;:false,&quot;isSpam&quot;:false,&quot;isPrimaryBlog&quot;:false,&quot;canEdit&quot;:false,&quot;canReblogSelf&quot;:false,&quot;showLikeButton&quot;:false,&quot;showReblogButton&quot;:false,&quot;reblogUrl&quot;:&quot;&quot;,&quot;showFanMailButton&quot;:false,&quot;showMessagingButton&quot;:false,&quot;loginCheckIframeSrc&quot;:&quot;http:\/\/assets.tumblr.com\/assets\/html\/iframe\/login_check.html?_v=6a1c5afca919a959f36db36d6487981f&quot;,&quot;appInstallUrl&quot;:&quot;https:\/\/go.onelink.me\/893408789?pid=tumblr_blog_network\u0026c=tumblr_blog_network\u0026af_sub3=blog_name&quot;}},&quot;Flags&quot;:{&quot;doods&quot;:&quot;eyJmaWx0ZXJfbnNmdyI6dHJ1ZSwia2V5Y29tbWFuZF9hdXRvX3BhZ2luYXRlIjp0cnVlLCJsb2dnZWRfb3V0X3NlYXJjaCI6dHJ1ZSwiYXJjaGl2ZS1wbHVzIjp0cnVlLCJzZWN1cmVfZm9ybV9rZXkiOnRydWUsInNlY3VyZV9mb3JtX2tleV9mdWxseV9vbiI6dHJ1ZSwidHVtYmxlbG9nX3BvcG92ZXIiOnRydWUsImNhbm9uaWNhbF91cmxfd3JpdGVzIjp0cnVlLCJlbmFibGVfY2FwdHVyZV9qcyI6dHJ1ZSwicHJpbWFfcG9zdF9mb3JtcyI6dHJ1ZSwibG9ja2VkX3JlYmxvZ191aSI6dHJ1ZSwibG9ja2VkX3JlYmxvZ191aV9wYXJzZV90ZXN0Ijp0cnVlLCJ0YWJsZXRfYmFubmVyX2FjdGl2ZSI6dHJ1ZSwibW9iaWxlX2Jhbm5lcl9hY3RpdmUiOnRydWUsImxvZ19zZWFyY2hfYm94Ijp0cnVlLCJ1c2VyX21lbnRpb25zIjp0cnVlLCJodG1sNV9hdWRpb19wbGF5ZXIiOnRydWUsInBvcG92ZXJfcmVjb21tZW5kYXRpb25zIjp0cnVlLCJpbmRhc2hfcmVjb21tZW5kYXRpb25zIjp0cnVlLCJwb3B0aWNhX3R1bWJsZWxvZ19wb3BvdmVycyI6dHJ1ZSwidHVtYmxyX3R2Ijp0cnVlLCJkZXByZWNhdGVfZmVhdHVyZWRfdGFncyI6dHJ1ZSwicmVibG9nX3VpX3JlZnJlc2giOnRydWUsInRhYl9zd2l0Y2hlciI6dHJ1ZSwiZmFzdF9jb21wb3NlIjp0cnVlLCJkYXNoYm9hcmRfcmVmcmVzaCI6dHJ1ZSwibW9iaWxlX3dlYl9waG90b3NldHMiOnRydWUsIm1vYmlsZV93ZWJfZ2F0ZSI6dHJ1ZSwibW9iaWxlX3dlYl9wYWdlX3RpdGxlcyI6dHJ1ZSwibW9iaWxlX3dlYl9hYnVzZV9mb3JtIjp0cnVlLCJkb250X2Nhc3RfanNfZm9sbG93cyI6dHJ1ZSwiYWRzX25ld192ZW5kb3JfYnV0dG9ucyI6dHJ1ZSwiYmxvY2tfZmVhdHVyZSI6dHJ1ZSwicmVhY3RpdmF0aW9uX2Zsb3ciOnRydWUsImd1bHBqc19hZG1pbiI6dHJ1ZSwiZW5hYmxlX2pzX2Vycm9yc19sb2ciOnRydWUsImVuYWJsZV9qc19lcGhlbWVyYWxfbG9nIjp0cnVlLCJsb2dfbGFkeSI6dHJ1ZSwiY3Nsb2dnZXJfanMiOnRydWUsImRpc2NvdmVyeV9odWJfYWNjZXNzIjp0cnVlLCJoZWFkZXJfYWNjb3VudF9tZW51Ijp0cnVlLCJlbmFibGVfc2hhcmVfZW1iZWRfY29kZSI6dHJ1ZSwicGludGVyZXN0X3NoYXJpbmciOnRydWUsInJlZGRpdF9zaGFyaW5nIjp0cnVlLCJwb3N0X2l0X2ZvcndhcmQiOnRydWUsInBlZXByX3NlYXJjaF9hbmRfZmlsdGVyIjp0cnVlLCJpbnRlcm5zX3BhZ2UiOnRydWUsImZvbGxvd2VkX3NlYXJjaGVzX2JpZ193ZWIiOnRydWUsImRpc2FibGVfcHVibGljX3JlcGxpZXMiOnRydWUsImRlcHJlY2F0ZWRfZm9udHMiOnRydWUsIm5ld19yZXBsaWVzIjp0cnVlLCJyZXBsaWVzX21vZGVyYXRpb24iOnRydWUsImJsb2dfc3ViX29uX2Jsb2dfbmV0d29yayI6dHJ1ZSwibGl2ZXBob3Rvc193ZWIiOnRydWUsIndpZGVfcmlnaHRfY29sdW1uIjp0cnVlLCJkaXNhYmxlX3lhaG9vX2JfY29va2llIjp0cnVlLCJsaXZlcGhvdG9zIjp0cnVlfQ==&quot;},&quot;Context&quot;:{&quot;name&quot;:&quot;default&quot;,&quot;time&quot;:1474724677000,&quot;userinfo&quot;:{&quot;primary&quot;:&quot;&quot;,&quot;name&quot;:&quot;&quot;,&quot;channels&quot;:[]},&quot;hosts&quot;:{&quot;assets_host&quot;:&quot;http:\/\/assets.tumblr.com&quot;,&quot;secure_assets_host&quot;:&quot;https:\/\/assets.tumblr.com&quot;,&quot;www_host&quot;:&quot;http:\/\/www.tumblr.com&quot;,&quot;secure_www_host&quot;:&quot;https:\/\/www.tumblr.com&quot;,&quot;embed_host&quot;:&quot;https:\/\/embed.tumblr.com&quot;,&quot;safe_host&quot;:&quot;http:\/\/safe.txmblr.com&quot;,&quot;platform_host&quot;:&quot;http:\/\/platform.tumblr.com&quot;},&quot;language&quot;:&quot;en_US&quot;,&quot;language_simple&quot;:&quot;en&quot;,&quot;assets&quot;:&quot;http:\/\/assets.tumblr.com\/client\/prod\/&quot;},&quot;Translations&quot;:{&quot;%1$sReport %2$s&#039;s post?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;:&quot;%1$sReport %2$s&#039;s reblog?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;,&quot;%1$sReport %2$s&#039;s reply?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;:&quot;%1$sReport %2$s&#039;s reblog?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;}}"></noscript>
+<script src="http://assets.tumblr.com/client/prod/standalone/tumblelog/index.build.js?_v=f265428debf5773a7780780cca395b71"></script>
+
+</body>
+</html>

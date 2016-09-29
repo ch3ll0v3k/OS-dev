@@ -1,0 +1,1176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+    <meta name="description" content=
+    "Article about how to setup and configure GRUB bootloader with multiple operating systems">
+    <title>
+      GRUB bootloader - Full tutorial
+    </title>
+    <link href="../css/default.css" rel="stylesheet" type="text/css">
+    <link href="../css/custom_styles.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="../images/site_icon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss_feed.xml">
+  </head>
+  <body>
+    <a name="top" id="top"></a>
+    <div class="banner">
+      <a href="http://www.dedoimedo.com"><img style="border: 1px solid rgb(239, 239, 239);" alt="Banner" src=
+      "http://www.dedoimedo.com/images/banner2.png"></a>
+    </div>
+    <div class="centered_menu">
+      <ul>
+        <li>
+          <a href="http://www.dedoimedo.com/computer_software.html">Software &amp; security</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/computer_games.html">Computer games</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/life_topics.html">Life topics</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/physics.html">Hillbilly physics</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/greatest_sites.html">Greatest sites</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/art_3d.html">3D art</a>
+        </li>
+        <li>
+          <a href="http://www.dedoimedo.com/models.html">Model planes</a>
+        </li>
+      </ul>
+    </div>
+    <div style="clear: both;"></div>
+    <div class="titlebar">
+      GRUB bootloader - Full tutorial
+    </div><br>
+    <br>
+    <div class="adbody_test">
+      <br>
+      <div class="divtable11_spec">
+        This tutorial focuses on GRUB legacy. If you're looking for a tutorial on GRUB 2, the next generation of the
+        popular bootloader, please take a look at <a href="grub-2.html">this</a> article.
+      </div>
+      <div style="clear: both;"></div>
+      <p>
+        One of the most frightening things about Linux is the horrible word bootloader. The primary reason for this is
+        the fact that most new Linux users have only ever used Windows operating systems. In the Windows world, they
+        have never bothered with bootloaders. For them, the issue of a system booting was a transparent one. At most,
+        they would use Windows Recovery Console to fix problems for them. Thus, they have been spared the need to learn
+        about the single most important piece of software on a computer - the little program that makes it all work.
+      </p>
+      <p>
+        This article is supposed to provide you with basic understanding of the GRUB bootloader. If you have read my
+        other Linux articles, you are familiar with partitioning and Linux notation, as well as with the command line.
+        The next logical step is to enhance this knowledge by taking one step further. Understanding how GRUB works and
+        what boot entries in the boot menu mean will help you understand how the operating systems work, how to fix,
+        recover or modify the GRUB menu to suit your needs, and how to setup different work environments with several
+        operating systems.
+      </p>
+      <p>
+        In the past, we have relied on the installation setups to make the hard work for us. In fact, setting up GRUB,
+        while frightening, is a quite simple and fully reversible procedure. Mastering the GRUB is a very important
+        step in building up the confidence to use Linux. So if you are ready, read on.
+      </p>
+      <p>
+        But first of all, a foreword of wisdom. This article is a compilation of sources and examples that will help
+        you learn about GRUB. Of course, it's all out there somewhere, on the Internet. However, new Linux users will
+        probably find the notion of spending hours searching for relevant pieces of information (especially if their PC
+        won't boot) somewhat frustrating. The goal of this guide is to help provide simple and quick solutions to most
+        common problems regarding multi-boot setups and installation of Linux operating systems.
+      </p><br>
+      <h2>
+        <a class="mozTocH2" name="mozTocId160137" id="mozTocId160137"></a> Table of contents
+      </h2><br>
+      <ol id="mozToc" style="margin-left:-2.4em;">
+        <!--mozToc h2 2 h3 3 h4 4 h5 5 h6 6-->
+        <li>
+          <a href="#mozTocId29646">Everything is a file</a>
+        </li>
+        <li>
+          <a href="#mozTocId683442">Introduction</a>
+          <ol>
+            <li>
+              <a href="#mozTocId718528">What about LILO?</a>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <a href="#mozTocId616834">How does GRUB work?</a>
+        </li>
+        <li>
+          <a href="#mozTocId60013">GRUB notation</a>
+        </li>
+        <li>
+          <a href="#mozTocId233239">GRUB configuration</a>
+          <ol>
+            <li>
+              <a href="#mozTocId836096">Installation of GRUB</a>
+              <ol>
+                <li>
+                  <a href="#mozTocId357698">GRUB on a floppy disk</a>
+                </li>
+                <li>
+                  <a href="#mozTocId432831">Installing GRUB natively</a>
+                </li>
+                <li>
+                  <a href="#mozTocId753705">Installing GRUB with grub-install</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="#mozTocId288068">Setting up GRUB manually (after installation)</a>
+              <ol>
+                <li>
+                  <a href="#mozTocId333176">Backup!</a>
+                </li>
+                <li>
+                  <a href="#mozTocId286308">Adding a new operating system to the GRUB menu</a>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <a href="#mozTocId802585">Common problems</a>
+          <ol>
+            <li>
+              <a href="#mozTocId928352">GRUB got deleted; how to restore?</a>
+              <ol>
+                <li>
+                  <a href="#mozTocId976410">The easy way</a>
+                </li>
+                <li>
+                  <a href="#mozTocId856030">The hard way</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="#mozTocId800388">Windows is installed on a non-first hard disk (Swapping)</a>
+            </li>
+            <li>
+              <a href="#mozTocId365788">There is more than one Windows operating system installed on one hard disk
+              (Hide/Unhide)</a>
+            </li>
+            <li>
+              <a href="#mozTocId431278">You resized a partition; GRUB is gone</a>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <a href="#mozTocId111917">Useful tools</a>
+        </li>
+        <li>
+          <a href="#mozTocId901389">Extras for special geeks</a>
+        </li>
+        <li>
+          <a href="#mozTocId995159">Links</a>
+          <ol>
+            <li>
+              <a href="#mozTocId225372">My other articles</a>
+            </li>
+            <li>
+              <a href="#mozTocId207585">General information (by alphabetic order)</a>
+            </li>
+          </ol>
+        </li>
+      </ol><br>
+      <h2>
+        <a class="mozTocH2" name="mozTocId29646" id="mozTocId29646"></a><a name="file" id="file"></a>Everything is a
+        file
+      </h2>
+      <p>
+        To be able to successfully master the secrets of GRUB, you must understand one of the basic foundations of
+        *NIX-based operating systems. Everything is a file. Even hard disks and partitions are treated as files. There
+        is no magic. If you remember this, you will find the supposedly perilous task of tampering with partitions no
+        different than playing with files using a file explorer (or the command line). Now that we have established
+        this, we can move on to the more technical parts of grubbing.<br>
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId683442" id="mozTocId683442"></a><a name="intro" id="intro"></a>Introduction
+      </h2>
+      <p>
+        GNU GRUB is a bootloader (can also be spelled boot loader) capable of loading a variety of free and proprietary
+        operating systems. GRUB will work well with Linux, DOS, Windows, or BSD. GRUB stands for <span class=
+        "red_text">GR</span>and <span class="red_text">U</span>nified <span class="red_text">B</span>ootloader.
+      </p>
+      <p>
+        GRUB is dynamically configurable. This means that the user can make changes during the boot time, which include
+        altering existing boot entries, adding new, custom entries, selecting different kernels, or modifying <a href=
+        "http://en.wikipedia.org/wiki/Initrd">initrd</a>. GRUB also supports <a href=
+        "http://en.wikipedia.org/wiki/Logical_Block_Address">Logical Block Address</a> mode. This means that if your
+        computer has a fairly modern BIOS that can access more than 8GB (first 1024 cylinders) of hard disk space, GRUB
+        will automatically be able to access all of it.
+      </p>
+      <p>
+        GRUB can be run from or be installed to any device (floppy disk, hard disk, CD-ROM, USB drive, network drive)
+        and can load operating systems from just as many locations, including network drives. It can also decompress
+        operating system images before booting them. You can learn much, much more from the official <a href=
+        "http://www.gnu.org/software/grub/manual/legacy/grub.html">GNU GRUB Manual 0.97</a>.
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId718528" id="mozTocId718528"></a><a name="lilo" id="lilo"></a>What about LILO?
+      </h3>
+      <p>
+        You may have heard about another Linux bootloader called LILO (stands for <span class="red_text">LI</span>nux
+        <span class="red_text">LO</span>ader). While a sensible option for many Linux users, I believe that GRUB is a
+        better choice, for several reasons:
+      </p>
+      <ul>
+        <li>LILO supports only up to 16 different boot selections; GRUB supports an unlimited number of boot entries.
+        </li>
+        <li>LILO cannot boot from network; GRUB can.
+        </li>
+        <li>LILO must be written again every time you change the configuration file; GRUB does not.
+        </li>
+        <li>LILO does not have an interactive command interface.
+        </li>
+      </ul>
+      <p>
+        All in all, it seems that GRUB is the winner. So let's see what this baby can do.
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId616834" id="mozTocId616834"></a><a name="how_grub_works" id=
+        "how_grub_works"></a>How does GRUB work?
+      </h2>
+      <p>
+        When a computer boots, the BIOS transfers control to the first boot device, which can be a hard disk, a floppy
+        disk, a CD-ROM, or any other BIOS-recognized device. We'll concentrate on hard disks, for the sake of
+        simplicity.
+      </p>
+      <p>
+        The first sector on a hard is called the <span class="red_text">Master Boot Record (MBR)</span>. This sector is
+        only 512 bytes long and contains a small piece of code (446 bytes) called the primary boot loader and the
+        partition table (64 bytes) describing the primary and extended partitions.
+      </p>
+      <p>
+        By default, MBR code looks for the partition marked as active and once such a partition is found, it loads its
+        boot sector into memory and passes control to it.
+      </p>
+      <p>
+        GRUB replaces the default MBR with its own code.
+      </p>
+      <p>
+        Furthermore, GRUB works in <span class="red_text">stages</span>.
+      </p>
+      <p>
+        <span class="red_text">Stage 1</span> is located in the MBR and mainly points to <span class="red_text">Stage
+        2</span>, since the MBR is too small to contain all of the needed data.
+      </p>
+      <p>
+        <span class="red_text">Stage 2</span> points to its configuration file, which contains all of the complex user
+        interface and options we are normally familiar with when talking about GRUB. Stage 2 can be located anywhere on
+        the disk. If Stage 2 cannot find its configuration table, GRUB will cease the boot sequence and present the
+        user with a command line for manual configuration.
+      </p>
+      <p>
+        <span class="red_text">Stage 1.5</span> also exists and might be used if the boot information is small enough
+        to fit in the area immediately after MBR.
+      </p>
+      <p>
+        The Stage architecture allows GRUB to be large (~20-30K) and therefore fairly complex and highly configurable,
+        compared to most bootloaders, which are sparse and simple to fit within the limitations of the Partition Table.
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId60013" id="mozTocId60013"></a><a name="grub_notation" id=
+        "grub_notation"></a>GRUB notation
+      </h2>
+      <p>
+        This section is intended to help you get familiar with GRUB, without touching anything. The next section deals
+        with actual files and manual configuration. GRUB has its own notation, which is very similar yet somewhat
+        different from the general notation a typical Linux user might be used to. Now, here's an example of a typical
+        GRUB entry:
+      </p>
+      <div class="divtable6">
+        (hd0,1)
+      </div>
+      <ul>
+        <li>The <span class="red_text">brackets</span> are a must; all devices listed in GRUB menu must be enclosed in
+        brackets.
+        </li>
+        <li>
+          <span class="red_text">hd</span> stands for hard disk; alternatively, <span class="red_text">fd</span> stands
+          for floppy disk, <span class="red_text">cd</span> stands for CD-ROM etc.
+        </li>
+        <li>The <span class="red_text">first number</span> (integer for geeks) refers to the <span class=
+        "red_text">physical hard drive number</span>; in this case, the <span class="red_text">first</span> drive, as
+        they are counted from <span class="red_text">zero</span> up. For example, <span class="red_text">hd2</span>
+        refers to the <span class="red_text">third physical hard drive</span>.
+        </li>
+        <li>The <span class="red_text">second number</span> refers to the <span class="red_text">partition
+        number</span> of the <span class="red_text">selected hard drive</span>; again, partitions are counted from
+        <span class="red_text">zero</span> up. In this case, <span class="red_text">1</span> stands for the
+          <span class="red_text">second</span> partition.
+        </li>
+      </ul>
+      <p>
+        From here, it is evident that GRUB (menu) does not discriminate between IDE or SCSI drives or primary or
+        logical partitions. The task of deciding which hard drive or partition may boot is left to BIOS and Stage 1. As
+        you see, the notation is very simple.
+      </p>
+      <p>
+        <span class="red_text">Primary</span> partitions are marked from <span class="red_text">0</span> to
+        <span class="red_text">3</span> <span class="red_text">(hd?,0)</span>, <span class="red_text">(hd?,1)</span>,
+        <span class="red_text">(hd?,2)</span>, <span class="red_text">(hd?,3)</span>. <span class=
+        "red_text">Logical</span> partitions in the <span class="red_text">extended</span> partition are counted from
+        <span class="red_text">4</span> up, regardless of the actual number of primary partitions on the hard disk,
+        e.g. <span class="red_text">(hd1,7)</span>.
+      </p>
+      <p>
+        The entries alone are not enough to boot an operating system though. GRUB also needs to know what operating
+        system <span class="red_text">images</span> to load. These are assigned as parameters to each of the called
+        devices, including special flags (switches). For example, Windows Safe Mode is a special flag. Here is an
+        example of a GRUB menu booting only Ubuntu.
+      </p>
+      <p>
+        <img style="width: 720px; height: 505px;" alt="GRUB Ubuntu boot" src=
+        "../images/computers/grub_ubuntu_boot.jpg">
+      </p>
+      <p>
+        Here's an example of a GRUB menu from a computer with triple boot (SUSE 10.2, Ubuntu 6.10 and Windows XP). This
+        is the actual menu.lst on one of my real machines.
+      </p>
+      <p>
+        <img style="width: 720px; height: 512px;" alt="GRUB triple boot" src=
+        "../images/computers/grub_triple_boot.jpg">
+      </p>
+      <p>
+        Let's try to understand what the entries mean. Only uncommented lines count. <span class=
+        "red_text">Comments</span> are marked with <span class="red_text">#</span>. The lines that have a series of
+        small gray <span class="red_text">x</span>s showing are in indication that text therein belongs to the line
+        preceding it. In other words, there text simply dropped to another line to visually accommodate the text editor
+        and screen resolution limitations.
+      </p>
+      <div class="divtable6">
+        default 0<br>
+        timeout 8
+      </div>
+      <p>
+        The first line (<span class="red_text">default 0</span>) means that the first operating system listed will be
+        booted. In this case, it's SUSE 10.2. The second line (<span class="red_text">timeout 8</span>) tells how much
+        time (seconds) the user has to make his choice before the default entry is loaded. Simple, isn't it?
+      </p>
+      <div class="divtable6">
+        gfxmenu (hd0,2)/boot/message
+      </div>
+      <p>
+        The GRUB menu can also be graphic. The fancy stuff needed to present the user with a colorful background and
+        possibly some extras is located on the <span class="red_text">first</span> physical disk, <span class=
+        "red_text">third</span> partition (hd0,2). This is a <span class="red_text">primary</span> partition, as we
+        have seen earlier.
+      </p>
+      <div class="divtable6">
+        title openSUSE 10.2<br>
+        root (hd0,2)<br>
+        kernel /boot/vmlinuz-...<br>
+        initrd /boot/initrd.img-...
+      </div>
+      <p>
+        This is the first operating system entry in the menu.
+      </p>
+      <ul>
+        <li>
+          <span class="red_text">title</span> is as simple as it sounds. It's merely a string that's meant to help the
+          user read the menu in human terminology.
+        </li>
+        <li>
+          <span class="red_text">root (hd0,2)</span> tells GRUB where its configuration files are located. In this
+          instance, they can be found under <span class="red_text">(hd0,2)/boot/grub</span>.
+        </li>
+        <li>
+          <span class="red_text">kernel /boot/vmlinuz-...</span> boots the actual kernel <span class=
+          "red_text">image</span>. There can be many such images available. The fact there is no device specified
+          before the <span class="red_text">/boot/vmlinuz</span> indicates the image is located on the <span class=
+          "red_text">same</span> partition as the GRUB itself. This is often the default case for your primary choice
+          of operating system.
+        </li>
+        <li>
+          <span class="red_text">initrd /boot/initrd.img-...</span> is the temporary file system that makes system
+          preparations - adapts generic kernel image to specific hardware - before the real root is loaded.
+        </li>
+      </ul>
+      <p>
+        The extra switches used after the kernel indicate where the actual root is located, what graphic mode is used
+        and where the swap partition resides. This article will not go into detail regarding the more advanced GRUB
+        configurations.
+      </p>
+      <div class="divtable6">
+        title Ubuntu, kernel ... (/dev/sda9)<br>
+        kernel (hd0,8)/boot/vmlinuz-...<br>
+        initrd (hd0,8)/boot/initrd.img-...
+      </div>
+      <ul>
+        <li>Again, <span class="red_text">title</span> indicates a name, in this case fancily adorned with technical
+        details.
+        </li>
+        <li>
+          <span class="red_text">kernel (hd0,8)/boot/vmlinuz-...</span> points to the <span class="red_text">9th</span>
+          partition on the <span class="red_text">first</span> hard disk <span class="red_text">(hd0,8)</span>.
+          Accidentally, the root flag <span class="red_text">(/dev/sda9)</span> indicates that the root partition is
+          the <span class="red_text">same</span> as the one containing the kernel image. Normally, this is the case,
+          and for the sake of simplicity, you will want this option during your installations.
+        </li>
+        <li>
+          <span class="red_text">initrd (hd0,8)/boot/initrd.img-...</span> nothing new here.
+        </li>
+      </ul>
+      <p>
+        Note regarding kernel images and root partitions: On older computers with BIOS that do not support access to
+        more than the first 1024 cylinders, you might setup a boot partition that contains the kernel image, while the
+        root itself is located elsewhere. But people with computers younger than the botched Y2K crisis need not worry.
+      </p>
+      <p>
+        Another thing you might notice is that the Ubuntu entry is fairly detailed. This feature is called <span class=
+        "red_text">Multi-boot Compliance</span>; openSUSE recognizes Ubuntu and can accurately call its images
+        (including special switches) and mount the partitions. However, most operating systems are only partially
+        multi-boot compliant. A little later on, I will show you how the Ubuntu entry could have been treated
+        differently, with the same results.
+      </p>
+      <div class="divtable6">
+        title Windows<br>
+        rootnoverify (hd0,0)<br>
+        chainloader (hd0,0)+1
+      </div>
+      <ul>
+        <li>
+          <span class="red_text">rootnoverify (hd0,0)</span> means that openSUSE cannot understand Windows operating
+          system, i.e. no multi-boot compliance. Therefore, the operating system is called without any fore-knowledge
+          of the kernel. GRUB assumes that the relevant boot images will be found on the target partition and
+          <span class="red_text">mounted</span> by the other operating system bootloader. As you can see, Windows was
+          installed on the <span class="red_text">first</span> partition of the <span class="red_text">first</span>
+          hard disk. This is the most convenient option.
+        </li>
+        <li>
+          <span class="red_text">chainloader (hd0,0)+1</span> feature is used for operating systems that cannot be
+          booted directly. Not surprisingly, Windows operating systems cannot be booted directly. They are booted by
+          the method of <span class="red_text">chainloading</span>. As the name implies, GRUB passes the control of the
+          boot sequence to another bootloader, located on the device to which the menu entry points. This can be a
+          Windows operating system, but also any other, including Linux.
+        </li>
+      </ul>
+      <p>
+        Back to Ubuntu. You remember that I have told we could have booted Ubuntu in an alternative way? Indeed, we
+        could have simply chainloaded it, just like Windows.
+      </p>
+      <div class="divtable6">
+        title Ubuntu<br>
+        root (hd0,8)<br>
+        chainloader (hd0,8)+1
+      </div>
+      <p>
+        This would have worked equally well. The last option in the menu allows you to boot SUSE in the <span class=
+        "red_text">failsafe</span> mode (sort of Safe Mode, no graphics) and does not contribute to our knowledge,
+        therefore we will skip it at the moment. Let's see some more examples. The example below is actually written in
+        the <span class="red_text">Ubuntu menu.lst</span> (commented, of course).
+      </p>
+      <div class="divtable6">
+        title Windows 95/98/NT/2000<br>
+        root (hd0,0)<br>
+        makeactive<br>
+        chainloader +1<br>
+        <br>
+        title Linux<br>
+        root (hd0,1)<br>
+        kernel /vmlinuz root=/dev/hda3 ro
+      </div>
+      <p>
+        By now, you should be able to "read" GRUB language with ease. We begin with the <span class=
+        "red_text">title</span>. <span class="red_text">root</span> specifies the partition where we expect to find the
+        Windows kernel and <span class="red_text">mounts</span> it (<span class="red_text">rootnoverify</span> would
+        leave this job to the Windows bootloader). <span class="red_text">makeactive</span> command sets the
+        <span class="red_text">active</span> partition on the root disk (above) to <span class="red_text">GRUB root
+        device</span>. This means that the next command, <span class="red_text">chainloader</span>, is executed without
+        the target partition specified (as the target partition is the same, now).
+      </p>
+      <p>
+        The second entry is even simpler. We name a Linux, we call its partition and we boot the kernel. In this case,
+        we see the very interesting case where the <span class="red_text">kernel image</span> and <span class=
+        "red_text">root (/) partition</span> of the operating system are NOT located on the same partition. This would
+        be a very likely case for older computers - or ones with a specific boot partition. Finally, the crazy stuff:
+        <a href="http://www.justlinux.com/forum/showthread.php?threadid=143973">A GRUB menu booting 100+ systems of
+        DOS, Windows, Linux, BSD, and Solaris</a>.
+      </p>
+      <p>
+        You see, it's very simple! Once you get the hang of it, it actually becomes fun. For more information, you must
+        read the <a href="http://www.gnu.org/software/grub/manual/grub.html">GNU GRUB Manual 0.97</a>. In particular,
+        you need to familiar with <a href=
+        "http://www.gnu.org/software/grub/manual/grub.html#Command_002dline-and-menu-entry-commands">The list of
+        command line and menu entry commands</a>.
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId233239" id="mozTocId233239"></a><a name="grub_configuration" id=
+        "grub_configuration"></a>GRUB configuration
+      </h2>
+      <p>
+        <span class="red_text">Most of the time, you will not want or need to touch GRUB. When you install operating
+        systems, especially in the right sequence (inconsiderate OS first - like Windows, flexible OS later - Linux and
+        family), the GRUB will be installed automatically and relevant entries appended.</span>
+      </p>
+      <p>
+        Nevertheless, you should know when and what to do if things go wrong.
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId836096" id="mozTocId836096"></a><a name="install_grub" id=
+        "install_grub"></a>Installation of GRUB
+      </h3>
+      <p>
+        GRUB can be installed to a variety of devices. Most people will be interested in setting up GRUB on their hard
+        disk. Nevertheless, it does not hurt to know learn about other options. Of course, you can skip forward. Before
+        we install anything, we need to know where our files are. If installed, GRUB menu is located on the root
+        partition under:
+      </p>
+      <div class="divtable6">
+        /boot/grub/menu.lst
+      </div>
+      <p>
+        Always, always back this file up before making any changes! The GRUB files can be found in the image of your
+        operating system (usually a CD), under:
+      </p>
+      <div class="divtable6">
+        /usr/lib/grub/i386-pc
+      </div>
+      <p>
+        You should also be aware of the basic Linux commands regarding the hard disks and partitions. To this end, you
+        might want to try my article <a href="linux_commands.html">Highly useful Linux commands &amp;
+        configurations</a>. Nevertheless, for those who do not fancy reading yet another article, here's a brief
+        version:
+      </p>
+      <p>
+        You can display your PC environment information either through terminal or a text editor. Files through text
+        editor are invoked by specifying the text editor and a target file (with su or sudo for system files).
+      </p>
+      <div class="divtable6">
+        sudo vi /etc/fstab<br>
+        <span class="bold_text">OR</span><br>
+        sudo gedit /etc/fstab
+      </div>
+      <p>
+        Alternatively, you can simply print the contents of the files in the terminal by using the <a href=
+        "http://www.linuxjournal.com/article/1322">cat</a> (concatenate) command.
+      </p>
+      <div class="divtable6">
+        (sudo) cat /etc/fstab
+      </div>
+      <p>
+        Some useful commands that one might need when dealing with boot, hard drives and partitions: Display the
+        partition table:
+      </p>
+      <div class="divtable6">
+        fdisk -l
+      </div>
+      <p>
+        Display the mounted partitions:
+      </p>
+      <div class="divtable6">
+        cat /etc/fstab
+      </div>
+      <p>
+        Now that we know what we need and where to find it, it's time to install GRUB.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId357698" id="mozTocId357698"></a><a name="grub_floppy" id=
+        "grub_floppy"></a>GRUB on a floppy disk
+      </h4>
+      <p>
+        To create GRUB on a floppy disk, we must copy the <span class="red_text">Stage 1</span> and <span class=
+        "red_text">Stage 2</span> files from the image directory to the <span class="red_text">first</span> and
+        <span class="red_text">second sector</span> of the floppy disk. We'll use the <a href=
+        "http://www.linuxjournal.com/article/1320">dd</a> command, which copies information sector by sector. Here's
+        the set of commands that you need to execute (taken from the Manual):
+      </p>
+      <div class="divtable6">
+        cd /usr/lib/grub/i386-pc<br>
+        dd if=stage1 of=/dev/fd0 bs=512 count=1<br>
+        dd if=stage2 of=/dev/fd0 bs=512 seek=1
+      </div>
+      <p>
+        Just a short explanation: <span class="red_text">if</span> stands for input file, <span class=
+        "red_text">of</span> stands for output file, <span class="red_text">/dev/fd0</span> refers to the first mounted
+        floppy device, <span class="red_text">bs</span> specifies the block size (in bytes), <span class=
+        "red_text">count</span> instructs how many blocks should be copied, and <span class="red_text">seek</span>
+        tells how many blocks should be skipped before writing. Not surprisingly, since we need to write the files to
+        the first two sectors of the floppy disk, we write <span class="red_text">stage1</span> to the <span class=
+        "red_text">first</span> sector, and copy <span class="red_text">stage2</span> to the <span class=
+        "red_text">second</span> (skip first, then write). Now that we have taken this deep fancy for the command line,
+        I'll leave you with the nuances of different commands for homework. More on <span class="red_text">dd</span> on
+        <a href="http://en.wikipedia.org/wiki/Dd_%28Unix%29">Wikipedia</a>.
+      </p>
+      <p>
+        Regarding the GRUB on floppy, that's it. Since we have copies the stages from OS image, all of the required
+        information is there. Of course, you can always make manual adjustments. But that's the next chapter.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId432831" id="mozTocId432831"></a><a name="grub_native" id=
+        "grub_native"></a>Installing GRUB natively
+      </h4>
+      <p>
+        Native install means placing <span class="red_text">GRUB Stage 1</span> in the <span class="red_text">first
+        sector</span> of the hard disk (<span class="red_text">MBR</span> or <span class="red_text">Partition
+        Table</span>). This means you will be able to boot without a secondary device, like a floppy disk (which have
+        become a rarity nowadays). However, this also means that if you install an inconsiderate OS later on (like
+        Windows) or try to repair the MBR for some reason (by running fdisk /MBR from DOS prompt), you will erase the
+        GRUB and render all systems listed in the menu.lst unbootable.
+      </p>
+      <p>
+        To install GRUB in MBR, you will need to boot from external media (floppy, live Linux CD). Then, once you reach
+        the GRUB prompt, execute the following commands:
+      </p>
+      <p>
+        Find the <span class="red_text">GRUB root device</span>:
+      </p>
+      <div class="divtable6">
+        find /boot/grub/stage1
+      </div>
+      <p>
+        GRUB will search for all available <span class="red_text">Stages 1</span> and present them. If you have more
+        than one operating system image present (e.g. SUSE, Kubuntu, Mandriva), you will have more than one
+        <span class="red_text">stage1</span> available. Example - Let's say the computer has the following operating
+        systems installed on different partitions:
+      </p>
+      <ul>
+        <li>
+          <span class="red_text">SUSE</span> on <span class="red_text">(hd0,1)</span>
+        </li>
+        <li>
+          <span class="red_text">Kubuntu</span> on <span class="red_text">(hd0,2)</span>
+        </li>
+        <li>
+          <span class="red_text">Mandriva</span> on <span class="red_text">(hd0,4)</span>
+        </li>
+      </ul>
+      <p>
+        All these will be returned as potential roots for GRUB device (as each OS has its own files). If you wish to
+        use <span class="red_text">SUSE GRUB</span>, then you will setup the <span class="red_text">GRUB root
+        device</span> to <span class="red_text">(hd0,1)</span>:
+      </p>
+      <div class="divtable6">
+        root (hd0,1)
+      </div>
+      <p>
+        If you want <span class="red_text">Mandriva's GRUB</span>, then:
+      </p>
+      <div class="divtable6">
+        root (hd0,4)
+      </div>
+      <p>
+        If you know in advance what you want to do, you can skip the find command. Once you have decided on the root,
+        you need to write the information to the MBR:
+      </p>
+      <div class="divtable6">
+        setup (hd0)
+      </div>
+      <p>
+        Finally, quit the GRUB prompt:
+      </p>
+      <div class="divtable6">
+        quit
+      </div>
+      <p>
+        As a sequence, the commands that you need are:
+      </p>
+      <div class="divtable6">
+        find /boot/grub/stage1 (optional)<br>
+        root (hdX,Y)<br>
+        setup (hd0)<br>
+        quit
+      </div>
+      <p>
+        You can also setup GRUB on another drive or partition, but then you will have to <span class=
+        "red_text">chainload</span> GRUB to another bootloader for this to work. That's it. Easy peasy orange squeasy!
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId753705" id="mozTocId753705"></a><a name="grub-install" id=
+        "grub-install"></a>Installing GRUB with grub-install
+      </h4>
+      <p>
+        This method is considered less safe (according to the Manual), as it guesses the mapping. Still, for total
+        newbs in need of dire help, this might be the preferred method. You only need to invoke a single command -
+        namely, where to install the bootloader. Furthermore, this command can be written in several ways, all
+        equivalent:
+      </p>
+      <div class="divtable6">
+        grub-install /dev/hda
+      </div><br>
+      <div class="divtable6">
+        grub-install /dev/hd0
+      </div><br>
+      <div class="divtable6">
+        grub-install '(hd0)'
+      </div><br>
+      <div class="divtable6">
+        grub-install hd0
+      </div>
+      <p>
+        After you have installed the GRUB, your operating systems should boot. Once booted, you can once again start
+        playing with GRUB, manually changing settings - adding and removing entries, chainloading other bootloaders, or
+        even hiding and unhiding partitions.
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId288068" id="mozTocId288068"></a><a name="grub_manual_setup" id=
+        "grub_manual_setup"></a>Setting up GRUB manually (after installation)
+      </h3>
+      <p>
+        You can reconfigure or reinstall GRUB at any moment.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId333176" id="mozTocId333176"></a><a name="backup" id="backup"></a>Backup!
+      </h4>
+      <p>
+        First, before you make any changes to the GRUB configuration file, it is most warmly recommended that you
+        backup the existing menu. You might even consider copying to another machine or printing the menu, in case
+        things go bunkerous.
+      </p>
+      <div class="divtable6">
+        cp /boot/grub/menu.lst /boot/grub/menu.lst_backup
+      </div>
+      <p>
+        To access GRUB, execute the following command in Linux terminal:
+      </p>
+      <div class="divtable6">
+        sudo grub
+      </div>
+      <p>
+        After a few moments, the GRUB command line should show up. You can identify it by the <span class=
+        "red_text">grub&gt;</span> prompt.
+      </p>
+      <p>
+        <img style="width: 640px; height: 378px;" alt="GRUB prompt" src="../images/computers/grub_prompt.jpg">
+      </p>
+      <p>
+        Alternatively, you can reach the GRUB command line during bootup. When the GRUB menu loads, press <span class=
+        "red_text">C</span> on the keyboard.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId286308" id="mozTocId286308"></a><a name="add_new_os" id=
+        "add_new_os"></a>Adding a new operating system to the GRUB menu
+      </h4>
+      <p>
+        Let's say you have installed yet another operating system on your machine, Sabayon. During the installation,
+        you skip the GRUB setup. This means that the original GRUB remains untouched - and it does not contain an entry
+        about Sabayon. For all practical purposes, Sabayon is not bootable.
+      </p>
+      <p>
+        Note: GRUB menu entries are called <span class="red_text">stanzas</span> (probably a twist of instance?). So,
+        we need to add Sabayon to the list. If you know where Sabayon is installed, you just need to add its entry to
+        the menu.lst.
+      </p>
+      <div class="divtable6">
+        title Sabayon<br>
+        root (hdX,Y)<br>
+        chainloader +1
+      </div>
+      <p>
+        That's it. You can also do this while booting the computer, without editing the menu. When the original GRUB
+        comes up, press <span class="red_text">C</span> to reach the command line. And then:
+      </p>
+      <div class="divtable6">
+        root (hdX,Y)<br>
+        chainloader +1
+      </div>
+      <p>
+        Optionally, you will use the <span class="red_text">find</span> command to get around. Basically, this is the
+        whole of GRUB magic. As you can see, it's very very simple. But for people who have never heard of GRUB and see
+        long lists of strange commands, the prospect can be daunting. Now that we have covered the basics of grubbing,
+        it's time for extras and some more common problems.
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId802585" id="mozTocId802585"></a><a name="common_problems" id=
+        "common_problems"></a>Common problems
+      </h2>
+      <h3>
+        <a class="mozTocH3" name="mozTocId928352" id="mozTocId928352"></a><a name="grub_deleted" id=
+        "grub_deleted"></a>GRUB got deleted; how to restore?
+      </h3>
+      <p>
+        This will often happen if you install Windows after Linux. Windows assumes it's the only operating system in
+        the world and does not try to live with existing information present in the MBR; it overwrites it. For people
+        with dual-boot and very little knowledge of Linux, this is a disaster. Luckily, it's very easily recoverable
+        one.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId976410" id="mozTocId976410"></a><a name="easy_way" id="easy_way"></a>The easy
+        way
+      </h4>
+      <p>
+        Use <a href="http://www.supergrubdisk.org/">Super Grub Disk</a>. I have written about this tool in
+        detail in my article <a href="collection_linux.html">A (cool) list of Linux tools</a>, under <a href=
+        "collection_linux.html#rescue">Rescue</a>.
+      </p>
+      <h4>
+        <a class="mozTocH4" name="mozTocId856030" id="mozTocId856030"></a><a name="hard_way" id="hard_way"></a>The hard
+        way
+      </h4>
+      <ul>
+        <li>Boot from floppy disk or CD (any Linux live CD should do).
+        </li>
+        <li>Get to the grub command line.
+        </li>
+      </ul>
+      <div class="divtable6">
+        find /boot/grub/stage1 (optional)<br>
+        root (hdX,Y)<br>
+        setup (hd0)<br>
+        quit
+      </div>
+      <p>
+        The same as before!
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId800388" id="mozTocId800388"></a><a name="windows_non_first" id=
+        "windows_non_first"></a>Windows is installed on a non-first hard disk (Swapping)
+      </h3>
+      <p>
+        GRUB cannot directly boot Microsoft operating systems. And sometimes, even chainloading may not work,
+        especially if Windows is not installed on the first hard disk. Once again, you should remember that you should
+        always install Windows first, on the first hard disk, on the first partition (the rule of three first).
+        Nevertheless, even if you have Windows installed on a separate disk, you can solve the problem by <span class=
+        "red_text">swapping</span>. You need to perform a <span class="red_text">virtual swap</span> between hard
+        disks. Like this:
+      </p>
+      <div class="divtable6">
+        map (hd0) (hd1)<br>
+        map (hd1) (hd0)
+      </div>
+      <p>
+        After you add these two lines, you should be able to boot into Windows (or DOS, for that matter).
+      </p>
+      <h3>
+        <a class="mozTocH4" name="mozTocId365788" id="mozTocId365788"></a><a name="more_than_one_windows" id=
+        "more_than_one_windows"></a>There is more than one Windows operating system installed on one hard disk
+        (Hide/Unhide)
+      </h3>
+      <p>
+        Again, Windows can cause problems if there's more than one instance present on a hard disk, especially if
+        installed on primary partitions. When you use the chainloader command, the control is transferred to the
+        Windows boot loader, but which one?
+      </p>
+      <p>
+        The problem is easily solved by <span class="red_text">hiding</span> and <span class="red_text">unhiding</span>
+        partitions. If GRUB hides a partition, it will not be visible by Windows and prevent a possible confusion. Vice
+        versa, if you unhide a partition, Windows will detect it and be able to boot from it, without getting confused.
+      </p>
+      <p>
+        Here's the example taken from the Manual that demonstrates this point. Let's say we have Windows installed on
+        the <span class="red_text">first</span> and the <span class="red_text">second</span> partition of your hard
+        disk. We wish to boot the <span class="red_text">first</span> instance of Windows. Then, we need to execute the
+        following set of commands to make it all work:
+      </p>
+      <div class="divtable6">
+        unhide (hd0,0)<br>
+        hide (hd0,1)<br>
+        rootnoverify (hd0,0)<br>
+        chainloader +1<br>
+        makeactive
+      </div>
+      <h3>
+        <a class="mozTocH3" name="mozTocId431278" id="mozTocId431278"></a><a name="partition_resized" id=
+        "partition_resized"></a>You resized a partition; GRUB is gone
+      </h3>
+      <p>
+        This is an interesting case. It can happen after you use a partitioning or an imaging software to make changes
+        to the Partition Table. Usually, this will happen when you make such a change in Windows. Linux will not be
+        informed of the change, because Windows is blind to anything else on the machine save Microsoft thingies.
+        Consequently, GRUB will suffer.
+      </p>
+      <p>
+        The solution is that most likely the filesystem is damaged and needs to be repaired. Boot from a live CD and
+        execute the following commands, assuming you know where Linux partitions are. Check the filesystem:
+      </p>
+      <div class="divtable6">
+        fsck.ext2 /dev/hdXY
+      </div>
+      <p>
+        Replace <span class="red_text">X</span> and <span class="red_text">Y</span> with hard disk letter and partition
+        number that you want to check (hda2, hdb3, etc.). Create the <span class="red_text">ext2/3 filesystem
+        parameters</span> again.
+      </p>
+      <div class="divtable6">
+        tune2fs -j /dev/hdXY
+      </div>
+      <p>
+        Now <span class="red_text">mount</span> the <span class="red_text">root filesystem</span> on <span class=
+        "red_text">/mnt/sysimage</span> and run <span class="red_text">grub</span>:
+      </p>
+      <div class="divtable6">
+        mount -t ext2 /dev/hdXY /mnt/sysimage<br>
+        OR<br>
+        mount -t ext2 /dev/hdXY /mnt/sysimage<br>
+        <br>
+        cd /mnt/sysimage/sbin<br>
+        grub
+      </div>
+      <p>
+        You're back to the familiar grounds. For more information on Linux commands, including <span class=
+        "red_text">fsck.ext2</span>, <span class="red_text">tune2fs</span> and others, see <a href=
+        "http://linuxreviews.org/man/">Manual pages</a> on <a href="http://linuxreviews.org/index.html.en">Linux
+        Reviews</a>.
+      </p>
+      <p>
+        Finally, some more tricky questions answered in Ubuntu <a href=
+        "http://ubuntuguide.org/wiki/Main_Page">wiki</a>:
+      </p>
+      <p>
+        <a href="http://ubuntuguide.org/wiki/Ubuntu:Feisty#How_to_restore_GRUB_menu_after_Windows_installation">How to
+        restore GRUB menu after Windows installation</a>
+      </p>
+      <p>
+        <a href=
+        "http://ubuntuguide.org/wiki/Ubuntu:Feisty#How_to_identify_the_name_of_the_boot_drive_.28hd0.2C_hd1.2C_hd2.2C_etc.29">
+        How to identify the name of the boot drive (hd0, hd1, hd2, etc)</a>
+      </p>
+      <p>
+        <a href="http://ubuntuguide.org/wiki/Ubuntu:Feisty#How_to_add_Windows_entry_into_GRUB_menu">How to add Windows
+        entry into GRUB menu</a>
+      </p>
+      <p>
+        <a href=
+        "http://ubuntuguide.org/wiki/Ubuntu:Feisty#How_to_boot_into_Windows_installed_on_a_seperate_SATA_drive">How to
+        boot into Windows installed on a separate SATA drive</a>
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId111917" id="mozTocId111917"></a><a name="tools" id="tools"></a>Useful tools
+      </h2>
+      <p>
+        <a href="http://gparted.sourceforge.net/">GParted</a>
+      </p>
+      <p>
+        GParted is a Gnome Partition Editor. Although Linux-based, it fully supports the NTFS file system. It runs from
+        a CD.
+      </p>
+      <p>
+        <a href="http://www.sysresccd.org/System-tools">SystemRescueCD</a>
+      </p>
+      <p>
+        This is a live CD specifically geared toward rescue and recovery. The tools package includes some of the most
+        important tools available for Linux user, like GParted, QTParted, Partimage, Grub, Lilo, sfdisk, security
+        tools, network tools, and more.
+      </p>
+      <p>
+        <a href="http://supergrub.forjamari.linex.org/">Super Grub Disk</a>
+      </p>
+      <p>
+        Super Grub Disk is intended to run from a floppy disk or CD and is used for system rescue. Most importantly, it
+        can be used to restore boot loaders, including GRUB, LILO and even Windows boot loader.
+      </p>
+      <p>
+        <a href="http://www.cgsecurity.org/wiki/TestDisk">TestDisk</a>
+      </p>
+      <p>
+        TestDisk is a utility specially designed to recover lost partitions and make non-booting disks bootable again.
+        This highly useful tool can be found on a number of live CDs, including Knoppix and GParted. It supports NTFS
+        partitions and also comes in Windows flavor.
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId901389" id="mozTocId901389"></a><a name="extras" id="extras"></a>Extras for
+        special geeks
+      </h2>
+      <p>
+        <a href="http://www.faqs.org/docs/Linux-mini/Multiboot-with-GRUB.html">Multiboot with GRUB Mini-HOWTO</a>
+      </p>
+      <p>
+        <a href="http://www.vsubhash.com/writeups/multiboot_os.asp">How To Multi-boot Operating Systems</a>
+      </p>
+      <p>
+        <a href="http://ubuntuguide.org/wiki/Ubuntu:Feisty#How_to_Boot_Ubuntu_from_the_Windows_Bootloader">How to boot
+        Ubuntu from the Windows Bootloader</a>
+      </p>
+      <p>
+        <a href="http://users.bigpond.net.au/hermanzone/p10.htm#Mounting_Ubuntu_with_Dapper_Desktop_LiveCD">Filesystems
+        and Mounting</a>
+      </p>
+      <h2>
+        <a class="mozTocH2" name="mozTocId995159" id="mozTocId995159"></a><a name="links" id="links"></a>Links:
+      </h2>
+      <p>
+        <a href="http://www.gnu.org/software/grub/">GNU GRUB</a>
+      </p>
+      <p>
+        <a href="http://www.gnu.org/software/grub/grub-faq.en.html">GNU GRUB FAQ</a>
+      </p>
+      <p>
+        <a href="http://www.gnu.org/software/grub/manual/legacy">GNU GRUB Manual 0.97</a>
+      </p>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/GNU_GRUB">GNU GRUB on Wikipedia</a>
+      </p>
+      <p>
+        <a href="http://www.gnu.org/software/grub/manual/grub.html#Command_002dline-and-menu-entry-commands">The list
+        of command line and menu entry commands</a>
+      </p>
+      <p>
+        <a href="http://www.justlinux.com/forum/showthread.php?threadid=143973">A GRUB menu booting 100+ systems of
+        DOS, Windows, Linux, BSD, and Solaris</a>
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId225372" id="mozTocId225372"></a><a name="my_articles" id="my_articles"></a>My
+        other articles:
+      </h3>
+      <p>
+        <a href="linux_commands.html">Highly useful Linux commands &amp; configurations</a>
+      </p>
+      <p>
+        <a href="collection_linux.html">A (cool) list of Linux tools</a>
+      </p>
+      <h3>
+        <a class="mozTocH3" name="mozTocId207585" id="mozTocId207585"></a><a name="general" id="general"></a>General
+        information:
+      </h3>
+      <p>
+        <a href="http://www.linuxjournal.com/article/1322">cat</a>
+      </p>
+      <p>
+        <a href="http://www.linuxjournal.com/article/1320">dd</a>
+      </p>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/Initrd">initrd</a>
+      </p>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/LILO_%28boot_loader%29">LILO</a>
+      </p>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/NTLDR">NTLDR</a>
+      </p>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/Logical_Block_Address">Logical Block Address</a>
+      </p>
+      <p>
+        <a href="http://linuxreviews.org/man/">Manual pages (man) on Linux Reviews</a>
+      </p>
+      <p>
+        That's it. Enjoy! P.S. If you find this article useful, please <a href="../donate.html">support</a> Dedoimedo!
+      </p>
+      <p>
+        Cheers.
+      </p>
+      <div class="article_end"></div>
+      <p>
+        <a href="../rss_feed.xml"><img style="border: 0px solid ; width: 40px; height: 40px;" alt="RSS Feed icon" src=
+        "../images/rss_feed_icon-40x40.png"></a>
+      </p>
+      <div class="post_article_box">
+        <img alt="del.icio.us" src="../images/delicious-16x16.png"> <span class="post_article"><a href=
+        "http://del.icio.us/login?url=http://www.dedoimedo.com/computers/grub.html;title=GRUB%20bootloader%20-%20Full%20tutorial">del.icio.us</a></span>
+        <img alt="stumbleupon" src="../images/stumbleupon-16x16.gif"> <span class="post_article"><a href=
+        "http://www.stumbleupon.com/submit?url=http://www.dedoimedo.com/computers/grub.html">stumble</a></span>
+        <img alt="digg" src="../images/digg-16x16.gif"> <span class="post_article"><a href=
+        "http://digg.com/submit?%20phase=2&amp;url=http://www.dedoimedo.com/computers/grub.html">digg</a></span>
+        <img alt="reddit" src="../images/reddit-20x16.gif"> <span class="post_article"><a href=
+        "http://reddit.com/submit">reddit</a></span> <img alt="slashdot" src=
+        "../images/slashdot-16x16.gif"> <span class="post_article"><a href=
+        "http://slashdot.org/submit.pl">slashdot</a></span>
+      </div>
+      <div style="clear: both;"></div><br>
+      <div class="googleaddiv2">
+        <script type="text/javascript">
+<!--
+google_ad_client = "pub-9066961308031072";
+/* 728x90, created 8/5/08 */
+google_ad_slot = "7937807629";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script> <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+      </div><br>
+    </div><br>
+    <div class="divwrapper">
+      <div class="divtable11_ubuntu">
+        Dedoimedo 2016 contest - win M10 Ubuntu tablet!<br>
+        <br>
+        <a href="dedoimedo-contest-2016.html">Read more</a>
+      </div><br>
+	  <div class="divtable11_book_fantasy">
+        Dedoimedo also writes awesome fantasy books, do take a look!
+      </div><br>
+      <a href="http://www.amazon.com/dp/B01GF0GF9S"><img src="../images/prince-dietrich.jpg" alt=
+      "Prince Dietrich"></a><br>
+      <br>
+	  <a href="http://www.amazon.com/Igor-Ljubuncic/e/B007S7LCPU/"><img src="../images/the-lost-words.jpg" alt="The Lost Words"></a>
+	  <br>
+      <br>
+      <div>
+        <a href="http://www.goodreads.com/igorljubuncic"><img src="../images/goodreads-logo-white.png" alt=
+        "Goodreads page" style="margin-right: 4px;"></a><a href="https://www.facebook.com/thelostwordsbooks"><img src="../images/facebook-logo.png" alt="Facebook page" style="margin-right: 4px;"></a><a href="http://www.thelostwordsbooks.com/"><img src="../images/the-lost-words-thumb.png"
+        alt="The Lost Words site"></a>
+      </div>
+      <div style="height: 0.6em;"></div>
+      <div style="clear: both;"></div><br>
+      <div class="divider_ad"></div>
+      <div class="divtable11_ad_small">
+        <p class="bold_text">
+          Advertise!
+        </p>Would you like to advertise your product/site on Dedoimedo?<br>
+        <br>
+        <a href="../advertise-new.html">Read more</a>
+      </div><br>
+      <div class="divider_ad"></div>
+      <div class="divtable11_don_small">
+        <p class="bold_text">
+          Donate to Dedoimedo!
+        </p>
+        <p>
+          Do you want to<br>
+          help me take early retirement? How about donating<br>
+          some dinero to<br>
+          Dedoimedo?<br>
+          <br>
+          <a href="../donate.html">Read more</a>
+        </p><img src="../images/donate.png" alt="Donate">
+      </div>
+      <div style="clear: both;"></div><br>
+      <div class="divider_ad"></div>
+      <div class="googleaddiv">
+        <script type="text/javascript">
+<!--
+google_ad_client = "pub-9066961308031072";
+/* 160x600, created 8/1/08 */
+google_ad_slot = "5758676453";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script> <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div class="footer">
+      <ul>
+        <li>
+          <a href="#">Top</a>
+        </li>
+        <li>
+          <a href="../index.html">Home</a>
+        </li>
+        <li>
+          <a href="../terms_of_use.html">Terms of use</a>
+        </li>
+        <li>
+          <a href="../contact_me.html">Contact me</a>
+        </li>
+        <li>
+          <a href="../faq.html">About</a>
+        </li>
+      </ul>
+    </div>
+    <div style="clear: both;"></div>
+    <div class="footer_bottom">
+      Copyright @ Dedoimedo.com 2006-2016; all rights reserved<br>
+      <br>
+      <a href="http://validator.w3.org/check?uri=referer"><img style="border: 1px solid rgb(239, 239, 239);" alt=
+      "Valid HTML" src="../images/valid-html-new.gif"></a> <a href=
+      "http://jigsaw.w3.org/css-validator/validator?uri=http://www.dedoimedo.com"><img style=
+      "border: 1px solid rgb(239, 239, 239);" alt="Valid CSS" src="../images/valid-css-new.gif"></a> <a href=
+      "http://www.feedvalidator.org/check.cgi?url=http%3A//www.dedoimedo.com/rss_feed.xml"><img style=
+      "border: 1px solid rgb(239, 239, 239);" alt="Valid RSS" src="../images/valid-rss-new.gif"></a>
+    </div><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script><script type="text/javascript">
+_uacct = "UA-465847-1";
+urchinTracker();
+</script>
+  </body>
+</html>

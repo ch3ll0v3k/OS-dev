@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Inline Assembly/Examples - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "Inline_Assembly/Examples", "wgTitle": "Inline Assembly/Examples", "wgCurRevisionId": 18973, "wgArticleId": 1707, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Assembly"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Inline_Assembly_Examples action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">Inline Assembly/Examples</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><p>What follows is a collection of <a href="/Inline_Assembly" title="Inline Assembly">Inline Assembly</a> functions so common that they should be useful to most OS developers using GCC.  Other compilers may have intrinsic alternatives (see references). Notice how these functions are implemented using GNU extensions to the <a href="/C" title="C">C</a> language and that particular keywords may cause you trouble if you disable GNU extensions. You can still use the disabled keywords such as <tt>asm</tt> if you instead use the alternate keywords in the reserved namespace such as <tt>__asm__</tt>. Be wary of getting inline assembly just right: The compiler doesn't understand the assembly it emits and can potentially cause rare nasty bugs if you lie to the compiler.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Memory_access"><span class="tocnumber">1</span> <span class="toctext">Memory access</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#FAR_PEEKx"><span class="tocnumber">1.1</span> <span class="toctext">FAR_PEEKx</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#FAR_POKEx"><span class="tocnumber">1.2</span> <span class="toctext">FAR_POKEx</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#I.2FO_access"><span class="tocnumber">2</span> <span class="toctext">I/O access</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#OUTx"><span class="tocnumber">2.1</span> <span class="toctext">OUTx</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#INx"><span class="tocnumber">2.2</span> <span class="toctext">INx</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#IO_WAIT"><span class="tocnumber">2.3</span> <span class="toctext">IO_WAIT</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Interrupt-related_functions"><span class="tocnumber">3</span> <span class="toctext">Interrupt-related functions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Enabled.3F"><span class="tocnumber">3.1</span> <span class="toctext">Enabled?</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#LIDT"><span class="tocnumber">3.2</span> <span class="toctext">LIDT</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#CPU-related_functions"><span class="tocnumber">4</span> <span class="toctext">CPU-related functions</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#CPUID"><span class="tocnumber">4.1</span> <span class="toctext">CPUID</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#RDTSC"><span class="tocnumber">4.2</span> <span class="toctext">RDTSC</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#READ_CRx"><span class="tocnumber">4.3</span> <span class="toctext">READ_CRx</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#INVLPG"><span class="tocnumber">4.4</span> <span class="toctext">INVLPG</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#WRMSR"><span class="tocnumber">4.5</span> <span class="toctext">WRMSR</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#RDMSR"><span class="tocnumber">4.6</span> <span class="toctext">RDMSR</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Memory_access"> Memory access </span></h2>
+<h3> <span class="mw-headline" id="FAR_PEEKx"> FAR_PEEKx </span></h3>
+<p>Read a 8/16/32-bit value at a given memory location using another segment than the default C data segment. Unfortunately there is no constraint for manipulating segment registers directly, so issuing the <tt>mov &lt;reg&gt;, &lt;segmentreg&gt;</tt> manually is required.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">uint32_t</span> farpeekl<span class="br0">&#40;</span><span class="kw4">uint16_t</span> sel<span class="sy0">,</span> <span class="kw4">void</span><span class="sy0">*</span> off<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">uint32_t</span> ret<span class="sy0">;</span>
+    asm <span class="br0">&#40;</span> <span class="st0">&quot;push&#160;%%fs<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;mov &#160;%1,&#160;%%fs<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;mov &#160;%%fs:(%2),&#160;%0<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;pop &#160;%%fs&quot;</span>
+          <span class="sy0">:</span> <span class="st0">&quot;=r&quot;</span><span class="br0">&#40;</span>ret<span class="br0">&#41;</span> <span class="sy0">:</span> <span class="st0">&quot;g&quot;</span><span class="br0">&#40;</span>sel<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;r&quot;</span><span class="br0">&#40;</span>off<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> ret<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="FAR_POKEx"> FAR_POKEx </span></h3>
+<p>Write a 8/16/32-bit value to a segment:offset address too. Note that much like in farpeek, this version of farpoke saves and restore the segment register used for the access.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> farpokeb<span class="br0">&#40;</span><span class="kw4">uint16_t</span> sel<span class="sy0">,</span> <span class="kw4">void</span><span class="sy0">*</span> off<span class="sy0">,</span> <span class="kw4">uint8_t</span> v<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    asm <span class="br0">&#40;</span> <span class="st0">&quot;push&#160;%%fs<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;mov &#160;%0,&#160;%%fs<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;movb&#160;%2,&#160;%%fs:(%1)<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+          <span class="st0">&quot;pop&#160;%%fs&quot;</span>
+          <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;g&quot;</span><span class="br0">&#40;</span>sel<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;r&quot;</span><span class="br0">&#40;</span>off<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;r&quot;</span><span class="br0">&#40;</span>v<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="coMULTI">/* TODO: Should &quot;memory&quot; be in the clobber list here? */</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="I.2FO_access"> I/O access </span></h2>
+<h3> <span class="mw-headline" id="OUTx"> OUTx </span></h3>
+<p>Sends a 8/16/32-bit value on a I/O location. Traditional names are <tt>outb</tt>, <tt>outw</tt> and <tt>outl</tt> respectively. The <tt>a</tt> modifier enforces val to be placed in the eax register before the asm command is issued and <tt>Nd</tt> allows for one-byte constant values to be assembled as constants, freeing the edx register for other cases.  
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> outb<span class="br0">&#40;</span><span class="kw4">uint16_t</span> port<span class="sy0">,</span> <span class="kw4">uint8_t</span> val<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;outb&#160;%0,&#160;%1&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;a&quot;</span><span class="br0">&#40;</span>val<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;Nd&quot;</span><span class="br0">&#40;</span>port<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="coMULTI">/* There's an outb&#160;%al, $imm8  encoding, for compile-time constant port numbers that fit in 8b.  (N constraint).
+     * Wider immediate constants would be truncated at assemble-time (e.g. &quot;i&quot; constraint).
+     * The  outb &#160;%al,&#160;%dx  encoding is the only option for all other cases.
+     *&#160;%1 expands to&#160;%dx because  port  is a uint16_t. &#160;%w1 could be used if we had the port number a wider C type */</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="INx"> INx </span></h3>
+<p>Receives a 8/16/32-bit value from an I/O location. Traditional names are <tt>inb</tt>, <tt>inw</tt> and <tt>inl</tt> respectively.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">uint8_t</span> inb<span class="br0">&#40;</span><span class="kw4">uint16_t</span> port<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">uint8_t</span> ret<span class="sy0">;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;inb&#160;%1,&#160;%0&quot;</span>
+                   <span class="sy0">:</span> <span class="st0">&quot;=a&quot;</span><span class="br0">&#40;</span>ret<span class="br0">&#41;</span>
+                   <span class="sy0">:</span> <span class="st0">&quot;Nd&quot;</span><span class="br0">&#40;</span>port<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> ret<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="IO_WAIT"> IO_WAIT </span></h3>
+<p>Forces the CPU to wait for an I/O operation to complete. only use this when there's nothing like a status register or an IRQ to tell you the info has been received.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> io_wait<span class="br0">&#40;</span><span class="kw4">void</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="coMULTI">/* TODO: This is probably fragile. */</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;jmp 1f<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+                   <span class="st0">&quot;1:jmp 2f<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+                   <span class="st0">&quot;2:&quot;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Alternatively, you may use another I/O cycle on an 'unused' port (which has the nice property of being CPU-speed independent):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> io_wait<span class="br0">&#40;</span><span class="kw4">void</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="coMULTI">/* Port 0x80 is used for 'checkpoints' during POST. */</span>
+    <span class="coMULTI">/* The Linux kernel seems to think it is free for use&#160;:-/ */</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;outb&#160;%%al, $0x80&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;a&quot;</span><span class="br0">&#40;</span><span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="coMULTI">/*&#160;%%al instead of&#160;%0 makes no difference.  TODO: does the register need to be zeroed? */</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Interrupt-related_functions"> Interrupt-related functions </span></h2>
+<h3> <span class="mw-headline" id="Enabled.3F"> Enabled? </span></h3>
+<p>Returns a <tt>true</tt> boolean value if irq are enabled for the CPU.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> bool are_interrupts_enabled<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">unsigned</span> <span class="kw4">long</span> flags<span class="sy0">;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;pushf<span class="es1">\n</span><span class="es1">\t</span>&quot;</span>
+                   <span class="st0">&quot;pop&#160;%0&quot;</span>
+                   <span class="sy0">:</span> <span class="st0">&quot;=g&quot;</span><span class="br0">&#40;</span>flags<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> flags <span class="sy0">&amp;</span> <span class="br0">&#40;</span><span class="nu0">1</span> <span class="sy0">&lt;&lt;</span> <span class="nu0">9</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="LIDT"> LIDT </span></h3>
+<p>Define a new interrupt table.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> lidt<span class="br0">&#40;</span><span class="kw4">void</span><span class="sy0">*</span> base<span class="sy0">,</span> <span class="kw4">uint16_t</span> size<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>   <span class="co1">// This function works in 32 and 64bit mode</span>
+    <span class="kw4">struct</span> <span class="br0">&#123;</span>
+        <span class="kw4">uint16_t</span> length<span class="sy0">;</span>
+        <span class="kw4">void</span><span class="sy0">*</span>    base<span class="sy0">;</span>
+    <span class="br0">&#125;</span> __attribute__<span class="br0">&#40;</span><span class="br0">&#40;</span>packed<span class="br0">&#41;</span><span class="br0">&#41;</span> IDTR <span class="sy0">=</span> <span class="br0">&#123;</span> size<span class="sy0">,</span> base <span class="br0">&#125;</span><span class="sy0">;</span>
+&#160;
+    asm <span class="br0">&#40;</span> <span class="st0">&quot;lidt&#160;%0&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;m&quot;</span><span class="br0">&#40;</span>IDTR<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>  <span class="co1">// let the compiler choose an addressing mode</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="CPU-related_functions"> CPU-related functions </span></h2>
+<h3> <span class="mw-headline" id="CPUID"> CPUID </span></h3>
+<p>Request for CPU identification. See <a href="/CPUID" title="CPUID">CPUID</a> for more information.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="coMULTI">/* GCC has a &lt;cpuid.h&gt; header you should use instead of this. */</span>
+<span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> cpuid<span class="br0">&#40;</span><span class="kw4">int</span> code<span class="sy0">,</span> <span class="kw4">uint32_t</span><span class="sy0">*</span> a<span class="sy0">,</span> <span class="kw4">uint32_t</span><span class="sy0">*</span> d<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;cpuid&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=a&quot;</span><span class="br0">&#40;</span><span class="sy0">*</span>a<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;=d&quot;</span><span class="br0">&#40;</span><span class="sy0">*</span>d<span class="br0">&#41;</span> <span class="sy0">:</span> <span class="st0">&quot;0&quot;</span><span class="br0">&#40;</span>code<span class="br0">&#41;</span> <span class="sy0">:</span> <span class="st0">&quot;ebx&quot;</span><span class="sy0">,</span> <span class="st0">&quot;ecx&quot;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="RDTSC"> RDTSC </span></h3>
+<p>Read the current value of the CPU's time-stamp counter and store into EDX:EAX. The time-stamp counter contains the amount of clock ticks that have elapsed since the last CPU reset. The value is stored in a 64-bit MSR and is incremented after each clock cycle.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">uint64_t</span> rdtsc<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">uint64_t</span> ret<span class="sy0">;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;rdtsc&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=A&quot;</span><span class="br0">&#40;</span>ret<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> ret<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>This can be used to find out how much time it takes to do certain functions, very useful for testing/benchmarking /etc. Note: This is only an approximation.
+</p>
+<h3> <span class="mw-headline" id="READ_CRx"> READ_CRx </span></h3>
+<p>Read the value in a control register.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">unsigned</span> <span class="kw4">long</span> read_cr0<span class="br0">&#40;</span><span class="kw4">void</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">unsigned</span> <span class="kw4">long</span> val<span class="sy0">;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;mov&#160;%%cr0,&#160;%0&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=r&quot;</span><span class="br0">&#40;</span>val<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> val<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="INVLPG"> INVLPG </span></h3>
+<p>Invalidates the TLB (Translation Lookaside Buffer) for one specific virtual address. The next memory reference for the page will be forced to re-read PDE and PTE from main memory. Must be issued every time you update one of those tables. The <tt>m</tt> pointer points to a logical address, not a physical or virtual one: an offset for your ds segment.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">static</span> <span class="kw2">inline</span> <span class="kw4">void</span> invlpg<span class="br0">&#40;</span><span class="kw4">void</span><span class="sy0">*</span> m<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="coMULTI">/* Clobber memory to avoid optimizer re-ordering access before invlpg, which may cause nasty bugs. */</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;invlpg (%0)&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;b&quot;</span><span class="br0">&#40;</span>m<span class="br0">&#41;</span> <span class="sy0">:</span> <span class="st0">&quot;memory&quot;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="WRMSR"> WRMSR </span></h3>
+<p>Write a 64-bit value to a MSR. The <tt>A</tt> constraint stands for concatenation of registers EAX and EDX.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw2">inline</span> <span class="kw4">void</span> wrmsr<span class="br0">&#40;</span><span class="kw4">uint32_t</span> msr_id<span class="sy0">,</span> <span class="kw4">uint64_t</span> msr_value<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;wrmsr&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;c&quot;</span> <span class="br0">&#40;</span>msr_id<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;A&quot;</span> <span class="br0">&#40;</span>msr_value<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="RDMSR"> RDMSR </span></h3>
+<p>Read a 64-bit value from a MSR. The <tt>A</tt> constraint stands for concatenation of registers EAX and EDX.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw2">inline</span> <span class="kw4">uint64_t</span> rdmsr<span class="br0">&#40;</span><span class="kw4">uint32_t</span> msr_id<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">uint64_t</span> msr_value<span class="sy0">;</span>
+    asm <span class="kw4">volatile</span> <span class="br0">&#40;</span> <span class="st0">&quot;rdmsr&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=A&quot;</span> <span class="br0">&#40;</span>msr_value<span class="br0">&#41;</span> <span class="sy0">:</span> <span class="st0">&quot;c&quot;</span> <span class="br0">&#40;</span>msr_id<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="kw1">return</span> msr_value<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 211/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1707-0!*!0!!en!*!* and timestamp 20160924133322 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=Inline_Assembly/Examples&amp;oldid=18973">http://wiki.osdev.org/index.php?title=Inline_Assembly/Examples&amp;oldid=18973</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="/Category:Assembly" title="Category:Assembly">Assembly</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Inline_Assembly%2FExamples" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/Inline_Assembly/Examples"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:Inline_Assembly/Examples"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/Inline_Assembly/Examples" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=Inline_Assembly/Examples&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=Inline_Assembly/Examples&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/Inline_Assembly/Examples" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/Inline_Assembly/Examples" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=Inline_Assembly/Examples&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=Inline_Assembly/Examples&amp;oldid=18973" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 8 March 2016, at 06:45.</li>
+											<li id="footer-info-viewcount">This page has been accessed 113,014 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.040 secs. -->
+	</body>
+</html>

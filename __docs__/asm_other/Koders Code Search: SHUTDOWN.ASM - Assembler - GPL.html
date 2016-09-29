@@ -1,0 +1,1516 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="pageHead">
+
+
+<script type="text/javascript" src="/static/js/analytics.js"></script>
+<script type="text/javascript">archive_analytics.values.server_name="wwwb-app36.us.archive.org";archive_analytics.values.server_ms=205;</script>
+<link type="text/css" rel="stylesheet" href="/static/css/banner-styles.css"/>
+
+<title>
+	Koders Code Search: SHUTDOWN.ASM - Assembler - GPL
+</title><meta name="robots" content="noarchive,index,follow" /><meta name="GOOGLEBOT" content="noarchive,index,follow" /><link href="http://koders.com/search/KodersDescriptionOS1_1.xml"  title="Koders search" rel="search" type="application/opensearchdescription+xml" ><link href="http://koders.com/search/KodersDescriptionOS1_1Proj.xml"  title="Koders Projects search" rel="search" type="application/opensearchdescription+xml" ><link href="/web/20090215175533cs_/http://koders.com/skins/koders/styles.css" type="text/css" rel="stylesheet" /><!--[if IE]><link href="/skins/koders/iestyles.css" type="text/css" rel="stylesheet" /><![endif]-->
+<link href="/web/20090215175533cs_/http://koders.com/Special/Stylesheets/koders.com.css" type="text/css" rel="stylesheet" /> <meta  name="ROBOTS"  content="NOARCHIVE"  /> 
+		
+	<link href="/web/20090215175533cs_/http://koders.com/skins/koders/home-page.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" language="javascript">
+//Copyright (c) 2005-2007 Koders.com,
+//All Rights Reserved.
+var anchors;
+var symbolSegment = 0;
+var max = 0;
+	
+function assignInitial() {
+	var codeDiv = document.getElementById("CodeDiv");
+	if(codeDiv != null) {
+		anchors = codeDiv.getElementsByTagName("a");
+		assignR(300);
+	}
+}
+
+function assignR(max) {
+	if(symbolSegment + max >= anchors.length) {
+		max = anchors.length - symbolSegment; 
+	}
+	for(var i = 0; i < max; i++) {
+		var temp = "";
+		var index = symbolSegment +  i;
+		var anchor = anchors[index];
+
+		for(var k = 0; k < anchor.childNodes.length; k++) {
+			if(anchor.childNodes[k].data == undefined) {
+				temp = temp + anchor.childNodes[k].childNodes[0].data;
+			}
+			else {
+				temp = temp + anchor.childNodes[k].data;
+			}
+		}
+		
+		anchors[index].setAttribute("href", "javascript:searchRef('" + temp + "')");
+		anchors[index].setAttribute("title", "Search for references of '" + temp + "'");
+	}
+	
+	if(symbolSegment + max < anchors.length) { 
+		symbolSegment += max;
+		this.setTimeout("assignR(50)", 200);		
+	}
+	
+}
+
+function searchRef(symbol) {
+	location = homeUrl + "?s=" + symbol + "&scope=" + projectID + "&la=" + sourceLanguage;
+}
+
+function Hide(element) {
+	if(element) {
+		element.style.visibility = "hidden";
+		element.style.display = "none";
+	} 
+}
+
+function HideBanner() {
+	var eleArray = document.getElementsByTagName('div');
+	for(var i = 0; i < eleArray.length; i++) {
+		if(!eleArray[i] || !eleArray[i].id) {
+			continue;
+		}
+
+		var id = eleArray[i].id;
+		if(id && id.indexOf("RightBanner") != -1){
+			Hide(eleArray[i]);
+								
+			// hide all the iframes nested in the Banner
+			var arrIframe = eleArray[i].getElementsByTagName('iframe');
+			if(!arrIframe)
+				return;
+			
+			for(var j = 0; j < arrIframe.length; j++) {
+				Hide(arrIframe[j]);
+			}
+		}
+	}
+}
+
+var dojo;
+if(dojo) dojo.addOnLoad(assignInitial);
+else window.onload = assignInitial;
+</script>
+</head>
+
+
+<body>
+
+
+<!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<script type="text/javascript" src="/static/js/disclaim-element.js" ></script>
+<script type="text/javascript" src="/static/js/graph-calc.js" ></script>
+<script type="text/javascript">//<![CDATA[
+var __wm = (function(imgWidth,imgHeight,yearImgWidth,monthImgWidth){
+var wbPrefix = "/web/";
+var wbCurrentUrl = "http://koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx";
+
+var firstYear = 1996;
+var displayDay = "15";
+var displayMonth = "Feb";
+var displayYear = "2009";
+var prettyMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var $D=document,$=function(n){return document.getElementById(n)};
+var trackerVal,curYear = -1,curMonth = -1;
+var yearTracker,monthTracker;
+function showTrackers(val) {
+  if (val===trackerVal) return;
+  var $ipp=$("wm-ipp");
+  var $y=$("displayYearEl"),$m=$("displayMonthEl"),$d=$("displayDayEl");
+  if (val) {
+    $ipp.className="hi";
+  } else {
+    $ipp.className="";
+    $y.innerHTML=displayYear;$m.innerHTML=displayMonth;$d.innerHTML=displayDay;
+  }
+  yearTracker.style.display=val?"inline":"none";
+  monthTracker.style.display=val?"inline":"none";
+  trackerVal = val;
+}
+function trackMouseMove(event,element) {
+  var eventX = getEventX(event);
+  var elementX = getElementX(element);
+  var xOff = Math.min(Math.max(0, eventX - elementX),imgWidth);
+  var monthOff = xOff % yearImgWidth;
+
+  var year = Math.floor(xOff / yearImgWidth);
+  var monthOfYear = Math.min(11,Math.floor(monthOff / monthImgWidth));
+  // 1 extra border pixel at the left edge of the year:
+  var month = (year * 12) + monthOfYear;
+  var day = monthOff % 2==1?15:1;
+  var dateString = zeroPad(year + firstYear) + zeroPad(monthOfYear+1,2) +
+    zeroPad(day,2) + "000000";
+
+  $("displayYearEl").innerHTML=year+firstYear;
+  $("displayMonthEl").innerHTML=prettyMonths[monthOfYear];
+  // looks too jarring when it changes..
+  //$("displayDayEl").innerHTML=zeroPad(day,2);
+  var url = wbPrefix + dateString + '/' +  wbCurrentUrl;
+  $("wm-graph-anchor").href=url;
+
+  if(curYear != year) {
+    var yrOff = year * yearImgWidth;
+    yearTracker.style.left = yrOff + "px";
+    curYear = year;
+  }
+  if(curMonth != month) {
+    var mtOff = year + (month * monthImgWidth) + 1;
+    monthTracker.style.left = mtOff + "px";
+    curMonth = month;
+  }
+}
+function hideToolbar() {
+  $("wm-ipp").style.display="none";
+}
+function bootstrap() {
+  var $spk=$("wm-ipp-sparkline");
+  yearTracker=$D.createElement('div');
+  yearTracker.className='yt';
+  with(yearTracker.style){
+    display='none';width=yearImgWidth+"px";height=imgHeight+"px";
+  }
+  monthTracker=$D.createElement('div');
+  monthTracker.className='mt';
+  with(monthTracker.style){
+    display='none';width=monthImgWidth+"px";height=imgHeight+"px";
+  }
+  $spk.appendChild(yearTracker);
+  $spk.appendChild(monthTracker);
+
+  var $ipp=$("wm-ipp");
+  $ipp&&disclaimElement($ipp);
+}
+return{st:showTrackers,mv:trackMouseMove,h:hideToolbar,bt:bootstrap};
+})(525, 27, 25, 2);//]]>
+</script>
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  min-width:800px !important;
+}
+</style>
+<div id="wm-ipp" lang="en" style="display:none;">
+
+<div style="position:fixed;left:0;top:0;width:100%!important">
+<div id="wm-ipp-inside">
+   <table style="width:100%;"><tbody><tr>
+   <td id="wm-logo">
+       <a href="/web/" title="Wayback Machine home page"><img src="/static/images/toolbar/wayback-toolbar-logo.png" alt="Wayback Machine" width="110" height="39" border="0" /></a>
+   </td>
+   <td class="c">
+       <table style="margin:0 auto;"><tbody><tr>
+       <td class="u" colspan="2">
+       <form target="_top" method="get" action="/web/form-submit.jsp" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" style="width:400px;" onfocus="this.focus();this.select();" /><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20090215175533" /><input type="submit" value="Go" /><span id="wm_tb_options" style="display:block;"></span></form>
+       </td>
+       <td class="n" rowspan="2">
+           <table><tbody>
+           <!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+           <tr class="m">
+           	<td class="b" nowrap="nowrap">
+		
+		    <a href="/web/20080101134606/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="1 Jan 2008">JAN</a>
+		
+		</td>
+		<td class="c" id="displayMonthEl" title="You are here: 17:55:33 Feb 15, 2009">FEB</td>
+		<td class="f" nowrap="nowrap">
+		
+		    <a href="/web/20130627160015/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="27 Jun 2013"><strong>JUN</strong></a>
+		
+                </td>
+	    </tr>
+           <!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+           <tr class="d">
+               <td class="b" nowrap="nowrap">
+               
+                   <a href="/web/20080101134606/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="13:46:06 Jan 1, 2008"><img src="/static/images/toolbar/wm_tb_prv_on.png" alt="Previous capture" width="14" height="16" border="0" /></a>
+               
+               </td>
+               <td class="c" id="displayDayEl" style="width:34px;font-size:24px;" title="You are here: 17:55:33 Feb 15, 2009">15</td>
+	       <td class="f" nowrap="nowrap">
+               
+		   <a href="/web/20130627160015/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="16:00:15 Jun 27, 2013"><img src="/static/images/toolbar/wm_tb_nxt_on.png" alt="Next capture" width="14" height="16" border="0" /></a>
+	       
+	       </td>
+           </tr>
+           <!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+           <tr class="y">
+	       <td class="b" nowrap="nowrap">
+               
+                   <a href="/web/20080101134606/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="1 Jan 2008"><strong>2008</strong></a>
+               
+               </td>
+               <td class="c" id="displayYearEl" title="You are here: 17:55:33 Feb 15, 2009">2009</td>
+	       <td class="f" nowrap="nowrap">
+               
+	           <a href="/web/20130627160015/http://www.koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="27 Jun 2013"><strong>2013</strong></a>
+	       
+	       </td>
+           </tr>
+           </tbody></table>
+       </td>
+       </tr>
+       <tr>
+       <td class="s">
+           <a class="t" href="/web/20090215175533*/http://koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx" title="See a list of every capture for this URL">5 captures</a>
+           <div class="r" title="Timespan for captures of this URL">1 Dec 07 - 15 Aug 13</div>
+       </td>
+       <td class="k">
+       <a href="" id="wm-graph-anchor">
+       <div id="wm-ipp-sparkline" title="Explore captures for this URL">
+	 <img id="sparklineImgId" alt="sparklines"
+		 onmouseover="__wm.st(1)" onmouseout="__wm.st(0)"
+		 onmousemove="__wm.mv(event,this)"
+		 width="525"
+		 height="27"
+		 border="0"
+		 src="/web/jsp/graph.jsp?graphdata=525_27_1996:-1:000000000000_1997:-1:000000000000_1998:-1:000000000000_1999:-1:000000000000_2000:-1:000000000000_2001:-1:000000000000_2002:-1:000000000000_2003:-1:000000000000_2004:-1:000000000000_2005:-1:000000000000_2006:-1:000000000000_2007:-1:000000000001_2008:-1:100000000000_2009:1:010000000000_2010:-1:000000000000_2011:-1:000000000000_2012:-1:000000000000_2013:-1:000001010000_2014:-1:000000000000_2015:-1:000000000000_2016:-1:000000000000" />
+       </div>
+       </a>
+       </td>
+       </tr></tbody></table>
+   </td>
+   <td class="r">
+       <a href="#close" onclick="__wm.h();return false;" style="background-image:url(/static/images/toolbar/wm_tb_close.png);top:5px;" title="Close the toolbar">Close</a>
+       <a href="http://faq.web.archive.org/" style="background-image:url(/static/images/toolbar/wm_tb_help.png);bottom:5px;" title="Get some help using the Wayback Machine">Help</a>
+   </td>
+   </tr></tbody></table>
+</div>
+</div>
+</div>
+<script type="text/javascript">__wm.bt();</script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+
+	
+ 
+    <form name="FRM" method="post" action="kv.aspx?fid=0A32166BE2914BD75AE066E7753096E800FB23D9" id="FRM">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJMTYzMDIzMzAwD2QWBgIBD2QWAgIGDw8WBB4GRmlsZUlEAv7bnAMeCVByb2plY3RJRALv/QFkZAIFD2QWBAIDD2QWAmYPZBYIAgEPDxYCHgtOYXZpZ2F0ZVVybAUBL2QWAmYPDxYCHghJbWFnZVVybAVBaHR0cDovL21lZGlhLmJsYWNrZHVja3NvZnR3YXJlLmNvbS9rb2RlcnMvYmRzL2xvZ29fbWVkX3RhZ19iZC5naWZkZAIHDxAPFgIeC18hRGF0YUJvdW5kZ2QQFSINQWxsIExhbmd1YWdlcwxBY3Rpb25TY3JpcHQDQWRhA0FTUAdBU1AuTkVUCUFzc2VtYmxlcgFDAkMjA0MrKwVDb2JvbApDb2xkRnVzaW9uBkRlbHBoaQZFaWZmZWwGRXJsYW5nB0ZvcnRyYW4ESmF2YQpKYXZhU2NyaXB0A0pTUARMaXNwA0x1YQtNYXRoZW1hdGljYQZNYXRsYWIKT2JqZWN0aXZlQwRQZXJsA1BIUAZQcm9sb2cGUHl0aG9uBFJ1YnkGU2NoZW1lCVNtYWxsdGFsawNTUUwDVGNsAlZCBlZCLk5FVBUiASoMQWN0aW9uU2NyaXB0A0FkYQNBU1AHQVNQLk5FVAlBc3NlbWJsZXIBQwJDIwNDcHAFQ29ib2wKQ29sZEZ1c2lvbgZEZWxwaGkGRWlmZmVsBkVybGFuZwdGb3J0cmFuBEphdmEKSmF2YVNjcmlwdANKU1AETGlzcANMdWELTWF0aGVtYXRpY2EGTWF0bGFiCk9iamVjdGl2ZUMEUGVybANQSFAGUHJvbG9nBlB5dGhvbgRSdWJ5BlNjaGVtZQlTbWFsbHRhbGsDU1FMA1RjbAJWQgZWQi5ORVQUKwMiZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2RkAgkPEA8WAh8EZ2QQFR4MQWxsIExpY2Vuc2VzA0FGTARBTDIwA0FTTARBUFNMA0JTRANDUEwFRVBMMTAER1RQTANHUEwETEdQTAVJQk1QTARJT1NMBE1TQ0wETVNQTARNU1JMB01TVlNTREsETUlURAVNUEwxMAVNUEwxMQVOUEwxMAVOUEwxMQNPU0wEUEhQTARQU0ZMAlNMA1NQTANXM0MDWkxMA1pQTBUeASoDQUZMBEFMMjADQVNMBEFQU0wDQlNEA0NQTAVFUEwxMARHVFBMA0dQTARMR1BMBUlCTVBMBElPU0wETVNDTARNU1BMBE1TUkwHTVNWU1NESwRNSVREBU1QTDEwBU1QTDExBU5QTDEwBU5QTDExA09TTARQSFBMBFBTRkwCU0wDU1BMA1czQwNaTEwDWlBMFCsDHmdnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2RkAgsPDxYCHwIFMGh0dHA6Ly93d3cua29kZXJzLmNvbS9jb3JwL3N1cHBvcnQvbGljZW5zZS1pbmZvL2QWAmYPFgIeA3NyYwUTL2ltYWdlcy9pbmZvXzE2LmdpZmQCCQ8PFgIeB1Zpc2libGVnZBYKZg8PFgQfAwUUL2ltYWdlcy9kb3dubG9hZC5naWYeB1Rvb2xUaXAFFURvd25sb2FkIFNIVVRET1dOLkFTTWRkAgIPFgIeC18hSXRlbUNvdW50AgEWAmYPZBYCZg8VBQxTSFVURE9XTi5BU00JQXNzZW1ibGVyEExpY2Vuc2U6IEdQTDxicj4rQ29weXJpZ2h0OiAoQykgMTk4OC0yMDAwLCBMZWlmIEVrYmxhZA0KPGJyPghMT0M6IDUwM2QCAw8WAh8IAgEWAmYPZBYGZg8VAs0BRmFzdCwgbXVsdGktdGhyZWFkZWQgT1MgZm9yIFBDcyBhbmQgMzg2KyBiYXNlZCBlbWJlZGRlZCBzeXN0ZW1zLiBSdW5zIG1hbnkgRE9TLCBEUE1JIGFuZCBXaW4zMiBjb25zb2xlIHByb2dyYW1zLiAxMDAlIGFzc2VtYmx5IHdpdGggc2VnbWVudCBwcm90ZWN0aW9uLg0KICAgICAgICAgICBEb25hdGUgdG8gUkRPUyBvcGVyYXRpbmcgc3lzdGVtICAgICANCiANCjcvaW5mby5hc3B4P2M9UHJvamVjdEluZm8mcGlkPVZLUVhLSE1WUExYN0NVSFZUV0E2WllCRkZBZAIBD2QWAmYPFQEbUkRPUyBvcGVyYXRpbmcgc3lzdGVtKHJkb3MpZAICDxUCC1NvdXJjZUZvcmdlA2N2c2QCBQ9kFgJmD2QWBgIBDw8WAh8CBTcvaW5mby5hc3B4P2M9UHJvamVjdEluZm8mcGlkPVZLUVhLSE1WUExYN0NVSFZUV0E2WllCRkZBZBYCZg8PFgQfAwUSL2ltYWdlcy9mb2xkZXIuZ2lmHwcFHFNvdXJjZUZvcmdlXHJccmRvc1xyZG9zXGJ1clxkZAIDDw8WBB4EVGV4dAUcU291cmNlRm9yZ2VcclxyZG9zXHJkb3NcYnVyXB8HBRxTb3VyY2VGb3JnZVxyXHJkb3NccmRvc1xidXJcZGQCBQ8WAh8IAhNkAgcPFgIfBmhkAgcPFgIfCQWjAzxzY3JpcHQgdHlwZT0idGV4dC9qYXZhc2NyaXB0Ij4NCnZhciBnYUpzSG9zdCA9ICgoImh0dHBzOiIgPT0gZG9jdW1lbnQubG9jYXRpb24ucHJvdG9jb2wpID8gImh0dHBzOi8vc3NsLiIgOiAiaHR0cDovL3d3dy4iKTsNCmRvY3VtZW50LndyaXRlKHVuZXNjYXBlKCIlM0NzY3JpcHQgc3JjPSciICsgZ2FKc0hvc3QgKyAiZ29vZ2xlLWFuYWx5dGljcy5jb20vZ2EuanMnIHR5cGU9J3RleHQvamF2YXNjcmlwdCclM0UlM0Mvc2NyaXB0JTNFIikpOw0KPC9zY3JpcHQ+DQo8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+DQp2YXIgcGFnZVRyYWNrZXIgPSBfZ2F0Ll9nZXRUcmFja2VyKCJVQS0xNDUwNDgwLTMiKTsNCnBhZ2VUcmFja2VyLl9pbml0RGF0YSgpOw0KcGFnZVRyYWNrZXIuX3RyYWNrUGFnZXZpZXcoKTsNCjwvc2NyaXB0Pg0KZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQUaS29kZXZpZXdlcjEkRG93bmxvYWRCdXR0b24=" />
+
+
+<script src="/web/20090215175533js_/http://koders.com/ScriptResource.axd?d=MGrFr4RFqytxZinrzRW8UzygTzM7yLEbsL0CWXxTPxlGdGFMmFgXKm3IfhJUN9Tk0&amp;t=633638931120000000" type="text/javascript"></script>
+<script src="/web/20090215175533js_/http://koders.com/ws/1.0/account/mailinglist/default.asmx/js" type="text/javascript"></script>
+        
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td align="left"  style="padding: 8px 10px 2px 10px;width:425px;">
+                    
+<table id="t1" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td style="white-space: nowrap;" nowrap="nowrap">
+		    <a id="ctl03_Home" href="/web/20090215175533/http://koders.com/"><img id="ctl03_imgLogo" hspace="0" vspace="6" src="/web/20090215175533im_/http://media.blackducksoftware.com/koders/bds/logo_med_tag_bd.gif" height="32" width="141" border="0" /></a>
+		</td>
+		<td style="white-space: nowrap;" nowrap="nowrap">
+		    <input name="ctl03$ctl00$s" type="text" maxlength="128" id="ctl03_ctl00_s" class="tbSearchSmall" />
+
+		    <input type="submit" name="ctl03$btnSearch" value="Search" id="ctl03_btnSearch" class="btnSearch" /><input type="text" style="display:none;" /><br/>
+			Filter:
+			<select name="ctl03$Languages" id="ctl03_Languages">
+	<option value="*">All Languages</option>
+	<option value="ActionScript">ActionScript</option>
+	<option value="Ada">Ada</option>
+	<option value="ASP">ASP</option>
+	<option value="ASP.NET">ASP.NET</option>
+	<option value="Assembler">Assembler</option>
+	<option value="C">C</option>
+	<option value="C#">C#</option>
+	<option value="Cpp">C++</option>
+	<option value="Cobol">Cobol</option>
+	<option value="ColdFusion">ColdFusion</option>
+	<option value="Delphi">Delphi</option>
+	<option value="Eiffel">Eiffel</option>
+	<option value="Erlang">Erlang</option>
+	<option value="Fortran">Fortran</option>
+	<option value="Java">Java</option>
+	<option value="JavaScript">JavaScript</option>
+	<option value="JSP">JSP</option>
+	<option value="Lisp">Lisp</option>
+	<option value="Lua">Lua</option>
+	<option value="Mathematica">Mathematica</option>
+	<option value="Matlab">Matlab</option>
+	<option value="ObjectiveC">ObjectiveC</option>
+	<option value="Perl">Perl</option>
+	<option value="PHP">PHP</option>
+	<option value="Prolog">Prolog</option>
+	<option value="Python">Python</option>
+	<option value="Ruby">Ruby</option>
+	<option value="Scheme">Scheme</option>
+	<option value="Smalltalk">Smalltalk</option>
+	<option value="SQL">SQL</option>
+	<option value="Tcl">Tcl</option>
+	<option value="VB">VB</option>
+	<option value="VB.NET">VB.NET</option>
+
+</select>&nbsp;<select name="ctl03$Licenses" id="ctl03_Licenses">
+	<option value="*">All Licenses</option>
+	<option value="AFL">AFL</option>
+	<option value="AL20">AL20</option>
+	<option value="ASL">ASL</option>
+	<option value="APSL">APSL</option>
+	<option value="BSD">BSD</option>
+	<option value="CPL">CPL</option>
+	<option value="EPL10">EPL10</option>
+	<option value="GTPL">GTPL</option>
+	<option value="GPL">GPL</option>
+	<option value="LGPL">LGPL</option>
+	<option value="IBMPL">IBMPL</option>
+	<option value="IOSL">IOSL</option>
+	<option value="MSCL">MSCL</option>
+	<option value="MSPL">MSPL</option>
+	<option value="MSRL">MSRL</option>
+	<option value="MSVSSDK">MSVSSDK</option>
+	<option value="MITD">MITD</option>
+	<option value="MPL10">MPL10</option>
+	<option value="MPL11">MPL11</option>
+	<option value="NPL10">NPL10</option>
+	<option value="NPL11">NPL11</option>
+	<option value="OSL">OSL</option>
+	<option value="PHPL">PHPL</option>
+	<option value="PSFL">PSFL</option>
+	<option value="SL">SL</option>
+	<option value="SPL">SPL</option>
+	<option value="W3C">W3C</option>
+	<option value="ZLL">ZLL</option>
+	<option value="ZPL">ZPL</option>
+
+</select>&nbsp;<a id="ctl03_LicenseInfoLink" href="/web/20090215175533/http://www.koders.com/corp/support/license-info/"><img src="/web/20090215175533im_/http://koders.com/images/info_16.gif" id="ctl03_InfoImg" alt="InfoImg" height="16" width="16" border="0" /></a>
+		</td>
+		<td align="center" width="0px" valign="middle">
+			
+		</td>
+	</tr>
+</table>
+
+                </td>
+                <td align="right">
+					<div class="kvHeaderLimiter">
+                    
+
+<script type="text/javascript" src="/web/20090215175533js_/http://koders.com/scripts/toolbar.js"></script>
+<link href="/web/20090215175533cs_/http://koders.com/skins/koders/toptoolbar.css" type="text/css" rel="stylesheet" />
+<!-- {Begin Toolbar} -->
+<div id="topToolbars">
+<div class="topToolbar ttb_wider" style="width:463px; top: 0px; right: 0px;"
+    onmouseover="Toolbar._onmouseover(event); " onmouseout="Toolbar._onmouseout(event); ">
+    <div class="topToolbarCorner"></div>
+    <div class="topToolbarInner">
+        <div class="topToolbarButton" style="width:84px;cursor:pointer;cursor:hand" onclick="window.location='/web/20090215175533/http://www.koders.com/corp/about/'">Company <span class="topToolbarDownArrow">&#9660;</span>
+            <div class="topToolbarPopup" style="width:110px">
+                <a href="/web/20090215175533/http://corp.koders.com/corp/about/">About Koders</a>
+                <a href="/web/20090215175533/http://corp.koders.com/corp/about#Contact">Contact Us</a>
+            </div>
+        </div>
+        <div class="topToolbarButton" style="width: 72px;cursor:pointer;cursor:hand" onclick="window.location='/web/20090215175533/http://www.koders.com/info.aspx?c=tools'">Plugins <span class="topToolbarDownArrow">&#9660;</span>
+            <div class="topToolbarPopup" style="width:110px">
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=tools#IDEs">
+                    <img src="/web/20090215175533im_/http://koders.com/images/toolbar-eclipse_icon.gif" alt="e" /> Eclipse</a>
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=tools#IDEs">
+                    <img src="/web/20090215175533im_/http://koders.com/images/toolbar-visual_icon.gif" alt="v" /> Visual Studio</a>
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=tools#Firefox">Browser</a>
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=tools#AddSearch">Widget APIs</a>
+                <!--<a href="/web/20090215175533/http://www.koders.com/blog/?p=36">Koders APIs</a>-->
+            </div>
+        </div>
+        <div class="topToolbarButton" style="width: 76px;cursor:pointer;cursor:hand" onclick="window.location='/web/20090215175533/http://corp.koders.com/corp/support'">Support <span class="topToolbarDownArrow">&#9660;</span>
+            <div class="topToolbarPopup" style="width:160px">
+                <a href="/web/20090215175533/http://corp.koders.com/corp/support/">Support Overview</a>
+                <a href="/web/20090215175533/http://corp.koders.com/corp/support/code-search/getting-started/">Getting Started Guide</a>
+                <a href="/web/20090215175533/http://www.koders.com/info.aspx?c=feedback&amp;product=kdc&amp;type=bug">Feedback</a>
+                <a href="/web/20090215175533/http://corp.koders.com/corp/support/license-info/">License Info</a>
+            </div>
+        </div>
+        <div class="topToolbarButton" style="width: 98px;cursor:pointer;cursor:hand" onclick="window.location='/web/20090215175533/http://corp.koders.com/corp/community/'">Community <span class="topToolbarDownArrow">&#9660;</span>
+            <div class="topToolbarPopup" style="width:150px">
+		        <a href="/web/20090215175533/http://corp.koders.com/corp/community/">Community Overview</a>
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=forms/SubmitProject">Add Projects</a>
+                <!--<a href="/web/20090215175533/http://www.koders.com/blog/">Blog</a>-->
+                <a href="/web/20090215175533/http://forums.koders.com/">Forums</a>
+                <a href="/web/20090215175533/http://corp.koders.com/zeitgeist/">Top Searches</a>
+            </div>
+        </div>
+        <div class="topToolbarButton" style="width: 102px;cursor:pointer;cursor:hand" onclick="window.location='/web/20090215175533/http://koders.com/info.aspx?page=MyAccount'">My Account <span class="topToolbarDownArrow">&#9660;</span>
+            <div class="topToolbarPopup" style="width:98px">
+                <a id="Sitetoolbar1_ctl00_toggleAccount" href="/web/20090215175533/http://koders.com/info.aspx?page=MyAccount">Join Now!</a>
+                <a id="Sitetoolbar1_ctl00_toggleLogin" href="/web/20090215175533/http://koders.com/info.aspx?page=MyAccount&amp;action=Login">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br class="clear" />
+</div>
+<!-- {End Toolbar} -->
+&nbsp;
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <div id="leaderboard" style="">
+            <center>
+				
+<!-- Media Server Begin: 728x90 -->
+
+<!-- Media Server End: 728x90 -->
+               
+            </center>
+		</div>
+        
+        <div class="kodeViewerContDiv">
+            
+<!-- <div class="SidePadding" align="left"> -->
+<table cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tr>
+		<td>
+			<table id="Table2" cellspacing="5" width="100%" border="0">
+				<tr>
+					<td class="info_panel" valign="top">
+						<table id="Table3" border="0">
+							<tr>
+								<td valign="middle" align="center" width="60">
+									<input type="image" name="Kodeviewer1$DownloadButton" id="Kodeviewer1_DownloadButton" title="Download SHUTDOWN.ASM" src="/web/20090215175533im_/http://koders.com/images/download.gif" border="0" />
+									<a id="Kodeviewer1_LinkButton1" href="javascript:__doPostBack('Kodeviewer1$LinkButton1','')">download</a>
+								</td>
+								<td>
+											<b>
+												SHUTDOWN.ASM
+											</b>
+											<br>
+											Language: <b>
+												Assembler
+											</b>
+											<br>
+											License: GPL<br>
+											Copyright: (C) 1988-2000, Leif Ekblad
+<br>
+											LOC: 503
+											<br>
+										</td>
+							</tr>
+						</table>
+					</td>
+					<td class="kodeviewer_info_panel" valign="top" width="200">
+								<b>Project Info</b><br>
+								<a title='Fast, multi-threaded OS for PCs and 386+ based embedded systems. Runs many DOS, DPMI and Win32 console programs. 100% assembly with segment protection.
+           Donate to RDOS operating system     
+ 
+' href='/web/20090215175533/http://koders.com/info.aspx?c=ProjectInfo&amp;pid=VKQXKHMVPLX7CUHVTWA6ZYBFFA'>
+									<b>
+										<span id="Kodeviewer1_ProjectView_ctl00_Label2">RDOS operating system(rdos)</span></b></a>
+								<br>
+								Server:
+								SourceForge
+								<br>
+								Type:
+								cvs
+							
+						
+						
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<style type="text/css"> 
+.RightBanner { Z-INDEX: 2; RIGHT: 25px; FLOAT: right; WIDTH: 160px; POSITION: absolute; HEIGHT: 600px } 
+</style>
+
+	<div id="Kodeviewer1_RightBanner" class="RightBanner">
+<div style="MARGIN-BOTTOM: 2px" align="center">[<a style="FONT-SIZE: smaller" 
+href="javascript:HideBanner();">Show Code</a>] </div>
+<div>
+
+<!-- Media Server Begin: 160x600 -->
+
+<!-- Media Server End: 160x600 -->
+<br/><br/><br/>
+<!-- Media Server Begin: 160x602 -->
+
+<!-- Media Server End: 160x602 -->
+<br/><br/><br/>
+<!-- Media Server Begin: 160x603 -->
+
+<!-- Media Server End: 160x603 -->
+</div>
+<div style="MARGIN-TOP: 2px" align="center">[<a style="FONT-SIZE: smaller" 
+href="javascript:HideBanner();">Show Code</a>] </div></div>
+
+<table cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tr>
+		<td height="100%">
+			<table id="Table9" cellspacing="8" cellpadding="0" border="0" style="height:100%">
+				<tr>
+					<td valign="top">
+						
+						
+<table id="Table1" style="BORDER-RIGHT: gray 1px solid; BORDER-TOP: gray 1px solid; BORDER-LEFT: gray 1px solid; BORDER-BOTTOM: gray 1px solid; BORDER-COLLAPSE: collapse"
+	cellspacing="0" cellpadding="3" border="0" width="100%">
+	<tbody>
+		<tr>
+			<th class="exp_header" align="left">
+				<a id="Kodeviewer1_ctl00_hyFicon" href="/web/20090215175533/http://koders.com/info.aspx?c=ProjectInfo&amp;pid=VKQXKHMVPLX7CUHVTWA6ZYBFFA"><img id="Kodeviewer1_ctl00_ficon" title="SourceForge\r\rdos\rdos\bur\" src="/web/20090215175533im_/http://koders.com/images/folder.gif" align="left" border="0" /></a>
+				<b>
+					<span id="Kodeviewer1_ctl00_Label1" title="SourceForge\r\rdos\rdos\bur\">SourceForge\r\rdos\rdos\bur\</span>
+				</b>
+				<br/>
+			</th>
+		</tr>
+		<tr>
+			<td class="exp_items">
+				
+						&nbsp;&nbsp;
+					<a title="ad.cpp" href="/web/20090215175533/http://koders.com/cpp/fid441282BE8EFCAA2ABA1A02F35087E3752F4EBCCC.aspx">ad.cpp<br></a>
+						&nbsp;&nbsp;
+					<a title="ad.def" href="/web/20090215175533/http://koders.com/noncode/fid413DA708383A31FC9DAF195327B1A0A5EFFBA323.aspx">ad.def<br></a>
+						&nbsp;&nbsp;
+					<a title="BOOT.ASM" href="/web/20090215175533/http://koders.com/assembler/fidA2F6CF9F2F040AA1DACDF9D14FFAB55DAD545B24.aspx">BOOT.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="bur2bin.asm" href="/web/20090215175533/http://koders.com/assembler/fidFEC6B7717FCA1243958CE598636C3412EEE81563.aspx">bur2bin.asm<br></a>
+						&nbsp;&nbsp;
+					<a title="burload.cpp" href="/web/20090215175533/http://koders.com/cpp/fid14277F590A2ECBEF2B11E0AABF36EFB8B0736C04.aspx">burload.cpp<br></a>
+						&nbsp;&nbsp;
+					<a title="burload.def" href="/web/20090215175533/http://koders.com/noncode/fid2F51AA0DBE07DA8246AC6E9E41D7984BDA1AAA26.aspx">burload.def<br></a>
+						&nbsp;&nbsp;
+					<a title="CFG2ROM.ASM" href="/web/20090215175533/http://koders.com/assembler/fid1761AFE91ECADCB6E9DA5628C8CF681146470750.aspx">CFG2ROM.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="CLEAN.BAT" href="/web/20090215175533/http://koders.com/noncode/fid58CC0E38C8CA0B096FE4958300C7CD03DCC72CF6.aspx">CLEAN.BAT<br></a>
+						&nbsp;&nbsp;
+					<a title="DEMO.CFG" href="/web/20090215175533/http://koders.com/noncode/fidD755D5ADBB21F010E03930B715500A2DB8CC042A.aspx">DEMO.CFG<br></a>
+						&nbsp;&nbsp;
+					<a title="FLASH.ASM" href="/web/20090215175533/http://koders.com/assembler/fid61865939EF61D265FA1F8F24AA4D057EF79BCD48.aspx">FLASH.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="LCD.ASM" href="/web/20090215175533/http://koders.com/assembler/fid744032D5F503A7FE285A19ADCE02B0E8FBD53B78.aspx">LCD.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="MK.BAT" href="/web/20090215175533/http://koders.com/noncode/fid71CB945A2A57ECE0E6FF79627F8D422534FB5B0E.aspx">MK.BAT<br></a>
+						&nbsp;&nbsp;
+					<a title="SDRAM.ASM" href="/web/20090215175533/http://koders.com/assembler/fidBD48EEB1237117351237192703EBC8535C4E5F66.aspx">SDRAM.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="SHUTDOWN.ASM" href="/web/20090215175533/http://koders.com/assembler/fid0A32166BE2914BD75AE066E7753096E800FB23D9.aspx">SHUTDOWN.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="TEST.ASM" href="/web/20090215175533/http://koders.com/assembler/fid83873C197B4E6B0EB35622B6ADD6321EDCB8721E.aspx">TEST.ASM<br></a>
+						&nbsp;&nbsp;
+					<a title="TEST.DEF" href="/web/20090215175533/http://koders.com/noncode/fidAD51ABADD8DF3E8EC7C003242F7F97B0601C4B8E.aspx">TEST.DEF<br></a>
+						&nbsp;&nbsp;
+					<a title="YMODEM.CPP" href="/web/20090215175533/http://koders.com/cpp/fidC476EF16ADC9D5337BA22E5E12FF0619CABF9090.aspx">YMODEM.CPP<br></a>
+						&nbsp;&nbsp;
+					<a title="YMODEM.H" href="/web/20090215175533/http://koders.com/cpp/fid22978267B08361394B8609F88B0BBE99F4C5E44B.aspx">YMODEM.H<br></a>
+						&nbsp;&nbsp;
+					<a title="ZFX86.ASM" href="/web/20090215175533/http://koders.com/assembler/fid7A1B3D3CB84E86B66F3E5A17A777C0EDC370897F.aspx">ZFX86.ASM<br></a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<br/>
+
+						
+						
+					</td>
+					<td valign="top">
+						<div>
+							<pre id='kodeViewerLineNumbers'><a href="#L1" name="L1">1</a><br/><a href="#L2" name="L2">2</a><br/><a href="#L3" name="L3">3</a><br/><a href="#L4" name="L4">4</a><br/><a href="#L5" name="L5">5</a><br/><a href="#L6" name="L6">6</a><br/><a href="#L7" name="L7">7</a><br/><a href="#L8" name="L8">8</a><br/><a href="#L9" name="L9">9</a><br/><a href="#L10" name="L10">10</a><br/><a href="#L11" name="L11">11</a><br/><a href="#L12" name="L12">12</a><br/><a href="#L13" name="L13">13</a><br/><a href="#L14" name="L14">14</a><br/><a href="#L15" name="L15">15</a><br/><a href="#L16" name="L16">16</a><br/><a href="#L17" name="L17">17</a><br/><a href="#L18" name="L18">18</a><br/><a href="#L19" name="L19">19</a><br/><a href="#L20" name="L20">20</a><br/><a href="#L21" name="L21">21</a><br/><a href="#L22" name="L22">22</a><br/><a href="#L23" name="L23">23</a><br/><a href="#L24" name="L24">24</a><br/><a href="#L25" name="L25">25</a><br/><a href="#L26" name="L26">26</a><br/><a href="#L27" name="L27">27</a><br/><a href="#L28" name="L28">28</a><br/><a href="#L29" name="L29">29</a><br/><a href="#L30" name="L30">30</a><br/><a href="#L31" name="L31">31</a><br/><a href="#L32" name="L32">32</a><br/><a href="#L33" name="L33">33</a><br/><a href="#L34" name="L34">34</a><br/><a href="#L35" name="L35">35</a><br/><a href="#L36" name="L36">36</a><br/><a href="#L37" name="L37">37</a><br/><a href="#L38" name="L38">38</a><br/><a href="#L39" name="L39">39</a><br/><a href="#L40" name="L40">40</a><br/><a href="#L41" name="L41">41</a><br/><a href="#L42" name="L42">42</a><br/><a href="#L43" name="L43">43</a><br/><a href="#L44" name="L44">44</a><br/><a href="#L45" name="L45">45</a><br/><a href="#L46" name="L46">46</a><br/><a href="#L47" name="L47">47</a><br/><a href="#L48" name="L48">48</a><br/><a href="#L49" name="L49">49</a><br/><a href="#L50" name="L50">50</a><br/><a href="#L51" name="L51">51</a><br/><a href="#L52" name="L52">52</a><br/><a href="#L53" name="L53">53</a><br/><a href="#L54" name="L54">54</a><br/><a href="#L55" name="L55">55</a><br/><a href="#L56" name="L56">56</a><br/><a href="#L57" name="L57">57</a><br/><a href="#L58" name="L58">58</a><br/><a href="#L59" name="L59">59</a><br/><a href="#L60" name="L60">60</a><br/><a href="#L61" name="L61">61</a><br/><a href="#L62" name="L62">62</a><br/><a href="#L63" name="L63">63</a><br/><a href="#L64" name="L64">64</a><br/><a href="#L65" name="L65">65</a><br/><a href="#L66" name="L66">66</a><br/><a href="#L67" name="L67">67</a><br/><a href="#L68" name="L68">68</a><br/><a href="#L69" name="L69">69</a><br/><a href="#L70" name="L70">70</a><br/><a href="#L71" name="L71">71</a><br/><a href="#L72" name="L72">72</a><br/><a href="#L73" name="L73">73</a><br/><a href="#L74" name="L74">74</a><br/><a href="#L75" name="L75">75</a><br/><a href="#L76" name="L76">76</a><br/><a href="#L77" name="L77">77</a><br/><a href="#L78" name="L78">78</a><br/><a href="#L79" name="L79">79</a><br/><a href="#L80" name="L80">80</a><br/><a href="#L81" name="L81">81</a><br/><a href="#L82" name="L82">82</a><br/><a href="#L83" name="L83">83</a><br/><a href="#L84" name="L84">84</a><br/><a href="#L85" name="L85">85</a><br/><a href="#L86" name="L86">86</a><br/><a href="#L87" name="L87">87</a><br/><a href="#L88" name="L88">88</a><br/><a href="#L89" name="L89">89</a><br/><a href="#L90" name="L90">90</a><br/><a href="#L91" name="L91">91</a><br/><a href="#L92" name="L92">92</a><br/><a href="#L93" name="L93">93</a><br/><a href="#L94" name="L94">94</a><br/><a href="#L95" name="L95">95</a><br/><a href="#L96" name="L96">96</a><br/><a href="#L97" name="L97">97</a><br/><a href="#L98" name="L98">98</a><br/><a href="#L99" name="L99">99</a><br/><a href="#L100" name="L100">100</a><br/><a href="#L101" name="L101">101</a><br/><a href="#L102" name="L102">102</a><br/><a href="#L103" name="L103">103</a><br/><a href="#L104" name="L104">104</a><br/><a href="#L105" name="L105">105</a><br/><a href="#L106" name="L106">106</a><br/><a href="#L107" name="L107">107</a><br/><a href="#L108" name="L108">108</a><br/><a href="#L109" name="L109">109</a><br/><a href="#L110" name="L110">110</a><br/><a href="#L111" name="L111">111</a><br/><a href="#L112" name="L112">112</a><br/><a href="#L113" name="L113">113</a><br/><a href="#L114" name="L114">114</a><br/><a href="#L115" name="L115">115</a><br/><a href="#L116" name="L116">116</a><br/><a href="#L117" name="L117">117</a><br/><a href="#L118" name="L118">118</a><br/><a href="#L119" name="L119">119</a><br/><a href="#L120" name="L120">120</a><br/><a href="#L121" name="L121">121</a><br/><a href="#L122" name="L122">122</a><br/><a href="#L123" name="L123">123</a><br/><a href="#L124" name="L124">124</a><br/><a href="#L125" name="L125">125</a><br/><a href="#L126" name="L126">126</a><br/><a href="#L127" name="L127">127</a><br/><a href="#L128" name="L128">128</a><br/><a href="#L129" name="L129">129</a><br/><a href="#L130" name="L130">130</a><br/><a href="#L131" name="L131">131</a><br/><a href="#L132" name="L132">132</a><br/><a href="#L133" name="L133">133</a><br/><a href="#L134" name="L134">134</a><br/><a href="#L135" name="L135">135</a><br/><a href="#L136" name="L136">136</a><br/><a href="#L137" name="L137">137</a><br/><a href="#L138" name="L138">138</a><br/><a href="#L139" name="L139">139</a><br/><a href="#L140" name="L140">140</a><br/><a href="#L141" name="L141">141</a><br/><a href="#L142" name="L142">142</a><br/><a href="#L143" name="L143">143</a><br/><a href="#L144" name="L144">144</a><br/><a href="#L145" name="L145">145</a><br/><a href="#L146" name="L146">146</a><br/><a href="#L147" name="L147">147</a><br/><a href="#L148" name="L148">148</a><br/><a href="#L149" name="L149">149</a><br/><a href="#L150" name="L150">150</a><br/><a href="#L151" name="L151">151</a><br/><a href="#L152" name="L152">152</a><br/><a href="#L153" name="L153">153</a><br/><a href="#L154" name="L154">154</a><br/><a href="#L155" name="L155">155</a><br/><a href="#L156" name="L156">156</a><br/><a href="#L157" name="L157">157</a><br/><a href="#L158" name="L158">158</a><br/><a href="#L159" name="L159">159</a><br/><a href="#L160" name="L160">160</a><br/><a href="#L161" name="L161">161</a><br/><a href="#L162" name="L162">162</a><br/><a href="#L163" name="L163">163</a><br/><a href="#L164" name="L164">164</a><br/><a href="#L165" name="L165">165</a><br/><a href="#L166" name="L166">166</a><br/><a href="#L167" name="L167">167</a><br/><a href="#L168" name="L168">168</a><br/><a href="#L169" name="L169">169</a><br/><a href="#L170" name="L170">170</a><br/><a href="#L171" name="L171">171</a><br/><a href="#L172" name="L172">172</a><br/><a href="#L173" name="L173">173</a><br/><a href="#L174" name="L174">174</a><br/><a href="#L175" name="L175">175</a><br/><a href="#L176" name="L176">176</a><br/><a href="#L177" name="L177">177</a><br/><a href="#L178" name="L178">178</a><br/><a href="#L179" name="L179">179</a><br/><a href="#L180" name="L180">180</a><br/><a href="#L181" name="L181">181</a><br/><a href="#L182" name="L182">182</a><br/><a href="#L183" name="L183">183</a><br/><a href="#L184" name="L184">184</a><br/><a href="#L185" name="L185">185</a><br/><a href="#L186" name="L186">186</a><br/><a href="#L187" name="L187">187</a><br/><a href="#L188" name="L188">188</a><br/><a href="#L189" name="L189">189</a><br/><a href="#L190" name="L190">190</a><br/><a href="#L191" name="L191">191</a><br/><a href="#L192" name="L192">192</a><br/><a href="#L193" name="L193">193</a><br/><a href="#L194" name="L194">194</a><br/><a href="#L195" name="L195">195</a><br/><a href="#L196" name="L196">196</a><br/><a href="#L197" name="L197">197</a><br/><a href="#L198" name="L198">198</a><br/><a href="#L199" name="L199">199</a><br/><a href="#L200" name="L200">200</a><br/><a href="#L201" name="L201">201</a><br/><a href="#L202" name="L202">202</a><br/><a href="#L203" name="L203">203</a><br/><a href="#L204" name="L204">204</a><br/><a href="#L205" name="L205">205</a><br/><a href="#L206" name="L206">206</a><br/><a href="#L207" name="L207">207</a><br/><a href="#L208" name="L208">208</a><br/><a href="#L209" name="L209">209</a><br/><a href="#L210" name="L210">210</a><br/><a href="#L211" name="L211">211</a><br/><a href="#L212" name="L212">212</a><br/><a href="#L213" name="L213">213</a><br/><a href="#L214" name="L214">214</a><br/><a href="#L215" name="L215">215</a><br/><a href="#L216" name="L216">216</a><br/><a href="#L217" name="L217">217</a><br/><a href="#L218" name="L218">218</a><br/><a href="#L219" name="L219">219</a><br/><a href="#L220" name="L220">220</a><br/><a href="#L221" name="L221">221</a><br/><a href="#L222" name="L222">222</a><br/><a href="#L223" name="L223">223</a><br/><a href="#L224" name="L224">224</a><br/><a href="#L225" name="L225">225</a><br/><a href="#L226" name="L226">226</a><br/><a href="#L227" name="L227">227</a><br/><a href="#L228" name="L228">228</a><br/><a href="#L229" name="L229">229</a><br/><a href="#L230" name="L230">230</a><br/><a href="#L231" name="L231">231</a><br/><a href="#L232" name="L232">232</a><br/><a href="#L233" name="L233">233</a><br/><a href="#L234" name="L234">234</a><br/><a href="#L235" name="L235">235</a><br/><a href="#L236" name="L236">236</a><br/><a href="#L237" name="L237">237</a><br/><a href="#L238" name="L238">238</a><br/><a href="#L239" name="L239">239</a><br/><a href="#L240" name="L240">240</a><br/><a href="#L241" name="L241">241</a><br/><a href="#L242" name="L242">242</a><br/><a href="#L243" name="L243">243</a><br/><a href="#L244" name="L244">244</a><br/><a href="#L245" name="L245">245</a><br/><a href="#L246" name="L246">246</a><br/><a href="#L247" name="L247">247</a><br/><a href="#L248" name="L248">248</a><br/><a href="#L249" name="L249">249</a><br/><a href="#L250" name="L250">250</a><br/><a href="#L251" name="L251">251</a><br/><a href="#L252" name="L252">252</a><br/><a href="#L253" name="L253">253</a><br/><a href="#L254" name="L254">254</a><br/><a href="#L255" name="L255">255</a><br/><a href="#L256" name="L256">256</a><br/><a href="#L257" name="L257">257</a><br/><a href="#L258" name="L258">258</a><br/><a href="#L259" name="L259">259</a><br/><a href="#L260" name="L260">260</a><br/><a href="#L261" name="L261">261</a><br/><a href="#L262" name="L262">262</a><br/><a href="#L263" name="L263">263</a><br/><a href="#L264" name="L264">264</a><br/><a href="#L265" name="L265">265</a><br/><a href="#L266" name="L266">266</a><br/><a href="#L267" name="L267">267</a><br/><a href="#L268" name="L268">268</a><br/><a href="#L269" name="L269">269</a><br/><a href="#L270" name="L270">270</a><br/><a href="#L271" name="L271">271</a><br/><a href="#L272" name="L272">272</a><br/><a href="#L273" name="L273">273</a><br/><a href="#L274" name="L274">274</a><br/><a href="#L275" name="L275">275</a><br/><a href="#L276" name="L276">276</a><br/><a href="#L277" name="L277">277</a><br/><a href="#L278" name="L278">278</a><br/><a href="#L279" name="L279">279</a><br/><a href="#L280" name="L280">280</a><br/><a href="#L281" name="L281">281</a><br/><a href="#L282" name="L282">282</a><br/><a href="#L283" name="L283">283</a><br/><a href="#L284" name="L284">284</a><br/><a href="#L285" name="L285">285</a><br/><a href="#L286" name="L286">286</a><br/><a href="#L287" name="L287">287</a><br/><a href="#L288" name="L288">288</a><br/><a href="#L289" name="L289">289</a><br/><a href="#L290" name="L290">290</a><br/><a href="#L291" name="L291">291</a><br/><a href="#L292" name="L292">292</a><br/><a href="#L293" name="L293">293</a><br/><a href="#L294" name="L294">294</a><br/><a href="#L295" name="L295">295</a><br/><a href="#L296" name="L296">296</a><br/><a href="#L297" name="L297">297</a><br/><a href="#L298" name="L298">298</a><br/><a href="#L299" name="L299">299</a><br/><a href="#L300" name="L300">300</a><br/><a href="#L301" name="L301">301</a><br/><a href="#L302" name="L302">302</a><br/><a href="#L303" name="L303">303</a><br/><a href="#L304" name="L304">304</a><br/><a href="#L305" name="L305">305</a><br/><a href="#L306" name="L306">306</a><br/><a href="#L307" name="L307">307</a><br/><a href="#L308" name="L308">308</a><br/><a href="#L309" name="L309">309</a><br/><a href="#L310" name="L310">310</a><br/><a href="#L311" name="L311">311</a><br/><a href="#L312" name="L312">312</a><br/><a href="#L313" name="L313">313</a><br/><a href="#L314" name="L314">314</a><br/><a href="#L315" name="L315">315</a><br/><a href="#L316" name="L316">316</a><br/><a href="#L317" name="L317">317</a><br/><a href="#L318" name="L318">318</a><br/><a href="#L319" name="L319">319</a><br/><a href="#L320" name="L320">320</a><br/><a href="#L321" name="L321">321</a><br/><a href="#L322" name="L322">322</a><br/><a href="#L323" name="L323">323</a><br/><a href="#L324" name="L324">324</a><br/><a href="#L325" name="L325">325</a><br/><a href="#L326" name="L326">326</a><br/><a href="#L327" name="L327">327</a><br/><a href="#L328" name="L328">328</a><br/><a href="#L329" name="L329">329</a><br/><a href="#L330" name="L330">330</a><br/><a href="#L331" name="L331">331</a><br/><a href="#L332" name="L332">332</a><br/><a href="#L333" name="L333">333</a><br/><a href="#L334" name="L334">334</a><br/><a href="#L335" name="L335">335</a><br/><a href="#L336" name="L336">336</a><br/><a href="#L337" name="L337">337</a><br/><a href="#L338" name="L338">338</a><br/><a href="#L339" name="L339">339</a><br/><a href="#L340" name="L340">340</a><br/><a href="#L341" name="L341">341</a><br/><a href="#L342" name="L342">342</a><br/><a href="#L343" name="L343">343</a><br/><a href="#L344" name="L344">344</a><br/><a href="#L345" name="L345">345</a><br/><a href="#L346" name="L346">346</a><br/><a href="#L347" name="L347">347</a><br/><a href="#L348" name="L348">348</a><br/><a href="#L349" name="L349">349</a><br/><a href="#L350" name="L350">350</a><br/><a href="#L351" name="L351">351</a><br/><a href="#L352" name="L352">352</a><br/><a href="#L353" name="L353">353</a><br/><a href="#L354" name="L354">354</a><br/><a href="#L355" name="L355">355</a><br/><a href="#L356" name="L356">356</a><br/><a href="#L357" name="L357">357</a><br/><a href="#L358" name="L358">358</a><br/><a href="#L359" name="L359">359</a><br/><a href="#L360" name="L360">360</a><br/><a href="#L361" name="L361">361</a><br/><a href="#L362" name="L362">362</a><br/><a href="#L363" name="L363">363</a><br/><a href="#L364" name="L364">364</a><br/><a href="#L365" name="L365">365</a><br/><a href="#L366" name="L366">366</a><br/><a href="#L367" name="L367">367</a><br/><a href="#L368" name="L368">368</a><br/><a href="#L369" name="L369">369</a><br/><a href="#L370" name="L370">370</a><br/><a href="#L371" name="L371">371</a><br/><a href="#L372" name="L372">372</a><br/><a href="#L373" name="L373">373</a><br/><a href="#L374" name="L374">374</a><br/><a href="#L375" name="L375">375</a><br/><a href="#L376" name="L376">376</a><br/><a href="#L377" name="L377">377</a><br/><a href="#L378" name="L378">378</a><br/><a href="#L379" name="L379">379</a><br/><a href="#L380" name="L380">380</a><br/><a href="#L381" name="L381">381</a><br/><a href="#L382" name="L382">382</a><br/><a href="#L383" name="L383">383</a><br/><a href="#L384" name="L384">384</a><br/><a href="#L385" name="L385">385</a><br/><a href="#L386" name="L386">386</a><br/><a href="#L387" name="L387">387</a><br/><a href="#L388" name="L388">388</a><br/><a href="#L389" name="L389">389</a><br/><a href="#L390" name="L390">390</a><br/><a href="#L391" name="L391">391</a><br/><a href="#L392" name="L392">392</a><br/><a href="#L393" name="L393">393</a><br/><a href="#L394" name="L394">394</a><br/><a href="#L395" name="L395">395</a><br/><a href="#L396" name="L396">396</a><br/><a href="#L397" name="L397">397</a><br/><a href="#L398" name="L398">398</a><br/><a href="#L399" name="L399">399</a><br/><a href="#L400" name="L400">400</a><br/><a href="#L401" name="L401">401</a><br/><a href="#L402" name="L402">402</a><br/><a href="#L403" name="L403">403</a><br/><a href="#L404" name="L404">404</a><br/><a href="#L405" name="L405">405</a><br/><a href="#L406" name="L406">406</a><br/><a href="#L407" name="L407">407</a><br/><a href="#L408" name="L408">408</a><br/><a href="#L409" name="L409">409</a><br/><a href="#L410" name="L410">410</a><br/><a href="#L411" name="L411">411</a><br/><a href="#L412" name="L412">412</a><br/><a href="#L413" name="L413">413</a><br/><a href="#L414" name="L414">414</a><br/><a href="#L415" name="L415">415</a><br/><a href="#L416" name="L416">416</a><br/><a href="#L417" name="L417">417</a><br/><a href="#L418" name="L418">418</a><br/><a href="#L419" name="L419">419</a><br/><a href="#L420" name="L420">420</a><br/><a href="#L421" name="L421">421</a><br/><a href="#L422" name="L422">422</a><br/><a href="#L423" name="L423">423</a><br/><a href="#L424" name="L424">424</a><br/><a href="#L425" name="L425">425</a><br/><a href="#L426" name="L426">426</a><br/><a href="#L427" name="L427">427</a><br/><a href="#L428" name="L428">428</a><br/><a href="#L429" name="L429">429</a><br/><a href="#L430" name="L430">430</a><br/><a href="#L431" name="L431">431</a><br/><a href="#L432" name="L432">432</a><br/><a href="#L433" name="L433">433</a><br/><a href="#L434" name="L434">434</a><br/><a href="#L435" name="L435">435</a><br/><a href="#L436" name="L436">436</a><br/><a href="#L437" name="L437">437</a><br/><a href="#L438" name="L438">438</a><br/><a href="#L439" name="L439">439</a><br/><a href="#L440" name="L440">440</a><br/><a href="#L441" name="L441">441</a><br/><a href="#L442" name="L442">442</a><br/><a href="#L443" name="L443">443</a><br/><a href="#L444" name="L444">444</a><br/><a href="#L445" name="L445">445</a><br/><a href="#L446" name="L446">446</a><br/><a href="#L447" name="L447">447</a><br/><a href="#L448" name="L448">448</a><br/><a href="#L449" name="L449">449</a><br/><a href="#L450" name="L450">450</a><br/><a href="#L451" name="L451">451</a><br/><a href="#L452" name="L452">452</a><br/><a href="#L453" name="L453">453</a><br/><a href="#L454" name="L454">454</a><br/><a href="#L455" name="L455">455</a><br/><a href="#L456" name="L456">456</a><br/><a href="#L457" name="L457">457</a><br/><a href="#L458" name="L458">458</a><br/><a href="#L459" name="L459">459</a><br/><a href="#L460" name="L460">460</a><br/><a href="#L461" name="L461">461</a><br/><a href="#L462" name="L462">462</a><br/><a href="#L463" name="L463">463</a><br/><a href="#L464" name="L464">464</a><br/><a href="#L465" name="L465">465</a><br/><a href="#L466" name="L466">466</a><br/><a href="#L467" name="L467">467</a><br/><a href="#L468" name="L468">468</a><br/><a href="#L469" name="L469">469</a><br/><a href="#L470" name="L470">470</a><br/><a href="#L471" name="L471">471</a><br/><a href="#L472" name="L472">472</a><br/><a href="#L473" name="L473">473</a><br/><a href="#L474" name="L474">474</a><br/><a href="#L475" name="L475">475</a><br/><a href="#L476" name="L476">476</a><br/><a href="#L477" name="L477">477</a><br/><a href="#L478" name="L478">478</a><br/><a href="#L479" name="L479">479</a><br/><a href="#L480" name="L480">480</a><br/><a href="#L481" name="L481">481</a><br/><a href="#L482" name="L482">482</a><br/><a href="#L483" name="L483">483</a><br/><a href="#L484" name="L484">484</a><br/><a href="#L485" name="L485">485</a><br/><a href="#L486" name="L486">486</a><br/><a href="#L487" name="L487">487</a><br/><a href="#L488" name="L488">488</a><br/><a href="#L489" name="L489">489</a><br/><a href="#L490" name="L490">490</a><br/><a href="#L491" name="L491">491</a><br/><a href="#L492" name="L492">492</a><br/><a href="#L493" name="L493">493</a><br/><a href="#L494" name="L494">494</a><br/><a href="#L495" name="L495">495</a><br/><a href="#L496" name="L496">496</a><br/><a href="#L497" name="L497">497</a><br/><a href="#L498" name="L498">498</a><br/><a href="#L499" name="L499">499</a><br/><a href="#L500" name="L500">500</a><br/><a href="#L501" name="L501">501</a><br/><a href="#L502" name="L502">502</a><br/><a href="#L503" name="L503">503</a><br/><a href="#L504" name="L504">504</a><br/><a href="#L505" name="L505">505</a><br/><a href="#L506" name="L506">506</a><br/><a href="#L507" name="L507">507</a><br/><a href="#L508" name="L508">508</a><br/><a href="#L509" name="L509">509</a><br/><a href="#L510" name="L510">510</a><br/><a href="#L511" name="L511">511</a><br/><a href="#L512" name="L512">512</a><br/><a href="#L513" name="L513">513</a><br/><a href="#L514" name="L514">514</a><br/><a href="#L515" name="L515">515</a><br/><a href="#L516" name="L516">516</a><br/><a href="#L517" name="L517">517</a><br/><a href="#L518" name="L518">518</a><br/><a href="#L519" name="L519">519</a><br/><a href="#L520" name="L520">520</a><br/><a href="#L521" name="L521">521</a><br/><a href="#L522" name="L522">522</a><br/><a href="#L523" name="L523">523</a><br/><a href="#L524" name="L524">524</a><br/><a href="#L525" name="L525">525</a><br/><a href="#L526" name="L526">526</a><br/><a href="#L527" name="L527">527</a><br/><a href="#L528" name="L528">528</a><br/><a href="#L529" name="L529">529</a><br/><a href="#L530" name="L530">530</a><br/><a href="#L531" name="L531">531</a><br/><a href="#L532" name="L532">532</a><br/><a href="#L533" name="L533">533</a><br/><a href="#L534" name="L534">534</a><br/><a href="#L535" name="L535">535</a><br/><a href="#L536" name="L536">536</a><br/><a href="#L537" name="L537">537</a><br/><a href="#L538" name="L538">538</a><br/><a href="#L539" name="L539">539</a><br/><a href="#L540" name="L540">540</a><br/><a href="#L541" name="L541">541</a><br/><a href="#L542" name="L542">542</a><br/><a href="#L543" name="L543">543</a><br/><a href="#L544" name="L544">544</a><br/><a href="#L545" name="L545">545</a><br/><a href="#L546" name="L546">546</a><br/><a href="#L547" name="L547">547</a><br/><a href="#L548" name="L548">548</a><br/><a href="#L549" name="L549">549</a><br/><a href="#L550" name="L550">550</a><br/><a href="#L551" name="L551">551</a><br/><a href="#L552" name="L552">552</a><br/><a href="#L553" name="L553">553</a><br/><a href="#L554" name="L554">554</a><br/><a href="#L555" name="L555">555</a><br/><a href="#L556" name="L556">556</a><br/><a href="#L557" name="L557">557</a><br/><a href="#L558" name="L558">558</a><br/><a href="#L559" name="L559">559</a><br/><a href="#L560" name="L560">560</a><br/><a href="#L561" name="L561">561</a><br/><a href="#L562" name="L562">562</a><br/><a href="#L563" name="L563">563</a><br/><a href="#L564" name="L564">564</a><br/><a href="#L565" name="L565">565</a><br/><a href="#L566" name="L566">566</a><br/><a href="#L567" name="L567">567</a><br/><a href="#L568" name="L568">568</a><br/><a href="#L569" name="L569">569</a><br/><a href="#L570" name="L570">570</a><br/><a href="#L571" name="L571">571</a><br/><a href="#L572" name="L572">572</a><br/><a href="#L573" name="L573">573</a><br/><a href="#L574" name="L574">574</a><br/><a href="#L575" name="L575">575</a><br/><a href="#L576" name="L576">576</a><br/><a href="#L577" name="L577">577</a><br/><a href="#L578" name="L578">578</a><br/><a href="#L579" name="L579">579</a><br/><a href="#L580" name="L580">580</a><br/><a href="#L581" name="L581">581</a><br/><a href="#L582" name="L582">582</a><br/><a href="#L583" name="L583">583</a><br/><a href="#L584" name="L584">584</a><br/><a href="#L585" name="L585">585</a><br/><a href="#L586" name="L586">586</a><br/><a href="#L587" name="L587">587</a><br/><a href="#L588" name="L588">588</a><br/><a href="#L589" name="L589">589</a><br/><a href="#L590" name="L590">590</a><br/><a href="#L591" name="L591">591</a><br/><a href="#L592" name="L592">592</a><br/><a href="#L593" name="L593">593</a><br/><a href="#L594" name="L594">594</a><br/><a href="#L595" name="L595">595</a><br/><a href="#L596" name="L596">596</a><br/><a href="#L597" name="L597">597</a><br/><a href="#L598" name="L598">598</a><br/><a href="#L599" name="L599">599</a><br/><a href="#L600" name="L600">600</a><br/><a href="#L601" name="L601">601</a><br/><a href="#L602" name="L602">602</a><br/><a href="#L603" name="L603">603</a><br/><a href="#L604" name="L604">604</a><br/><a href="#L605" name="L605">605</a><br/><a href="#L606" name="L606">606</a><br/><a href="#L607" name="L607">607</a><br/><a href="#L608" name="L608">608</a><br/><a href="#L609" name="L609">609</a><br/><a href="#L610" name="L610">610</a><br/><a href="#L611" name="L611">611</a><br/><a href="#L612" name="L612">612</a><br/><a href="#L613" name="L613">613</a><br/><a href="#L614" name="L614">614</a><br/><a href="#L615" name="L615">615</a><br/><a href="#L616" name="L616">616</a><br/><a href="#L617" name="L617">617</a><br/><a href="#L618" name="L618">618</a><br/><a href="#L619" name="L619">619</a><br/><a href="#L620" name="L620">620</a><br/><a href="#L621" name="L621">621</a><br/><a href="#L622" name="L622">622</a><br/><a href="#L623" name="L623">623</a><br/><a href="#L624" name="L624">624</a><br/><a href="#L625" name="L625">625</a><br/><a href="#L626" name="L626">626</a><br/><a href="#L627" name="L627">627</a><br/><a href="#L628" name="L628">628</a><br/><a href="#L629" name="L629">629</a><br/><a href="#L630" name="L630">630</a><br/><a href="#L631" name="L631">631</a><br/><a href="#L632" name="L632">632</a><br/><a href="#L633" name="L633">633</a><br/><a href="#L634" name="L634">634</a><br/><a href="#L635" name="L635">635</a><br/><a href="#L636" name="L636">636</a><br/><a href="#L637" name="L637">637</a><br/><a href="#L638" name="L638">638</a><br/><a href="#L639" name="L639">639</a><br/><a href="#L640" name="L640">640</a><br/><a href="#L641" name="L641">641</a><br/><a href="#L642" name="L642">642</a><br/><a href="#L643" name="L643">643</a><br/><a href="#L644" name="L644">644</a><br/><a href="#L645" name="L645">645</a><br/><a href="#L646" name="L646">646</a><br/><a href="#L647" name="L647">647</a><br/><a href="#L648" name="L648">648</a><br/><a href="#L649" name="L649">649</a><br/><a href="#L650" name="L650">650</a><br/><a href="#L651" name="L651">651</a><br/><a href="#L652" name="L652">652</a><br/><a href="#L653" name="L653">653</a><br/><a href="#L654" name="L654">654</a><br/><a href="#L655" name="L655">655</a><br/><a href="#L656" name="L656">656</a><br/><a href="#L657" name="L657">657</a><br/><a href="#L658" name="L658">658</a><br/><a href="#L659" name="L659">659</a><br/><a href="#L660" name="L660">660</a><br/><a href="#L661" name="L661">661</a><br/><a href="#L662" name="L662">662</a><br/><a href="#L663" name="L663">663</a><br/><a href="#L664" name="L664">664</a><br/><a href="#L665" name="L665">665</a><br/><a href="#L666" name="L666">666</a><br/><a href="#L667" name="L667">667</a><br/><a href="#L668" name="L668">668</a><br/><a href="#L669" name="L669">669</a><br/><a href="#L670" name="L670">670</a><br/><a href="#L671" name="L671">671</a><br/><a href="#L672" name="L672">672</a><br/><a href="#L673" name="L673">673</a><br/><a href="#L674" name="L674">674</a><br/><a href="#L675" name="L675">675</a><br/><a href="#L676" name="L676">676</a><br/><a href="#L677" name="L677">677</a><br/><a href="#L678" name="L678">678</a><br/><a href="#L679" name="L679">679</a><br/><a href="#L680" name="L680">680</a><br/><a href="#L681" name="L681">681</a><br/><a href="#L682" name="L682">682</a><br/><a href="#L683" name="L683">683</a><br/><a href="#L684" name="L684">684</a><br/><a href="#L685" name="L685">685</a><br/><a href="#L686" name="L686">686</a><br/><a href="#L687" name="L687">687</a><br/><a href="#L688" name="L688">688</a><br/><a href="#L689" name="L689">689</a><br/><a href="#L690" name="L690">690</a><br/><a href="#L691" name="L691">691</a><br/><a href="#L692" name="L692">692</a><br/><a href="#L693" name="L693">693</a><br/><a href="#L694" name="L694">694</a><br/><a href="#L695" name="L695">695</a><br/><a href="#L696" name="L696">696</a><br/><a href="#L697" name="L697">697</a><br/><a href="#L698" name="L698">698</a><br/><a href="#L699" name="L699">699</a><br/><a href="#L700" name="L700">700</a><br/><a href="#L701" name="L701">701</a><br/><a href="#L702" name="L702">702</a><br/><a href="#L703" name="L703">703</a><br/><a href="#L704" name="L704">704</a><br/><a href="#L705" name="L705">705</a><br/><a href="#L706" name="L706">706</a><br/><a href="#L707" name="L707">707</a><br/><a href="#L708" name="L708">708</a><br/><a href="#L709" name="L709">709</a><br/><a href="#L710" name="L710">710</a><br/><a href="#L711" name="L711">711</a><br/><a href="#L712" name="L712">712</a><br/><a href="#L713" name="L713">713</a><br/><a href="#L714" name="L714">714</a><br/><a href="#L715" name="L715">715</a><br/><a href="#L716" name="L716">716</a><br/><a href="#L717" name="L717">717</a><br/><a href="#L718" name="L718">718</a><br/><a href="#L719" name="L719">719</a><br/><a href="#L720" name="L720">720</a><br/><a href="#L721" name="L721">721</a><br/><a href="#L722" name="L722">722</a><br/><a href="#L723" name="L723">723</a><br/><a href="#L724" name="L724">724</a><br/><a href="#L725" name="L725">725</a><br/><a href="#L726" name="L726">726</a><br/><a href="#L727" name="L727">727</a><br/><a href="#L728" name="L728">728</a><br/><a href="#L729" name="L729">729</a><br/><a href="#L730" name="L730">730</a><br/><a href="#L731" name="L731">731</a><br/><a href="#L732" name="L732">732</a><br/><a href="#L733" name="L733">733</a><br/><a href="#L734" name="L734">734</a><br/><a href="#L735" name="L735">735</a><br/><a href="#L736" name="L736">736</a><br/><a href="#L737" name="L737">737</a><br/><a href="#L738" name="L738">738</a><br/><a href="#L739" name="L739">739</a><br/><a href="#L740" name="L740">740</a><br/><a href="#L741" name="L741">741</a><br/><a href="#L742" name="L742">742</a><br/><a href="#L743" name="L743">743</a><br/><a href="#L744" name="L744">744</a><br/><a href="#L745" name="L745">745</a><br/><a href="#L746" name="L746">746</a><br/><a href="#L747" name="L747">747</a><br/><a href="#L748" name="L748">748</a><br/><a href="#L749" name="L749">749</a><br/><a href="#L750" name="L750">750</a><br/><a href="#L751" name="L751">751</a><br/><a href="#L752" name="L752">752</a><br/><a href="#L753" name="L753">753</a><br/><a href="#L754" name="L754">754</a><br/><a href="#L755" name="L755">755</a><br/><a href="#L756" name="L756">756</a><br/><a href="#L757" name="L757">757</a><br/><a href="#L758" name="L758">758</a><br/><a href="#L759" name="L759">759</a><br/><a href="#L760" name="L760">760</a><br/><a href="#L761" name="L761">761</a><br/><a href="#L762" name="L762">762</a><br/><a href="#L763" name="L763">763</a><br/><a href="#L764" name="L764">764</a><br/><a href="#L765" name="L765">765</a><br/><a href="#L766" name="L766">766</a><br/><a href="#L767" name="L767">767</a><br/><a href="#L768" name="L768">768</a><br/><a href="#L769" name="L769">769</a><br/><a href="#L770" name="L770">770</a><br/><a href="#L771" name="L771">771</a><br/><a href="#L772" name="L772">772</a><br/></pre>
+						</div>
+					</td>
+					<td valign="top" onmouseup="javascript:LogReuse();">
+						<div id="CodeDiv">
+							<pre><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>; RDOS operating system
+</span><span class='c'>; Copyright (C) 1988-2000, Leif Ekblad
+</span><span class='c'>;
+</span><span class='c'>; This program is free software; you can redistribute it and/or modify
+</span><span class='c'>; it under the terms of the GNU General Public License as published by
+</span><span class='c'>; the Free Software Foundation; either version 2 of the License, or
+</span><span class='c'>; (at your option) any later version. The only exception to this rule
+</span><span class='c'>; is for commercial usage in embedded systems. For information on
+</span><span class='c'>; usage in commercial embedded systems, contact embedded@rdos.net
+</span><span class='c'>;
+</span><span class='c'>; This program is distributed in the hope that it will be useful,
+</span><span class='c'>; but WITHOUT ANY WARRANTY; without even the implied warranty of
+</span><span class='c'>; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+</span><span class='c'>; GNU General Public License for more details.
+</span><span class='c'>;
+</span><span class='c'>; You should have received a copy of the GNU General Public License
+</span><span class='c'>; along with this program; if not, write to the Free Software
+</span><span class='c'>; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+</span><span class='c'>;
+</span><span class='c'>; The author of this program may be contacted at leif@rdos.net
+</span><span class='c'>;
+</span><span class='c'>; SHUTDOWN.ASM
+</span><span class='c'>; ZFX86 COM1 &quot;panic&quot; module
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>						
+		<span class='k'>NAME</span> <a class='r'>shutdown</a>
+
+<a class='r'>GateSize</a> = 16
+
+<span class='k'>INCLUDE</span> ..\<a class='r'>os</a>\<a class='r'>system</a>.<a class='r'>def</a>
+<span class='k'>INCLUDE</span> ..\<a class='r'>os</a>\<a class='r'>protseg</a>.<a class='r'>def</a>
+<span class='k'>INCLUDE</span> ..\<a class='r'>os</a>\<a class='r'>user</a>.<a class='r'>def</a>
+<span class='k'>INCLUDE</span> ..\<a class='r'>os</a>\<a class='r'>os</a>.<a class='r'>def</a>
+
+	.386p
+
+<a class='r'>WriteSIO</a>    <span class='k'>Macro</span> <a class='r'>index</a>, <span class='k'>data</span>
+    <span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>index</a>
+    out 2Eh,<a class='r'>al</a>
+    <span class='k'>mov</span> <a class='r'>al</a>,data
+    out 2Fh,<a class='r'>al</a>
+        <span class='k'>ENDM</span>
+
+<a class='r'>ReadSIO</a>    <span class='k'>Macro</span> <a class='r'>index</a>
+    <span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>index</a>
+    out 2Eh,<a class='r'>al</a>
+    in <a class='r'>al</a>,2Fh
+        <span class='k'>ENDM</span>
+
+<span class='k'>code</span>	<span class='k'>SEGMENT</span> <span class='k'>byte</span> <span class='k'>public</span> <span class='k'>use16</span> '<span class='k'>CODE</span>'
+
+	<span class='k'>assume</span> <a class='r'>cs</a>:code
+
+<span class='k'>PAGE</span>
+	
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;	
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			boot_ram
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	get free ram during boot
+</span><span class='c'>;
+</span><span class='c'>;		RETURNS:		ESI		address to use
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>boot_ram</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+	push <a class='r'>ds</a>
+	push <a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>system_data_sel</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>esi</a>,<a class='r'>ds</a>:<a class='r'>alloc_base</a>
+    <span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>flat_sel</a>
+    <span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>ax</a>
+    jmp <a class='r'>RamNext</a>
+<a class='r'>RamLoop</a>:
+    <span class='k'>mov</span> <a class='r'>eax</a>,<a class='r'>AllocMemSign</a>
+    <span class='k'>mov</span> [<a class='r'>esi</a>],<a class='r'>eax</a>
+    cmp <a class='r'>eax</a>,[<a class='r'>esi</a>]
+    je <a class='r'>RamFound</a>
+<a class='r'>RamNext</a>:
+    add <a class='r'>esi</a>,1000h
+    jmp <a class='r'>RamLoop</a>
+    
+<a class='r'>RamFound</a>:
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>system_data_sel</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>:<a class='r'>alloc_base</a>,<a class='r'>esi</a>
+	pop <a class='r'>ax</a>
+	pop <a class='r'>ds</a>
+	ret
+<a class='r'>boot_ram</a>	<span class='k'>Endp</span>
+
+<span class='k'>PAGE</span>
+	
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;	
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			StartSerial
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	start serial port
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>StartSerial</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+    <a class='r'>WriteSIO</a> 7, 3
+    <a class='r'>WriteSIO</a> 30h, 1
+    <a class='r'>WriteSIO</a> 60h, 3
+    <a class='r'>WriteSIO</a> 61h, 0F8h
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>al</a>,83h
+	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 3
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; set line control to divisor access
+</span><span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h
+	<span class='k'>mov</span> <a class='r'>al</a>,1
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; output LSB divisor latch
+</span><span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 1
+	<span class='k'>mov</span> <a class='r'>al</a>,0
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; output MSB divisor latch
+</span><span class='c'>;
+</span>    <span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 2
+    <span class='k'>mov</span> <a class='r'>al</a>,1
+    out <a class='r'>dx</a>,<a class='r'>al</a>               <span class='c'>; enable FIFOs if present
+</span><span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>al</a>,3
+	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 3
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; set line control 
+</span><span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 1
+	<span class='k'>mov</span> <a class='r'>al</a>,0
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; disable rx ints, disable tx, line and modem ints
+</span><span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>dx</a>,3F8h + 4
+	<span class='k'>mov</span> <a class='r'>al</a>,0Bh
+	out <a class='r'>dx</a>,<a class='r'>al</a>				<span class='c'>; modem control, DTR = high, RTS = high
+</span>	ret
+<a class='r'>StartSerial</a>	<span class='k'>Endp</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteChar
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write a char to serial port
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		AL		CHAR
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteChar</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+    push <a class='r'>ax</a>
+    push <a class='r'>dx</a>
+<span class='c'>;
+</span>    <span class='k'>mov</span> <a class='r'>ah</a>,<a class='r'>al</a>
+    
+<a class='r'>WriteCharWaitLoop</a>:
+    <span class='k'>mov</span> <a class='r'>dx</a>,3F8h+5
+    in <a class='r'>al</a>,<a class='r'>dx</a>
+    test <a class='r'>al</a>,40h
+    jz <a class='r'>WriteCharWaitLoop</a>
+<span class='c'>;
+</span>    <span class='k'>mov</span> <a class='r'>dx</a>,3F8h
+    <span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>ah</a>
+    out <a class='r'>dx</a>,<a class='r'>al</a>
+<span class='c'>;
+</span>    pop <a class='r'>dx</a>
+    pop <a class='r'>ax</a>
+	ret
+<a class='r'>WriteChar</a>	<span class='k'>ENDP</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteCRLF
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteCRLF</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+    push <a class='r'>ax</a>
+    push <a class='r'>dx</a>
+    <span class='k'>mov</span> <a class='r'>al</a>,0Dh
+    call <a class='r'>WriteChar</a>
+    <span class='k'>mov</span> <a class='r'>al</a>,0Ah
+    call <a class='r'>WriteChar</a>
+    pop <a class='r'>dx</a>
+    pop <a class='r'>ax</a>
+    ret
+<a class='r'>WriteCRLF</a>   <span class='k'>Endp</span>
+
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			SingleHex
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		AL		Value in
+</span><span class='c'>;						AX		Value out
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>SingleHex</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+	<span class='k'>mov</span> <a class='r'>ah</a>,<a class='r'>al</a>
+	and <a class='r'>al</a>,0F0h
+	rol <a class='r'>al</a>,4
+	cmp <a class='r'>al</a>,0Ah
+	jb <a class='r'>ok_low1</a>
+	add <a class='r'>al</a>,7
+<a class='r'>ok_low1</a>:
+	add <a class='r'>al</a>,30h
+	and <a class='r'>ah</a>,0Fh
+	cmp <a class='r'>ah</a>,0Ah
+	jb <a class='r'>ok_high1</a>
+	add <a class='r'>ah</a>,7
+<a class='r'>ok_high1</a>:
+	add <a class='r'>ah</a>,30h
+	ret
+<a class='r'>SingleHex</a>   <span class='k'>Endp</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteHexByte
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		AL		HEX DATA IN
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteHexByte</a>    <span class='k'>Proc</span> <span class='k'>near</span>
+    push <a class='r'>ax</a>
+	call <a class='r'>SingleHex</a>
+	call <a class='r'>WriteChar</a>
+	xchg <a class='r'>al</a>,<a class='r'>ah</a>
+    call <a class='r'>WriteChar</a>
+    pop <a class='r'>ax</a>
+    ret
+<a class='r'>WriteHexByte</a>    <span class='k'>Endp</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteHexWord
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		AX		HEX DATA IN
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteHexWord</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+    xchg <a class='r'>al</a>,<a class='r'>ah</a>
+    call <a class='r'>WriteHexByte</a>
+    xchg <a class='r'>al</a>,<a class='r'>ah</a>
+    call <a class='r'>WriteHexByte</a>
+    ret
+<a class='r'>WriteHexWord</a>    <span class='k'>Endp</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteHexDword
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		EAX		HEX DATA IN
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteHexDword</a>	<span class='k'>Proc</span> <span class='k'>near</span>
+    push <a class='r'>eax</a>
+    shr <a class='r'>eax</a>,16
+    call <a class='r'>WriteHexWord</a>
+    pop <a class='r'>eax</a>
+    call <a class='r'>WriteHexWord</a>
+    ret
+<a class='r'>WriteHexDword</a>   <span class='k'>Endp</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteSizeString
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write string to screen
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		ES:DI	Address to string
+</span><span class='c'>;                       CX      Number of chars
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>WriteSizeString</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+    push <a class='r'>ax</a>
+    push <a class='r'>di</a>
+
+<a class='r'>WriteSizeStringLoop</a>:
+	<span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+    call <a class='r'>WriteChar</a>
+	<span class='k'>inc</span> <a class='r'>di</a>
+    loop <a class='r'>WriteSizeStringLoop</a>
+
+<a class='r'>WriteSizeStringDone</a>:
+    pop <a class='r'>di</a>
+    pop <a class='r'>ax</a>       
+	ret
+<a class='r'>WriteSizeString</a>	<span class='k'>ENDP</span>
+
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:		    WriteDwordReg
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write 32-bit registers
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		ES:DI	ADDRESS TO TABLE
+</span><span class='c'>;						GS		TSS
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+	<span class='k'>assume</span> <a class='r'>gs</a>:<a class='r'>tss_seg</a>
+
+<a class='r'>WriteDwordReg</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+	push <a class='r'>cx</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,4
+	call <a class='r'>WriteSizeString</a>
+	pop <a class='r'>cx</a>
+<span class='c'>;
+</span>	add <a class='r'>di</a>,4
+	<span class='k'>mov</span> <a class='r'>bx</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+	<span class='k'>mov</span> <a class='r'>eax</a>,<a class='r'>gs</a>:[<a class='r'>bx</a>]
+	call <a class='r'>WriteHexDword</a>
+	add <a class='r'>di</a>,2
+	<span class='k'>mov</span> <a class='r'>al</a>,' '
+	call <a class='r'>WriteChar</a>
+	<span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+	or <a class='r'>al</a>,<a class='r'>al</a>
+	jnz <a class='r'>WriteDwordReg</a>
+<span class='c'>;
+</span>	ret
+<a class='r'>WriteDwordReg</a>	<span class='k'>ENDP</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteWordReg
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write 16-bit registers
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		ES:DI	ADDRESS TO TABLE
+</span><span class='c'>;						GS		TSS
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+	<span class='k'>assume</span> <a class='r'>gs</a>:<a class='r'>tss_seg</a>
+
+<a class='r'>WriteWordReg</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+	push <a class='r'>cx</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,3
+	call <a class='r'>WriteSizeString</a>
+	pop <a class='r'>cx</a>
+<span class='c'>;
+</span>	add <a class='r'>di</a>,3
+	<span class='k'>mov</span> <a class='r'>bx</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>gs</a>:[<a class='r'>bx</a>]
+	call <a class='r'>WriteHexWord</a>
+	add <a class='r'>di</a>,2
+	<span class='k'>mov</span> <a class='r'>al</a>,' '
+	call <a class='r'>WriteChar</a>
+	<span class='k'>mov</span> <a class='r'>al</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+	or <a class='r'>al</a>,<a class='r'>al</a>
+	jnz <a class='r'>WriteWordReg</a>
+<span class='c'>;
+</span>	ret
+<a class='r'>WriteWordReg</a>	<span class='k'>ENDP</span>
+
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteElags
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write EFLAGS
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		GS		TSS
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+
+<a class='r'>eflags_tab</a>:
+<span class='c'>;
+</span><span class='c'>;		reset		set
+</span><a class='r'>et_cf</a>	<span class='k'>DB</span> '<a class='r'>NC</a> ',	'<a class='r'>CY</a> '
+<a class='r'>et_1</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_pf</a>	<span class='k'>DB</span> '<a class='r'>PO</a> ',	'<a class='r'>PE</a> '
+<a class='r'>et_3</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_af</a>	<span class='k'>DB</span> '<a class='r'>NA</a> ',	'<a class='r'>AC</a> '
+<a class='r'>et_5</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_zf</a>	<span class='k'>DB</span> '<a class='r'>NZ</a> ',	'<a class='r'>ZR</a> '
+<a class='r'>et_sf</a>	<span class='k'>DB</span> '<a class='r'>PL</a> ',	'<a class='r'>NG</a> '
+<a class='r'>et_tf</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_if</a>	<span class='k'>DB</span> '<a class='r'>DI</a> ',	'<a class='r'>EI</a> '
+<a class='r'>et_df</a>	<span class='k'>DB</span> '<a class='r'>UP</a> ',	'<a class='r'>DN</a> '
+<a class='r'>et_of</a>	<span class='k'>DB</span> '<a class='r'>NV</a> ',	'<a class='r'>OV</a> '
+<a class='r'>et_12</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_13</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_14</a>	<span class='k'>DB</span> '<a class='r'>PR</a> ' ,	'<a class='r'>NT</a> '
+<a class='r'>et_15</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_16</a>	<span class='k'>DB</span> 0,0,0,	0,0,0
+<a class='r'>et_vm</a>	<span class='k'>DB</span> '<a class='r'>PM</a> ',	'<a class='r'>VM</a> '
+<a class='r'>et_end</a>	<span class='k'>DB</span> 0FFh
+
+<a class='r'>WriteEflags</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+	<span class='k'>mov</span> <a class='r'>bx</a>,<span class='k'>OFFSET</span> <a class='r'>tss_eflags</a>
+	<span class='k'>mov</span> <a class='r'>eax</a>,<a class='r'>gs</a>:[<a class='r'>bx</a>]
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>eflags_tab</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>cx</a>
+<a class='r'>eflags_loop</a>:
+	<span class='k'>mov</span> <a class='r'>ch</a>,<a class='r'>es</a>:[<a class='r'>di</a>]
+	or <a class='r'>ch</a>,<a class='r'>ch</a>
+	je <a class='r'>eflags_next</a>
+	cmp <a class='r'>ch</a>,0FFh
+	je <a class='r'>eflags_done</a>
+	push <a class='r'>di</a>
+	<span class='k'>mov</span> <a class='r'>cl</a>,10
+	test <a class='r'>ax</a>,1
+	jz <a class='r'>eflags_pos_ok</a>
+	add <a class='r'>di</a>,3
+<a class='r'>eflags_pos_ok</a>:
+	push <a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,3
+	call <a class='r'>WriteSizeString</a>
+	pop <a class='r'>ax</a>
+	pop <a class='r'>di</a>
+<a class='r'>eflags_next</a>:
+	add <a class='r'>di</a>,6
+	shr <a class='r'>eax</a>,1
+	jmp <a class='r'>eflags_loop</a>
+<a class='r'>eflags_done</a>:
+	ret
+<a class='r'>WriteEflags</a>	<span class='k'>ENDP</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			WriteFault
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Write fault string
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		GS		TSS
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>ft_idt</a>	<span class='k'>DB</span> '<a class='r'>Idt</a> '
+<a class='r'>ft_ldt</a>	<span class='k'>DB</span> '<a class='r'>Ldt</a> '
+<a class='r'>ft_gdt</a>	<span class='k'>DB</span> '<a class='r'>Gdt</a> '
+
+<a class='r'>WriteFault</a>	<span class='k'>PROC</span> <span class='k'>near</span>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>gs</a>:<a class='r'>tss_error_code</a>
+	test <a class='r'>ax</a>,2
+	jz <a class='r'>fault_not_idt</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>ft_idt</a>
+	jmp <a class='r'>write_fault_reason</a>
+<a class='r'>fault_not_idt</a>:
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>ft_gdt</a>
+	test <a class='r'>ax</a>,4
+	jz <a class='r'>write_fault_reason</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>ft_ldt</a>
+<a class='r'>write_fault_reason</a>:
+	<span class='k'>mov</span> <a class='r'>cx</a>,4
+	call <a class='r'>WriteSizeString</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>gs</a>:<a class='r'>tss_error_code</a>
+	and <a class='r'>ax</a>,0FFF8h
+	call <a class='r'>WriteHexWord</a>
+<a class='r'>write_fault_end</a>:
+	ret
+<a class='r'>WriteFault</a>	<span class='k'>ENDP</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			ABORT_PR
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Abort app and display dump
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		DS		Readable TSS for thread
+</span><span class='c'>;						ES		Readable GDT
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+	<span class='k'>assume</span> <a class='r'>ds</a>:<a class='r'>tss_seg</a>
+
+<a class='r'>error_code_tab</a>:
+<a class='r'>ke00</a>	<span class='k'>DB</span> '<a class='r'>Divide</a> <a class='r'>error</a>            '
+<a class='r'>ke01</a>	<span class='k'>DB</span> '<a class='r'>Single</a> <a class='r'>step</a>             '
+<a class='r'>ke02</a>	<span class='k'>DB</span> '<a class='r'>NMI</a>                     '
+<a class='r'>ke03</a>	<span class='k'>DB</span> '<a class='r'>Breakpoint</a>              '
+<a class='r'>ke04</a>	<span class='k'>DB</span> 'Overflow                '
+<a class='r'>ke05</a>	<span class='k'>DB</span> '<a class='r'>Array</a> <a class='r'>bounds</a> <a class='r'>error</a>      '
+<a class='r'>ke06</a>	<span class='k'>DB</span> '<a class='r'>Invalid</a> <a class='r'>OP</a>-code         '
+<a class='r'>ke07</a>	<span class='k'>DB</span> '80387 not <a class='r'>present</a>       '
+<a class='r'>ke08</a>	<span class='k'>DB</span> '<a class='r'>Double</a> <a class='r'>fault</a>            '
+<a class='r'>ke09</a>	<span class='k'>DB</span> '80387 <a class='r'>overrun</a>           '
+<a class='r'>ke0A</a>	<span class='k'>DB</span> '<a class='r'>Invalid</a> <a class='r'>TSS</a>             '
+<a class='r'>ke0B</a>	<span class='k'>DB</span> '<span class='k'>Segment</span> not <a class='r'>present</a>     '
+<a class='r'>ke0C</a>	<span class='k'>DB</span> '<span class='k'>Stack</span> <a class='r'>fault</a>             '
+<a class='r'>ke0D</a>	<span class='k'>DB</span> '<a class='r'>Protection</a> <a class='r'>fault</a>        '
+<a class='r'>ke0E</a>	<span class='k'>DB</span> '<span class='k'>Page</span> <a class='r'>fault</a>              '
+<a class='r'>ke0F</a>	<span class='k'>DB</span> '<span class='k'>Unknown</span> <a class='r'>Fault</a>           '
+<a class='r'>ke10</a>	<span class='k'>DB</span> '80387 <a class='r'>error</a>             '
+<a class='r'>ke11</a>	<span class='k'>DB</span> '<a class='r'>Cannot</a> <a class='r'>emulate</a>          '
+<a class='r'>ke12</a>	<span class='k'>DB</span> '<a class='r'>Cannot</a> <a class='r'>emulate</a> 80387    '
+<a class='r'>ke13</a>	<span class='k'>DB</span> '<a class='r'>Now</a> in <a class='r'>real</a> <a class='r'>mode</a>        '
+<a class='r'>ke14</a>	<span class='k'>DB</span> '----------------------- '
+<a class='r'>ke15</a>	<span class='k'>DB</span> '<a class='r'>Illegal</a> int <a class='r'>request</a>     '
+<a class='r'>ke16</a>	<span class='k'>DB</span> '<a class='r'>Undefined</a> <span class='k'>method</span>        '
+<a class='r'>ke17</a>	<span class='k'>DB</span> '<a class='r'>Invalid</a> <a class='r'>handle</a>          '
+<a class='r'>ke18</a>	<span class='k'>DB</span> '<a class='r'>Invalid</a> <a class='r'>selector</a>        '
+
+<a class='r'>dword_reg_tab1</a>:
+	<span class='k'>DB</span> '<a class='r'>EAX</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_eax</a>
+	<span class='k'>DB</span> '<a class='r'>EBX</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_ebx</a>
+	<span class='k'>DB</span> '<a class='r'>ECX</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_ecx</a>
+	<span class='k'>DB</span> '<a class='r'>EDX</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_edx</a>
+	<span class='k'>DB</span> '<a class='r'>ESI</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_esi</a>
+	<span class='k'>DB</span> '<a class='r'>EDI</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_edi</a>
+	<span class='k'>DB</span> 0
+<a class='r'>dword_reg_tab2</a>:
+	<span class='k'>DB</span> '<a class='r'>EPC</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_eip</a>
+	<span class='k'>DB</span> '<a class='r'>ESP</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_esp</a>
+	<span class='k'>DB</span> '<a class='r'>EBP</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_ebp</a>
+	<span class='k'>DB</span> 0
+<a class='r'>word_reg_tab</a>:
+	<span class='k'>DB</span> '<a class='r'>CS</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_cs</a>
+	<span class='k'>DB</span> '<a class='r'>SS</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_ss</a>
+	<span class='k'>DB</span> '<a class='r'>DS</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_ds</a>
+	<span class='k'>DB</span> '<a class='r'>ES</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_es</a>
+	<span class='k'>DB</span> '<a class='r'>FS</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_fs</a>
+	<span class='k'>DB</span> '<a class='r'>GS</a>='
+	<span class='k'>DW</span> <span class='k'>OFFSET</span> <a class='r'>tss_gs</a>
+	<span class='k'>DB</span> 0
+
+<a class='r'>pm_es</a>	<span class='k'>EQU</span> -12
+
+<a class='r'>abort_pretask</a>:
+	cli
+	cld
+	push <a class='r'>es</a>
+	movzx <a class='r'>bx</a>,<a class='r'>al</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>system_data_sel</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>eax</a>,[<a class='r'>bp</a>].<a class='r'>vm_eip</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_eip</a>,<a class='r'>eax</a>
+	<span class='k'>mov</span> <a class='r'>eax</a>,[<a class='r'>bp</a>].<a class='r'>vm_eflags</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_eflags</a>,<a class='r'>eax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>bp</a>].<a class='r'>vm_err</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_error_code</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>eax</a>,[<a class='r'>bp</a>].<a class='r'>vm_eax</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_eax</a>,<a class='r'>eax</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_ecx</a>,<a class='r'>ecx</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_edx</a>,<a class='r'>edx</a>
+	<span class='k'>mov</span> <a class='r'>eax</a>,[<a class='r'>bp</a>].<a class='r'>vm_ebx</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_ebx</a>,<a class='r'>eax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>bp</a>].<a class='r'>vm_bp</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_ebp</a>,<a class='r'>ax</a>
+	movzx <a class='r'>eax</a>,<a class='r'>bp</a>
+	add <a class='r'>eax</a>,18
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_esp</a>,<a class='r'>eax</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_esi</a>,<a class='r'>esi</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_edi</a>,<a class='r'>edi</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>bp</a>].<a class='r'>vm_cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_cs</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_ss</a>,<a class='r'>ss</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>bp</a>].<a class='r'>pm_ds</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_ds</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>bp</a>].<a class='r'>pm_es</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_fs</a>,<a class='r'>fs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_gs</a>,<a class='r'>gs</a>
+	<span class='k'>mov</span> <a class='r'>bp</a>,[<a class='r'>bp</a>].<a class='r'>vm_bp</a>
+	<span class='k'>mov</span> <span class='k'>dword</span> <span class='k'>ptr</span> <a class='r'>es</a>:<a class='r'>tss_ebp</a>,<a class='r'>ebp</a>
+	sldt <a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>es</a>:<a class='r'>tss_ldt</a>,<a class='r'>ax</a>	
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>es</a>
+	<span class='k'>mov</span> <a class='r'>gs</a>,<a class='r'>ax</a>
+
+<a class='r'>abort_fatal_write</a>:
+	push <a class='r'>bx</a>
+	call <a class='r'>StartSerial</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<a class='r'>bx</a>
+	shl <a class='r'>di</a>,3
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>di</a>
+	add <a class='r'>ax</a>,<a class='r'>ax</a>
+	add <a class='r'>di</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	call <a class='r'>WriteCRLF</a>
+	add <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>error_code_tab</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,24
+	call <a class='r'>WriteSizeString</a>
+	<span class='k'>mov</span> <a class='r'>al</a>,' '
+	call <a class='r'>WriteChar</a>
+	call <a class='r'>WriteFault</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>dword_reg_tab1</a>
+	call <a class='r'>WriteDwordReg</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>dword_reg_tab2</a>
+	call <a class='r'>WriteDwordReg</a>
+	call <a class='r'>WriteEflags</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>word_reg_tab</a>
+	call <a class='r'>WriteWordReg</a>
+	call <a class='r'>WriteCRLF</a>
+
+<a class='r'>halt_sys</a>:
+	jmp <a class='r'>halt_sys</a>
+	
+<a class='r'>abort_task</a>:
+	cli
+	cld
+	call <a class='r'>StartSerial</a>
+	xor <a class='r'>dx</a>,<a class='r'>dx</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>system_data_sel</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>ax</a>
+		<span class='k'>assume</span> <a class='r'>ds</a>:<a class='r'>system_seg</a>
+	<span class='k'>mov</span> <a class='r'>si</a>,<span class='k'>OFFSET</span> <a class='r'>debug_list</a>
+<a class='r'>remove_next_waiting</a>:
+	<span class='k'>mov</span> <a class='r'>ax</a>,[<a class='r'>si</a>]
+	or <a class='r'>ax</a>,<a class='r'>ax</a>
+	jz <a class='r'>abort_system</a>
+		<span class='k'>assume</span> <a class='r'>ds</a>:<a class='r'>thread_seg</a>,<a class='r'>es</a>:<a class='r'>thread_seg</a>
+	push <a class='r'>si</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,[<a class='r'>si</a>]
+	push <a class='r'>di</a>
+	push <a class='r'>ds</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<a class='r'>es</a>:<a class='r'>p_prev</a>
+	cmp <a class='r'>di</a>,[<a class='r'>si</a>]
+	<span class='k'>mov</span> [<a class='r'>si</a>],<a class='r'>di</a>
+	<span class='k'>mov</span> <a class='r'>si</a>,<a class='r'>es</a>:<a class='r'>p_next</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>di</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>:<a class='r'>p_next</a>,<a class='r'>si</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>si</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>:<a class='r'>p_prev</a>,<a class='r'>di</a>
+	pop <a class='r'>ds</a>
+	pop <a class='r'>di</a>
+	pop <a class='r'>si</a>
+	jne <a class='r'>not_empty_r</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>si</a>],0
+<a class='r'>not_empty_r</a>:
+	push <a class='r'>ds</a>
+	push <a class='r'>si</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>es</a>
+	call <a class='r'>WriteHexWord</a>
+	<span class='k'>mov</span> <a class='r'>al</a>,' '
+	call <a class='r'>WriteChar</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>thread_name</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,30
+	call <a class='r'>WriteSizeString</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>di</a>,<a class='r'>es</a>:<a class='r'>p_error_code</a>
+	<span class='k'>mov</span> <a class='r'>gs</a>,<a class='r'>es</a>:<a class='r'>p_tss_data_sel</a>
+	shl <a class='r'>di</a>,3
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>di</a>
+	add <a class='r'>ax</a>,<a class='r'>ax</a>
+	add <a class='r'>di</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	add <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>error_code_tab</a>
+	<span class='k'>mov</span> <a class='r'>cx</a>,24
+	call <a class='r'>WriteSizeString</a>
+	call <a class='r'>WriteFault</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>dword_reg_tab1</a>
+	call <a class='r'>WriteDwordReg</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>dword_reg_tab2</a>
+	call <a class='r'>WriteDwordReg</a>
+	call <a class='r'>WriteEflags</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>cs</a>
+	<span class='k'>mov</span> <a class='r'>es</a>,<a class='r'>ax</a>
+	<span class='k'>mov</span> <a class='r'>di</a>,<span class='k'>OFFSET</span> <a class='r'>word_reg_tab</a>
+	call <a class='r'>WriteWordReg</a>
+	call <a class='r'>WriteCRLF</a>
+<span class='c'>;
+</span>	pop <a class='r'>si</a>
+	pop <a class='r'>ds</a>
+	add <a class='r'>dh</a>,2
+	jmp <a class='r'>remove_next_waiting</a>
+
+<a class='r'>abort_system</a>:
+	jmp <a class='r'>abort_system</a>
+
+<span class='k'>PAGE</span>
+
+<span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='c'>;
+</span><span class='c'>;
+</span><span class='c'>;		NAME:			Init
+</span><span class='c'>;
+</span><span class='c'>;		DESCRIPTION:	Initialize module
+</span><span class='c'>;
+</span><span class='c'>;		PARAMETERS:		
+</span><span class='c'>;
+</span><span class='c'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span>
+<a class='r'>init</a>	<span class='k'>Proc</span> <span class='k'>far</span>
+	<span class='k'>mov</span> <a class='r'>ax</a>,<a class='r'>gdt_sel</a>
+	<span class='k'>mov</span> <a class='r'>ds</a>,<a class='r'>ax</a>
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>bx</a>,<a class='r'>shutdown_pretask_gate</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>],<span class='k'>OFFSET</span> <a class='r'>abort_pretask</a>
+	<span class='k'>mov</span> [<a class='r'>bx</a>+2],<a class='r'>cs</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>+4],8400h
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>+6],0
+<span class='c'>;
+</span>	<span class='k'>mov</span> <a class='r'>bx</a>,<a class='r'>shutdown_task_gate</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>],<span class='k'>OFFSET</span> <a class='r'>abort_task</a>
+	<span class='k'>mov</span> [<a class='r'>bx</a>+2],<a class='r'>cs</a>
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>+4],8400h
+	<span class='k'>mov</span> <span class='k'>word</span> <span class='k'>ptr</span> [<a class='r'>bx</a>+6],0
+	ret
+<a class='r'>init</a>	<span class='k'>Endp</span>
+
+<span class='k'>code</span>	<span class='k'>ENDS</span>
+
+.186
+
+<span class='k'>END</span> <a class='r'>init</a>
+</pre>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+
+<script type="text/javascript">
+var jumpLine = "-1";
+if(jumpLine && jumpLine != "-1" && !document.location.hash){
+	if(document.attachEvent){
+		document.attachEvent("onreadystatechange", function(){
+			if(document.readyState != "complete") return;
+			var numbers = document.all["kodeViewerLineNumbers"];
+			var targetA = numbers.children.tags("a")[jumpLine - 1];
+			targetA.scrollIntoView();
+			document.body.scrollLeft = 0;
+		});
+	} else if(window.addEventListener){
+		window.addEventListener("load", function(){
+			document.location.replace(document.location + "#L" + jumpLine);
+		}, false);
+	}
+}
+	
+var homeUrl = "/"; 
+var projectID = "VKQXKHMVPLX7CUHVTWA6ZYBFFA";
+var sourceLanguage = "Assembler";
+var IsLogged = false;
+
+// only logs once
+function LogReuse() {
+	// dynamic image loading
+	if(!IsLogged) {
+		//alert("logging");
+		var	fileImg	= new Image();
+		var fileImgSrc = "/kv.aspx?fid=0A32166BE2914BD75AE066E7753096E800FB23D9&mode=cp";
+		//alert("fileImgSrc = " + fileImgSrc);
+		fileImg.src	= fileImgSrc;
+		IsLogged = true;
+	} else {
+		//alert("already logged!");
+	}
+	return true;
+}
+</script>
+
+
+            
+        </div>
+        
+        
+<!-- Footer -->
+
+<div style="CLEAR: both" align="center" id="FooterDiv">
+	
+        <div align="center" id="footer">
+            <div class="row_1">
+    		    <a href="/web/20090215175533/http://koders.com/" title="Home">Home</a> |
+                <a href="/web/20090215175533/http://corp.koders.com/corp/about/" title="About Koders">Company</a> | 
+                <a href="/web/20090215175533/http://koders.com/info.aspx?c=tools" title="Download Plugins">Downloads</a> | 
+                <a href="/web/20090215175533/http://corp.koders.com/corp/support/" title="Support resources">Support</a> | 
+                <a href="/web/20090215175533/http://corp.koders.com/corp/community/" title="Community">Community</a> | 
+                <a href="/web/20090215175533/http://www.koders.com/corp/about/#Legal" title="Legal">Legal</a> | 
+                <a href="/web/20090215175533/http://corp.koders.com/corp/about#Contact" title="Contact us">Contact Us</a> |
+   		        <a href="/web/20090215175533/http://www.koders.com/corp/sitemap/" title="Koders Site Map">Site Map</a>    
+	        </div>
+            <div class="row_2">
+                <span class="copy">
+                    Copyright &copy; 2008 <a href="/web/20090215175533/http://www.blackducksoftware.com/" target="_blank" title="Black Duck Software, Inc.">Black Duck Software</a>. 
+                    All rights reserved.
+                </span>            
+                <span class="feed">
+                    <a href="/web/20090215175533/http://www.koders.com/blog/?feed=rss2" title="Subscribe!">RSS Feed</a>
+
+                    <img width="12px" height="12px" hspace="0" vspace="0" src="/web/20090215175533im_/http://koders.com/images/rss_sm.gif" alt="Koders Rss Feeds" />                    
+                </span>
+            </div>
+            <br />
+            <br />
+            <a id="KodersFooter_ctl00_hplWorkingTime" title="0.00\0.06\0.00\0.00\0.02\0.05\0.06\0.00\1.68\0.00s"><font color="graytext">processed in: 1.87s</font></a>
+        </div>
+
+</div>
+
+    
+
+<script type="text/javascript">
+//<![CDATA[
+Sys.Application.initialize();
+//]]>
+</script>
+</form>
+    
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "/web/20090215175533/https://ssl." : "/web/20090215175533/http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-1450480-3");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+</body>
+</html>
+
+
+
+
+
+<!--
+     FILE ARCHIVED ON 17:55:33 Feb 15, 2009 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 12:47:03 Sep 26, 2016.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->

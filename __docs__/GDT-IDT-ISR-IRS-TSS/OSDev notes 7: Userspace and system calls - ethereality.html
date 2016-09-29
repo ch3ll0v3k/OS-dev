@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 7: Userspace and system calls - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 7: Userspace and system calls</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>Now that we have program-loading under way, it's probably time to talk about
+how to get the userspace/kernelspace divide up and running in your kernel.</p>
+<p>The plan for this set of notes is straightforwards enough: we'll talk about why
+we want the userspace/kernelspace divide in the first place, what usually sits
+on either side of the dividing line, and the various (hardware) mechanisms in
+place to enforce things. Then we'll talk about how to set up controlled methods
+for userspace programs to make requests of the kernel without breaching the
+entire divide.</p>
+<p>Let's get started, shall we?</p>
+<h3 id="userspace-kernelspace">Userspace, Kernelspace</h3>
+<p>The first thing we should do is define, exactly, what the difference betwen
+userspace and kernelspace is. This is a definition that is really up to the
+individual kernel implementation; however, a working definition for the moment
+is that anything with its access to hardware restricted in some fashion is said
+to be in userspace; anything with unrestricted access is in kernelspace. (Note
+that if a program has unrestricted access to hardware but choses not to use it,
+it still counts as kernelspace.)</p>
+<p>What sort of "access to hardware" are we referring to? Well, in the x86_64
+case, physical memory, I/O ports, and control registers. (We probably don't
+want userspace processes to be able to change into real mode, except in very
+controlled circumstances, for example . . .)</p>
+<p>But hold on --- it's often the case (in fact, almost always the case) that a
+userspace program wants to access hardware in some fashion. For example, a
+program running on Linux can't talk to a hard drive directly, but it definitely
+can access the content on the hard drive via a driver of some sort, one that
+is presumably in kernelspace . . . the reason this can happen is that
+kernelspace can set up an API (usually called "system calls") for userspace
+programs to access, allowing access to hardware in a controlled fashion.</p>
+<p>We'll get to the actual hardware control mechanisms used to protect memory etc.
+in a moment, as first I'd like to digress a bit and talk about what sort of
+things should run in restricted environments.</p>
+<p>There are two modes of thought with respect to what should be put in userspace,
+i.e. have access restricted. Well, what sort of things do we actually have
+running on a kernel?</p>
+<p>We have the kernel itself (things like memory management, IRQ routing/interrupt
+handling, timing), we have drivers (the ATA PIO wrapper, FAT32 filesystem
+access, network cards, etc), kernel services (networking stack, VFS, etc), and
+userspace programs (shells, text editors, compilers, web browsers, etc).</p>
+<p>One possible answer to this is that everything should run with full
+permissions. This is the road that DOS (and other similar operating systems of
+the time) took; no protection whatsoever. These days, such a mindset is
+considered a little archaic; after all, one of the fundamental jobs of a kernel
+is to provide protection for programs such that two programs fundamentally
+cannot interfere with each others' operation (except in tightly-controlled
+manners). A more realistic viewpoint is that everything except userspace
+programs should be placed in kernelspace; such a design is called a
+"monolithic" kernel.</p>
+<p>The exact opposite end of the spectrum are the microkernels ("μkernels", or
+ukernels for those without an AltGr key) -- occasionally referred to as
+nanokernels, depending on the degree to which this doctrine is taken -- where
+only a minimal amount of functionality is placed in the kernel, and the rest is
+done in userspace. This "minimal" functionality is often (but not always!) the
+memory manager, some sort of inter-process communication support, and support
+for use of the hardware protection mechanisms.</p>
+<p>Why would we choose one over the other? It's mostly an ideological difference,
+but there are a couple of considerations to make. Points in favour of μkernels
+include additional stability (portions of the "privileged" software can't
+interfere with each other, so one bad driver can't ruin the stability of the
+entire system), and potential better parallelization (wrapping portions of the
+kernel into independent threads helps immediately with this). Points in favour
+of a monolithic design include simpler implementation (you can use the fact
+that all state is shared to great effect for simplifying certain things), and
+better performance (all state is shared, so passing a message to another part
+of the kernel is as simple as providing a pointer; in userspace the memory has
+to be copied into the other address space). The main points that people will
+refer to for each are stability (μkernels) and speed (monolithic kernels).</p>
+<p>However, all of these points can be addressed: with careful design, it is
+entirely possible to bring microkernels up to the same performance level as a
+monolithic kernel. Careful analysis and separation of code in a monolithic
+kernel can provide the same level of stability. Ultimately, you can think of
+the distinction as a "first priority" --- do you want your first priority to be
+speed or stability?  With some work, the distinction is about as meaningful as
+the use of tabs or spaces for code indentation (or the use of vi versus emacs);
+vicious disagreement, but ultimately you get the same result.</p>
+<p>I personally fall in the μkernel side of the fence; it seems to me that
+processors are fast enough now that we can sacrifice a couple percent of speed
+for stability and security.</p>
+<h3 id="hardware-protection">Hardware protection</h3>
+<p>So far we've talked about the philosophy of what kernelspace and userspace are,
+and what goes where. The next topic to talk about is what hardware mechanisms
+are actually in place to enforce this divide, and how fine/coarse-grained they
+are.</p>
+<p>We can consider two different categories of "privileges" on a computer: memory
+access privileges, and hardware access privileges. In the x86 architecture,
+this implies that we care about restricting access to memory regions and ports.
+Let's start with ports, because that's easier.</p>
+<p>A program should either be able to access a port, or not be able to access a
+port. Yes, you can argue that perhaps some programs should be able to perform
+port reads but not writes (or vice versa). This may very well be a useful thing
+that would add value to particular pieces of hardware . . . however, an
+important thing to realize is that ports are -- for the most part -- a <em>legacy</em>
+access mechanism, and all hardware using ports that I am currently aware of
+will not make much use of this sort of access control. We have, in a sense, a
+binary value for each port describing whether the current program can access
+that port or not. Thus, under the (reasonable) assumption that we care only
+about can use/can not use access control for each port, we just need a
+64-kilobit bitmap for each program. A little on the large side (8 kB!), but
+we'll get to how it can be compressed in a bit.</p>
+<p>An important question now arises: how can we switch between "modes", so that
+the processor knows which access control list to use? Clearly, we can't have a
+program specify its own port access bitmap directly at run-time; that is, in
+some sense, a <em>privileged</em> operation. Thus, it's the kind of thing that really
+belongs in kernelspace. So what we need is a flag, now, that determines if a
+processor can change its port access bitmap or not. But wait, isn't that just
+pushing the problem off again? We still need to know if a program can change
+the "can change port access bitmap" flag!</p>
+<h4 id="privilege-rings">Privilege rings</h4>
+<p>The way this is solved on x86 is via the use of something called privilege
+rings. In essence, privilege rings are exactly this sort of "current privilege
+level" setting for the current processor; we'll push off the bit about how
+privilege ring changes occur for just a moment to describe privilege rings in a
+little more detail.</p>
+<p>The basic idea is simple: there are four rings, numbered zero through three.
+The general idea is that anything that can be done in a privilege ring, can
+also be done in any ring with a numerically-lower value. That is to say,
+everything is permissible in ring zero, and ring three is the most restricted.</p>
+<p>Now, the concept of a privilege ring is much more general than just port
+accesses. As a result, privilege rings are used for more than port accesses. In
+particular, privilege rings control access to two pieces of information: the
+I/O privilege level and the port I/O bitmap. In particular, the I/O privilege
+level (usually refered to in Intel literature as IOPL) is the highest numerical
+privilege ring with unrestricted access to ports. (Note the "numerical" ---
+that is to say, if the IOPL is two, then rings zero, one, and two have
+unrestricted access to the I/O port space). When the ring is numerically
+greater than the IOPL, the I/O port bitmap comes into play.</p>
+<p>The I/O port bitmap is a part of the TSS, or Task-State Segment. We talked a
+little bit about the TSS back in the <a href="notes-3">third set</a> of notes; it
+essentially stores state, about the current task. Which is Intel parlance for
+"program", or "process". Thus, it kind of makes sense that what ports a program
+can access are stored there.</p>
+<p>But hold on --- can a process access its own TSS? The answer is, well, you can
+certainly set things up that way. But that's within the purview of memory
+protection, which is a nice segue into that topic.</p>
+<h4 id="memory-protection">Memory protection</h4>
+<p>There are two topics within the context of memory protection that are useful to
+examine. The first is that of segmentation, and the second is that of paging.
+We've <a href="notes-1">discussed</a> <a href="notes-2">this</a> <a href="notes-5">before</a>, but not really in
+the context of protection. And, in all honesty, most of the times it's been
+". . . but we'll talk about this in more detail later." Well, that time has now
+come.</p>
+<p>It's worth noting at this point that much of what follows on the topic of
+segmentation is present for breadth; AMD removed almost all of the segmentation
+content from the x86_64 architecture. As such, this is historical and/or
+motivational knowledge for many, but is important if you want to actually
+understand what many of the data structures you interact with as an OS
+developer actually contain. With that out of the way . . .</p>
+<p>Recall that a segment is sort of a "window" onto a region of physical memory.
+It has a base offset (where the first byte of the segment is located) and a
+size (what the last valid byte of the segment is). So, how can we use segments
+to control what memory a program can access?</p>
+<p>The answer is straightforwards: by restricting what segments a program has
+access to.</p>
+<p>Segments are set up inside the GDT (or LDT).</p>
+<p>TODO: recall what a segment is.</p>
+<p>There are a couple of concepts to consider, but the most important one has
+already been described: privilege rings. The current privilege ring is
+otherwise known as the CPL, or Current Privilege Level.</p>
+<p>TODO: how segments provide memory protection</p>
+<p>TODO: how CPL/DPL interact for data/code segments</p>
+<p>TODO: how segmentation exists in x86_64</p>
+<h3 id="system-call-mechanisms">System call mechanisms</h3>
+<p>TODO: interrupts</p>
+<p>TODO: syscall/sysret</p>
+<p>TODO: sysenter/sysleave</p>
+<h3 id="system-call-examples">System call examples</h3>
+<p>TODO: stream API</p>
+<ul>
+<li>Kernelspace/userspace divide (revisited)</li>
+<li>Protection mechanisms:<ul>
+<li>Ring 0/3</li>
+<li>CPL</li>
+<li>DPL</li>
+<li>IOPL</li>
+<li>Preventing random interrupts (DPL in gate)</li>
+</ul>
+</li>
+<li>Getting to ring 3<ul>
+<li><code>rflags</code>/<code>iretq</code></li>
+</ul>
+</li>
+<li>System calls</li>
+<li>Syscall approaches:<ul>
+<li><code>ud2</code></li>
+<li><code>int</code></li>
+<li><code>sysenter</code></li>
+<li><code>syscall</code></li>
+</ul>
+</li>
+<li>System call implementations</li>
+<li>To work on:<ul>
+<li>Implement userspace (ring 3) support for threads (should be flag in TCB)</li>
+<li>Implement system call infrastructure</li>
+<li>Add simple system calls for open/close/read from FAT16 filesystem
+    (FDs should be stored in TCB)</li>
+<li>Implement "virtual console" system</li>
+<li>Implement "print" system call for virtual consoles</li>
+<li>Implement "readkbd" system call for virtual consoles</li>
+</ul>
+</li>
+</ul></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:08 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

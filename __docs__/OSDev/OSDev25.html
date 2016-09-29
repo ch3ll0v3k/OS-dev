@@ -1,0 +1,2137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Win32)">
+	<META NAME="CREATED" CONTENT="20120714;20392900">
+	<META NAME="CHANGEDBY" CONTENT="Michael ">
+	<META NAME="CHANGED" CONTENT="20160126;1234100">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 0.79in }
+		TD P { margin-bottom: 0in; color: #000000 }
+		TD P.western { font-family: "Verdana", sans-serif; font-size: 10pt }
+		H1 { margin-bottom: 0.08in; background: transparent; color: #000080; text-decoration: none; page-break-before: auto; page-break-after: auto }
+		H1.western { font-family: "Verdana", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "Lucida Sans Unicode"; font-size: 16pt }
+		H1.ctl { font-family: "Tahoma"; font-size: 16pt }
+		P { margin-bottom: 0in; color: #000000 }
+		P.western { font-family: "Verdana", sans-serif; font-size: 10pt }
+		H2 { margin-bottom: 0.08in; color: #800000; text-decoration: none }
+		H2.western { font-family: "Verdana", sans-serif; font-size: 13pt }
+		DD { margin-left: 0.01in }
+		DD.western { font-family: "Verdana", sans-serif; font-size: 10pt }
+		BLOCKQUOTE.western { font-size: 6pt }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<TABLE WIDTH=100% CELLPADDING=2 CELLSPACING=2 STYLE="page-break-before: always">
+	<TR>
+		<TD>
+			<P CLASS="western"><A HREF="http://www.brokenthorn.com/"><IMG SRC="http://brokenthorn.com/Resources/site/5.png" NAME="graphics1" ALIGN=BOTTOM WIDTH=375 HEIGHT=71 BORDER=0></A>
+						</P>
+		</TD>
+		<TD>
+			<DIV ID="ad_main" DIR="LTR">
+				<P CLASS="western"><SCRIPT>
+<!--
+	google_ad_client = "pub-9243579471203558";
+	google_ad_width = 468;
+	google_ad_height = 60;
+	google_ad_format = "468x60_as";
+	google_ad_type = "image";
+	google_ad_channel = "";
+	google_ui_features = "rc:6";
+	//-->
+	
+</SCRIPT><SCRIPT SRC="http://pagead2.googlesyndication.com/pagead/show_ads.js"></SCRIPT><BR>
+				</P>
+			</DIV>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0>
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% HEIGHT=12 BGCOLOR="#000080">
+			<P CLASS="western" STYLE="page-break-after: avoid"><FONT COLOR="#ffffff"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Operating
+			System Development Series</B></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">This series is
+intended to demonstrate and teach operating system development from
+the ground up.</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=129*>
+	<COL WIDTH=127*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50% STYLE="background: url(BlueToWhiteGradient.jpg) no-repeat top left scroll">
+			<P CLASS="western" STYLE="margin-top: 0.17in; margin-bottom: 0.2in; text-decoration: none; page-break-after: avoid">
+			<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>25:
+			Process Management 2</B></FONT></FONT></FONT></P>
+			<P CLASS="western">by Mike, 2015</P>
+		</TD>
+		<TD WIDTH=50%>
+			<BLOCKQUOTE CLASS="western"><FONT COLOR="#000000">&ldquo;</FONT><FONT COLOR="#000000"><FONT FACE="Helvetica, Verdana, Arial, Liberation Sans, FreeSans, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><I><SPAN STYLE="font-weight: normal">Controlling
+			complexity is the essence of computer programming</SPAN></I></FONT></FONT></FONT>&ldquo;
+			-Brian W. Kernighan</BLOCKQUOTE>
+		</TD>
+	</TR>
+</TABLE>
+<H1 CLASS="western">1. Introduction</H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Welcome!</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In the previous
+chapter we detailed basic process management topics, including
+Inter-Process Communication (IPC), protection, resource allocation,
+Process Control Block (PCB), process execution states, and process
+address spaces. We have also detailed single tasking support and
+implementing basic single tasking. This chapter is a continuation of
+the previous chapter and will go into more detail of the respective
+topics; with emphasis on multitasking, scheduling, security, and
+mutual exclusion. In particular, we will cover:</P>
+<OL>
+	<LI><DD CLASS="western">Multithreading;</DD><LI><DD CLASS="western">
+	Multitasking;</DD><LI><DD CLASS="western">
+	Init and Idle Process;</DD><LI><DD CLASS="western">
+	Kernel/User Shared Data Space;</DD><LI><DD CLASS="western">
+	Mutual exclusion and Semaphores;</DD><LI><DD CLASS="western">
+	Introduction to Concurrent programming;</DD><LI><DD CLASS="western">
+	Scheduling algorithms;</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	Introducing to the MP Standard.</DD></OL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We will assume that
+you have read the previous chapter and so this chapter will be more
+advanced; focusing on real world designs and implementations. Like
+the previous chapter, we will first dive into the theory behind these
+topics and then present a demo that will implement complete
+multi-threading in user land processes. Also note that we only
+provide a brief introduction to the MP standard; we may cover it in
+more detail in a later article. Implementing MP support requires
+proper support for the APIC which is an advanced topic.</P>
+<H1 CLASS="western"><B>2. Process State Management</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">We
+already talked a lot about processes throughout the series so this
+will just be a review of process states and process creation. In the
+previous chapter we implemented a function for creating a process. We
+will be modifying it in the accompanying demo to create a new task
+for the process so that it can be properly executed. We need to
+review state management since it ties closely with the scheduling of
+processes.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The <B>state</B> of
+the process is the current activity employed by the process. At a
+minimum, the process can be <B>created</B>, <B>executed</B>, <B>ready</B>
+to be executed, and <B>terminated</B>. Already this gives us four
+possible states:</P>
+<UL>
+	<LI><DD CLASS="western"><B>New</B>. The process is being created.</DD><LI><DD CLASS="western">
+	<B>Running</B>. The process is executing.</DD><LI><DD CLASS="western">
+	<B>Ready</B>. The process is ready to be executed.</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	<B>Terminated</B>. The process has completed.</DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">This is a good start.
+However we can do better then this. Let's say that we have some
+process running, and the process sends a request to read a large file
+from the disk. However, in a system with multiple processes, the disk
+may be busy handling the request from that process. Our process needs
+to <B>Wait</B> until the <B>Input/Output Request</B> can be
+completed. For another example, let's say that we have two processes,
+but they communicate with each other through <B>signals</B>. A
+process would need to <B>Wait</B> for a signal to be <B>raised</B>.
+This would be our fifth state:</P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.2in"><B>Wait</B>. The
+	process is waiting to complete an I/O request, exception, or signal.</P>
+</UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Putting everything
+together, a process goes through the following states.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><IMG SRC="images/osdev25_a.PNG" NAME="graphics6" ALIGN=LEFT WIDTH=483 HEIGHT=157 BORDER=0><BR CLEAR=LEFT>The
+above diagram illustrates the current state model. <B>New</B>
+processes are <B>admitted</B> into the system <B>Ready queue</B>.
+When the <B>Scheduler dispatcher</B> selects the process to run, the
+process enters the <B>Run</B> state. From here, the process may take
+any number of state changes. If an <B>interrupt</B> or <B>exception</B>
+fires, the <B>Scheduler Dispatcher</B> <SPAN STYLE="font-weight: normal">may
+need to switch to another process which involves moving our process
+back into the </SPAN><B>Ready queue</B><SPAN STYLE="font-weight: normal">.
+If, instead our process tries to read from a file, the process will
+initiate the </SPAN><B>I/O request</B> <SPAN STYLE="font-weight: normal">and
+be placed on the </SPAN><B>Wait queue</B> <SPAN STYLE="font-weight: normal">until
+the request is completed. When the I/O request is satisfied, the
+process will be placed back into the </SPAN><B>Ready queue</B> <SPAN STYLE="font-weight: normal">to
+be selected by the </SPAN><B>Scheduler dispatcher</B> <SPAN STYLE="font-weight: normal">again.
+Finally, at any time while running the process terminates, it will be
+terminated.</SPAN></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><SPAN STYLE="font-weight: normal">Sometimes
+it might be helpful to </SPAN><B>suspend</B> <SPAN STYLE="font-weight: normal">a
+process. This involves taking the process out of memory and storing
+its state on the disk. This is specifically useful when freeing up
+system resources and allows other processes with higher priority to
+run. This requires, at a minimum, two more states:</SPAN></P>
+<UL>
+	<LI><DD CLASS="western"><B>Suspend Ready</B><SPAN STYLE="font-weight: normal">.</SPAN></DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	<B>Suspend Wait</B><SPAN STYLE="font-weight: normal">.</SPAN></DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">Adding
+these to our previous diagram, we have the following.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><IMG SRC="images/osdev25_b.PNG" NAME="graphics3" ALIGN=LEFT WIDTH=458 HEIGHT=182 BORDER=0><BR CLEAR=LEFT><SPAN STYLE="font-weight: normal">Processes
+in the </SPAN><B>Ready</B> <SPAN STYLE="font-weight: normal">or </SPAN><B>Wait</B>
+<SPAN STYLE="font-weight: normal">state may be </SPAN><B>Suspended</B>
+<SPAN STYLE="font-weight: normal">depending on the resource demand of
+the system. There can be many more states that you can add to this
+depending on your design needs, however for most general purpose
+operating systems, the above state diagram would suffice.</SPAN></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><SPAN STYLE="font-weight: normal">For
+our purposes, we will only be concerned with the </SPAN><B>Ready</B><SPAN STYLE="font-weight: normal">,
+</SPAN><B>Run</B><SPAN STYLE="font-weight: normal">, and </SPAN><B>Terminated</B>
+<SPAN STYLE="font-weight: normal">states. However we may also
+implement the </SPAN><B>Wait</B> <SPAN STYLE="font-weight: normal">state
+to properly support the </SPAN><B>sleep</B> <SPAN STYLE="font-weight: normal">function
+in the accompanying demo.</SPAN></P>
+<H1 CLASS="western"><B>3. Concurrent Programming</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So we looked at
+process states and state management and process creation. We have
+also dived deep into a process in memory with the previous chapter.
+The final topic that we need to dive into is <I><B>multitasking</B></I>.
+The heart of multitasking is the <B>Scheduler dispatcher</B> which we
+will cover in the next section. The Scheduler dispatcher is
+responsible for moving processes between states and schedule
+processes for execution. This is why we covered those first &ndash;
+we will be using them in that section later on. Before moving on to
+the scheduler however, we need to take a closer look at what happens
+with multitasking when there are multiple <B>threads of execution</B>.
+When two threads or processes run <I><B>concurrently</B></I> and
+share some data with each other, it becomes critical to synchronize
+the activities between the two threads of execution.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><I><B>Concurrency</B></I>
+means that the current state of the process is not known. When
+multiple processes run along side each other and share data with each
+other, they are said to be running <I><B>concurrently</B></I>.
+<I><B>Concurrent programming</B></I> defines the set of techniques
+used to <B>synchronize</B> access to <B>shared resources</B> between
+concurrent processes or threads.</P>
+<H2 CLASS="western">Critical Section Problem</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">On single core
+systems, the operating system will allocate a small amount of time
+for execution for each process. The system switches rapidly between
+the different processes running concurrently. Processes may be
+interrupted at any time. In addition, systems that support <B>parallel
+execution</B> may execute instructions from different processes at
+the same time.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">To see the problem of
+current programming, consider two processes with the following
+instructions.</P>
+<TABLE WIDTH=382 BORDER=1 CELLPADDING=4 CELLSPACING=0 FRAME=VOID>
+	<COL WIDTH=199>
+	<COL WIDTH=168>
+	<TR VALIGN=TOP>
+		<TD WIDTH=199>
+			<PRE><B>Process A</B>
+mov eax, [count]
+inc eax
+mov [count], eax</PRE>
+		</TD>
+		<TD WIDTH=168>
+			<PRE><B>Process B</B>
+mov ebx, [count]
+dec ebx
+mov [count], ebx</PRE>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">If we are to execute
+these processes concurrently, they would be <I><B>interleaved</B></I>
+in some order when the scheduler switches between the two processes.
+There are many different ways the processes may be interleaved, one
+way might be:</P>
+<PRE>mov eax, [count]
+inc eax
+mov ebx, [count]
+dec ebx
+mov [count], eax
+mov [count], ebx</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+If <B>count</B> is shared between the two different processes, you
+might notice a big problem here. Because there is no control over the
+<B>order of execution</B>, we cannot insure that the value of count
+is valid because we may get different results depending on <I>when</I>
+the scheduler decides to switch between the two processes. The
+outcome depends on who reads and writes the variable first. What we
+have is a <B>race condition</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">To combat the race
+condition, we need to <B>guard</B> the variable while it is being
+used by another process. We need to <B>synchronize</B> the two
+processes in some way. This is a part of the <B>critical section
+problem</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The problem is
+<I>compounded</I> on systems with multiple processors since the
+current execution state and current instruction streams are
+interleaved while executing a <I>single</I> process.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><B>The Problem.</B></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We need a method to
+control synchronization of a process that executes concurrently. When
+a critical section request is made, we must insure that only <I>one</I>
+processor executes the code within the critical section until it
+completes. Farther, we must insure that other processes and threads
+do not execute while we enter the critical section.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><B>The Criteria.</B></P>
+<UL>
+	<LI><DD CLASS="western"><B>Mutual Exclusion.</B> When a process is
+	executing in a critical section, no other process is executing in a
+	critical section.</DD><LI><DD CLASS="western">
+	<B>Progress</B>. Processes do not wait indefinitely to enter their
+	critical section.</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	<B>Bounded Waiting.</B> The amount of time between making the
+	request to enter its critical section and actually entering it must
+	be bounded.</DD></UL>
+<H2 CLASS="western">Semaphores</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Sow how do we
+implement <B>mutual exclusion</B>? We need some form of <B>cooperation</B>
+between the two processes. <B>If process A is operating on a shared
+resource, and process B needs access to it, we want process B to
+wait</B>. However, <B>once process A is done with the resource, we
+want it to signal that Process B can now use that resource</B>. Thus
+only one process can ever use the shared recourse at any given time.
+This is <I><B>mutual exclusion</B></I>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">What we can do is
+introduce another variable to keep track of whether or not the
+resource is currently being used or not. This variable is called a
+<I><B>lock</B></I>. We can then use this lock to keep track of the
+other resource.</P>
+<UL>
+	<LI><DD CLASS="western">If the lock is 1, the resource is in use by
+	some other process.</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	If the lock is 0, the resource is free for use.</DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">This type of lock has
+a special name. It is called a <I><B>mutex</B></I>. The mutex has
+only two values and is also called a <I><B>binary semaphore</B></I><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.</SPAN></SPAN>
+Recall what we need to do: we need one process to <I><B>wait</B></I>
+and the other process to <I><B>signal</B></I>. These are the basic
+functions we will be using throughout this chapter.</P>
+<PRE><B>atomic Wait</B> (<B>Semaphore</B> S) {
+while (S &lt;= 0)
+  Place process on S.Queue and block.
+  S--;
+<FONT FACE="Lucida Console, monospace">}</FONT>
+<B>atomic Signal</B> (<B>Semaphore</B> S) {
+  S++;
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">
+The <B>mutex</B> is just a <I><B>binary semaphore </B></I>with values
+of 0 or 1 only. <I><B>Semaphores</B></I> are generalized locks and
+are not restricted (that is, whereas the mutex only has two values,
+general semaphores do not.) Also notice the atomic keyword in the
+above code. This implies that the code will never be interrupted when
+it is executed. That is, it is <I><B>guaranteed</B></I> to run as a
+block of code on a single processor in the correct order. <I><B>They
+are to be treated as a single unit</B></I> (hence are called <B>atomic</B>
+operations.)</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">Unfortunately,
+it isn't quite as simple as what we shown above. <B>Atomic operations
+are hardware dependent</B> and so we need some assistance from the
+processor to make it work. More specifically, we need to make use of
+the <FONT FACE="Lucida Console, monospace"><B>LOCK</B></FONT>
+instruction prefix. We will discuss this in more detail later as we
+implement these primitives into actual code.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">For
+now, we believe that it is best to see some examples of using
+semaphores since they can be difficult when first introduced. It is
+important to get some practice with using them since you will be
+using them a lot if you ever plan to completely support
+multiprocessing. 
+</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics2" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">
+			<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2>We
+			opened up this section by showing how the instruction flow can get
+			interleaved as we swap between different processes. The problem
+			was that both of the processes can be executed at any time, and
+			because they share a resource, there was no way to verify the
+			integrity of the resource. We can fix that with semaphores.
+			Assuming <B>count</B> is a global variable that is shared by two
+			processes, we can use semaphores to synchronize access to it. Note
+			that <B>signal</B> and <B>wait</B> are <B>atomic</B> operations.</FONT></FONT></FONT></P>
+			<TABLE WIDTH=262 BORDER=1 CELLPADDING=4 CELLSPACING=0 FRAME=VOID>
+				<COL WIDTH=103>
+				<COL WIDTH=143>
+				<TR VALIGN=TOP>
+					<TD WIDTH=103>
+						<PRE><B>Process A</B>
+count++;
+signal (s);</PRE>
+					</TD>
+					<TD WIDTH=143>
+						<PRE><B>Process B</B>
+wait (s);
+count--;
+signal (s);</PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H2 CLASS="western">Spinlocks</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Mutual exclusion is
+the first criteria for a solution to the critical section problem.
+This means that, when one process enters a critical section, no other
+processes can enter a critical section. To implement this
+functionality, we need some method of implementing an <B>atomic</B>
+operation that can guarantee mutual exclusion. One idea is to use a
+simple variable to act as a lock. If the lock is 1, some process is
+inside of the critical section. So the first idea is,</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><B>int lock=0;</B></P>
+<TABLE WIDTH=292 BORDER=1 CELLPADDING=4 CELLSPACING=0 FRAME=VOID>
+	<COL WIDTH=136>
+	<COL WIDTH=140>
+	<TR VALIGN=TOP>
+		<TD WIDTH=136>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process A</B></FONT></FONT></FONT>
+while(1) {
+  if (!lock)
+    lock = 1;
+  do_something();
+  lock=0;
+}</PRE>
+		</TD>
+		<TD WIDTH=140>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process B</B></FONT></FONT></FONT>
+while(1) {
+  if (!lock)
+    lock = 1;
+  do_something();
+  lock=0;
+<B>}</B></PRE>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Pretty simple. The
+lock starts at 0, so whatever process runs first will detect this and
+set the lock. When its done, it releases the lock so the second
+process can now use it. This would work somewhat, but there is still
+a big problem. Let's say that process A detects that the lock is 0
+but gets interrupted by process B before process A has a chance to
+set the lock. So process B detects the lock is also 0 and now sets
+it. So if process B gets interrupted somewhere in <B>do_something</B>,
+process A will continue executing &ndash; as if the lock was still 0!
+And so both processes can still enter the same critical section (in
+this example, the critical section is the call to <B>do_something</B>)
+at the same time if the processes get interrupted when trying to read
+and lock the lock variable itself. This seems like a small error, but
+it can quickly propagate and will happen quite a lot.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So the problem here
+is that we cannot guarantee that accessing and setting the lock can
+be done without getting interrupted. The operation is not <I><B>atomic</B></I>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">To be able to
+visualize what can happen without actual atomic operations, let's say
+that we have two threads. The first thread displays characters a-z
+and the second thread displays numbers 0-9. They run concurrently
+using the scheduler that we develop later on. Here are the threads,</P>
+<TABLE WIDTH=392 BORDER=1 CELLPADDING=0 CELLSPACING=0 FRAME=VOID>
+	<COL WIDTH=191>
+	<COL WIDTH=201>
+	<TR VALIGN=TOP>
+		<TD WIDTH=191>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process A</B></FONT></FONT></FONT>
+void task_1() {
+  char c='a';
+  while(1) {
+    DebugPutc(c++);
+    if (c&gt;'z') c='a';
+  }
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE>
+		</TD>
+		<TD WIDTH=201>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process B</B></FONT></FONT></FONT>
+void task_1() {
+  char c='0';
+  while(1) {
+    DebugPutc(c++);
+    if (c&gt;'9') c='0';
+  }
+<FONT COLOR="#0000ff"><FONT SIZE=2>}</FONT></FONT></PRE><P CLASS="western">
+			<BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">As these two tasks
+run concurrently, the output will become an interleaved mess. The
+reason is that both processes are reading and writing from shared
+resources without care. Even if we were to introduce a lock as we
+discussed above, the output wouldn't be much better. In this example,
+the shared resources are video memory and the global variables used
+by <B>DebugPutc</B> which is responsible for cursor positioning and
+scrolling. As one process reads the current x or y position or
+prepares to scroll, it may be interrupted and the position and other
+global variables can be mangled without the first process ever
+knowing.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><IMG SRC="images/demo25_problem.png" NAME="graphics8" ALIGN=LEFT WIDTH=400 HEIGHT=270 BORDER=0><BR CLEAR=LEFT><I>Sample
+without semaphores. Notice how the output is a mess.</I></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So to fix this, we
+need something more then a simple lock. Our direction is good &ndash;
+but we need hardware support. If there was a method to make it so
+that we can test and set a lock variable in one single operation with
+the guarantee that it will never be interrupted (so it is <B>atomic</B>)
+we can finally satisfy the <B>mutual exclusion</B> criteria.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">One such hardware
+primitive is the <B>LOCK</B> instruction prefix. This prefix locks
+the system bus from reads and writes while the instruction is being
+performed. Because the data bus is locked, it is guaranteed to be
+atomic. So a simple <B>LOCK XCHG</B> or <B>LOCK BTS</B> can be used
+when setting and testing a lock variable. For example,</P>
+<PRE>inline void acquire(int* lock) {
+  _asm{
+    mov eax,[lock]
+a:  lock bts [eax], 0
+    pause
+    jc a
+  }
+}
+
+inline void release(int* lock) {
+  _asm{
+    mov eax, [lock]
+    mov [eax], 0
+  }
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+We can now call these functions from to acquire and release the lock.</P>
+<TABLE WIDTH=392 BORDER=1 CELLPADDING=0 CELLSPACING=0 FRAME=VOID>
+	<COL WIDTH=191>
+	<COL WIDTH=201>
+	<TR VALIGN=TOP>
+		<TD WIDTH=191>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process A</B></FONT></FONT></FONT>
+void task_1() {
+  char c='a';
+  while(1) {
+    acquire(lock);
+    DebugPutc(c++);
+    release(lock);
+    if (c&gt;'z') c='a';
+  }
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE>
+		</TD>
+		<TD WIDTH=201>
+			<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Process B</B></FONT></FONT></FONT>
+void task_2() {
+  char c='a';
+  while(1) {
+    acquire(lock);
+    DebugPutc(c++);
+    release(lock);
+    if (c&gt;'z') c='a';
+  }
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE><P CLASS="western">
+			<BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>And
+we get the desired result.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><IMG SRC="images/demo25_fix.png" NAME="graphics7" ALIGN=LEFT WIDTH=395 HEIGHT=268 BORDER=0><BR CLEAR=LEFT><FONT COLOR="#000000"><FONT SIZE=2><I>Running
+Sample with spinlocks. Note how the display is now nicely in order.</I></FONT></FONT></P>
+<H1 CLASS="western">4. Classic Concurrency Problems</H1>
+<H2 CLASS="western">Producer / Consumer Problem (Bounded Buffer
+Problem)</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">This is the first
+classic concurrency problem we will look at. Suppose that we have two
+independent processes, one called the <B>producer</B> and the other
+called the <B>consumer</B>. Let's also assume that there is a shared
+buffer being used by both of the processes. The producer is
+responsible for putting data into the buffer and the consumer is
+responsible for taking data out. This is the basic setup for the
+classic <B>Producer/Consumer Problem</B> <SPAN STYLE="font-weight: normal">also
+known as the </SPAN><B>Bounded Buffer Problem</B><SPAN STYLE="font-weight: normal">.
+The problem is that we need to make sure that the producer does not
+add data to the buffer if its already full and the consumer does not
+try to remove data from a buffer that is empty. The problem gets more
+interesting when there are multiple producers and consumers.</SPAN></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics4" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">
+			<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2>This
+			is a solution to the Bounded Buffer problem. This assumes a single
+			producer and consumer running concurrently.</FONT></FONT></FONT></P>
+			<PRE>Semaphore c = 0;
+Semaphore s = BUFFER_SIZE;</PRE>
+			<TABLE WIDTH=323 BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+				<COL WIDTH=175>
+				<COL WIDTH=146>
+				<TR VALIGN=TOP>
+					<TD WIDTH=175>
+						<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Producer</B></FONT></FONT></FONT>
+while (true) {
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>item = produce ();</FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>wait(s);</FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>write(item);</FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>signal(c);</FONT></FONT>
+}</PRE>
+					</TD>
+					<TD WIDTH=146>
+						<PRE><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2><B>Consumer</B></FONT></FONT></FONT>
+while (true) {
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2><SPAN STYLE="font-weight: normal">wait(c);</SPAN></FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2><SPAN STYLE="font-weight: normal">item = read();</SPAN></FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2><SPAN STYLE="font-weight: normal">signal(s);</SPAN></FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2><SPAN STYLE="font-weight: normal">consume(item);</SPAN></FONT></FONT>
+}</PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H2 CLASS="western">Readers / Writers Problem</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">The
+classic R<B>eaders/Writers problem</B> is when an object is shared
+among many processes such that there are two types of processes &ndash;
+<B>readers</B> and <B>writers</B>. <B>Readers</B> read the shared
+data but never modify it. <B>Writers</B> can read data and modify it.
+<B>Many readers may read the data concurrently</B>.</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics5" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">
+			<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2>There
+			are many different solutions and versions of this problem, this is
+			one of them. Note that we use two semaphores here so that we can
+			allow multiple readers at the same time.</FONT></FONT></FONT></P>
+			<PRE STYLE="font-weight: normal"><FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2>Semaphore c = 1;</FONT></FONT></FONT>
+<FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2>Semaphore s = 1;</FONT></FONT></FONT>
+<FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2>int count = 0;</FONT></FONT></FONT></PRE>
+			<TABLE WIDTH=267 BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+				<COL WIDTH=117>
+				<COL WIDTH=148>
+				<TR VALIGN=TOP>
+					<TD WIDTH=117>
+						<PRE><B>Writer</B>
+while (true) {
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>wait(c);</FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>write();</FONT></FONT>
+   <FONT FACE="Lucida Console, monospace"><FONT SIZE=2>signal(c);</FONT></FONT>
+}</PRE>
+					</TD>
+					<TD WIDTH=148>
+						<PRE><B>Reader</B>
+while(true) {
+  wait(s);
+  count++;
+  if (count == 0)
+    wait(c);
+  signal(s);
+  read();
+  wait(s);
+  count--;
+  if (count == 0)
+    signal(c);
+  signal(s);
+}</PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H1 CLASS="western"><B>5. Inter-Process Communication</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><SPAN STYLE="font-style: normal"><B>Inter-Process
+Communication (IPC)</B></SPAN> is the technique supported by
+operating systems that permit processes to signal and share data with
+other running processes. There are many different types of techniques
+for implementing IPC protocols, we will introduce some of the most
+commonly used ones here.</P>
+<H2 CLASS="western">Pipes</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Pipes are a basic
+technique that uses a circular buffer to store the data between a
+producer and consumer. The producer writes data to the buffer and the
+consumer reads from it. There can be multiple producers and consumers
+of the data. There are two types of pipes, anonymous pipes and named
+pipes. <B>Named pipes</B> are given a name and appear as a file
+object in the virtual file system. Any process in the system can <B>open</B>
+named pipes. <B>Anonymous pipes</B> can only be opened by child
+processes that inherit it from the parent.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The operating system
+must provide functionality for <B>storing</B> the data stream that is
+shared between the consumers and producers, <B>reading</B> and
+<B>writing</B> the stream, and <B>blocking</B> processes that attempt
+to read from the pipe when there is no data to read. The operating
+system must <B>synchronize</B> the reading and writing using the
+mutual exclusion techniques that we discussed above. This is usually
+done using a <B>First-In-First-Out (FIFO) circular buffer</B> and
+using <B>semaphores</B> to synchronize access to it when reading and
+writing it.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Pipes are <B>file
+system objects</B>. When you <B>Open</B> a pipe, you will get a <B>File
+Descriptor</B> pointer back. So you can use the file <B>Read</B> and
+<B>Write</B> methods to read and write to the pipe as if it were a
+file. <B>Open file handles are inherited by child processes</B>, and
+so pipes are also inherited.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Pipes can be managed
+just like file system descriptors. The <B>Process Parameter Block</B>
+stores a pointer to a <B>Process Handle Table</B> that stored all
+open references to file descriptors, pipes, and other system objects.
+They can also be trivial to implement on systems that already support
+<B>device files</B><SPAN STYLE="font-weight: normal">.</SPAN></P>
+<H2 CLASS="western">Message Passing</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The basic idea is
+simple enough &ndash; a producer sends a <B>message</B> and a
+consumer takes it. There might be additional problems depending on if
+we want to support <B>synchronized</B> or <B>asynchronous</B> message
+passing. We also must think about how to <B>store</B> the messages,
+where they should be <B>managed</B>, the <B>format</B> of the
+messages, and how to verify that messages are delivered in the
+expected format to the expected process.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So, what exactly is a
+<I>message</I>? Messages are whatever the process wants it to be. The
+consumer and producer must agree on some type of <B>protocol</B> for
+how to interpret the message. They both need to know the <B>data
+structure</B> of the message. From the operating system side, the OS
+does not care about the format of the data &ndash; <B>unless its an
+OS defined message which is typical of microkernels</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The operating system
+needs to implement support to <B>Send</B> and <B>Receive</B> messages
+at a minimum.</P>
+<H3>Synchronous Message Passing</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">For Synchronous
+message passing, we need at a minimum two functions. Assuming <B>J</B>
+and <B>K</B> are process identifiers (PID)'s,</P>
+<UL>
+	<LI><DD CLASS="western">send(J, message)</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	receive(K, &amp;message)</DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The producer calls
+<B>send</B> to post a message. With synchronous message passing, the
+producer gets put in the <B>suspended queue</B> until <B>J</B> calls
+<B>receive</B> to get the message. When <B>J </B>calls <B>receive</B>,
+the operating system can copy the message sent to <B>J</B> directly
+and resume <B>J</B>. The operating system can then put the producer
+back on the <B>waiting queue</B> <SPAN STYLE="font-weight: normal">so
+that it can be executed by the scheduler. Synchronous message passing
+does not require a message queue since only one (the producer or
+consumer) will ever be running at the same time (the other would be
+</SPAN><B>suspended</B> <SPAN STYLE="font-weight: normal">or
+</SPAN><B>waiting</B><SPAN STYLE="font-weight: normal">.)</SPAN></P>
+<H3><B>Asynchronous Message Passing</B></H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">Asynchronous
+message passing also needs a minimum of two functions,</P>
+<UL>
+	<LI><DD CLASS="western">send(J, message)</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	receive(K, &amp;message)</DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">The
+producer calls <B>send</B> to post a message and the consumer calls
+<B>receive</B> to obtain the message. With asynchronous message
+passing, the operating system maintains a <B>message queue</B> per
+process. Producers can <B>send</B> messages at any time and will not
+be suspended. Messages are copied to the end of the message queue.
+The consumer can then <B>receive</B> the message from the front of
+the message queue. The message queue itself is allocated in <B>kernel
+memory</B>; a dedicated pointer in the Process Control Block points
+to the queue.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">We
+now have an interesting question. With <B>synchronous message
+passing</B>, when the process calls <B>receive</B> and there is no
+process that sent any message, the process gets suspended until
+another process calls <B>send</B>. With <B>asynchronous message
+passing</B>, we have two options:</P>
+<UL>
+	<LI><DD CLASS="western"><SPAN STYLE="font-weight: normal">We can
+	</SPAN><B>suspend</B> <SPAN STYLE="font-weight: normal">the process
+	that called </SPAN><B>receive</B> <SPAN STYLE="font-weight: normal">or,</SPAN></DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	<SPAN STYLE="font-weight: normal">We can have </SPAN><B>receive</B>
+	<SPAN STYLE="font-weight: normal">return a status code and just
+	continue </SPAN><B>running</B> <SPAN STYLE="font-weight: normal">the
+	current process.</SPAN></DD></UL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">It
+turns out that the better approach is to offer a few more functions,</P>
+<UL>
+	<LI><DD CLASS="western">send(process, message)</DD><LI><DD CLASS="western">
+	receive(process, &amp;message)</DD><LI><DD CLASS="western">
+	sendrec(process, &amp;message)</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	notify(process, message)</DD></UL>
+<H2 CLASS="western">Shared Memory</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">When we map the same
+physical frames into the virtual address spaces of two or more
+processes, it is <B>shared</B> among those processes. Both processes
+would be able to read or write to the same pages (depending on the
+<B>security attributes</B> set when mapping pages. (For example, you
+can map the physical frames as read/write for process A but as
+read-only for process B.) Operating systems typically provide support
+of shared memory through <B>memory mapped files</B><SPAN STYLE="font-weight: normal">.
+Under Windows, for example, you would first call </SPAN><B>CreateFile</B>
+<SPAN STYLE="font-weight: normal">or </SPAN><B>OpenFile</B> <SPAN STYLE="font-weight: normal">on
+a named memory mapped file object followed by </SPAN><B>MapViewOfFile</B>
+<SPAN STYLE="font-weight: normal">which maps the region of memory
+into the process address space and returns a pointer to it.</SPAN></P>
+<H1 CLASS="western"><B>6. Scheduling</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The scheduler is
+responsible for the allocation of system resources. System resources
+include the CPU, memory, and system devices. There are typically many
+schedulers, however they tend to fall under three categories: <B>short
+term</B>, <B>medium term</B>, and <B>long term</B>.</P>
+<OL>
+	<LI><DD CLASS="western"><B>Long term schedulers</B> are responsible
+	for admitting processes into the system and terminating them.</DD><LI><DD CLASS="western">
+	<B>Medium term schedulers</B> are responsible for suspending and
+	resuming processes.</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	<B>Short term schedulers</B> are responsible for allocating CPU time
+	and dispatching processes.</DD></OL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We will be primarily
+discussing the short term scheduler in this section since it is a
+core component to implementing a multitasking system. So, our goal
+here for the demo is to create a <B>short term scheduler</B>.</P>
+<H2 CLASS="western">Scheduling Algorithms</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">There are many
+different algorithms that we can use, some more complicated then
+others. While we will provide an introduction to the more common
+algorithms, we will be sticking with the <B>Round Robin</B> approach
+to keep the demo simple.</P>
+<H3>First Come First Serve</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In <B>First Come
+First Serve (FCFS)</B>, jobs are executed as they come. The algorithm
+is as simple as its name implies; the scheduler selects the first job
+and lets it run. Then the second. Then the next, and so on. The
+algorithm cycles through the jobs in the Ready Queue in the order
+that they came in. New jobs are not started until the previous one
+terminates. It is not very well suitable for preemptive multitasking.</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics9" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">In
+			the following example, P1 arrives at time 0, P2 arrives at time 1,
+			and P3 arrives at time 2. these processes are placed in the </SPAN><B>Ready
+			queue</B> <SPAN STYLE="font-weight: normal">to be executed. P1 is
+			the first job, so the algorithm selects it to be run. P2 is
+			selected next, but only after P1 is completed. P2 does not get
+			selected until time=5.</SPAN></FONT></FONT></FONT></P>
+			<TABLE WIDTH=274 BORDER=1 BORDERCOLOR="#000000" CELLPADDING=0 CELLSPACING=0 FRAME=VOID RULES=ROWS>
+				<COL WIDTH=71>
+				<COL WIDTH=46>
+				<COL WIDTH=69>
+				<COL WIDTH=89>
+				<TR VALIGN=TOP>
+					<TD WIDTH=71>
+						<P CLASS="western">Process</P>
+					</TD>
+					<TD WIDTH=46>
+						<P CLASS="western">Arrive</P>
+					</TD>
+					<TD WIDTH=69>
+						<P CLASS="western">Run time</P>
+					</TD>
+					<TD WIDTH=89>
+						<P CLASS="western">Service time</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=71>
+						<P CLASS="western">P1</P>
+					</TD>
+					<TD WIDTH=46 SDVAL="0" SDNUM="1033;">
+						<P CLASS="western">0</P>
+					</TD>
+					<TD WIDTH=69 SDVAL="5" SDNUM="1033;">
+						<P CLASS="western">5</P>
+					</TD>
+					<TD WIDTH=89 SDVAL="0" SDNUM="1033;">
+						<P CLASS="western">0</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=71>
+						<P CLASS="western">P2</P>
+					</TD>
+					<TD WIDTH=46 SDVAL="1" SDNUM="1033;">
+						<P CLASS="western">1</P>
+					</TD>
+					<TD WIDTH=69 SDVAL="3" SDNUM="1033;">
+						<P CLASS="western">3</P>
+					</TD>
+					<TD WIDTH=89 SDVAL="5" SDNUM="1033;">
+						<P CLASS="western">5</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=71>
+						<P CLASS="western">P3</P>
+					</TD>
+					<TD WIDTH=46 SDVAL="2" SDNUM="1033;">
+						<P CLASS="western">2</P>
+					</TD>
+					<TD WIDTH=69 SDVAL="8" SDNUM="1033;">
+						<P CLASS="western">8</P>
+					</TD>
+					<TD WIDTH=89 SDVAL="8" SDNUM="1033;">
+						<P CLASS="western">8</P>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H3>Shortest Job First</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In the <B>Shortest
+Job First (SJF)</B> algorithm, the system must have a way to know the
+amount of time necessary for each job to execute. The algorithm
+selects the next job from the <B>Ready Queue</B> to execute that has
+the smallest time delta. This algorithm suffers from the problem of
+<B>process starvation</B>. Jobs can be left in the <B>Ready Queue</B>
+when jobs of smaller time deltas are given priority. Since this
+example is very similar to the <B>FCFS algorithm</B> discussed above
+and is almost never implemented in practice due to its requirement of
+calculating time deltas (your software needs to be an oracle to know
+beforehand how long processes will execute) we do not think another
+example is needed.</P>
+<H3>Priority Queue</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The system can assign
+each job a <B>priority number</B>. Jobs with higher priority are then
+selected first. This is the basic idea behind <B>priority scheduling
+algorithms</B>. How priority is determined is up to the designer.
+Similarly, how to handle the case when two <SPAN STYLE="font-weight: normal">priority</SPAN>
+are the same is up to the designer. One idea is to have a default
+priority and make it user adjustable. When two priorities are the
+same, we can use <B>FCFS</B> or <B>SJF</B> to decide which one to
+use. Another idea is to calculate priorities based on a <B>protocol</B>.
+The protocol could be assigned by a system administrator or
+calculated using some measurement of system resources and memory
+constraints. It is more often common to see priorities used alongside
+other scheduling algorithms as we will see later on.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">To summarize though,
+just select the job from the <B>Ready Queue</B> that has the highest
+priority. Like with <B>SJF</B>, this algorithm suffers from <B>process
+starvation</B> <SPAN STYLE="font-weight: normal">since processes with
+higher priorities can starve out processes with lower priorities.</SPAN></P>
+<H3>Round Robin</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The system gives each
+process a time slice to run called a <B>quantum</B>. The system then
+<B>preempts</B> the currently executing process to allow another
+process to run. Processes are selected in the order that they appear
+in the <B>Ready Queue</B>. Because all processes are allowed to run,
+this algorithm does not starve any processes. The system is
+responsible for <B>context swapping</B> in order to save and restore
+the <B>execution state</B> of processes as they are selected to run.
+We will cover <B>context swapping</B> later when we cover
+<B>multitasking</B>.</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics12" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Given
+			processes P1, P2, P3 and a time quantum of 5, the </SPAN><B>Round
+			Robin (RR)</B> <SPAN STYLE="font-weight: normal">algorithm first
+			selects P1 to run. After the quantum time is up, the system
+			</SPAN><B>preempts</B> <SPAN STYLE="font-weight: normal">P1. P1 is
+			moved to the back of the </SPAN><B>Ready Queue</B><SPAN STYLE="font-weight: normal">.
+			The system saves the </SPAN><B>context</B> <SPAN STYLE="font-weight: normal">of
+			P1. The algorithm selects P2 and the system performs a </SPAN><B>context
+			switch</B><SPAN STYLE="font-weight: normal">. P2 can now execute.</SPAN></FONT></FONT></FONT></P>
+			<TABLE WIDTH=280 BORDER=1 CELLPADDING=0 CELLSPACING=0 FRAME=VOID RULES=COLS>
+				<COL WIDTH=90>
+				<COL WIDTH=29>
+				<COL WIDTH=30>
+				<COL WIDTH=33>
+				<COL WIDTH=32>
+				<COL WIDTH=33>
+				<COL WIDTH=33>
+				<TR VALIGN=TOP>
+					<TD WIDTH=90>
+						<P CLASS="western">Process</P>
+					</TD>
+					<TD WIDTH=29>
+						<P CLASS="western">P1</P>
+					</TD>
+					<TD WIDTH=30>
+						<P CLASS="western">P2</P>
+					</TD>
+					<TD WIDTH=33>
+						<P CLASS="western">P3</P>
+					</TD>
+					<TD WIDTH=32>
+						<P CLASS="western">P1</P>
+					</TD>
+					<TD WIDTH=33>
+						<P CLASS="western">P2</P>
+					</TD>
+					<TD WIDTH=33>
+						<P CLASS="western">P3</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=90>
+						<P CLASS="western">Quantum=5</P>
+					</TD>
+					<TD WIDTH=29 SDVAL="0" SDNUM="1033;">
+						<P CLASS="western">0</P>
+					</TD>
+					<TD WIDTH=30 SDVAL="5" SDNUM="1033;">
+						<P CLASS="western">5</P>
+					</TD>
+					<TD WIDTH=33 SDVAL="10" SDNUM="1033;">
+						<P CLASS="western">10</P>
+					</TD>
+					<TD WIDTH=32 SDVAL="15" SDNUM="1033;">
+						<P CLASS="western">15</P>
+					</TD>
+					<TD WIDTH=33 SDVAL="20" SDNUM="1033;">
+						<P CLASS="western">20</P>
+					</TD>
+					<TD WIDTH=33 SDVAL="25" SDNUM="1033;">
+						<P CLASS="western">25</P>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H3>Multilevel Queue</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Instead of using one
+<B>Ready Queue</B> to decide what to run next, why not use <B>multiple</B>?
+The idea is that we can get the both worlds of privileged levels and
+another scheduling algorithm by combining them into a <B>multilevel
+queue</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The basic idea is
+that we would have <B>multiple queues</B>. And these queues are for
+<B>different priorities</B>. For example, <B>if you have 5 priority
+levels, you would have 5 queues</B>. The algorithm would first select
+a job to run based on priority from the highest priority queue. If
+the queue has multiple jobs in it, it uses another algorithm (like
+<B>RR</B>) to decide what to run. You can also use different
+scheduling algorithms for the different priority queues. This
+algorithm has the potential for <B>starving processes</B> however for
+the same reason <B>priority scheduling</B> does. So we have a great
+algorithm here, but what can we do to prevent <B>starving processes</B>?</P>
+<H3>Multilevel Feedback Queue</H3>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">The
+<B>Multilevel Feedback Queue</B> is a modification of the <B>multilevel
+queue</B> to prevent <B>process starvation</B>. The problem with the
+multilevel queue was that, when a process of some priority L is
+inserted into queue L, we can starve the process by just submitting
+new jobs where the priority is greater than L. To prevent this, what
+we can do is <I><B>change the priority of the process</B></I>. So we
+can move processes from one priority queue into another.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">In
+our example above, the process with priority L would be moved to a
+higher priority queue after some time passes. This will continue
+until the process reaches the highest priority queue. Thus the
+process is never starved out. We can also lower the priority of jobs
+by moving them into lower priority queues which might be useful when
+important system tasks need to run. The difficulty of implementing
+multilevel feedback queues is determining <I>when</I> processes
+should be moved. This is the most common algorithm in use by modern
+operating systems today.</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=0 CELLSPACING=0 RULES=NONE>
+	<COL WIDTH=31*>
+	<COL WIDTH=225*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=12%>
+			<P CLASS="western"><FONT COLOR="#000000"><IMG SRC="http://www.brokenthorn.com/Resources/OSDevVid2_html_424a8468.gif" NAME="graphics14" ALIGN=BOTTOM WIDTH=12 HEIGHT=12 BORDER=0>&nbsp;<FONT FACE="Verdana, sans-serif"><FONT SIZE=2><B>Example.</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=88%>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">The
+			following is an example of a </SPAN><B>multilevel queue</B><SPAN STYLE="font-weight: normal">.
+			Here we have three queues, system processes have the highest
+			priority and applications have the lowest priority. Different
+			scheduling algorithms can be used on each of the different queues
+			to select jobs from them. The scheduler selects the highest
+			priority </SPAN><B>non-empty</B> <SPAN STYLE="font-weight: normal">queue.
+			It then uses another algorithm (such as </SPAN><B>FCFS</B> <SPAN STYLE="font-weight: normal">or
+			</SPAN><B>RR</B><SPAN STYLE="font-weight: normal">) to select a
+			job from that queue. In </SPAN><B>multilevel feedback queues</B><SPAN STYLE="font-weight: normal">,
+			the system can move processes between different queues. For
+			example, we can move jobs from L3 then L2 then L1 over time,
+			thereby raising its priority so it can run. Thus no process
+			starvation.</SPAN></FONT></FONT></FONT></P>
+			<TABLE WIDTH=255 BORDER=1 CELLPADDING=0 CELLSPACING=0 FRAME=VOID RULES=ROWS>
+				<COL WIDTH=107>
+				<COL WIDTH=148>
+				<TR VALIGN=TOP>
+					<TD WIDTH=107>
+						<P CLASS="western">Queue Level</P>
+					</TD>
+					<TD WIDTH=148>
+						<P CLASS="western">Priority Queue</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=107>
+						<P CLASS="western">L1</P>
+					</TD>
+					<TD WIDTH=148>
+						<P CLASS="western">System Processes</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=107>
+						<P CLASS="western">L2</P>
+					</TD>
+					<TD WIDTH=148>
+						<P CLASS="western">Batch Jobs</P>
+					</TD>
+				</TR>
+				<TR VALIGN=TOP>
+					<TD WIDTH=107>
+						<P CLASS="western">L3</P>
+					</TD>
+					<TD WIDTH=148>
+						<P CLASS="western">Applications</P>
+					</TD>
+				</TR>
+			</TABLE>
+			<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H1 CLASS="western"><B>7. Multitasking</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We have covered a <B>lot</B>
+of material throughout this chapter. And at long last, we can finally
+get to the main focus of this chapter, <B>multitasking</B>. We will
+be putting everything together into code.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We first covered
+<B>process state management</B> because the <B>scheduler</B> and
+<B>multitasking</B> component need to able to select and move
+processes between different <B>states</B>. For example, the <B>scheduler</B>
+often needs to switch processes from <B>Ready</B> to <B>Running</B>.
+If you plan to support more advanced paging techniques (such as <B>page
+swapping algorithms</B>), you will need to be able to switch
+processes to and from a <B>Suspended</B> state. The system needs to
+be able to differentiate between a <B>Suspended</B> process and one
+that is still in memory awaiting a completion signal. Both processes
+have a <B>Process Control Block (PCB)</B> and uses system resources,
+however <B>Suspended</B> processes aren't using memory. We also
+needed a way to pause processes. We did this by introducing a <B>Wait</B>
+state. As you can see, state management is a critical component to
+implementing multitasking. This is why we covered this first.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The next thing we
+looked at was <B>Process Creation</B>. We looked in more detail about
+how it is used with state management. In <B>Chapter 24</B>, we
+implemented a <B>CreateProcess</B> function. Recall, that our
+function loaded a <B>Portable Executable (PE)</B> image into memory,
+mapped it into the virtual address space, and executed it in user
+mode. We will be building off of this function in this section to
+create a new process, and add it to the <B>Ready queue</B> to be
+selected by the <B>Scheduler</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Then we looked at an
+introduction to <B>concurrent programming</B>. Topics included the
+<B>Critical Section</B> problem, <B>Mutual Exclusion</B>, and
+<B>Semaphores</B>. <B>Concurrency</B> happens when multiple processes
+and threads run <I><B>asynchronously</B></I>. Concurrent programming
+provides techniques that we can use to <I>synchronize</I>
+communication between <I>asynchronous</I> processes. Concurrent
+programming is <I><B>hard</B></I> &ndash; there is no <I>right</I>
+way to go about it. If you use concurrency, you can <I>guarantee</I>
+that your code has bugs &ndash; most of which may never surface for
+years or decades. We introduced concurrent programming since the
+topic of this chapter is multitasking. Since shared resources tie
+close to multitasking (typically in the form of shared libraries,
+signals, and message passing), we included a brief introduction to it
+here.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We then looked at an
+introduction to <B>Inter-Process Communication (IPC)</B>. IPC plays a
+critical role in all but the simplest of operating systems. And
+systems that support IPC with multitasking require the concurrent
+programming techniques discussed in this chapter. You have already
+been using a form of IPC through the use of <B>system calls</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Finally we covered
+<B>scheduling algorithms</B>. The Scheduler is the heartbeat of the
+operating system. It is responsible for selecting processes for
+running and is a core algorithm in the multitasking system.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Now, <I>finally</I>,
+we will be putting things together as we dive into the world of
+multitasking operating systems.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">As you recall, there
+are three types of multitasking:</P>
+<OL>
+	<LI><DD CLASS="western">Preemptive</DD><LI><DD CLASS="western">
+	Non-Preemptive</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	Cooperative</DD></OL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We will focus on
+preemptive multitasking.</P>
+<H2 CLASS="western">The Plan</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We will be using the
+<B>Round Robin (RR)</B> scheduling algorithm. This algorithm requires
+us to be able to allocate a <B>quantum</B> as a resource to the
+process being selected. So we'll need a <B>clock</B>. The system has
+many different types of clocks:</P>
+<OL>
+	<LI><DD CLASS="western">Programmable Interval Timer (PIT)</DD><LI><DD CLASS="western">
+	Advanced Programmable Interrupt Controller (APIC) timer</DD><LI><DD CLASS="western">
+	Real Time Clock (RTC)</DD><LI><DD CLASS="western">
+	High Performance Event Timer (HPET)</DD><LI><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	etc.</DD></OL>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">For the purposes of
+the demo, we will be sticking with the PIT since it has been covered
+and already supported. So we have our scheduling algorithm and clock
+that we will be using. In Chapter 24, we introduced the <B>Process
+Control Block (PCB)</B> and <B>Thread Control Block (TCB)</B>. We
+will expand the TCB to include information needed to store the
+current thread state and switch from user mode to kernel mode.</P>
+<PRE>typedef struct _thread {
+   uint32_t    esp;
+   uint32_t    ss;
+   uint32_t    kernelEsp;
+   uint32_t    kernelSs;
+   struct _process*  parent;
+   uint32_t    priority;
+   int         state;
+   ktime_t     sleepTimeDelta;
+}thread;</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+We will need some lower level stuff to create the task associated
+with a thread. The <B>stack</B> stores the current <B>register
+context</B>. We will be storing the register context on the stack
+pointed to be the <B>esp</B> field in the above structure. The
+<B>scheduler</B> is responsible for <B>creating</B> tasks, <B>managing</B>
+tasks, and <B>switching</B> tasks. We will look at each of these in
+more detail in the following sections. As always, all sample code is
+used in the demo program at the end of this chapter.</P>
+<H2 CLASS="western">The Ready Queue</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We first need a place
+to store these tasks. Tasks should be dynamically allocated from a
+non-paged pool by the kernel memory allocator. However, since the
+series does not implement a kernel allocator, we are limited to using
+an array for our implementation. Using a circular queue, we can
+implement the <B>First-In-First-Out</B> functionality required for
+<B>Round Robin</B> scheduling. The idea is so that we can move to the
+next task by simply removing the top element of the queue and pushing
+it to the back. So the new task would become the top of the queue.</P>
+<PRE>thread   _readyQueue  [THREAD_MAX];
+int      _queue_last, _queue_first;
+thread   _idleThread;
+thread*  _currentTask;
+thread   _currentThreadLocal;
+
+/* clear queue. */
+void clear_queue() {
+        _queue_first = 0;
+        _queue_last  = 0;
+}
+
+/* insert thread. */
+bool queue_insert(thread t) {
+        _readyQueue[_queue_last % THREAD_MAX] = t;
+        _queue_last++;
+        return true;
+}
+
+/* remove thread. */
+thread queue_remove() {
+        thread t;
+        t = _readyQueue[_queue_first % THREAD_MAX];
+        _queue_first++;
+        return t;
+}
+
+/* get top of queue. */
+thread queue_get() {
+        return _readyQueue[_queue_first % THREAD_MAX];
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+For our example, we only implement a single queue for ready tasks.
+Tasks can be removed and added at any time by shuffling the queue
+around. Notice the <B>_currentTask</B> pointer. For Chapter 25, this
+pointer always points to _<B>currentThreadLocal</B> <SPAN STYLE="font-weight: normal">which
+stores a local copy of the currently executing thread. Our ISR will
+use the pointer to save and restore the thread state. We will look at
+the ISR in the next section.</SPAN></P>
+<H2 CLASS="western">The Interrupt Service Routine (ISR)</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Alright, so our first
+task is to somehow get the scheduler called whenever a timer even
+triggered. Recall that hardware interrupts are raised by the
+Interrupt Controller, in our case, the legacy <B>Programmable
+Interrupt Controller (PIC)</B>. There are of course others (such as
+<B>Advanced PIC (APIC)</B> used with <B>MultiProcessor (MP)</B> and
+inter-CPU IRQ's) however we supported the legacy PIC interface only
+for the series in order to keep things simple. The PIC raises a
+signal to the CPU when a hardware device sends it to the PIC, such as
+the IR#0 signal sent from the PIT. The PIC then notifies the CPU by
+raising another signal, in this case the IRQ line on the CPU. What
+IRQ that gets called depends on how we programmed the PIC. Recall
+that we programmed the PIC to map IR#0 to ISR 33. What this means is
+that, whenever the PIT fires, the CPU stops executing the current
+code, pushes the return cs, eip, and flags on the current stack, and
+then calls the ISR that we installed in the <B>Interrupt Descriptor
+Table (IDT)</B>, that is, <B>IDT[33]</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In short, we already
+installed our timer ISR to interrupt vector 33. We did this back when
+setting up protected mode. It was needed in order for us to enable
+hardware interrupts. That is fine and all, but what we want to do is
+<I><B>override</B></I> it.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We do this through
+<I><B>interrupt chaining</B></I>. We introduced interrupt chaining in
+an earlier chapter, however we never really put it into practice.
+Until now, that is. What we need to do is to get the old ISR, install
+our own. Lets do that now,</P>
+<PRE>/* register isr */
+old_isr = getvect(32);
+setvect (32, scheduler_isr, 0x80);</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+Simple enough. We implemented <B>getvect</B> and <B>setvect</B> back
+when we talked about the <B>IDT</B>. We install it to <B>IDT[32]</B>
+because that is where the <B>PIT</B> ISR was. So what this does is
+save it in <B>old_isr</B> and install a new ISR, <B>scheduler_isr</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So, with the above in
+mind, every time the PIT fires, <B>scheduler_isr</B> will be called
+instead. Now for the hard part &ndash; writing the ISR. Consider what
+the ISR needs to do and when it can be called. <I><B>The ISR can be
+called at any time</B></I>. However, <I><B>it is always called when a
+task is running</B></I>. All we need to do is save the current
+register state and call the scheduler. Do not forget to send the
+<B>End-Of-Interrupt (EOI)</B> to the PIC.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We will first present
+the ISR implemented for the demo, and then we will break it piece by
+piece to cover the details of what its doing below.</P>
+<PRE>__declspec(naked) void _cdecl scheduler_isr () {
+        _asm {
+        ;
+        ; clear interrupts and save context.
+        ;
+        cli
+        pushad
+        ;
+        ; if no current task, just return.
+        ;
+        mov eax, [_currentTask]
+        cmp eax, 0
+        jz  interrupt_return
+        ;
+        ; save selectors.
+        ;
+        push ds
+        push es
+        push fs
+        push gs
+        ;
+        ; switch to kernel segments.
+        ;
+        mov ax, 0x10
+        mov ds, ax
+        mov es, ax
+        mov fs, ax
+        mov gs, ax
+        ;
+        ; save esp.
+        ;
+        mov eax, [_currentTask]
+        mov [eax], esp
+        ;
+        ; call scheduler.
+        ;
+        call scheduler_tick
+        ;
+        ; restore esp.
+        ;
+        mov eax, [_currentTask]
+        mov esp, [eax]
+        ;
+        ; Call tss_set_stack (kernelSS, kernelESP).
+        ; This code will be needed later for user tasks.
+        ;
+        push dword ptr [eax+8]
+        push dword ptr [eax+12]
+        call tss_set_stack
+        add esp, 8
+        ;
+        ; send EOI and restore context.
+        ;
+        pop gs
+        pop fs
+        pop es
+        pop ds
+interrupt_return:
+        ;
+        ; test if we need to call old ISR.
+        ;
+        mov eax, old_isr
+        cmp eax, 0
+        jne chain_interrupt
+        ;
+        ; if old_isr is null, send EOI and return.
+        ;
+        mov al,0x20
+        out 0x20,al
+        popad
+        iretd
+        ;
+        ; if old_isr is valid, jump to it. This calls
+        ; our PIT timer interrupt handler.
+        ;
+chain_interrupt:
+        popad
+        jmp old_isr
+        }
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+The ISR is responsible for <B>saving the current register context</B>
+and <B>saving the stack pointer of the current task</B>. It then
+<B>calls the scheduler</B>, and <B>restores the stack pointer from
+the current task</B> and <B>restores the register context that we
+saved before</B>. Since everything is restored, the task and continue
+executing without problems when the ISR returns. The ISR appears more
+complicated then it actually is. Let's take a closer look at it in
+pieces. Like all of our other ISR's, the very first thing we do is
+save the current register state in order to preserve them on the
+stack. So the ISR begins like this:</P>
+<PRE>__declspec(naked) void _cdecl scheduler_isr () {
+        _asm {
+        cli
+        pushad
+
+        popad
+        iretd
+        }
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+Since we install the ISR on top of the ISR that was installed by the
+PIT, we need to be very careful here. This means that <B>our
+scheduler_isr will be called with every clock tick</B>. When we call
+<B>setvect</B> to install it, the <B>PIT can fire before we have any
+tasks in the ready queue</B>. When there are no tasks to run, we just
+want the ISR to return since there is nothing to do. You might also
+notice that we disable interrupts but never restore them. This is
+fine. Currently running tasks enable interrupts through the FLAGS
+register. Since the FLAGS register is preserved in all cases, when we
+issue IRETD, FLAGS.IF will enable when we return thereby re-enabling
+interrupts. Our ISR becomes,</P>
+<PRE>__declspec(naked) void _cdecl scheduler_isr () {
+        _asm {
+        cli
+        pushad
+        ;
+        ; if no current task, just return.
+        ;
+        mov eax, [_currentTask]
+        cmp eax, 0
+        jz  interrupt_return
+
+        ;
+        ; &lt;actual ISR code here&gt;
+        ;
+
+interrupt_return:
+        popad
+        iretd
+        }
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+Finally, we need to keep in mind that the PIT hardware is now calling
+<B>scheduler_isr</B>, so the PIT driver ISR is never being called. We
+want to <B>chain the interrupt</B>. This means, if there is an old
+ISR that was installed before us, we want to give it a chance to run.
+This is done by <B>jumping</B> (not calling) to it. When calling
+another ISR, we need to keep in mind that the ISR will either chain
+another interrupt or issue an <B>End-Of-Interrupt (EOI)</B> command
+to <B>break the chain</B>. When calling another ISR, we are still
+technically servicing an interrupt, so don't want to send EOI nor do
+we need an IRETD. However, when not calling another ISR and giving
+control back to the original process, we need both. So our ISR now
+becomes:</P>
+<PRE>__declspec(naked) void _cdecl scheduler_isr () {
+        _asm {
+        ;
+        ; clear interrupts and save context.
+        ;
+        cli
+        pushad
+        ;
+        ; if no current task, just return.
+        ;
+        mov eax, [_currentTask]
+        cmp eax, 0
+        jz  interrupt_return
+
+        ;
+        ; &lt;actual ISR code here&gt;
+        ;
+
+interrupt_return:
+        ;
+        ; test if we need to call old ISR.
+        ;
+        mov eax, old_isr
+        cmp eax, 0
+        jne chain_interrupt
+        ;
+        ; if old_isr is null, send EOI and return.
+        ;
+        mov al,0x20
+        out 0x20,al
+        popad
+        iretd
+        ;
+        ; if old_isr is valid, jump to it. This calls
+        ; our PIT timer interrupt handler.
+        ;
+chain_interrupt:
+        popad
+        jmp old_isr
+        }
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+The actual body of the ISR that performs the actual tasking is the
+following part:</P>
+<PRE>        ;
+        ; save selectors.
+        ;
+        push ds
+        push es
+        push fs
+        push gs
+        ;
+        ; switch to kernel segments.
+        ;
+        mov ax, 0x10
+        mov ds, ax
+        mov es, ax
+        mov fs, ax
+        mov gs, ax
+        ;
+        ; save esp.
+        ;
+        mov eax, [_currentTask]
+        mov [eax], esp
+        ;
+        ; call scheduler.
+        ;
+        call scheduler_tick
+        ;
+        ; restore esp.
+        ;
+        mov eax, [_currentTask]
+        mov esp, [eax]
+        ;
+        ; Call tss_set_stack (kernelSS, kernelESP).
+        ; This code will be needed later for user tasks.
+        ;
+        push dword ptr [eax+8]
+        push dword ptr [eax+12]
+        call tss_set_stack
+        add esp, 8
+        ;
+        ; srestore context.
+        ;
+        pop gs
+        pop fs
+        pop es
+        pop ds</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+<FONT COLOR="#000000"><FONT SIZE=2>It first pushes segment registers
+on the stack. (Recall that we did a PUSHAD before this. And the CPU
+pushed CS, EIP, and EFLAGS on the stack as well when the ISR was
+first called.) We store these on the stack so that we can </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>save
+the current thread register context</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+</FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>The order that
+these registers are pushed on the stack matches the order that we use
+later in the stackFrame structure</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+We then set those segment registers to the kernel mode selectors we
+set up a long time ago from the </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>Global
+Descriptor Table (GDT)</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+We do this because we are not making the assumption that the
+currently running task is a kernel mode task. </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>If
+the task is a user mode task, DS, ES, FS, and GS would still be 0x23
+rather then 0x10</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+We saved the original task selectors on the threads stack, so we can
+adjust them now. The CPU automatically sets SS and CS for us from the
+Task State Segment (TSS) when coming from a user mode task, so those
+would already be set appropriately. We will take a little more closer
+look at the stacks a little later. Finally, </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>we
+save the current value of ESP to _currentTask-&gt;esp</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>and call </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>scheduler_tick</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>_</FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>currentTask</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>is assumed by the ISR to
+always be pointing to whatever the currently running task is. If the
+scheduler changes tasks, then that new task becomes the new
+&ldquo;currently&rdquo; running task. Even if its a new task, we just
+restore ESP to that new tasks </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>_currentTask-&gt;esp</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>field. Since we initially
+saved the register context on the new threads stack, we just pop them
+off back into their respective registers. We also call </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>tss_set_stack</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>that we implemented a long
+time ago. This is only useful if the task that we are returning to is
+a user mode task. What we do is set the new tasks kernel stack into
+TSS by updating it. For the upcoming demo, we will only be running
+kernel threads, each with only one kernel stack so this does not
+apply just yet. However, keep in mind that user level threads have
+two stacks rather then one, since the threads run in both user space
+and kernel space. We will be expanding on this farther in the next
+couple of chapters as we dive into address space management and user
+space.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So how do we switch
+tasks? Consider for a moment what would happen if that _<B>currenTask</B>
+pointer changes when the scheduler is called. Since the register
+context and stack pointer of this new task was saved the same way, by
+simply changing this pointer inside of the <B>scheduler_tick</B>
+function, the ISR would automatically load the new tasks register
+context and stack. And so, <B>task switching is as simple as updating
+that pointer</B>.</P>
+<H2 CLASS="western">Switching Tasks</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So switching tasks
+just involves updating a pointer. With Round Robin scheduling, we can
+use a queue to store the running tasks. Since queues already operate
+in <B>First-In-First-Out</B> order, all we need to do is remove and
+reinsert the current task to push it back. This greatly simplifies
+the code.</P>
+<PRE>/* schedule next task. */
+void dispatch () {
+
+        /* We do Round Robin here, just remove and insert.
+        Note _currentTask pointer always points to
+        _currentThreadLocal. So just update _currentThreadLocal. */
+        queue_remove();
+        queue_insert(_currentThreadLocal);
+        _currentThreadLocal = queue_get();
+}
+
+/* gets called for each clock tick. */
+void scheduler_tick () {
+
+        /* just run dispatcher. */
+        dispatch();
+}}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+That is all there is to it. The above implements <B>Round Robin</B>
+scheduling and swaps between the tasks after a certain <B>quantum</B>
+is up. Tasks are stored in the <B>Ready Queue</B> which was
+implemented earlier. This only leaves one more thing &ndash; task
+creation.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Although the above
+works for multiple threads, it will not work for threads belonging to
+different processes. The typical solution is to compare the current
+threads parent process with the new one. If they belong to the same
+process, then the dispatcher can simply return. If they belong to
+different processes, the dispatcher needs to invoke the VMM to switch
+to the new process address space. To keep the example code simple, we
+opted to avoid this for this chapter. However, we will be supporting
+it in the next chapter or two when we cover address space management
+in greater detail.</P>
+<H2 CLASS="western">Task Creation</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Let's say that our
+<B>schedule</B> function updates the <B>_currentTask</B> pointer to a
+different task. So when this function returns back to the ISR, the
+ISR will set the stack and register context from this new task before
+issuing IRETD. This works well, but only if the task already has a
+stack and register context on the stack.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">So we need to set it
+up when creating the task in the first time. So we set up a basic
+stack frame and set the task <B>esp</B> and <B>eip</B> to the stack
+and <B>entry</B> point function. The stack frame must be one that is
+expected by our ISR. When we return back to the ISR, it will POP GS,
+POP FS, POP ES, POP DS first, then does a PUSHA followed by an IRETD.
+PUSHA pops EAX, EBX, ECX, EDX, ESI, EDI, ESP, and EBP. And IRETD pops
+EIP, CS, and FLAGS. So this must be our initial stack frame when the
+task is created.</P>
+<PRE>typedef struct _stackFrame {
+  uint32_t gs;
+  uint32_t fs;
+  uint32_t es;
+  uint32_t ds;
+  uint32_t eax;
+  uint32_t ebx;
+  uint32_t ecx;
+  uint32_t edx;
+  uint32_t esi;
+  uint32_t edi;
+  uint32_t esp;
+  uint32_t ebp;
+  uint32_t eip;
+  uint32_t cs;
+  uint32_t flags;
+}stackFrame;
+
+task  task_create (uint32_t entry, uint32_t esp) {
+  thread t;
+  stackFrame* frame = ((stackFrame*) esp);
+  frame-&gt;flags = 0x202;
+  frame-&gt;cs    = 8;
+  frame-&gt;eip   = (uint32_t)entry;
+  frame-&gt;ebp   = 0;
+  frame-&gt;esp   = 0;
+  frame-&gt;edi   = 0;
+  frame-&gt;esi   = 0;
+  frame-&gt;edx   = 0;
+  frame-&gt;ecx   = 0;
+  frame-&gt;ebx   = 0;
+  frame-&gt;eax   = 0;
+  frame-&gt;ds    = 0x10;
+  frame-&gt;es    = 0x10;
+  frame-&gt;fs    = 0x10;
+  frame-&gt;gs    = 0x10;
+  t.esp = (uint32_t) frame;
+  t.ss = 0x10;
+  return t;
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+This works for most tasks, except one &ndash; the <I><B>initial task</B></I>.
+The ISR we created will only work if the currently executing code is
+within a task. It is yet another chicken and egg problem. To get
+around this, we need to create a special task object and execute it
+when we are ready to start multitasking.</P>
+<PRE>static thread _idleTask;
+void task_execute(thread t) {
+  _asm{
+    mov esp, t.esp
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    popad
+    iretd
+  }
+}
+
+/* initialize scheduler. */
+void scheduler_initialize(void) {
+
+        /* clear ready queue. */
+        clear_queue();
+
+        /* clear process list. */
+        init_process_list();
+
+        /* create idle thread and add it. */
+        _idleThread = thread_create(idle_task, (uint32_t) create_kernel_stack(), true);
+
+        /* set current thread to idle task and add it. */
+        _currentThreadLocal = _idleThread;
+        _currentTask        = &amp;_currentThreadLocal;
+        queue_insert(_idleThread);
+
+        /* register isr */
+        old_isr = getvect(32);
+        setvect (32, scheduler_isr, 0x80);
+}
+
+/* idle task. */
+void idle_task() {
+  while(1) _asm pause;
+}</PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+<FONT COLOR="#000000"><FONT SIZE=2>The above puts everything
+together. It creates an idle task, adds it to the queue, installs the
+ISR, and executes the initial task. When the initial task executes,
+the ISR will be called whenever the PIT fires to call the scheduler
+to update the current task if needed.</FONT></FONT></P>
+<H1 CLASS="western"><B>8. Introduction to MP</B></H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">This
+is a <I>very</I> brief introduction to the <B>Multi-Processor (MP)
+Specification</B> that is designed to provide a standard interface
+for starting up the other processors and <B>Inter-Processor
+Interrupts (IPI)</B>. We consider this an advanced topic since it can
+quickly escalate the difficulty of concurrent programming. Our
+scheduler only executes one task at a time, however with MP, we can
+implement a low level scheduler responsible for scheduling
+independent CPU's for the tasks and can achieve running multiple
+tasks at the same time. So what we are presenting here is just a very
+brief introduction &ndash; for anyone wanting to dive more into the
+MP standard, we recommend checking out the MP specification. Your
+system must already support the IOAPIC, LAPIC, and ICI which are used
+by MP.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">There
+is <B>symmetric multiprocessing (SMP)</B> and <B>asymmetric
+multiprocessing (ASP)</B>. In SMP, all of the processors are of the
+same type whereas in ASP they are not. Most systems only support SMP
+given that ASP systems are very rare in desktop systems. However, the
+MP standard is applicable to both and gives itself some room for
+extendability so it can adopt to more diverse machine types and
+farther allows the operating systems to adopt and configure itself
+for different types of systems.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">When
+the system first starts up, the hardware selects a <B>Boot-Strap
+Processor (BSP)</B> to act as the sole processor to start up. The BSP
+is the first processor to start up and must be the last processor to
+shut down. The operating system may send a <B>STARTUP IPI</B> from
+the BSP to another <B>Application Processor (AP)</B> to start it.
+Other AP's can be started by either the BSP or another AP. The
+<B>STARTUP IPI</B> (and <B>INIT IPI</B>) is what the operating system
+sends to wake the other processors.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">The
+operating system must first search for the floating <B>MP Floating
+Pointer</B> structure in order to detect if the system supports MP.
+The structure contains the <B>physical address</B> of the <B>MP
+Configuration Table</B>. The configuration table is <B>read only</B>.
+It stores the <B>memory mapped address of the Local APIC (LAPC),
+Processor entries (including the processor LAPIC ID), IOAPIC entries
+(including IOAPIC base memory mapped address), Buses, and interrupt
+configuration entries</B>. The operating system must remember the
+LAPIC ID of the BSP to make sure it is the last one to shut down.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">To
+wake another AP, all we need to do is send a <B>INIT IPI</B> through
+the BSP LAPIC or another AP LAPIC. The memory mapped registers for
+the LAPIC's are stored in the processor information in the MP
+configuration table. We then need to send an <B>STARTUP IPI</B> to
+that AP to start executing. That's really all there is to it. The
+INIT IPI causes the AP to <B>reset</B>. The STARTUP IPI causes it to
+start executing at the location you tell it to in real mode.
+Operating systems must provide a real mode stub routine for
+configuring the API's in protected or long modes just as you did for
+the BSP.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">So
+that is pretty much all we wanted to cover in this brief introduction
+to multiprocessor systems. Starting up other processors (or processor
+cores0 is fairly simple and we encourage experimenting with SMP after
+implementing your scheduler. We may cover MP in more detail in a
+later tutorial after covering the APIC. We just wanted to give a
+little overview and direction for those interested in it now.</P>
+<H1 CLASS="western">9. Demo</H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><A HREF="Demos/Demo25.zip">[Download Demo]</A></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in; font-weight: normal">Most
+of the new code has been covered in the above text, we are just
+preparing the initial release. Assuming no problems arise during
+stress tests and final integration, the demo should be released
+sometime within the next week or two.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><IMG SRC="images/demo25.png" NAME="graphics10" ALIGN=LEFT WIDTH=390 HEIGHT=333 BORDER=0><BR CLEAR=LEFT><FONT COLOR="#000000"><FONT SIZE=2><I>Demo
+running in 800x600x32 mode executing three tasks.</I></FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">This is our first
+real graphical demo. The demo runs three tasks concurrently; each
+task cycles through a select color in video memory while running to
+visually show that they are executing. We opted to have a graphical
+demo rather then text based since we believe we can have it more
+visually appealing yet still simple to do. It is alright if you did
+not read through the graphics series yet, we will discuss things
+here.</P>
+<H2 CLASS="western">Bochs Graphics Adapter (BGA)</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">To keep the code as
+simple as possible so we can focus on the primary topic of the
+chapter, we opted to use BGA under the assumption that the system is
+configured for ISA. <I><B>This code is Bochs specific</B></I> and
+will not work on real systems. Real systems would require scanning
+the PCI bus infrastructure which may be a topic in a more advanced
+chapter. 
+</P>
+<PRE>#define VBE_DISPI_IOPORT_INDEX          0x01CE
+#define VBE_DISPI_IOPORT_DATA           0x01CF
+#define VBE_DISPI_INDEX_XRES            0x1
+#define VBE_DISPI_INDEX_YRES            0x2
+#define VBE_DISPI_INDEX_BPP             0x3
+#define VBE_DISPI_INDEX_ENABLE          0x4
+#define VBE_DISPI_DISABLED              0x00
+#define VBE_DISPI_ENABLED               0x01
+#define VBE_DISPI_LFB_ENABLED           0x40
+
+void VbeBochsWrite(uint16_t index, uint16_t value) {
+   outportw (VBE_DISPI_IOPORT_INDEX, index);
+   outportw (VBE_DISPI_IOPORT_DATA, value);
+}
+
+void VbeBochsSetMode (uint16_t xres, uint16_t yres, uint16_t bpp) {
+   VbeBochsWrite (VBE_DISPI_INDEX_ENABLE, VBE_DISPI_DISABLED);
+   VbeBochsWrite (VBE_DISPI_INDEX_XRES, xres);
+   VbeBochsWrite (VBE_DISPI_INDEX_YRES, yres);
+   VbeBochsWrite (VBE_DISPI_INDEX_BPP, bpp);
+   VbeBochsWrite (VBE_DISPI_INDEX_ENABLE, VBE_DISPI_ENABLED | VBE_DISPI_LFB_ENABLED);   
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+<FONT COLOR="#000000"><FONT SIZE=2>To set the video mode just
+involves calling </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>VbeBochsSetMode</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+We use </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>800x600x32</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>in our example since it
+appears to be well supported. </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>The
+Linear Frame Buffer (LFB)</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>under ISA is at the
+predefined location </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>0xe0000000</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+However, because we have paging enabled, we need to map the LFB into
+our virtual address space to use it. We will map it to 0x200000
+virtual for the demo. The mapping is done by calculating the size of
+the LFB in number of pages, and mapping each page by calling our VMM.</FONT></FONT></P>
+<PRE>void* VbeBochsMapLFB () {
+
+/* BGA LFB is at LFB_PHYSICAL for ISA systems. */
+#define LFB_PHYSICAL 0xE0000000
+#define LFB_VIRTUAL  0x200000
+
+  /* map LFB into current process address space. */
+  int pfcount = WIDTH*HEIGHT*BYTES_PER_PIXEL/4096;
+  int c;
+  for (c = 0;c &lt;= pfcount; c++)
+    vmmngr_mapPhysicalAddress (vmmngr_get_directory(),LFB_VIRTUAL + c * 0x1000,LFB_PHYSICAL + c * 0x1000, 3);
+
+  /* return pointer to LFB. */
+  return (void*) LFB_VIRTUAL;
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+<FONT COLOR="#000000"><FONT SIZE=2>With the above function, we can
+now draw to the LFB by writing to 0x200000. To clean up any possible
+garbage on the display, we clear it next. Since we need to draw a lot
+of pixels, we try to optimize the function for 32 bit modes. This
+function makes the screen white.</FONT></FONT></P>
+<PRE>void fillScreen32 () {
+  uint32_t* lfb = (uint32_t*) LFB_VIRTUAL;
+  for (uint32_t c=0; c&lt;WIDTH*HEIGHT; c++)
+    lfb[c] = 0xffffffff;
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE><P CLASS="western" STYLE="margin-bottom: 0.2in">
+<FONT COLOR="#000000"><FONT SIZE=2>In 32 Bits Per Pixel modes, the
+pixel colors are composed of 8 bits for red, 8 bits for green, and 8
+bits for blue. The high 8 bits are ignored for our purposes but is
+typically used as a transparency value. We use three separate tasks
+to render the three rectangles and cycle through the intensity of the
+three colors. Since we are going to render to different locations on
+display, we won't have to worry about concurrency problems here.
+Although display memory is shared, each task will render to separate
+parts.</FONT></FONT></P>
+<PRE>void rect32 (int x, int y, int w, int h, int col) {
+  uint32_t* lfb = (uint32_t*) LFB_VIRTUAL;
+  for (uint32_t k = 0; k &lt; h; k++)
+    for (uint32_t j = 0; j &lt; w; j++)
+      lfb[(j+x) + (k+y) * WIDTH] = col;
+<FONT COLOR="#000000"><FONT SIZE=2>}</FONT></FONT></PRE>
+<TABLE WIDTH=907 BORDER=1 CELLPADDING=0 CELLSPACING=0 FRAME=VOID>
+	<COL WIDTH=332>
+	<COL WIDTH=304>
+	<COL WIDTH=270>
+	<TR VALIGN=TOP>
+		<TD WIDTH=332>
+			<PRE>void kthread_1() {
+  int col = 0;
+  bool dir = true;
+  while(1) {
+    rect32(200,250,100,100,col &lt;&lt; 16);
+    if (dir){
+      if (col++ == 0xfe)
+        dir=false;
+    }else
+      if (col-- == 1)
+        dir=true;
+ }
+<FONT COLOR="#000000"><FONT FACE="Lucida Console, monospace"><FONT SIZE=2>}</FONT></FONT></FONT></PRE>
+		</TD>
+		<TD WIDTH=304>
+			<PRE>void kthread_2 () {
+  int col = 0;
+  bool dir = true;
+  while(1) {
+    rect32(350,250,100,100,col &lt;&lt; 8);
+    if (dir){
+      if (col++ == 0xfe)
+        dir=false;
+    }else
+      if (col-- == 1)
+        dir=true;
+  }
+<FONT COLOR="#0000ff"><FONT SIZE=2>}</FONT></FONT></PRE>
+		</TD>
+		<TD WIDTH=270>
+			<PRE>void kthread_3 () {
+  int col = 0;
+  bool dir = true;
+  while(1) {
+    rect32(500,250,100,100,col);
+    if (dir) {
+      if (col++ == 0xfe)
+        dir=false;
+    }else
+      if (col-- == 1)
+        dir=true;
+  }
+<FONT COLOR="#0000ff"><FONT SIZE=2>}</FONT></FONT></PRE>
+		</TD>
+	</TR>
+</TABLE>
+<H2 CLASS="western">Thread Stacks</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>Typically
+a thread has two separate stacks. One for when executing in user
+mode, and another for when executing in kernel mode. Recall that when
+a thread is executing in user mode, the CPU switches to a kernel
+stack by getting the </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>esp0</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>and </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>ss0</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>fields of the </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>Task
+State Segment (TSS)</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+The scheduler is responsible for updating the TSS to the new threads
+kernel mode stack. However, for chapter 25, since all threads run in
+kernel space, the TSS will never be referenced. In other words, </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>the
+threads in chapter 25 only have one stack &ndash; a kernel mode
+stack</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>We
+will be supporting user mode threads within the next two chapters
+when we cover address space management. We will use our future
+address space allocator to reserve stack space in user space for each
+user mode thread. That means </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>threads
+will have both a user mode and kernel mode stack</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>The
+thread uses the kernel mode stack when executing code with </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>Current
+Privilege Level (CPL)</B></FONT></FONT><FONT COLOR="#000000"> </FONT><FONT COLOR="#000000"><FONT SIZE=2>of
+0. The CPU automatically loads this if the CPL is less then the
+</FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>Requested
+Privilege Level (RPL)</B></FONT></FONT><FONT COLOR="#000000"> </FONT><FONT COLOR="#000000"><FONT SIZE=2>from
+the </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>TSS</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+In other words, lets say that our user mode thread is running and the
+PIT fires. The CPU will then set </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>SS=TSS.ss0</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>and </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>ESP=TSS.esp0</B></FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2>.
+It will then </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>push
+the return CS and IP on this new stack</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>and call the ISR. When the
+ISR is done, it executes </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><B>IRET</B></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>to return back to the user
+mode code and stack.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>This
+is why user level threads must have, at a minimum, </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><I><B>two</B></I></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>separate stacks. The first
+stack must be mapped in kernel space and the other must be mapped in
+user space so the program can access it while executing. Kernel level
+threads only need </FONT></FONT><FONT COLOR="#000000"><FONT SIZE=2><I><B>one</B></I></FONT></FONT><FONT COLOR="#000000">
+</FONT><FONT COLOR="#000000"><FONT SIZE=2>stack.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>Since
+we don't have an address space allocator, we cannot nicely allocate
+user mode stacks just yet, so cannot support user level threads
+(without hacks.) And since we don't have a proper kernel mode
+allocator yet, we can't nicely support allocation of kernel level
+stacks either. These will be the topics for the next chapter or two.</FONT></FONT></P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><FONT COLOR="#000000"><FONT SIZE=2>So
+what we decided to do for chapter 25 was to reserve space in kernel
+memory and allocate each 4k block as its own stack.</FONT></FONT></P>
+<PRE>void* create_kernel_stack() {
+
+        physical_addr       p;
+        virtual_addr        location;
+        void*               ret;
+
+        /* we are reserving this area for 4k kernel stacks. */
+#define KERNEL_STACK_ALLOC_BASE 0xe0000000
+
+        /* allocate a 4k frame for the stack. */
+        p = (physical_addr) pmmngr_alloc_block();
+        if (!p) return 0;
+
+        /* next free 4k memory block. */
+        location = KERNEL_STACK_ALLOC_BASE + _kernel_stack_index * PAGE_SIZE;
+
+        /* map it into kernel space. */
+        vmmngr_mapPhysicalAddress (vmmngr_get_directory(), location, p, 3);
+
+        /* we are returning top of stack. */
+        ret = (void*) (location + PAGE_SIZE);
+
+        /* prepare to allocate next 4k if we get called again. */
+        _kernel_stack_index++;
+
+        /* and return top of stack. */
+        return ret;
+}</PRE><H2 CLASS="western">
+Back to Sleep()</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">You might recall that
+we implemented a very basic <B>sleep</B> function that we needed in
+order to delay the read operation of the floppy device. Our
+implementation simply went into a <B>busy loop</B> in order to waste
+some time. Now we can adopt it for the threading system.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">The basic idea is
+that <B>sleep</B> should <B>pause</B> the thread that called the
+function. This means we need to adjust the current thread state from
+READY to BLOCK and force a task switch. The scheduler then needs to
+keep track of blocked threads to handle them properly. This is
+typically done via <B>Signals</B> from other operating system
+components. For example, if a thread is waiting for a device to be
+ready, it may block. Now the system needs to wait until that thread
+receives a signal from the driver. Until then, the scheduler should
+jump to executing other threads. To keep the demo relatively simple,
+we opted to do things a little differently.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">All we need to do is
+change the state of the currently running program and force a task
+switch (by calling the ISR directly via <B>int 33</B>.) The scheduler
+would contain the logic code for checking blocked threads while
+selecting new threads to run. If the next thread is blocked, we
+decrement its sleep time delta and awake the thread is the sleep time
+delta reaches zero.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Although we do not
+use sleep in this demo, the disk driver code relies on it. So now the
+thread attempting to read from the disk device can properly sleep.</P>
+<H2 CLASS="western">Main Program</H2>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Finally, we will take
+a look at the main program. In the demo for Chapter 25, we moved the
+stack into kernel space and readjust it after making a static copy of
+the boot parameter block that was passed from the boot loader. We
+then use the services discussed above to set the video mode,
+initialize the scheduler, and create and add three threads to the
+ready queue. Since the threads run in kernel space, they only have a
+kernel stack allocated to them, which we allocate calling
+<B>create_kernel_stack</B>.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">We have also
+completely rewritten the process creation and management code from
+Chapter 24 to be compatible with the thread system created in Chapter
+25. However, it will not be completed until we support the allocation
+of user mode stacks which we will do in the upcoming chapters.</P>
+<PRE>void _cdecl kmain (multiboot_info* bootinfo) {
+
+        /* store kernel size and copy bootinfo. */
+        _asm mov        word ptr [kernelSize], dx
+        memcpy(&amp;_bootinfo, bootinfo, sizeof(multiboot_info));
+
+        /* adjust stack. */
+        _asm lea esp, dword ptr [_kernel_stack+8096]
+        init (&amp;_bootinfo);
+
+        /* set video mode and map framebuffer. */
+        VbeBochsSetMode(WIDTH,HEIGHT,BPP);
+        VbeBochsMapLFB();
+        fillScreen32 ();
+
+        /* init scheduler. */
+        scheduler_initialize ();
+
+        /* create kernel threads. */
+        queue_insert (thread_create(kthread_1, (uint32_t) create_kernel_stack(),true));
+        queue_insert (thread_create(kthread_2, (uint32_t) create_kernel_stack(),true));
+        queue_insert (thread_create(kthread_3, (uint32_t) create_kernel_stack(),true));
+
+        /* execute idle thread. */
+        execute_idle();
+
+        /* this should never get executed. */
+        for (;;) _asm {cli
+                hlt};
+}</PRE><H1 CLASS="western">
+10. Conclusion</H1>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In this chapter we
+looked at scheduling algorithms, a brief overview of SMP, concurrent
+programming, and implemented a working preemptive Round Robin
+scheduler. We have also went through a small introduction to high
+resolution video modes using Bochs Graphics Adapter (BDA), state
+management, and an introduction to several IPC techniques.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">In the next
+chapter(s), we will finally cover memory allocation algorithms,
+including kernel and user mode allocators, address space allocations,
+page swapping and page fault handling. Topics will include the free
+list and stack allocators, SLAB allocator (and possibly its
+variants), Zone and Arena allocators, Buddy allocators, user space
+management, recursive page directories, page files and swap space,
+and possibly others. We will expand on the material from this chapter
+to support user mode process loading. Due to the amount of material
+coming up, this may be one or two separate chapters.</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">Until next time,</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">~Mike ();</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in">OS Development Series
+Editor</P>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD>
+			<P CLASS="western"><A HREF="http://www.brokenthorn.com/Resources/OSDevIndex.html">Home
+			</A>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<P CLASS="western" STYLE="margin-bottom: 0.2in"><BR><BR>
+</P>
+</BODY>
+</HTML>

@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>boot.S - Multiboot Specification version 0.6.96</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Multiboot Specification version 0.6.96">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Example-OS-code.html#Example-OS-code" title="Example OS code">
+<link rel="prev" href="multiboot_002eh.html#multiboot_002eh" title="multiboot.h">
+<link rel="next" href="kernel_002ec.html#kernel_002ec" title="kernel.c">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 1995,96 Bryan Ford <baford@cs.utah.edu>
+
+Copyright (C) 1995,96 Erich Stefan Boleyn <erich@uruk.org>
+
+Copyright (C) 1999,2000,2001,2002,2005,2006,2009 Free Software Foundation, Inc.
+
+     Permission is granted to make and distribute verbatim copies of
+     this manual provided the copyright notice and this permission
+     notice are preserved on all copies.
+
+     Permission is granted to copy and distribute modified versions of
+     this manual under the conditions for verbatim copying, provided
+     also that the entire resulting derived work is distributed under
+     the terms of a permission notice identical to this one.
+
+     Permission is granted to copy and distribute translations of this
+     manual into another language, under the above conditions for
+     modified versions.
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="boot.S"></a>
+<a name="boot_002eS"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="kernel_002ec.html#kernel_002ec">kernel.c</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="multiboot_002eh.html#multiboot_002eh">multiboot.h</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Example-OS-code.html#Example-OS-code">Example OS code</a>
+<hr>
+</div>
+
+<h4 class="subsection">4.3.2 boot.S</h4>
+
+<p>In the file <samp><span class="file">boot.S</span></samp>:
+
+<pre class="example">     /* <span class="roman">boot.S - bootstrap the kernel</span> */
+     /* <span class="roman">Copyright (C) 1999, 2001  Free Software Foundation, Inc.
+     
+        This program is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation; either version 2 of the License, or
+        (at your option) any later version.
+     
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+     
+        You should have received a copy of the GNU General Public License
+        along with this program; if not, write to the Free Software
+        Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.</span> */
+     
+     #define ASM_FILE        1
+     #include &lt;multiboot.h&gt;
+     
+     /* <span class="roman">C symbol format. HAVE_ASM_USCORE is defined by configure.</span> */
+     #ifdef HAVE_ASM_USCORE
+     # define EXT_C(sym)                     _ ## sym
+     #else
+     # define EXT_C(sym)                     sym
+     #endif
+     
+     /* <span class="roman">The size of our stack (16KB).</span> */
+     #define STACK_SIZE                      0x4000
+     
+     /* <span class="roman">The flags for the Multiboot header.</span> */
+     #ifdef __ELF__
+     # define MULTIBOOT_HEADER_FLAGS         0x00000003
+     #else
+     # define MULTIBOOT_HEADER_FLAGS         0x00010003
+     #endif
+     
+             .text
+     
+             .globl  start, _start
+     start:
+     _start:
+             jmp     multiboot_entry
+     
+             /* <span class="roman">Align 32 bits boundary.</span> */
+             .align  4
+     
+             /* <span class="roman">Multiboot header.</span> */
+     multiboot_header:
+             /* <span class="roman">magic</span> */
+             .long   MULTIBOOT_HEADER_MAGIC
+             /* <span class="roman">flags</span> */
+             .long   MULTIBOOT_HEADER_FLAGS
+             /* <span class="roman">checksum</span> */
+             .long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+     #ifndef __ELF__
+             /* <span class="roman">header_addr</span> */
+             .long   multiboot_header
+             /* <span class="roman">load_addr</span> */
+             .long   _start
+             /* <span class="roman">load_end_addr</span> */
+             .long   _edata
+             /* <span class="roman">bss_end_addr</span> */
+             .long   _end
+             /* <span class="roman">entry_addr</span> */
+             .long   multiboot_entry
+     #endif /* <span class="roman">! __ELF__</span> */
+     
+     multiboot_entry:
+             /* <span class="roman">Initialize the stack pointer.</span> */
+             movl    $(stack + STACK_SIZE), %esp
+     
+             /* <span class="roman">Reset EFLAGS.</span> */
+             pushl   $0
+             popf
+     
+             /* <span class="roman">Push the pointer to the Multiboot information structure.</span> */
+             pushl   %ebx
+             /* <span class="roman">Push the magic value.</span> */
+             pushl   %eax
+     
+             /* <span class="roman">Now enter the C main function...</span> */
+             call    EXT_C(cmain)
+     
+             /* <span class="roman">Halt.</span> */
+             pushl   $halt_message
+             call    EXT_C(printf)
+     
+     loop:   hlt
+             jmp     loop
+     
+     halt_message:
+             .asciz  "Halted."
+     
+             /* <span class="roman">Our stack area.</span> */
+             .comm   stack, STACK_SIZE
+</pre>
+   </body></html>
+

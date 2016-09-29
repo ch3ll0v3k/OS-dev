@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="sameorigin">
+<title>
+Entering Long Mode &middot; Writing an OS in Rust
+</title>
+<script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"e651c847106425523a1a8e78b125ef02",petok:"c2a4de381536fd10fa7f45a54873e624f237c5c0-1474726965-1800",zone:"phil-opp.com",rocket:"a",apps:{},sha2test:0}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=0489c402f5/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+//]]>
+</script>
+<link rel="canonical" href="http://os.phil-opp.com/entering-longmode.html">
+<link rel="stylesheet" href="/css/poole.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-precomposed.png">
+<link rel="shortcut icon" href="/images/favicon.ico">
+<script data-rocketsrc="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js" type="text/rocketscript"></script>
+<script data-rocketsrc="js/toc.min.js" type="text/rocketscript"></script>
+<script data-rocketsrc="js/main.js" type="text/rocketscript"></script>
+<script type="text/rocketscript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-65296949-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script type="text/rocketscript">
+    if (window.location.hostname == "phil-opp.github.io") {
+      window.location.href = "http://os.phil-opp.com/";
+    }
+  </script>
+</head>
+<body>
+<div class="container content">
+<header class="masthead">
+<h3 class="masthead-title">
+<a href="/" title="Home">Writing an OS in Rust</a>
+<span class="navigation">
+<small><a href="/atom.xml"><img src="/images/feed-icon.png" alt="RSS"></a></small>
+</span>
+<small>Philipp&nbsp;Oppermann's&nbsp;blog</small>
+</h3>
+</header>
+<main>
+<article class="post">
+<h1 class="post-title">Entering Long Mode</h1>
+<time datetime="2015-08-25" class="post-date">
+Aug 25, 2015
+(updated on Oct 29, 2015)
+</time>
+<p>In the <a href="/multiboot-kernel.html">previous post</a> we created a minimal multiboot kernel. It just prints <code>OK</code> and hangs. The goal is to extend it and call 64-bit <a href="https://www.rust-lang.org/">Rust</a> code. But the CPU is currently in <a href="https://en.wikipedia.org/wiki/Protected_mode">protected mode</a> and allows only 32-bit instructions and up to 4GiB memory. So we need to set up <em>Paging</em> and switch to the 64-bit <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a> first.</p>
+<aside id="toc"></aside>
+<p>I tried to explain everything in detail and to keep the code as simple as possible. If you have any questions, suggestions, or issues, please leave a comment or <a href="https://github.com/phil-opp/blog_os/issues">create an issue</a> on Github. The source code is available in a <a href="https://github.com/phil-opp/blog_os/tree/entering_longmode/src/arch/x86_64">repository</a>, too.</p>
+<p><em>Notable Changes</em>: We don&rsquo;t use 1GiB pages anymore, since they have <a href="https://github.com/phil-opp/blog_os/issues/17">compatibility problems</a>. The identity mapping is now done through 2MiB pages.</p>
+<h2 id="some-tests">Some Tests</h2>
+<p>To avoid bugs and strange errors on old CPUs we should check if the processor supports every needed feature. If not, the kernel should abort and display an error message. To handle errors easily, we create an error procedure in <code>boot.asm</code>. It prints a rudimentary <code>ERR: X</code> message, where X is an error code letter, and hangs:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="c1">; Prints `ERR: ` and the given error code to screen and hangs.</span>
+<span class="c1">; parameter: error code (in ascii) in al</span>
+<span class="nl">error:</span>
+    <span class="nf">mov</span> <span class="kt">dword</span> <span class="p">[</span><span class="mh">0xb8000</span><span class="p">],</span> <span class="mh">0x4f524f45</span>
+    <span class="nf">mov</span> <span class="kt">dword</span> <span class="p">[</span><span class="mh">0xb8004</span><span class="p">],</span> <span class="mh">0x4f3a4f52</span>
+    <span class="nf">mov</span> <span class="kt">dword</span> <span class="p">[</span><span class="mh">0xb8008</span><span class="p">],</span> <span class="mh">0x4f204f20</span>
+    <span class="nf">mov</span> <span class="kt">byte</span>  <span class="p">[</span><span class="mh">0xb800a</span><span class="p">],</span> <span class="nb">al</span>
+    <span class="nf">hlt</span>
+</code></pre></div>
+<p>At address <code>0xb8000</code> begins the so-called <a href="https://en.wikipedia.org/wiki/VGA-compatible_text_mode">VGA text buffer</a>. It&rsquo;s an array of screen characters that are displayed by the graphics card. A <a href="/printing-to-screen.html">future post</a> will cover the VGA buffer in detail and create a Rust interface to it. But for now, manual bit-fiddling is the easiest option.</p>
+<p>A screen character consists of a 8 bit color code and a 8 bit <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> character. We used the color code <code>4f</code> for all characters, which means white text on red background. <code>0x52</code> is an ASCII <code>R</code>, <code>0x45</code> is an <code>E</code>, <code>0x3a</code> is a <code>:</code>, and <code>0x20</code> is a space. The second space is overwritten by the given ASCII byte. Finally the CPU is stopped with the <code>hlt</code> instruction.</p>
+<p>Now we can add some check <em>functions</em>. A function is just a normal label with an <code>ret</code> (return) instruction at the end. The <code>call</code> instruction can be used to call it. Unlike the <code>jmp</code> instruction that just jumps to a memory address, the <code>call</code> instruction will push a return address to the stack (and the <code>ret</code> will jump to this address). But we don&rsquo;t have a stack yet. The <a href="http://stackoverflow.com/a/1464052/866447">stack pointer</a> in the esp register could point to some important data or even invalid memory. So we need to update it and point it to some valid stack memory.</p>
+<h3 id="creating-a-stack">Creating a Stack</h3>
+<p>To create stack memory we reserve some bytes at the end of our <code>boot.asm</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nf">...</span>
+<span class="k">section</span> <span class="nv">.bss</span>
+<span class="nl">stack_bottom:</span>
+    <span class="kd">resb</span> <span class="mi">64</span>
+<span class="nl">stack_top:</span>
+</code></pre></div>
+<p>A stack doesn&rsquo;t need to be initialized because we will <code>pop</code> only when we <code>pushed</code> before. So storing the stack memory in the executable file would make it unnecessary large. By using the <a href="https://en.wikipedia.org/wiki/.bss">.bss</a> section and the <code>resb</code> (reserve byte) command, we just store the length of the uninitialized data (= 64). When loading the executable, GRUB will create the section of required size in memory.</p>
+<p>To use the new stack, we update the stack pointer register right after <code>start</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">global</span> <span class="nv">start</span>
+
+<span class="k">section</span> <span class="nv">.text</span>
+<span class="k">bits</span> <span class="mi">32</span>
+<span class="nl">start:</span>
+    <span class="nf">mov</span> <span class="nb">esp</span><span class="p">,</span> <span class="nv">stack_top</span>
+
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">...</span>
+</code></pre></div>
+<p>We use <code>stack_top</code> because the stack grows downwards: A <code>push eax</code> subtracts 4 from <code>esp</code> and does a <code>mov [esp], eax</code> afterwards (<code>eax</code> is a general purpose register).</p>
+<p>Now we have a valid stack pointer and are able to call functions. The following check functions are just here for completeness and I won&rsquo;t explain details. Basically they all work the same: They will check for a feature and jump to <code>error</code> if it&rsquo;s not available.</p>
+<h3 id="multiboot-check">Multiboot check</h3>
+<p>We rely on some Multiboot features in the next posts. To make sure the kernel was really loaded by a Multiboot compliant bootloader, we can check the <code>eax</code> register. According to the Multiboot specification (<a href="http://nongnu.askapache.com/grub/phcoder/multiboot.pdf">PDF</a>), the bootloader must write the magic value <code>0x36d76289</code> to it before loading a kernel. To verify that we can add a simple function:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">check_multiboot:</span>
+    <span class="nf">cmp</span> <span class="nb">eax</span><span class="p">,</span> <span class="mh">0x36d76289</span>
+    <span class="nf">jne</span> <span class="nv">.no_multiboot</span>
+    <span class="nf">ret</span>
+<span class="nl">.no_multiboot:</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="s">&quot;0&quot;</span>
+    <span class="nf">jmp</span> <span class="nv">error</span>
+</code></pre></div>
+<p>We use the <code>cmp</code> instruction to compare the value in <code>eax</code> to the magic value. If the values are equal, the <code>cmp</code> instruction sets the zero flag in the <a href="https://en.wikipedia.org/wiki/FLAGS_register">FLAGS register</a>. The <code>jne</code> (“jump if not equal”) instruction reads this zero flag and jumps to the given address if it&rsquo;s not set. Thus we jump to the <code>.no_multiboot</code> label if <code>eax</code> does not contain the magic value.</p>
+<p>In <code>no_multiboot</code>, we use the <code>jmp</code> (“jump”) instruction to jump to our error function. We could just as well use the <code>call</code> instruction, which additionally pushes the return address. But the return address is not needed because <code>error</code> never returns. To pass <code>0</code> as error code to the <code>error</code> function, we move it into <code>al</code> before the jump (<code>error</code> will read it from there).</p>
+<h3 id="cpuid-check">CPUID check</h3>
+<p><a href="http://wiki.osdev.org/CPUID">CPUID</a> is a CPU instruction that can be used to get various information about the CPU. But not every processor supports it. CPUID detection is quite laborious, so we just copy a detection function from the <a href="http://wiki.osdev.org/Setting_Up_Long_Mode#Detection_of_CPUID">OSDev wiki</a>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">check_cpuid:</span>
+    <span class="c1">; Check if CPUID is supported by attempting to flip the ID bit (bit 21)</span>
+    <span class="c1">; in the FLAGS register. If we can flip it, CPUID is available.</span>
+
+    <span class="c1">; Copy FLAGS in to EAX via stack</span>
+    <span class="nf">pushfd</span>
+    <span class="nf">pop</span> <span class="nb">eax</span>
+
+    <span class="c1">; Copy to ECX as well for comparing later on</span>
+    <span class="nf">mov</span> <span class="nb">ecx</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="c1">; Flip the ID bit</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">21</span>
+
+    <span class="c1">; Copy EAX to FLAGS via the stack</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+    <span class="nf">popfd</span>
+
+    <span class="c1">; Copy FLAGS back to EAX (with the flipped bit if CPUID is supported)</span>
+    <span class="nf">pushfd</span>
+    <span class="nf">pop</span> <span class="nb">eax</span>
+
+    <span class="c1">; Restore FLAGS from the old version stored in ECX (i.e. flipping the</span>
+    <span class="c1">; ID bit back if it was ever flipped).</span>
+    <span class="nf">push</span> <span class="nb">ecx</span>
+    <span class="nf">popfd</span>
+
+    <span class="c1">; Compare EAX and ECX. If they are equal then that means the bit</span>
+    <span class="c1">; wasn&#39;t flipped, and CPUID isn&#39;t supported.</span>
+    <span class="nf">cmp</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">ecx</span>
+    <span class="nf">je</span> <span class="nv">.no_cpuid</span>
+    <span class="nf">ret</span>
+<span class="nl">.no_cpuid:</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="s">&quot;1&quot;</span>
+    <span class="nf">jmp</span> <span class="nv">error</span>
+</code></pre></div>
+<p>Basically, the <code>CPUID</code> instruction is supported if we can flip some bit in the <a href="https://en.wikipedia.org/wiki/FLAGS_register">FLAGS register</a>. We can&rsquo;t operate on the flags register directly, so we need to load it into some general purpose register such as <code>eax</code> first. The only way to do this is to push the <code>FLAGS</code> register on the stack through the <code>pushfd</code> instruction and then pop it into <code>eax</code>. Equally, we write it back through <code>push ecx</code> and <code>popfd</code>. To flip the bit we use the <code>xor</code> instruction to perform an <a href="https://en.wikipedia.org/wiki/Exclusive_or">exclusive OR</a>. Finally we compare the two values and jump to <code>.no_cpuid</code> if both are equal (<code>je</code> – “jump if equal”). The <code>.no_cpuid</code> code just jumps to the <code>error</code> function with error code <code>1</code>.</p>
+<p>Don&rsquo;t worry, you don&rsquo;t need to understand the details.</p>
+<h3 id="long-mode-check">Long Mode check</h3>
+<p>Now we can use CPUID to detect whether long mode can be used. I use code from <a href="http://wiki.osdev.org/Setting_Up_Long_Mode#x86_or_x86-64">OSDev</a> again:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">check_long_mode:</span>
+    <span class="c1">; test if extended processor info in available</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="mh">0x80000000</span>    <span class="c1">; implicit argument for cpuid</span>
+    <span class="k">cpu</span><span class="nv">id</span>                  <span class="c1">; get highest supported argument</span>
+    <span class="nf">cmp</span> <span class="nb">eax</span><span class="p">,</span> <span class="mh">0x80000001</span>    <span class="c1">; it needs to be at least 0x80000001</span>
+    <span class="nf">jb</span> <span class="nv">.no_long_mode</span>       <span class="c1">; if it&#39;s less, the CPU is too old for long mode</span>
+
+    <span class="c1">; use extended info to test if long mode is available</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="mh">0x80000001</span>    <span class="c1">; argument for extended processor info</span>
+    <span class="k">cpu</span><span class="nv">id</span>                  <span class="c1">; returns various feature bits in ecx and edx</span>
+    <span class="nf">test</span> <span class="nb">edx</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">29</span>      <span class="c1">; test if the LM-bit is set in the D-register</span>
+    <span class="nf">jz</span> <span class="nv">.no_long_mode</span>       <span class="c1">; If it&#39;s not set, there is no long mode</span>
+    <span class="nf">ret</span>
+<span class="nl">.no_long_mode:</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="s">&quot;2&quot;</span>
+    <span class="nf">jmp</span> <span class="nv">error</span>
+</code></pre></div>
+<p>Like many low-level things, CPUID is a bit strange. Instead of taking a parameter, the <code>cpuid</code> instruction implicitely uses the <code>eax</code> register as argument. To test if long mode is available, we need to call <code>cpuid</code> with <code>0x80000001</code> in <code>eax</code>. This loads some information to the <code>ecx</code> and <code>edx</code> registers. Long mode is supported if the 29th bit in <code>edx</code> is set. <a href="https://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits">Wikipedia</a> has detailed information.</p>
+<p>If you look at the assembly above, you&rsquo;ll probably notice that we call <code>cpuid</code> twice. The reason is that the CPUID command started with only a few functions and was extended over time. So old processors may not know the <code>0x80000001</code> argument at all. To test if they do, we need to invoke <code>cpuid</code> with <code>0x80000000</code> in <code>eax</code> first. It returns the highest supported parameter value in <code>eax</code>. If it&rsquo;s at least <code>0x80000001</code>, we can test for long mode as described above. Else the CPU is old and doesn&rsquo;t know what long mode is either. In that case, we directly jump to <code>.no_long_mode</code> through the <code>jb</code> instruction (“jump if below”).</p>
+<h3 id="putting-it-together">Putting it together</h3>
+<p>We just call these check functions right after start:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">global</span> <span class="nv">start</span>
+
+<span class="k">section</span> <span class="nv">.text</span>
+<span class="k">bits</span> <span class="mi">32</span>
+<span class="nl">start:</span>
+    <span class="nf">mov</span> <span class="nb">esp</span><span class="p">,</span> <span class="nv">stack_top</span>
+
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_multiboot</span>
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_cpuid</span>
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_long_mode</span>
+
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">...</span>
+</code></pre></div>
+<p>When the CPU doesn&rsquo;t support a needed feature, we get an error message with an unique error code. Now we can start the real work.</p>
+<h2 id="paging">Paging</h2>
+<p><em>Paging</em> is a memory management scheme that separates virtual and physical memory. The address space is split into equal sized <em>pages</em> and a <em>page table</em> specifies which virtual page points to which physical page. If you never heard of paging, you might want to look at the paging introduction (<a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">PDF</a>) of the <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/">Three Easy Pieces</a> OS book.</p>
+<p>In long mode, x86 uses a page size of 4096 bytes and a 4 level page table that consists of:</p>
+<ul>
+<li>the Page-Map Level-4 Table (PML4),</li>
+<li>the Page-Directory Pointer Table (PDP),</li>
+<li>the Page-Directory Table (PD),</li>
+<li>and the Page Table (PT).</li>
+</ul>
+<p>As I don&rsquo;t like these names, I will call them P4, P3, P2, and P1 from now on.</p>
+<p>Each page table contains 512 entries and one entry is 8 bytes, so they fit exactly in one page (<code>512*8 = 4096</code>). To translate a virtual address to a physical address the CPU<sup class="footnote-ref" id="fnref:hardware-lookup"><a rel="footnote" href="#fn:hardware-lookup">1</a></sup> will do the following<sup class="footnote-ref" id="fnref:virtual-physical-translation-source"><a rel="footnote" href="#fn:virtual-physical-translation-source">2</a></sup>:</p>
+<p><img src="/images/X86_Paging_64bit.svg" alt="translation of virtual to physical addresses in 64 bit mode"/></p>
+<ol>
+<li>Get the address of the P4 table from the CR3 register</li>
+<li>Use bits 39-47 (9 bits) as an index into P4 (<code>2^9 = 512 = number of entries</code>)</li>
+<li>Use the following 9 bits as an index into P3</li>
+<li>Use the following 9 bits as an index into P2</li>
+<li>Use the following 9 bits as an index into P1</li>
+<li>Use the last 12 bits as page offset (<code>2^12 = 4096 = page size</code>)</li>
+</ol>
+<p>But what happens to bits 48-63 of the 64-bit virtual address? Well, they can&rsquo;t be used. The “64-bit” long mode is in fact just a 48-bit mode. The bits 48-63 must be copies of bit 47, so each valid virtual address is still unique. For more information see <a href="https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details">Wikipedia</a>.</p>
+<p>An entry in the P4, P3, P2, and P1 tables consists of the page aligned 52-bit <em>physical</em> address of the frame or the next page table and the following bits that can be OR-ed in:</p>
+<table>
+<thead>
+<tr>
+<th>Bit(s)</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>present</td>
+<td>the page is currently in memory</td>
+</tr>
+<tr>
+<td>1</td>
+<td>writable</td>
+<td>it&rsquo;s allowed to write to this page</td>
+</tr>
+<tr>
+<td>2</td>
+<td>user accessible</td>
+<td>if not set, only kernel mode code can access this page</td>
+</tr>
+<tr>
+<td>3</td>
+<td>write through caching</td>
+<td>writes go directly to memory</td>
+</tr>
+<tr>
+<td>4</td>
+<td>disable cache</td>
+<td>no cache is used for this page</td>
+</tr>
+<tr>
+<td>5</td>
+<td>accessed</td>
+<td>the CPU sets this bit when this page is used</td>
+</tr>
+<tr>
+<td>6</td>
+<td>dirty</td>
+<td>the CPU sets this bit when a write to this page occurs</td>
+</tr>
+<tr>
+<td>7</td>
+<td>huge page/null</td>
+<td>must be 0 in P1 and P4, creates a 1GiB page in P3, creates a 2MiB page in P2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>global</td>
+<td>page isn&rsquo;t flushed from caches on address space switch (PGE bit of CR4 register must be set)</td>
+</tr>
+<tr>
+<td>9-11</td>
+<td>available</td>
+<td>can be used freely by the OS</td>
+</tr>
+<tr>
+<td>52-62</td>
+<td>available</td>
+<td>can be used freely by the OS</td>
+</tr>
+<tr>
+<td>63</td>
+<td>no execute</td>
+<td>forbid executing code on this page (the NXE bit in the EFER register must be set)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="set-up-identity-paging">Set Up Identity Paging</h3>
+<p>When we switch to long mode, paging will be activated automatically. The CPU will then try to read the instruction at the following address, but this address is now a virtual address. So we need to do <em>identity mapping</em>, i.e. map a physical address to the same virtual address.</p>
+<p>The <code>huge page</code> bit is now very useful to us. It creates a 2MiB (when used in P2) or even a 1GiB page (when used in P3). So we could map the first <em>gigabytes</em> of the kernel with only one P4 and one P3 table by using 1GiB pages. Unfortunately 1GiB pages are relatively new feature, for example Intel introduced it 2010 in the <a href="https://en.wikipedia.org/wiki/Westmere_(microarchitecture)#Technology">Westmere architecture</a>. Therefore we will use 2MiB pages instead to make our kernel compatible to older computers, too.</p>
+<p>To identity map the first gigabyte of our kernel with 512 2MiB pages, we need one P4, one P3, and one P2 table. Of course we will replace them with finer-grained tables later. But now that we&rsquo;re stuck with assembly, we choose the easiest way.</p>
+<p>We can add these two tables at the beginning<sup class="footnote-ref" id="fnref:page-table-alignment"><a rel="footnote" href="#fn:page-table-alignment">3</a></sup> of the <code>.bss</code> section:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nf">...</span>
+
+<span class="k">section</span> <span class="nv">.bss</span>
+<span class="k">align</span> <span class="mi">4096</span>
+<span class="nl">p4_table:</span>
+    <span class="kd">resb</span> <span class="mi">4096</span>
+<span class="nl">p3_table:</span>
+    <span class="kd">resb</span> <span class="mi">4096</span>
+<span class="nl">p2_table:</span>
+    <span class="kd">resb</span> <span class="mi">4096</span>
+<span class="nl">stack_bottom:</span>
+    <span class="kd">resb</span> <span class="mi">64</span>
+<span class="nl">stack_top:</span>
+</code></pre></div>
+<p>The <code>resb</code> command reserves the specified amount of bytes without initializing them, so the 8KiB don&rsquo;t need to be saved in the executable. The <code>align 4096</code> ensures that the page tables are page aligned.</p>
+<p>When GRUB creates the <code>.bss</code> section in memory, it will initialize it to <code>0</code>. So the <code>p4_table</code> is already valid (it contains 512 non-present entries) but not very useful. To be able to map 2MiB pages, we need to link P4&rsquo;s first entry to the <code>p3_table</code> and P3&rsquo;s first entry to the the <code>p2_table</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">set_up_page_tables:</span>
+    <span class="c1">; map first P4 entry to P3 table</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nv">p3_table</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mb">0b</span><span class="mi">11</span> <span class="c1">; present + writable</span>
+    <span class="nf">mov</span> <span class="p">[</span><span class="nv">p4_table</span><span class="p">],</span> <span class="nb">eax</span>
+
+    <span class="c1">; map first P3 entry to P2 table</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nv">p2_table</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mb">0b</span><span class="mi">11</span> <span class="c1">; present + writable</span>
+    <span class="nf">mov</span> <span class="p">[</span><span class="nv">p3_table</span><span class="p">],</span> <span class="nb">eax</span>
+
+    <span class="c1">; TODO map each P2 entry to a huge 2MiB page</span>
+    <span class="nf">ret</span>
+</code></pre></div>
+<p>We just set the present and writable bits (<code>0b11</code> is a binary number) in the aligned P3 table address and move it to the first 4 bytes of the P4 table. Then we do the same to link the first P3 entry to the <code>p2_table</code>.</p>
+<p>Now we need to map P2&rsquo;s first entry to a huge page starting at 0, P2&rsquo;s second entry to a huge page starting at 2MiB, P2&rsquo;s third entry to a huge page starting at 4MiB, and so on. It&rsquo;s time for our first (and only) assembly loop:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">set_up_page_tables:</span>
+    <span class="nf">...</span>
+    <span class="c1">; map each P2 entry to a huge 2MiB page</span>
+    <span class="nf">mov</span> <span class="nb">ecx</span><span class="p">,</span> <span class="mi">0</span>         <span class="c1">; counter variable</span>
+
+<span class="nl">.map_p2_table:</span>
+    <span class="c1">; map ecx-th P2 entry to a huge page that starts at address 2MiB*ecx</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="mh">0x200000</span>  <span class="c1">; 2MiB</span>
+    <span class="nf">mul</span> <span class="nb">ecx</span>            <span class="c1">; start address of ecx-th page</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mb">0b</span><span class="mi">10000011</span> <span class="c1">; present + writable + huge</span>
+    <span class="nf">mov</span> <span class="p">[</span><span class="nv">p2_table</span> <span class="o">+</span> <span class="nb">ecx</span> <span class="o">*</span> <span class="mi">8</span><span class="p">],</span> <span class="nb">eax</span> <span class="c1">; map ecx-th entry</span>
+
+    <span class="nf">inc</span> <span class="nb">ecx</span>            <span class="c1">; increase counter</span>
+    <span class="nf">cmp</span> <span class="nb">ecx</span><span class="p">,</span> <span class="mi">512</span>       <span class="c1">; if counter == 512, the whole P2 table is mapped</span>
+    <span class="nf">jne</span> <span class="nv">.map_p2_table</span>  <span class="c1">; else map the next entry</span>
+
+    <span class="nf">ret</span>
+</code></pre></div>
+<p>Maybe I first explain how an assembly loop works. We use the <code>ecx</code> register as a counter variable, just like <code>i</code> in a for loop. After mapping the <code>ecx-th</code> entry, we increase <code>ecx</code> by one and jump to <code>.map_p2_table</code> again if it&rsquo;s still smaller 512.</p>
+<p>To map a P2 entry we first calculate the start address of its page in <code>eax</code>: The <code>ecx-th</code> entry needs to be mapped to <code>ecx * 2MiB</code>. We use the <code>mul</code> operation for that, which multiplies <code>eax</code> with the given register and stores the result in <code>eax</code>. Then we set the <code>present</code>, <code>writable</code>, and <code>huge page</code> bits and write it to the P2 entry. The address of the <code>ecx-th</code> entry in P2 is <code>p2_table + ecx * 8</code>, because each entry is 8 bytes large.</p>
+<p>Now the first gigabyte (512 * 2MiB) of our kernel is identity mapped and thus accessible through the same physical and virtual addresses.</p>
+<h3 id="enable-paging">Enable Paging</h3>
+<p>To enable paging and enter long mode, we need to do the following:</p>
+<ol>
+<li>write the address of the P4 table to the CR3 register (the CPU will look there, see the <a href="#paging">paging section</a>)</li>
+<li>long mode is an extension of <a href="https://en.wikipedia.org/wiki/Physical_Address_Extension">Physical Address Extension</a> (PAE), so we need to enable PAE first</li>
+<li>Set the long mode bit in the EFER register</li>
+<li>Enable Paging</li>
+</ol>
+<p>The assembly function looks like this (some boring bit-moving to various registers):</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">enable_paging:</span>
+    <span class="c1">; load P4 to cr3 register (cpu uses this to access the P4 table)</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nv">p4_table</span>
+    <span class="nf">mov</span> <span class="nb">cr3</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="c1">; enable PAE-flag in cr4 (Physical Address Extension)</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">cr4</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
+    <span class="nf">mov</span> <span class="nb">cr4</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="c1">; set the long mode bit in the EFER MSR (model specific register)</span>
+    <span class="nf">mov</span> <span class="nb">ecx</span><span class="p">,</span> <span class="mh">0xC0000080</span>
+    <span class="nf">rdmsr</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span>
+    <span class="nf">wrmsr</span>
+
+    <span class="c1">; enable paging in the cr0 register</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">cr0</span>
+    <span class="nf">or</span> <span class="nb">eax</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span>
+    <span class="nf">mov</span> <span class="nb">cr0</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="nf">ret</span>
+</code></pre></div>
+<p>The <code>or eax, 1 &lt;&lt; X</code> is a common pattern. It sets the bit <code>X</code> in the eax register (<code>&lt;&lt;</code> is a left shift). Through <code>rdmsr</code> and <code>wrmsr</code> it&rsquo;s possible to read/write to the so-called model specific registers at address <code>ecx</code> (in this case <code>ecx</code> points to the EFER register).</p>
+<p>Finally we need to call our new functions in <code>start</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nf">...</span>
+<span class="nl">start:</span>
+    <span class="nf">mov</span> <span class="nb">esp</span><span class="p">,</span> <span class="nv">stack_top</span>
+
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_multiboot</span>
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_cpuid</span>
+    <span class="nf">call</span> <span class="nb">ch</span><span class="nv">eck_long_mode</span>
+
+    <span class="nf">call</span> <span class="nv">set_up_page_tables</span> <span class="c1">; new</span>
+    <span class="nf">call</span> <span class="nv">enable_paging</span>     <span class="c1">; new</span>
+
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">mov</span> <span class="kt">dword</span> <span class="p">[</span><span class="mh">0xb8000</span><span class="p">],</span> <span class="mh">0x2f4b2f4f</span>
+    <span class="nf">hlt</span>
+<span class="nf">...</span>
+</code></pre></div>
+<p>To test it we execute <code>make run</code>. If the green OK is still printed, we have successfully enabled paging!</p>
+<h2 id="the-global-descriptor-table">The Global Descriptor Table</h2>
+<p>After enabling Paging, the processor is in long mode. So we can use 64-bit instructions now, right? Wrong. The processor is still in some 32-bit compatibility submode. To actually execute 64-bit code, we need to set up a new Global Descriptor Table.
+The Global Descriptor Table (GDT) was used for <em>Segmentation</em> in old operating systems. I won&rsquo;t explain Segmentation but the <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/">Three Easy Pieces</a> OS book has good introduction (<a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf">PDF</a>) again.</p>
+<p>Today almost everyone uses Paging instead of Segmentation (and so do we). But on x86, a GDT is always required, even when you&rsquo;re not using Segmentation. GRUB has set up a valid 32-bit GDT for us but now we need to switch to a long mode GDT.</p>
+<p>A GDT always starts with a 0-entry and contains an arbitrary number of segment entries afterwards. An entry has the following format:</p>
+<table>
+<thead>
+<tr>
+<th>Bit(s)</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-15</td>
+<td>limit 0-15</td>
+<td>the first 2 byte of the segment&rsquo;s limit</td>
+</tr>
+<tr>
+<td>16-39</td>
+<td>base 0-23</td>
+<td>the first 3 byte of the segment&rsquo;s base address</td>
+</tr>
+<tr>
+<td>40</td>
+<td>accessed</td>
+<td>set by the CPU when the segment is accessed</td>
+</tr>
+<tr>
+<td>41</td>
+<td>read/write</td>
+<td>reads allowed for code segments / writes allowed for data segments</td>
+</tr>
+<tr>
+<td>42</td>
+<td>direction/conforming</td>
+<td>the segment grows down (i.e. base&gt;limit) for data segments / the current privilege level can be higher than the specified level for code segments (else it must match exactly)</td>
+</tr>
+<tr>
+<td>43</td>
+<td>executable</td>
+<td>if set, it&rsquo;s a code segment, else it&rsquo;s a data segment</td>
+</tr>
+<tr>
+<td>44</td>
+<td>descriptor type</td>
+<td>should be 1 for code and data segments</td>
+</tr>
+<tr>
+<td>45-46</td>
+<td>privilege</td>
+<td>the <a href="http://wiki.osdev.org/Security#Rings">ring level</a>: 0 for kernel, 3 for user</td>
+</tr>
+<tr>
+<td>47</td>
+<td>present</td>
+<td>must be 1 for valid selectors</td>
+</tr>
+<tr>
+<td>48-51</td>
+<td>limit 16-19</td>
+<td>bits 16 to 19 of the segment&rsquo;s limit</td>
+</tr>
+<tr>
+<td>52</td>
+<td>available</td>
+<td>freely available to the OS</td>
+</tr>
+<tr>
+<td>53</td>
+<td>64-bit</td>
+<td>should be set for 64-bit code segments</td>
+</tr>
+<tr>
+<td>54</td>
+<td>32-bit</td>
+<td>should be set for 32-bit segments</td>
+</tr>
+<tr>
+<td>55</td>
+<td>granularity</td>
+<td>if it&rsquo;s set, the limit is the number of pages, else it&rsquo;s a byte number</td>
+</tr>
+<tr>
+<td>56-63</td>
+<td>base 24-31</td>
+<td>the last byte of the base address</td>
+</tr>
+</tbody>
+</table>
+<p>We need one code and one data segment. They have the following bits set: <em>descriptor type</em>, <em>present</em>, and <em>read/write</em>. The code segment has additionally the <em>executable</em> and the <em>64-bit</em> flag. In Long mode, it&rsquo;s not possible to actually use the GDT entries for Segmentation and thus the base and limit fields must be 0. Translated to assembly the long mode GDT looks like this:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">section</span> <span class="nv">.rodata</span>
+<span class="nl">gdt64:</span>
+    <span class="kd">dq</span> <span class="mi">0</span> <span class="c1">; zero entry</span>
+    <span class="kd">dq</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">44</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">47</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">41</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">43</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">53</span><span class="p">)</span> <span class="c1">; code segment</span>
+    <span class="kd">dq</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">44</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">47</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">41</span><span class="p">)</span> <span class="c1">; data segment</span>
+</code></pre></div>
+<p>We chose the <code>.rodata</code> section here because it&rsquo;s initialized read-only data. The <code>dq</code> command stands for <code>define quad</code> and outputs a 64-bit constant (similar to <code>dw</code> and <code>dd</code>). And the <code>(1&lt;&lt;44)</code> is a <a href="http://www.cs.umd.edu/class/sum2003/cmsc311/Notes/BitOp/bitshift.html">bit shift</a> that sets bit 44.</p>
+<h3 id="loading-the-gdt">Loading the GDT</h3>
+<p>To load our new 64-bit GDT, we have to tell the CPU its address and length. We do this by passing the memory location of a special pointer structure to the <code>lgdt</code> (load GDT) instruction. The pointer structure looks like this:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">gdt64:</span>
+    <span class="nf">...</span>
+    <span class="kd">dq</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">44</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">47</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">41</span><span class="p">)</span> <span class="c1">; data segment</span>
+<span class="nl">.pointer:</span>
+    <span class="kd">dw</span> <span class="kc">$</span> <span class="o">-</span> <span class="nv">gdt64</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="kd">dq</span> <span class="nv">gdt64</span>
+</code></pre></div>
+<p>The first 2 bytes specify the (GDT length - 1). The <code>$</code> is a special symbol that is replaced with the current address (it&rsquo;s equal to <code>.pointer</code> in our case). The following 8 bytes specify the GDT address. Labels that start with a point (such as <code>.pointer</code>) are sub-labels of the last label without point. To access them, they must be prefixed with the parent label (e.g., <code>gdt64.pointer</code>).</p>
+<p>Now we can load the GDT in <code>start</code>:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="nl">start:</span>
+    <span class="nf">...</span>
+    <span class="nf">call</span> <span class="nv">enable_paging</span>
+
+    <span class="c1">; load the 64-bit GDT</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nv">gdt64.pointer</span><span class="p">]</span>
+
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">...</span>
+</code></pre></div>
+<p>When you still see the green <code>OK</code>, everything went fine and the new GDT is loaded. But we still can&rsquo;t execute 64-bit code: The selector registers such as the code selector <code>cs</code> and the data selector <code>ds</code> still have the values from the old GDT. To update them, we need to load them with the GDT offset (in bytes) of the desired segment. In our case the code segment starts at byte 8 of the GDT and the data segment at byte 16. Let&rsquo;s try it:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span>    <span class="nf">...</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nv">gdt64.pointer</span><span class="p">]</span>
+
+    <span class="c1">; update selectors</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span> <span class="mi">16</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="nb">ax</span>  <span class="c1">; stack selector</span>
+    <span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span> <span class="nb">ax</span>  <span class="c1">; data selector</span>
+    <span class="nf">mov</span> <span class="nb">es</span><span class="p">,</span> <span class="nb">ax</span>  <span class="c1">; extra selector</span>
+
+    <span class="c1">; print `OK` to screen</span>
+    <span class="nf">...</span>
+</code></pre></div>
+<p>It should still work. The segment selectors are only 16-bits large, so we use the 16-bit <code>ax</code> subregister. Notice that we didn&rsquo;t update the code selector <code>cs</code>. We will do that later. First we should replace this hardcoded <code>16</code> by adding some labels to our GDT:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">section</span> <span class="nv">.rodata</span>
+<span class="nl">gdt64:</span>
+    <span class="kd">dq</span> <span class="mi">0</span> <span class="c1">; zero entry</span>
+<span class="nl">.code:</span> <span class="nf">equ</span> <span class="kc">$</span> <span class="o">-</span> <span class="nv">gdt64</span> <span class="c1">; new</span>
+    <span class="kd">dq</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">44</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">47</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">41</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">43</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">53</span><span class="p">)</span> <span class="c1">; code segment</span>
+<span class="nl">.data:</span> <span class="nf">equ</span> <span class="kc">$</span> <span class="o">-</span> <span class="nv">gdt64</span> <span class="c1">; new</span>
+    <span class="kd">dq</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">44</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">47</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">41</span><span class="p">)</span> <span class="c1">; data segment</span>
+<span class="nl">.pointer:</span>
+    <span class="nf">...</span>
+</code></pre></div>
+<p>We can&rsquo;t just use normal labels here, as we need the table offset. We calculate this offset using the current address <code>$</code> and set the labels to this value using <a href="http://www.nasm.us/doc/nasmdoc3.html#section-3.2.4">equ</a>. Now we can use <code>gdt64.data</code> instead of 16 and <code>gdt64.code</code> instead of 8 and these labels will still work if we modify the GDT.</p>
+<p>Now there is just one last step left to enter the true 64-bit mode: We need to load <code>cs</code> with <code>gdt64.code</code>. But we can&rsquo;t do it through <code>mov</code>. The only way to reload the code selector is a <em>far jump</em> or a <em>far return</em>. These instructions work like a normal jump/return but change the code selector. We use a far jump to a long mode label:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">global</span> <span class="nv">start</span>
+<span class="k">extern</span> <span class="nv">long_mode_start</span>
+<span class="nf">...</span>
+<span class="nl">start:</span>
+    <span class="nf">...</span>
+    <span class="nf">lgdt</span> <span class="p">[</span><span class="nv">gdt64.pointer</span><span class="p">]</span>
+
+    <span class="c1">; update selectors</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span> <span class="nv">gdt64.data</span>
+    <span class="nf">mov</span> <span class="nb">ss</span><span class="p">,</span> <span class="nb">ax</span>
+    <span class="nf">mov</span> <span class="nb">ds</span><span class="p">,</span> <span class="nb">ax</span>
+    <span class="nf">mov</span> <span class="nb">es</span><span class="p">,</span> <span class="nb">ax</span>
+
+    <span class="nf">jmp</span> <span class="nv">gdt64.code</span><span class="p">:</span><span class="nv">long_mode_start</span>
+<span class="nf">...</span>
+</code></pre></div>
+<p>The actual <code>long_mode_start</code> label is defined as <code>extern</code>, so it&rsquo;s part of another file. The <code>jmp gdt64.code:long_mode_start</code> is the mentioned far jump.</p>
+<p>I put the 64-bit code into a new file to separate it from the 32-bit code, thereby we can&rsquo;t call the (now invalid) 32-bit code accidentally. The new file (I named it <code>long_mode_init.asm</code>) looks like this:</p>
+<div class="highlight"><pre><code class="language-nasm" data-lang="nasm"><span></span><span class="k">global</span> <span class="nv">long_mode_start</span>
+
+<span class="k">section</span> <span class="nv">.text</span>
+<span class="k">bits</span> <span class="mi">64</span>
+<span class="nl">long_mode_start:</span>
+    <span class="c1">; print `OKAY` to screen</span>
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x2f592f412f4b2f4f</span>
+    <span class="nf">mov</span> <span class="kt">qword</span> <span class="p">[</span><span class="mh">0xb8000</span><span class="p">],</span> <span class="nb">rax</span>
+    <span class="nf">hlt</span>
+</code></pre></div>
+<p>You should see a green <code>OKAY</code> on the screen. Some notes on this last step:</p>
+<ul>
+<li>As the CPU expects 64-bit instructions now, we use <code>bits 64</code></li>
+<li>We can now use the extended registers. Instead of the 32-bit <code>eax</code>, <code>ebx</code>, etc. we now have the 64-bit <code>rax</code>, <code>rbx</code>, …</li>
+<li>and we can write these 64-bit registers directly to memory using <code>mov qword</code> (quad word)</li>
+</ul>
+<p><em>Congratulations</em>! You have successfully wrestled through this CPU configuration and compatibility mode mess :).</p>
+<h2 id="what-s-next">What&rsquo;s next?</h2>
+<p>It&rsquo;s time to finally leave assembly behind<sup class="footnote-ref" id="fnref:leave-assembly-behind"><a rel="footnote" href="#fn:leave-assembly-behind">4</a></sup> and switch to some higher level language. We won&rsquo;t use C or C++ (not even a single line). Instead we will use the relatively new <a href="https://www.rust-lang.org/">Rust</a> language. It&rsquo;s a systems language without garbage collections but with guaranteed memory safety. Through a real type system and many abstractions it feels like a high-level language but can still be low-level enough for OS development. The <a href="/set-up-rust.html">next post</a> describes the Rust setup.</p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:hardware-lookup">In the x86 architecture, the page tables are <em>hardware walked</em>, so the CPU will look at the table on its own when it needs a translation. Other architectures, for example MIPS, just throw an exception and let the OS translate the virtual address.
+<a class="footnote-return" href="#fnref:hardware-lookup"><sup>[return]</sup></a></li>
+<li id="fn:virtual-physical-translation-source">Image source: <a href="https://commons.wikimedia.org/wiki/File:X86_Paging_64bit.svg">Wikipedia</a>, with modified font size, page table naming, and removed sign extended bits. The modified file is licensed under the Creative Commons Attribution-Share Alike 3.0 Unported license.
+<a class="footnote-return" href="#fnref:virtual-physical-translation-source"><sup>[return]</sup></a></li>
+<li id="fn:page-table-alignment">Page tables need to be page-aligned as the bits 0-11 are used for flags. By putting these tables at the beginning of <code>.bss</code>, the linker can just page align the whole section and we don&rsquo;t have unused padding bytes in between.
+<a class="footnote-return" href="#fnref:page-table-alignment"><sup>[return]</sup></a></li>
+<li id="fn:leave-assembly-behind">Actually we will still need some assembly in the future, but I&rsquo;ll try to minimize it.
+<a class="footnote-return" href="#fnref:leave-assembly-behind"><sup>[return]</sup></a></li>
+</ol>
+</div>
+</article>
+<hr>
+<div class="PageNavigation">
+<a class="prev" href="/multiboot-kernel.html">&laquo; A minimal x86 kernel</a>
+<a class="next" href="/set-up-rust.html">Set Up Rust &raquo;</a>
+</div>
+<hr>
+<div id="disqus_thread"></div>
+<script type="text/rocketscript">
+  (function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var d = document, s = d.createElement('script');
+
+    s.src = '//phil-opp.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<script type="text/rocketscript">
+  anchors.options = {
+    placement: 'left',
+  };
+  anchors.add('article h2, article h3, article h4, article h5, article h6');
+</script>
+</main>
+<footer class="footer">
+<small>
+&copy;
+<time datetime="2016">2016</time>. All rights reserved.
+<a href="/contact.html">Contact</a>
+</small>
+</footer>
+</div>
+</body>
+</html>

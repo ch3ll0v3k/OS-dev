@@ -1,0 +1,376 @@
+<html lang="en">
+<head>
+<title>Boot information format - Multiboot Specification version 0.6.96</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Multiboot Specification version 0.6.96">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Specification.html#Specification" title="Specification">
+<link rel="prev" href="Machine-state.html#Machine-state" title="Machine state">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 1995,96 Bryan Ford <baford@cs.utah.edu>
+
+Copyright (C) 1995,96 Erich Stefan Boleyn <erich@uruk.org>
+
+Copyright (C) 1999,2000,2001,2002,2005,2006,2009 Free Software Foundation, Inc.
+
+     Permission is granted to make and distribute verbatim copies of
+     this manual provided the copyright notice and this permission
+     notice are preserved on all copies.
+
+     Permission is granted to copy and distribute modified versions of
+     this manual under the conditions for verbatim copying, provided
+     also that the entire resulting derived work is distributed under
+     the terms of a permission notice identical to this one.
+
+     Permission is granted to copy and distribute translations of this
+     manual into another language, under the above conditions for
+     modified versions.
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Boot-information-format"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Machine-state.html#Machine-state">Machine state</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Specification.html#Specification">Specification</a>
+<hr>
+</div>
+
+<h3 class="section">3.3 Boot information format</h3>
+
+<p>FIXME: Split this chapter like the chapter &ldquo;OS image format&rdquo;.
+
+   <p>Upon entry to the operating system, the <code>EBX</code> register contains the
+physical address of a <dfn>Multiboot information</dfn> data structure,
+through which the boot loader communicates vital information to the
+operating system. The operating system can use or ignore any parts of
+the structure as it chooses; all information passed by the boot loader
+is advisory only.
+
+   <p>The Multiboot information structure and its related substructures may be
+placed anywhere in memory by the boot loader (with the exception of the
+memory reserved for the kernel and boot modules, of course). It is the
+operating system's responsibility to avoid overwriting this memory until
+it is done using it.
+
+   <p>The format of the Multiboot information structure (as defined so far)
+follows:
+
+<pre class="example">             +-------------------+
+     0       | flags             |    (required)
+             +-------------------+
+     4       | mem_lower         |    (present if flags[0] is set)
+     8       | mem_upper         |    (present if flags[0] is set)
+             +-------------------+
+     12      | boot_device       |    (present if flags[1] is set)
+             +-------------------+
+     16      | cmdline           |    (present if flags[2] is set)
+             +-------------------+
+     20      | mods_count        |    (present if flags[3] is set)
+     24      | mods_addr         |    (present if flags[3] is set)
+             +-------------------+
+     28 - 40 | syms              |    (present if flags[4] or
+             |                   |                flags[5] is set)
+             +-------------------+
+     44      | mmap_length       |    (present if flags[6] is set)
+     48      | mmap_addr         |    (present if flags[6] is set)
+             +-------------------+
+     52      | drives_length     |    (present if flags[7] is set)
+     56      | drives_addr       |    (present if flags[7] is set)
+             +-------------------+
+     60      | config_table      |    (present if flags[8] is set)
+             +-------------------+
+     64      | boot_loader_name  |    (present if flags[9] is set)
+             +-------------------+
+     68      | apm_table         |    (present if flags[10] is set)
+             +-------------------+
+     72      | vbe_control_info  |    (present if flags[11] is set)
+     76      | vbe_mode_info     |
+     80      | vbe_mode          |
+     82      | vbe_interface_seg |
+     84      | vbe_interface_off |
+     86      | vbe_interface_len |
+             +-------------------+
+</pre>
+   <p>The first longword indicates the presence and validity of other fields
+in the Multiboot information structure. All as-yet-undefined bits must
+be set to zero by the boot loader. Any set bits that the operating
+system does not understand should be ignored. Thus, the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo;
+field also functions as a version indicator, allowing the Multiboot
+information structure to be expanded in the future without breaking
+anything.
+
+   <p>If bit 0 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set, then the &lsquo;<samp><span class="samp">mem_*</span></samp>&rsquo; fields
+are valid. &lsquo;<samp><span class="samp">mem_lower</span></samp>&rsquo; and &lsquo;<samp><span class="samp">mem_upper</span></samp>&rsquo; indicate the amount of
+lower and upper memory, respectively, in kilobytes. Lower memory starts
+at address 0, and upper memory starts at address 1 megabyte. The maximum
+possible value for lower memory is 640 kilobytes. The value returned for
+upper memory is maximally the address of the first upper memory hole
+minus 1 megabyte. It is not guaranteed to be this value.
+
+   <p>If bit 1 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set, then the &lsquo;<samp><span class="samp">boot_device</span></samp>&rsquo;
+field is valid, and indicates which <span class="sc">bios</span> disk device the boot
+loader loaded the OS image from. If the OS image was not loaded from a
+<span class="sc">bios</span> disk, then this field must not be present (bit 3 must be
+clear). The operating system may use this field as a hint for
+determining its own <dfn>root</dfn> device, but is not required to. The
+&lsquo;<samp><span class="samp">boot_device</span></samp>&rsquo; field is laid out in four one-byte subfields as
+follows:
+
+<pre class="example">     +-------+-------+-------+-------+
+     | part3 | part2 | part1 | drive |
+     +-------+-------+-------+-------+
+</pre>
+   <p>The first byte contains the <span class="sc">bios</span> drive number as understood by the
+<span class="sc">bios</span> INT 0x13 low-level disk interface: e.g. 0x00 for the first
+floppy disk or 0x80 for the first hard disk.
+
+   <p>The three remaining bytes specify the boot partition. &lsquo;<samp><span class="samp">part1</span></samp>&rsquo;
+specifies the <dfn>top-level</dfn> partition number, &lsquo;<samp><span class="samp">part2</span></samp>&rsquo; specifies a
+<dfn>sub-partition</dfn> in the top-level partition, etc. Partition numbers
+always start from zero. Unused partition bytes must be set to 0xFF. For
+example, if the disk is partitioned using a simple one-level DOS
+partitioning scheme, then &lsquo;<samp><span class="samp">part1</span></samp>&rsquo; contains the DOS partition
+number, and &lsquo;<samp><span class="samp">part2</span></samp>&rsquo; and &lsquo;<samp><span class="samp">part3</span></samp>&rsquo; are both 0xFF. As another
+example, if a disk is partitioned first into DOS partitions, and then
+one of those DOS partitions is subdivided into several BSD partitions
+using BSD's <dfn>disklabel</dfn> strategy, then &lsquo;<samp><span class="samp">part1</span></samp>&rsquo; contains the DOS
+partition number, &lsquo;<samp><span class="samp">part2</span></samp>&rsquo; contains the BSD sub-partition within
+that DOS partition, and &lsquo;<samp><span class="samp">part3</span></samp>&rsquo; is 0xFF.
+
+   <p>DOS extended partitions are indicated as partition numbers starting from
+4 and increasing, rather than as nested sub-partitions, even though the
+underlying disk layout of extended partitions is hierarchical in
+nature. For example, if the boot loader boots from the second extended
+partition on a disk partitioned in conventional DOS style, then
+&lsquo;<samp><span class="samp">part1</span></samp>&rsquo; will be 5, and &lsquo;<samp><span class="samp">part2</span></samp>&rsquo; and &lsquo;<samp><span class="samp">part3</span></samp>&rsquo; will both be
+0xFF.
+
+   <p>If bit 2 of the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; longword is set, the &lsquo;<samp><span class="samp">cmdline</span></samp>&rsquo; field
+is valid, and contains the physical address of the command line to
+be passed to the kernel. The command line is a normal C-style
+zero-terminated string.
+
+   <p>If bit 3 of the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, then the &lsquo;<samp><span class="samp">mods</span></samp>&rsquo; fields
+indicate to the kernel what boot modules were loaded along with the
+kernel image, and where they can be found. &lsquo;<samp><span class="samp">mods_count</span></samp>&rsquo; contains
+the number of modules loaded; &lsquo;<samp><span class="samp">mods_addr</span></samp>&rsquo; contains the physical
+address of the first module structure. &lsquo;<samp><span class="samp">mods_count</span></samp>&rsquo; may be zero,
+indicating no boot modules were loaded, even if bit 1 of &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is
+set. Each module structure is formatted as follows:
+
+<pre class="example">             +-------------------+
+     0       | mod_start         |
+     4       | mod_end           |
+             +-------------------+
+     8       | string            |
+             +-------------------+
+     12      | reserved (0)      |
+             +-------------------+
+</pre>
+   <p>The first two fields contain the start and end addresses of the boot
+module itself. The &lsquo;<samp><span class="samp">string</span></samp>&rsquo; field provides an arbitrary string to
+be associated with that particular boot module; it is a zero-terminated
+ASCII string, just like the kernel command line. The &lsquo;<samp><span class="samp">string</span></samp>&rsquo; field
+may be 0 if there is no string associated with the module. Typically the
+string might be a command line (e.g. if the operating system treats boot
+modules as executable programs), or a pathname (e.g. if the operating
+system treats boot modules as files in a file system), but its exact use
+is specific to the operating system. The &lsquo;<samp><span class="samp">reserved</span></samp>&rsquo; field must be
+set to 0 by the boot loader and ignored by the operating system.
+
+   <p><strong>Caution:</strong> Bits 4 &amp; 5 are mutually exclusive.
+
+   <p>If bit 4 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set, then the following fields in
+the Multiboot information structure starting at byte 28 are valid:
+
+<pre class="example">             +-------------------+
+     28      | tabsize           |
+     32      | strsize           |
+     36      | addr              |
+     40      | reserved (0)      |
+             +-------------------+
+</pre>
+   <p>These indicate where the symbol table from an a.out kernel image can be
+found. &lsquo;<samp><span class="samp">addr</span></samp>&rsquo; is the physical address of the size (4-byte unsigned
+long) of an array of a.out format <dfn>nlist</dfn> structures, followed
+immediately by the array itself, then the size (4-byte unsigned long) of
+a set of zero-terminated <span class="sc">ascii</span> strings (plus sizeof(unsigned long) in
+this case), and finally the set of strings itself. &lsquo;<samp><span class="samp">tabsize</span></samp>&rsquo; is
+equal to its size parameter (found at the beginning of the symbol
+section), and &lsquo;<samp><span class="samp">strsize</span></samp>&rsquo; is equal to its size parameter (found at
+the beginning of the string section) of the following string table to
+which the symbol table refers. Note that &lsquo;<samp><span class="samp">tabsize</span></samp>&rsquo; may be 0,
+indicating no symbols, even if bit 4 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set.
+
+   <p>If bit 5 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set, then the following fields in
+the Multiboot information structure starting at byte 28 are valid:
+
+<pre class="example">             +-------------------+
+     28      | num               |
+     32      | size              |
+     36      | addr              |
+     40      | shndx             |
+             +-------------------+
+</pre>
+   <p>These indicate where the section header table from an ELF kernel is, the
+size of each entry, number of entries, and the string table used as the
+index of names. They correspond to the &lsquo;<samp><span class="samp">shdr_*</span></samp>&rsquo; entries
+(&lsquo;<samp><span class="samp">shdr_num</span></samp>&rsquo;, etc.) in the Executable and Linkable Format (<span class="sc">elf</span>)
+specification in the program header. All sections are loaded, and the
+physical address fields of the <span class="sc">elf</span> section header then refer to where
+the sections are in memory (refer to the i386 <span class="sc">elf</span> documentation for
+details as to how to read the section header(s)). Note that
+&lsquo;<samp><span class="samp">shdr_num</span></samp>&rsquo; may be 0, indicating no symbols, even if bit 5 in the
+&lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set.
+
+   <p>If bit 6 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; word is set, then the &lsquo;<samp><span class="samp">mmap_*</span></samp>&rsquo; fields
+are valid, and indicate the address and length of a buffer containing a
+memory map of the machine provided by the <span class="sc">bios</span>. &lsquo;<samp><span class="samp">mmap_addr</span></samp>&rsquo; is
+the address, and &lsquo;<samp><span class="samp">mmap_length</span></samp>&rsquo; is the total size of the buffer. The
+buffer consists of one or more of the following size/structure pairs
+(&lsquo;<samp><span class="samp">size</span></samp>&rsquo; is really used for skipping to the next pair):
+
+<pre class="example">             +-------------------+
+     -4      | size              |
+             +-------------------+
+     0       | base_addr         |
+     8       | length            |
+     16      | type              |
+             +-------------------+
+</pre>
+   <p>where &lsquo;<samp><span class="samp">size</span></samp>&rsquo; is the size of the associated structure in bytes, which
+can be greater than the minimum of 20 bytes. &lsquo;<samp><span class="samp">base_addr</span></samp>&rsquo; is the
+starting address. &lsquo;<samp><span class="samp">length</span></samp>&rsquo; is the size of the memory region in bytes. 
+&lsquo;<samp><span class="samp">type</span></samp>&rsquo; is the variety of address range represented, where a
+value of 1 indicates available <span class="sc">ram</span>, and all other values currently
+indicated a reserved area.
+
+   <p>The map provided is guaranteed to list all standard <span class="sc">ram</span> that should
+be available for normal use.
+
+   <p>If bit 7 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, then the &lsquo;<samp><span class="samp">drives_*</span></samp>&rsquo; fields
+are valid, and indicate the address of the physical address of the first
+drive structure and the size of drive structures. &lsquo;<samp><span class="samp">drives_addr</span></samp>&rsquo;
+is the address, and &lsquo;<samp><span class="samp">drives_length</span></samp>&rsquo; is the total size of drive
+structures. Note that &lsquo;<samp><span class="samp">drives_length</span></samp>&rsquo; may be zero. Each drive
+structure is formatted as follows:
+
+<pre class="example">             +-------------------+
+     0       | size              |
+             +-------------------+
+     4       | drive_number      |
+             +-------------------+
+     5       | drive_mode        |
+             +-------------------+
+     6       | drive_cylinders   |
+     8       | drive_heads       |
+     9       | drive_sectors     |
+             +-------------------+
+     10 - xx | drive_ports       |
+             +-------------------+
+</pre>
+   <p>The &lsquo;<samp><span class="samp">size</span></samp>&rsquo; field specifies the size of this structure. The size
+varies, depending on the number of ports. Note that the size may not be
+equal to (10 + 2 * the number of ports), because of an alignment.
+
+   <p>The &lsquo;<samp><span class="samp">drive_number</span></samp>&rsquo; field contains the BIOS drive number. The
+&lsquo;<samp><span class="samp">drive_mode</span></samp>&rsquo; field represents the access mode used by the boot
+loader. Currently, the following modes are defined:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">0</span></samp>&rsquo;<dd>CHS mode (traditional cylinder/head/sector addressing mode).
+
+     <br><dt>&lsquo;<samp><span class="samp">1</span></samp>&rsquo;<dd>LBA mode (Logical Block Addressing mode). 
+</dl>
+
+   <p>The three fields, &lsquo;<samp><span class="samp">drive_cylinders</span></samp>&rsquo;, &lsquo;<samp><span class="samp">drive_heads</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">drive_sectors</span></samp>&rsquo;, indicate the geometry of the drive detected by the
+<span class="sc">bios</span>. &lsquo;<samp><span class="samp">drive_cylinders</span></samp>&rsquo; contains the number of the
+cylinders. &lsquo;<samp><span class="samp">drive_heads</span></samp>&rsquo; contains the number of the
+heads. &lsquo;<samp><span class="samp">drive_sectors</span></samp>&rsquo; contains the number of the sectors per
+track.
+
+   <p>The &lsquo;<samp><span class="samp">drive_ports</span></samp>&rsquo; field contains the array of the I/O ports used
+for the drive in the <span class="sc">bios</span> code. The array consists of zero or more
+unsigned two-bytes integers, and is terminated with zero. Note that the
+array may contain any number of I/O ports that are not related to the
+drive actually (such as <span class="sc">dma</span> controller's ports).
+
+   <p>If bit 8 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, then the &lsquo;<samp><span class="samp">config_table</span></samp>&rsquo; field
+is valid, and indicates the address of the <span class="sc">rom</span> configuration table
+returned by the <dfn>GET CONFIGURATION</dfn> <span class="sc">bios</span> call. If the <span class="sc">bios</span>
+call fails, then the size of the table must be <em>zero</em>.
+
+   <p>If bit 9 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, the &lsquo;<samp><span class="samp">boot_loader_name</span></samp>&rsquo; field
+is valid, and contains the physical address of the name of a boot
+loader booting the kernel. The name is a normal C-style zero-terminated
+string.
+
+   <p>If bit 10 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, the &lsquo;<samp><span class="samp">apm_table</span></samp>&rsquo; field is
+valid, and contains the physical address of an <span class="sc">apm</span> table defined as
+below:
+
+<pre class="example">             +----------------------+
+     0       | version              |
+     2       | cseg                 |
+     4       | offset               |
+     8       | cseg_16              |
+     10      | dseg                 |
+     12      | flags                |
+     14      | cseg_len             |
+     16      | cseg_16_len          |
+     18      | dseg_len             |
+             +----------------------+
+</pre>
+   <p>The fields &lsquo;<samp><span class="samp">version</span></samp>&rsquo;, &lsquo;<samp><span class="samp">cseg</span></samp>&rsquo;, &lsquo;<samp><span class="samp">offset</span></samp>&rsquo;, &lsquo;<samp><span class="samp">cseg_16</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">dseg</span></samp>&rsquo;, &lsquo;<samp><span class="samp">flags</span></samp>&rsquo;, &lsquo;<samp><span class="samp">cseg_len</span></samp>&rsquo;, &lsquo;<samp><span class="samp">cseg_16_len</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">dseg_len</span></samp>&rsquo; indicate the version number, the protected mode 32-bit
+code segment, the offset of the entry point, the protected mode 16-bit
+code segment, the protected mode 16-bit data segment, the flags, the
+length of the protected mode 32-bit code segment, the length of the
+protected mode 16-bit code segment, and the length of the protected mode
+16-bit data segment, respectively. Only the field &lsquo;<samp><span class="samp">offset</span></samp>&rsquo; is 4
+bytes, and the others are 2 bytes. See
+<a href="http://www.microsoft.com/hwdev/busbios/amp_12.htm">Advanced Power Management (APM) BIOS Interface Specification</a>, for more information.
+
+   <p>If bit 11 in the &lsquo;<samp><span class="samp">flags</span></samp>&rsquo; is set, the graphics table is available. 
+This must only be done if the kernel has indicated in the
+&lsquo;<samp><span class="samp">Multiboot Header</span></samp>&rsquo; that it accepts a graphics mode.
+
+   <p>The fields &lsquo;<samp><span class="samp">vbe_control_info</span></samp>&rsquo; and &lsquo;<samp><span class="samp">vbe_mode_info</span></samp>&rsquo; contain
+the physical addresses of <span class="sc">vbe</span> control information returned by the
+<span class="sc">vbe</span> Function 00h and <span class="sc">vbe</span> mode information returned by the
+<span class="sc">vbe</span> Function 01h, respectively.
+
+   <p>The field &lsquo;<samp><span class="samp">vbe_mode</span></samp>&rsquo; indicates current video mode in the format
+specified in <span class="sc">vbe</span> 3.0.
+
+   <p>The rest fields &lsquo;<samp><span class="samp">vbe_interface_seg</span></samp>&rsquo;, &lsquo;<samp><span class="samp">vbe_interface_off</span></samp>&rsquo;, and
+&lsquo;<samp><span class="samp">vbe_interface_len</span></samp>&rsquo; contain the table of a protected mode interface
+defined in <span class="sc">vbe</span> 2.0+. If this information is not available, those
+fields contain zero. Note that <span class="sc">vbe</span> 3.0 defines another protected
+mode interface which is incompatible with the old one. If you want to
+use the new protected mode interface, you will have to find the table
+yourself.
+
+   <p>The fields for the graphics table are designed for <span class="sc">vbe</span>, but
+Multiboot boot loaders may simulate <span class="sc">vbe</span> on non-<span class="sc">vbe</span> modes, as
+if they were <span class="sc">vbe</span> modes.
+
+   </body></html>
+

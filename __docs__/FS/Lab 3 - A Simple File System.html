@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>Lab 3 - A Simple File System</TITLE>
+</HEAD>
+<BODY>
+<meta name="keywords" value="04sdfs">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+<H1>Lab 3 - A Simple File System</H1>
+<P>
+<b> Due date of preliminary design: April 11</b> <BR> 
+<b> Due date of Stage 1 (disk library): April 11</b> <BR> 
+<b> Due date of Stage 2 (intermediate system): April 25</b> <BR> 
+<b> Due date of Stage 3 (final system): May 6</b> <BR> 
+<b> Due date of design paper: May 8</b> <BR>
+<P>
+<H2><A NAME=SECTION00010000000000000000> Introduction</A></H2>
+<P>
+The goal of this project is to obtain experience with file systems. A file
+system is a core component of most operating systems and the implementation of
+this system will provide experience designing complex systems, one of the major
+topics in 6.033.  File systems, by their nature, incorporate aspects of naming,
+fault-tolerance, concurrency control, and storage management. In addition,
+issues of security and networking appear in more ambitious designs.
+<P>
+
+<P>
+To help you in designing your file system, this project is organized
+into a couple stages.  In stage one, you are asked to build a disk
+emulation library that will emulate a disk on top of a single file.
+Its interface includes functions to read, write, and flush disk
+blocks.  In stage two, you will build a simple file system on top of
+the disk interface you built in stage one.    This file
+system should provide efficient storage.  In particular, access to file
+blocks should be efficient and the amount of metadata needed to
+implement the file system should be small.  In stage three, you are
+asked to make your file system robust in the face of failure (i.e., it
+should not corrupt data if it crashes).  To test robustness, we 
+will crash your file system at arbitrary points in its
+code: your file system should be able to recover to an internally consistent 
+state irrespective of where these crashes occur.
+<P>
+The final result of your project is a complete document detailing the design
+and implementation of your simple file system (SFS), the code that implements
+the design, and a short evaluation of your file system in terms of performance
+and functionality.  This document can be used as the paper for the second
+design project in 6.033. The paper is due on May 8.
+<P>
+Unlike the RPC project, you are strongly encouraged to execute this
+project in teams of three. Find someone else to work with and send mail
+to Constantine Sapuntzakis (csapuntz@lcs.mit.edu), telling him who your 
+teammate is. Make sure to do this right away. The first part of the project is
+due very quickly (April 11).
+<P>
+The rest of this handout touches on some of the design and implementation
+issues, and provides some suggestions on a possible approach. We suggest you
+read the whole document before starting to work on Stage 1 so that you have a
+good idea how the whole project fits together and can plan your time carefully.
+<P>
+<H2><A NAME=SECTION00020000000000000000> Stage 1: Disk library</A></H2>
+<P>
+A file system must be able to store its data in a persistent manner.
+The persistent medium in your assignment will be disk.  Your task is to
+design a simple disk library that reads and writes 4-Kbyte disk blocks.
+Your file system will be built on top of this interface.
+<P>
+Since we do not have a raw disk for each of you, your disk library will use a
+single (large) Unix file to emulate a disk. Your disk library will divide
+the file into 4-Kbyte blocks.  Blocks will be written using a ``block
+number.''  You will use this number to compute the offset into the Unix file.
+For instance, disk block 10 will be at byte offset <TT>10 * 4096 = 40960</TT>.
+<P>
+The disk library's interface (which we define) is similar to that of
+raw hardware provides:  as a result we should be able to
+incorporate your file system code into a real OS with a minimal of
+fuss.  OS software is frequently developed at user-level using
+emulation.  It allows ease of debugging and use.  Importantly, it also
+removes the need for us to buy each student a disk.
+<P>
+The disk interface is as follows:
+<PRE>int openDisk(char *filename, int nbytes);
+int readBlock(int disk, int blocknr, void *block);
+int writeBlock(int disk, int blocknr, void *block);
+void syncDisk();
+</PRE>
+The calls return an error if the underlying Unix system calls fail.
+<P>
+<tt> openDisk</tt> opens a file (<tt> filename</tt>) for reading and writing
+and returns a descriptor used to access the disk.
+The file size is fixed at <tt> nbytes</tt>.  If <tt> filename</tt> does not
+already exist, <tt> openDisk</tt> creates it.
+<P>
+<tt> readBlock</tt> reads disk block <tt> blocknr</tt> from the disk pointed
+to by <tt> disk</tt> into a buffer pointed to by <tt> block</tt>.
+<P>
+<tt> writeBlock</tt> writes the data in <tt> block</tt> to disk block <tt> blocknr</tt> 
+pointed to by <tt> disk</tt>.
+<P>
+<tt> syncDisk</tt> forces all outstanding writes to disk.
+<P>
+Your task is to implement this interface. While this task should be
+simple, you have only a single week to do it.  The implementation will
+require that you understand how to open, read, write, and seek files
+under UNIX. Section 7.4 in Tanenbaum contains a short description of
+the UNIX system calls.  The ones on Athena are mostly identical but
+verify their semantics in the man pages (``man 2 open'').
+<P>
+<H3><A NAME=SECTION00021000000000000000> What to hand in?</A></H3>
+<P>
+The due date of this part of the project is April 11. Since the rest of the
+project builds forth on the disk library, make sure you make the deadline.
+Send us a pathname to a directory in your Athena locker that contains the
+source code (including Makefile) and documentation. Also, make sure you have
+tested your disk library.
+<P>
+<H2><A NAME=SECTION00030000000000000000> Stage 2: File system</A></H2>
+<P>
+The next assignment is to implement a file system using your disk library.
+<P>
+There are three main challenges in implementing this local filesystem: (1) the
+main-memory and on-disk data structures to map files names onto disk blocks and
+to keep track of free blocks; (2) the disk layout; and (3) the recovery
+strategy. To keep the task manageable, you may assume that there is a single
+client using the file system; the single client may have multiple files open,
+though. We discuss each challenge in turn.
+<P>
+This assignment revolves around three of the functions provided
+by a file system: 
+<OL><LI> Naming.  Human-readable file names must be mapped to the
+	disk blocks that they are associated with.
+<P>
+	<LI> Organization.  File systems (typically) have mechanisms
+	humans can use to organize information.  Computer scientists
+	like hierarchies, as a result, the tree directory structure
+	has become the dominant mechanism for organization.
+<P>
+	<LI> Persistence.  Data is entrusted to the file system and
+	is expected to remain there (uncorrupted and undeleted) until
+	an explicit request is made to delete it.  This aspect includes
+	support for allocation and deletion of files; as syntactic sugar,
+	file systems also provide mechanisms to modify existing files.
+</OL>
+Important issues that we will treat lightly include protection
+(ensuring only authorized programs can read/write/delete/create
+files) and performance (disks are slow: most research on file 
+systems concentrates solely on performance).
+<P>
+To make the assignment concrete, we discuss a common file system
+organization below: you are encouraged to construct your own ideas, and 
+to simply use this discussion to understand the issues involved.
+<P>
+There are three main data structures file systems manage:
+<OL><LI> A disk block freelist.  This is a simple data structure
+(for instance, a bitmap) that tracks what blocks on the disk have been
+allocated.  This data structure is, for obvious reasons, persistent (i.e.,
+on disk).  You will have to establish some convention for locating it
+across reboots.
+<P>
+	<LI> Inodes.  An inode is persistent memory that contains
+pointers to disk blocks or to ``indirect blocks'' (you can think of 
+these as other inodes).  Inodes are used to map a file to the
+disk representation of a file: each file has its own inode, the inode
+has pointers to all disk blocks that make up that file.
+<P>
+	<LI> Directories.  Directories are persistent mappings of names
+to inode numbers for all the files and directories that the directory
+is responsible for.
+</OL>
+<P>
+Given this class of objects, the following algorithms are used
+to create, grow, and delete a file.
+<P>
+The actions to create file:
+<OL><LI> Allocate and initialize an inode.
+	<LI> Write the mapping between the inode and file name in the
+	file's directory (usually the current working directory).  
+	<LI> Write this information to disk.
+</OL>
+<P>
+To grow a file:
+<OL><LI> Load the file's associated inode into memory.
+	<LI> Allocate disk blocks (mark them as allocated in your freelist).
+	<LI> Modify the file's inode to point to these blocks.
+	<LI> Write the data the user gives to these blocks.
+	<LI> Flush all modifications to disk.
+</OL>
+<P>
+To shrink a file:
+<OL><LI> Load the file's associated inode into memory.
+	<LI> Remove pointers to the disk blocks from the inode.
+	<LI> Mark the disk blocks as free.
+	<LI> Flush all modifications to disk.
+</OL>
+<P>
+Modifying directories is similar.
+<P>
+Note that we are careful about when modifications to file system state
+are made persistent.  For instance, in the case of creating a file, if
+we flush modifications to disk after stage (1), a crash that happened
+before (2) would cause us to have a disk block allocated that was not
+used.  If we did not flush modifications to disk at all, then a crash
+would cause the file to be lost.  You will have to pay particular
+attention to this and similar problems in the third part of the
+assignment.
+<P>
+While your file system does not have to survive random crashes at this
+stage, it does
+have to maintain state persistently.  In particular, it should be able
+to run, be powered down, and then be ``rebooted'' in the state that it
+was in when it was shutdown (i.e., all files that were written at
+shutdown time should still be there, and no garbage files should
+suddenly appear).
+<P>
+In addition to correctness, you should consider space efficiency in this part
+of the assignment: your file system should have a low overhead per byte
+of file data.
+<P>
+We evaluate your implementation on how efficient it is, the storage overhead on
+disk, and how well it recovers from failures. You do not have to implement
+block caching. If you implement caching correctly, however, we will give you
+bonus points.
+<P>
+<H3><A NAME=SECTION00031000000000000000> Interface and Implementation</A></H3>
+<P>
+How will you implement this file system? In many modern operating systems, the
+file system is implemented in the kernel, which is difficult to modify
+and debug (especially when you don't have the source code!). Another option
+would be to have you implement a library of filesystem functions (similar idea
+to the RPC assignment) and then implement some test applications against
+that library. The advantage of this approach is that is significantly easier to
+debug. The disadvantage is that you cannot run unmodified applications against
+it. A third option, the one we chose, is to have you implement your file
+system as an NFS server on your local machine. You then mount that NFS server
+and the file system becomes part of your file system name space.
+<P>
+This approach requires you to understand some of intricacies of NFS. You 
+will find RFC 1094 (http://web.mit.edu/6.033/lab/handouts/rfc1094.txt)
+useful.
+<P>
+The source code for the NFS server skeleton (without a complete filesystem)
+will be posted in /mit/6.033/lab/lab2/src. It should run under NetBSD,
+Linux, and Solaris.
+<P>
+A follow-on handout will talk about the NFS server issues in more detail.
+<P>
+<H3><A NAME=SECTION00032000000000000000> What to hand in?</A></H3>
+<P>
+The due date of this part of the project is April 25. Send us a pathname to a
+directory in your Athena locker that contains the source code (including
+Makefile) and documentation. Also, make sure you have tested your file system
+extensively.
+<P>
+<H2><A NAME=SECTION00040000000000000000> Stage 3: Robustness</A></H2>
+<P>
+File systems are different from most other parts of the computer system
+in that they are <em> persistent</em>: modifications to disk survive power
+cycles.  In contrast, most other state (e.g., main memory, registers,
+TLB's, and, as a result, data structures) is not persistent.  Much
+reasoning about robustness in a file system stem from the problem of
+moving state from the non-persistent realm to the persistent realm in a
+series of discrete steps in such a way that a failure can occur at any
+point in time and still leave the system in a usable state.  For instance, SFS
+will commonly write data to a file.  This will involve a number of
+steps: allocating space for the file on disk, modifying the file's
+inode, modifying the disk block freelist, and finally, writing the data
+to memory.  SFS must guarantee that a failure after any of these will
+not corrupt the system (e.g., will not lose disk blocks, delete existing
+disk blocks, lose inodes, etc.). This struggle involves mechanical
+operations (such as writing transaction software by hand) and semantic
+ struggles (such as defining exactly what ``usable'' means).  In talking
+about failure, more so  than other domains, precise definitions are not
+semantic quibbles.
+<P>
+    The first part of this assignment will involve defining the
+semantics of failure: at what point is the modified state of a file made
+persistent?  For instance, if I write a single byte to disk, am I
+guaranteed that when the library call returns the byte has been written?
+Or do I have to perform a sync by hand?  If I delete a file and the
+system crashes, will the file remain deleted?  You should define a
+non-trivial (i.e., useful) recovery model that balances the utility
+of consistent state on disk with the expense of synchronous disk 
+updates.
+<P>
+Operationally, this part of the assignment will involve working through
+your code so that a failure at any point in time will not corrupt the
+system.  You may require that a program be run at boot time to
+reconstruct parts of SFS, but it should always be able to be
+recovered to a usable state.
+<P>
+Failures to guard against:
+<UL><LI> Use of allocated disk blocks.  Blocks may have been
+	allocated to a particular file but the freelist was only
+	modified in memory, not on disk.
+<P>
+	<LI> Loss of disk blocks.  Blocks may have been removed
+	from the freelist but not yet had an inode persistently 
+	modified to point to them.
+<P>
+	<LI> Loss of data.  Data that has been written to disk
+	should stay there.
+</UL>
+There are, of course, many other failures possible.  This list
+should give their flavor.
+<P>
+We will test this part of the assignment by crashing your program at
+random points in time and then rerunning it (repeatedly).
+<P>
+<H3><A NAME=SECTION00041000000000000000> What to hand in?</A></H3>
+<P>
+The due date of this part of the project is May 6. Send us a pathname to a
+directory in your Athena locker that contains the source code (including
+Makefile) and documentation. In this part, we will be crashing your file system
+and check whether it recovers correctly.
+<P>
+The due date is set on May 6 so that your design paper and your software are
+not due on the same date.
+<P>
+<P><A NAME=SECTIONREF><H2>References</H2></A><P>
+<DL COMPACT></DL>
+<BR> <HR>
+<P><ADDRESS>
+Constantine Sapuntzakis
+Thu Apr 10 23:34:01 EDT 1997
+</ADDRESS>
+</BODY>

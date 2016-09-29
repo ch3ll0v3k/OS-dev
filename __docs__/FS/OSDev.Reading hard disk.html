@@ -1,0 +1,1472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - Reading hard disk</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://f.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://f.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://f.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://f.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://f.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://f.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - Reading hard disk" href="http://f.osdev.org/feed.php?f=1&amp;t=29469" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php?sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php?sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php?sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Tue Sep 27, 2016 9:01 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">View unanswered posts</a> | <a href="./search.php?search_id=active_topics&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=eb37c8ced171ad6ceed41a572113fd3d">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=29469&amp;start=0&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Reading hard disk</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=29469&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 15 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=29469&amp;start=0&amp;sid=eb37c8ced171ad6ceed41a572113fd3d&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=29469&amp;view=previous&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=29469&amp;view=next&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250276"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250276&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250276"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Jul 22, 2015 8:48 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I'm implementing a basic hard disk driver, reading it using lba28. There are a couple places where I may have gone wrong with this: I attach the virtual disk file (a .raw file made using qemu-img and formatted/edited using a loopback device and kpartx/fdisk, in fat16) using the -hda option so all of my arguments to qemu are as follows:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">-hda disk.raw -boot d -cdrom os.iso<br /></div><br /><br />The disk contains the following structure:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">/hello // is a directory<br />&nbsp; &nbsp; &nbsp;/hello/test.txt // contains &quot;this is test data&quot;<br /></div><br /><br />I am fairly sure I did this part correctly.<br /><br />Now, the code for doing a simple read test from the disk is really simple, but for some reason I am getting a bunch of 0s and a couple seemingly random bytes in my return buffer. The disk exists and reading the port back) as well as the controller. I check if the disk exists like this:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char poll_drive(unsigned short drive, unsigned char arg) // drive could be 0x1F7 or 0x170 and args 0xA0 or 0xB0<br />{<br />&nbsp; &nbsp;outportb(drive, arg);<br />&nbsp; &nbsp;timer_wait(1);<br />&nbsp; &nbsp;return inportb(drive) &amp; (1 &lt;&lt; 6);<br />}<br /></div><br /><br />And this works fine.<br />My simple read function looks like this:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void read_hdd_lba28(char buffer&#91;&#93;, unsigned char addr, uint8_t sector_count, unsigned short drive, char is_slave)<br />{<br />&nbsp; &nbsp;outportb(drive + 1, 0x00);<br />&nbsp; &nbsp;outportb(drive + 2, sector_count);<br />&nbsp; &nbsp;outportb(drive + 3, (unsigned char) ((addr) &amp; 0xFF));<br />&nbsp; &nbsp;outportb(drive + 4, (unsigned char)((addr &gt;&gt; 8) &amp; 0xFF));<br />&nbsp; &nbsp;outportb(drive + 5, (unsigned char)((addr &gt;&gt; 16) &amp; 0xFF));<br />&nbsp; &nbsp;outportb(drive + 6,&nbsp; 0xE0 | (is_slave &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp;outportb(drive + 7, ATA_CMD_READ_PIO);<br /><br />&nbsp; &nbsp;while(!(inportb(drive + 7) &amp; 0x08));<br /><br />&nbsp; &nbsp;for (int i = 0; i &lt; 256; i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned short tmpword = inportw(drive);<br />&nbsp; &nbsp;&nbsp; &nbsp;buffer&#91;i * 2&#93; = (unsigned char)tmpword;<br />&nbsp; &nbsp;&nbsp; &nbsp;buffer&#91;i * 2 + 1&#93; = (unsigned char)(tmpword &gt;&gt; 8);<br />&nbsp; &nbsp;}<br />}<br /></div><br /><br />and call it like so:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;uint8_t* buf;<br />&nbsp; &nbsp;char addrbuf&#91;4&#93;;<br />&nbsp; &nbsp;char secbuf&#91;4&#93;;<br />&nbsp; &nbsp;uint32_t addr = 0;<br />&nbsp; &nbsp;uint32_t sec_ct = 0;<br /><br />&nbsp; &nbsp;printf(&quot;Start addr: &quot;);<br />&nbsp; &nbsp;getstr(addrbuf);<br />&nbsp; &nbsp;printf(&quot;Sector count: &quot;);<br />&nbsp; &nbsp;getstr(secbuf);<br /><br />&nbsp; &nbsp;addr = atoi(addrbuf);<br />&nbsp; &nbsp;sec_ct = atoi(secbuf);<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;read_hdd_lba28(buf, addr, sec_ct, PRIMARY_BASE, 0); // primbase is 0x1F0<br /><br />&nbsp; &nbsp;for (int i = 0; i &lt; 256 * sec_ct; i++)<br />&nbsp; &nbsp; &nbsp; &nbsp;printf(&quot;0x%s &quot;, itoa(buf&#91;i&#93;, 0, 16));<br />&nbsp; &nbsp; printf(&quot;\n&quot;);<br /></div><br /><br />Now, from what I've read this should work perfectly fine. It's simple code, and I think I understand it all. Is there any reason this shouldn't work?<br />I've read through the wiki pages for PCI IDE, and had some trouble understanding it all, so I discovered most of my information from other sites. I'd greatly appreciate any help.<br /><br />Thanks!</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250279"></a>
+				<b class="postauthor">SpyderTL</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250279&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250279"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 12:08 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11075_1467060212.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Sep 19, 2010 10:05 pm<br /><b>Posts:</b> 816
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">That code looks correct to me. The only thing that I see is that you aren't checking the BSY flag (or ERR flag) on the status register, so you may be reading data too early.<br /><br />The PCI IDE page is a bit of a mess. I would use the <a href="http://wiki.osdev.org/ATA PIO Mode">ATA PIO Mode</a> page instead.<br /><br />According to that page, you also need to add some sleep time before checking the status register to make sure the drive has enough time to update it first.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Project: OZone<br /><a href="https://ozone.codeplex.com" class="postlink">CodePlex</a> / <a href="https://github.com/SpyderTL/OZone" class="postlink">GitHub</a><br /><br />&quot;The more they overthink the plumbing, the easier it is to stop up the drain.&quot; - Montgomery Scott</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250297"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250297&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250297"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 9:47 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanks. I've now changed my poll_drive code to the IDENTIFY command stuff, and it seems to get stuck while polling the status port..<br />Here's what I've written:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char poll_drive(unsigned short drive, unsigned char arg)<br />{<br />&nbsp; &nbsp;outportb(drive + 6, arg);<br />&nbsp; &nbsp;outportb(drive + 2, 0x00);<br />&nbsp; &nbsp;outportb(drive + 3, 0x00);<br />&nbsp; &nbsp;outportb(drive + 4, 0x00);<br />&nbsp; &nbsp;outportb(drive + 5, 0x00);<br />&nbsp; &nbsp;outportb(drive + 7, 0xEC);<br />&nbsp; &nbsp;//timer_wait(1);<br />&nbsp; &nbsp;unsigned char iden = inportb(drive + 7);<br /><br />&nbsp; &nbsp;if(iden == 0) return 0;<br /><br />&nbsp; &nbsp;while(!(inportb(drive + 7) &amp; 0x80));<br /><br />&nbsp; &nbsp;uint8_t stat = inportb(drive + 4) + inportb(drive + 5);<br />&nbsp; &nbsp;if(stat != 0) return 0;<br /><br />&nbsp; &nbsp;while(1)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char s = inportb(drive + 7);<br />&nbsp; &nbsp;&nbsp; &nbsp;if((s &amp; 0x8) || (s &amp; 1)) break;<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;return 1;<br />}<br /></div><br /><br />Is there any reason <br /><div class="codetitle"><b>Code:</b></div><div class="codecontent"> while(!(inportb(drive + 7) &amp; 0x80)); </div><br />would hang?</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250311"></a>
+				<b class="postauthor">SpyderTL</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250311&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250311"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 4:47 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11075_1467060212.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Sep 19, 2010 10:05 pm<br /><b>Posts:</b> 816
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">There are probably hundreds of reasons. Try checking for the error flag in that loop, and you may find a clue.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Project: OZone<br /><a href="https://ozone.codeplex.com" class="postlink">CodePlex</a> / <a href="https://github.com/SpyderTL/OZone" class="postlink">GitHub</a><br /><br />&quot;The more they overthink the plumbing, the easier it is to stop up the drain.&quot; - Montgomery Scott</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250316"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250316&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250316"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 5:29 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">The error flag isn't set. I'm kinda stumped here. It seems like pretty simple code. How would I debug something like this?</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250317"></a>
+				<b class="postauthor">SpyderTL</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250317&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250317"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 7:44 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11075_1467060212.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Sep 19, 2010 10:05 pm<br /><b>Posts:</b> 816
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">What about the Busy flag?  It should be set after you send the IDENTIFY command, and it should clear after you read the last word of data.  If it's never set, the problem is with the command, or the device (qemu setup).<br /><br />EDIT: This is backwards... the BSY flag should set when you send the IDENTIFY command, and it should clear when data is ready to be read.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Project: OZone<br /><a href="https://ozone.codeplex.com" class="postlink">CodePlex</a> / <a href="https://github.com/SpyderTL/OZone" class="postlink">GitHub</a><br /><br />&quot;The more they overthink the plumbing, the easier it is to stop up the drain.&quot; - Montgomery Scott</span>
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">SpyderTL</a> on Thu Jul 23, 2015 8:18 pm, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250319"></a>
+				<b class="postauthor">SpyderTL</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250319&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250319"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 23, 2015 8:06 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11075_1467060212.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Sep 19, 2010 10:05 pm<br /><b>Posts:</b> 816
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I posted this, then deleted it, cause I thought that I had it backward, but now I'm posting it again...<br /><br />Shouldn't it be<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">while((inportb(drive + 7) &amp; 0x80));<br /></div>?<br /><br />See if that fixes your problem.<br /><br />According to the wiki, you need to poll the BSY flag (0x80) and wait till it clears, then you need to poll the DRQ flag (0x08) and the ERR flag (0x01) until one of them sets.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Project: OZone<br /><a href="https://ozone.codeplex.com" class="postlink">CodePlex</a> / <a href="https://github.com/SpyderTL/OZone" class="postlink">GitHub</a><br /><br />&quot;The more they overthink the plumbing, the easier it is to stop up the drain.&quot; - Montgomery Scott</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250330"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250330&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250330"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Jul 24, 2015 10:48 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">...oh. Damn. That's embarrassing.<br />Well.. It works now, partially. Initially, it would only read every other byte, however using the function <br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">static inline void insw(unsigned short port, void *addr, size_t cnt)<br />{<br />&nbsp; &nbsp;__asm volatile(&quot;rep; insw&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp;: &quot;+D&quot; (addr), &quot;+c&quot; (cnt)<br />&nbsp; &nbsp; &nbsp; &nbsp;: &quot;d&quot; (port)<br />&nbsp; &nbsp; &nbsp; &nbsp;: &quot;memory&quot;);<br />}<br /></div><br /><br />It works fine. But I'd rather not rely on this, as I can't use rep outsw for writing and I like conformity.<br />So why would<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">for (int i = 0; i &lt; 256; i++)<br />{<br />&nbsp; &nbsp;uint16_t tmpword = inportw(drive);<br />&nbsp; &nbsp;buffer&#91;i&#93; = tmpword;<br />}<br /><br />// inportw function in my libc:<br />unsigned short inportw(unsigned short port)<br />{<br />&nbsp; &nbsp; unsigned short ret_val;<br />&nbsp; &nbsp; __asm __volatile(&quot;inw %w1, %0&quot; : &quot;=a&quot; (ret_val) : &quot;d&quot; (port));<br />&nbsp; &nbsp; return ret_val;<br />}<br /></div><br /><br />Only read every other byte? I appreciate the help a lot, it was really awesome when it finally read some correct bytes.<br /><br />This is my full read function:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char wait_for_drive(unsigned short drive)<br />{<br />&nbsp; &nbsp;while(1)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char stat = inportb(drive + 7);<br />&nbsp; &nbsp;&nbsp; &nbsp;if(stat &amp; 0x08 &amp;&amp; !(stat &amp; 0x80))<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;else if(stat &amp; 0x01 || !(stat &amp; 0x20))<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;return 1;<br />}<br /><br />void read_hdd_lba28(unsigned short buffer&#91;&#93;, uint32_t addr, unsigned char sector_count, unsigned short drive, char is_slave)<br />{<br />&nbsp; &nbsp;outportb(drive + 6,&nbsp; 0xE0 | (is_slave &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp;outportb(drive + 1, 0x00);<br />&nbsp; &nbsp;outportb(drive + 2, (unsigned char) sector_count);<br />&nbsp; &nbsp;outportb(drive + 3, (unsigned char) addr);<br />&nbsp; &nbsp;outportb(drive + 4, (unsigned char)(addr &gt;&gt; 8));<br />&nbsp; &nbsp;outportb(drive + 5, (unsigned char)(addr &gt;&gt; 16));<br />&nbsp; &nbsp;outportb(drive + 7, ATA_CMD_READ_PIO);<br /><br />&nbsp; &nbsp;if(!wait_for_drive(drive))<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot;Error reading from drive at 0x%s&quot;, itoa(drive, 0, 16));<br /><br />&nbsp; &nbsp;//for (int i = 0; i &lt; 256; i++)<br />&nbsp; &nbsp;//{<br />&nbsp; &nbsp;//&nbsp; &nbsp;uint16_t tmpword = inportw(drive);<br />&nbsp; &nbsp;//&nbsp; &nbsp;buffer&#91;i&#93; = tmpword;<br />&nbsp; &nbsp;//}<br /><br />&nbsp; &nbsp;//for(int i = 0; i &lt; sector_count; i++) // multiple sectors not implemented correctly yet <br />&nbsp; &nbsp;&nbsp; &nbsp;insw(drive, buffer, 256);<br />}<br /></div></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250383"></a>
+				<b class="postauthor">SpyderTL</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250383&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250383"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Jul 26, 2015 8:34 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11075_1467060212.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Sep 19, 2010 10:05 pm<br /><b>Posts:</b> 816
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I'm pretty good at C, and I'm be becoming pretty good at ASM, but I have no idea how to inline ASM in C, so I'm afraid I'm not much help there. But I'm sure someone here can spot the problem...</div>
+
+					
+						<span class="postbody"><br />_________________<br />Project: OZone<br /><a href="https://ozone.codeplex.com" class="postlink">CodePlex</a> / <a href="https://github.com/SpyderTL/OZone" class="postlink">GitHub</a><br /><br />&quot;The more they overthink the plumbing, the easier it is to stop up the drain.&quot; - Montgomery Scott</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11075&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250396"></a>
+				<b class="postauthor">gerryg400</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250396&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250396"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Jul 26, 2015 8:46 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Mar 25, 2010 11:26 pm<br /><b>Posts:</b> 1765<br /><b>Location:</b> Melbourne, Australia
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">How is 'buffer' defined ?</div>
+
+					
+						<span class="postbody"><br />_________________<br /><span style="font-style: italic">If a trainstation is where trains stop, what is a workstation ?</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10593&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250419"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250419&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250419"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 27, 2015 10:42 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned short buf&#91;256 * sec_ct&#93;;<br /></div><br /><br />Here's all the code that calls it though:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;char addrbuf&#91;4&#93;;<br />&nbsp; &nbsp;char secbuf&#91;4&#93;;<br />&nbsp; &nbsp;uint32_t addr = 0;<br />&nbsp; &nbsp;uint32_t sec_ct = 0;<br /><br />&nbsp; &nbsp;printf(&quot;Start addr: &quot;);<br />&nbsp; &nbsp;getstr(addrbuf);<br />&nbsp; &nbsp;printf(&quot;Sector count: &quot;);<br />&nbsp; &nbsp;getstr(secbuf);<br /><br />&nbsp; &nbsp;addr = atoi(addrbuf);<br />&nbsp; &nbsp;sec_ct = atoi(secbuf);<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;unsigned short buf&#91;256 * sec_ct&#93;;<br /><br />&nbsp; &nbsp;if(!read_hdd_lba28(buf, addr, sec_ct, PRIMARY_BASE, 0))<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot;Failed to read drive..\n&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;return;<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;for (int i = 0; i &lt; 256 * sec_ct; i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp;printf(&quot;%s &quot;, itoa((unsigned short) (buf&#91;i&#93;), 0, 16));<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp; printf(&quot;\n&quot;);<br /></div></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250426"></a>
+				<b class="postauthor">Kazinsal</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250426&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250426"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 27, 2015 3:43 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11964_1472661182.gif" width="63" height="52" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Jul 13, 2011 7:38 pm<br /><b>Posts:</b> 451<br /><b>Location:</b> Victoria, Canada
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent"><div class="codetitle"><b>Code:</b></div><div class="codecontent">uint32_t sec_ct = 0;</div><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned short buf&#91;256 * sec_ct&#93;;</div></div><br /><br />Really, now. I'm surprised this isn't throwing a compiler error.</div>
+
+					
+						<span class="postbody"><br />_________________<br /><span style="font-style: italic"><span style="font-weight: bold">Maxim 15:</span> Thrashing is good. It reminds the user that the computer is on.</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11964&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250427"></a>
+				<b class="postauthor">gerryg400</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250427&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250427"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 27, 2015 4:04 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Mar 25, 2010 11:26 pm<br /><b>Posts:</b> 1765<br /><b>Location:</b> Melbourne, Australia
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="codetitle"><b>Code:</b></div><div class="codecontent">char buffer&#91;&#93;,</div><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">for (int i = 0; i &lt; 256; i++)<br />{<br />&nbsp; &nbsp;uint16_t tmpword = inportw(drive);<br />&nbsp; &nbsp;buffer&#91;i&#93; = tmpword;<br />}<br /></div>This doesn't work. You will only end up with every second byte.</div>
+
+					
+						<span class="postbody"><br />_________________<br /><span style="font-style: italic">If a trainstation is where trains stop, what is a workstation ?</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10593&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p250429"></a>
+				<b class="postauthor">cmp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250429&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250429"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 27, 2015 4:35 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed May 20, 2015 6:05 pm<br /><b>Posts:</b> 14
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">gerryg400 wrote:</div><div class="quotecontent"><div class="codetitle"><b>Code:</b></div><div class="codecontent">char buffer&#91;&#93;,</div><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">for (int i = 0; i &lt; 256; i++)<br />{<br />&nbsp; &nbsp;uint16_t tmpword = inportw(drive);<br />&nbsp; &nbsp;buffer&#91;i&#93; = tmpword;<br />}<br /></div>This doesn't work. You will only end up with every second byte.</div><br /><br />I've changed this, in my most recent post I've changed it to a short array.<br /><br /><div class="quotetitle">Kazinsal wrote:</div><div class="quotecontent"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent"><div class="codetitle"><b>Code:</b></div><div class="codecontent">uint32_t sec_ct = 0;</div><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned short buf&#91;256 * sec_ct&#93;;</div></div><br /><br />Really, now. I'm surprised this isn't throwing a compiler error.</div><br /><br />It's just 0 initially. I'm setting it to a user given input later, before I pass it to the array.<br /><br />I've decided to just go along with the rep insw.. Oh well. My only issue now is that it's not reading multiple sectors correctly. Sometimes it works, but when it does the next read just returns a bunch of 0s. I'm guessing this has something to do with it reading another few sectors after the last read. This is all the relevant up to date code:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char io_hdd_lba28(unsigned char io_cmd, unsigned short buffer&#91;&#93;, uint32_t addr, unsigned char sector_count, unsigned short drive, unsigned char is_slave)<br />{<br />&nbsp; &nbsp;outportb(drive + 6,&nbsp; 0xE0 | (is_slave &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp;outportb(drive + 1, 0x00);<br />&nbsp; &nbsp;outportb(drive + 2, (unsigned char) sector_count);<br />&nbsp; &nbsp;outportb(drive + 3, (unsigned char) addr);<br />&nbsp; &nbsp;outportb(drive + 4, (unsigned char)(addr &gt;&gt; 8));<br />&nbsp; &nbsp;outportb(drive + 5, (unsigned char)(addr &gt;&gt; 16));<br />&nbsp; &nbsp;outportb(drive + 7, io_cmd);<br /><br />&nbsp; &nbsp;timer_wait(1);<br /><br />&nbsp; &nbsp;unsigned char stat = wait_for_drive(drive, ATA_TIMEOUT);<br /><br />&nbsp; &nbsp;if(stat != 0)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;char* str;<br />&nbsp; &nbsp;&nbsp; &nbsp;if(stat &amp; 0x01 &amp;&amp; !(stat &amp; 0x20))<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;str = &quot;ERR&quot;;<br />&nbsp; &nbsp;&nbsp; &nbsp;else if(stat &amp; 0x20 &amp;&amp; !(stat &amp; 0x01))<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;str = &quot;DF&quot;;<br />&nbsp; &nbsp;&nbsp; &nbsp;else if(stat &amp; 0x20 &amp;&amp; stat &amp; 0x01)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;str = &quot;ERR and DF&quot;;<br />&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot;Error reading from drive at 0x%s&quot;, itoa(drive, 0, 16));<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot; with %s flag(s) set.\n&quot;, str);<br />&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;//for (int i = 0; i &lt; 256; i++)<br />&nbsp; &nbsp;//{<br />&nbsp; &nbsp;//&nbsp; &nbsp;uint16_t tmpword = inportw(drive);<br />&nbsp; &nbsp;//&nbsp; &nbsp;buffer&#91;i&#93; = tmpword;<br />&nbsp; &nbsp;//}<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;if(io_cmd == ATA_CMD_READ_PIO)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;for(int i = 0; i &lt; sector_count; i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;insw(drive, buffer, 256);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;buffer += 256;<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;else if(io_cmd == ATA_CMD_WRITE_PIO)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;for(int i = 0; i &lt; sector_count * 256; i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;outportw(drive, (unsigned short) buffer&#91;i&#93;);<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;return 1;<br />}<br /></div><br /><br />These are the two relevant shell commands. They're just to test functionality, so they just write some random stuff. Currently in the write function there is no cache flushing code, but that'll be easy to implement. I plan on doing it soon.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void write_command()<br />{&nbsp; &nbsp;<br />&nbsp; &nbsp;unsigned short buf&#91;256&#93;;<br />&nbsp; &nbsp;for(int i = 0; i &lt; 256; i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;buf&#91;i&#93; = 0;<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;buf&#91;0&#93; = 0xDE;<br />&nbsp; &nbsp;buf&#91;1&#93; = 0xAD;<br /><br />&nbsp; &nbsp;if(!io_hdd_lba28(ATA_CMD_WRITE_PIO, buf, 0, 1, PRIMARY_BASE, 0))<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot;Failed to write drive..\n&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;return;<br />&nbsp; &nbsp;}<br />}<br /><br />void read_command()<br />{<br />&nbsp; &nbsp;char addrbuf&#91;4&#93;;<br />&nbsp; &nbsp;char secbuf&#91;4&#93;;<br />&nbsp; &nbsp;uint32_t addr = 0;<br />&nbsp; &nbsp;uint32_t sec_ct = 0;<br /><br />&nbsp; &nbsp;printf(&quot;Start addr: &quot;);<br />&nbsp; &nbsp;getstr(addrbuf);<br />&nbsp; &nbsp;printf(&quot;Sector count: &quot;);<br />&nbsp; &nbsp;getstr(secbuf);<br /><br />&nbsp; &nbsp;addr = atoi(addrbuf);<br />&nbsp; &nbsp;sec_ct = atoi(secbuf);<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;unsigned short buf&#91;256 * sec_ct&#93;;<br /><br />&nbsp; &nbsp;if(!io_hdd_lba28(ATA_CMD_READ_PIO, buf, addr, sec_ct, PRIMARY_BASE, 0))<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;printf(&quot;Failed to read drive..\n&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;return;<br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;for (int i = 0; i &lt; 256 * sec_ct; i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp;printf(&quot;%s &quot;, itoa((unsigned short) (buf&#91;i&#93;), 0, 16));<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp; printf(&quot;\n&quot;);<br />}<br /></div><br /><br />I've read through the wiki article very thoroughly. I'm completely lost as to what my issue is caused by. I appreciate the help.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16174&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p250435"></a>
+				<b class="postauthor">Roman</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading hard disk</div><div style="float: right;"><a href="./viewtopic.php?p=250435&amp;sid=eb37c8ced171ad6ceed41a572113fd3d#p250435"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Jul 28, 2015 6:41 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15202_1433516774.jpeg" width="78" height="78" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Mar 27, 2014 3:57 am<br /><b>Posts:</b> 484<br /><b>Location:</b> Moscow, Russia
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Don't know, if it's what you're looking for, but <a href="https://github.com/KernDev/libPDEFI/blob/master/lib/arch/x86_64/ata_pio.c" class="postlink">here</a> is some of my old ATA PIO (as far as I remember LBA48) code and <a href="https://github.com/KernDev/libPDEFI/blob/master/include/arch/x86_64/ata_pio.h" class="postlink">here</a> is the header.</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;If you don't fail at least 90 percent of the time, you're not aiming high enough.&quot;<br /> - Alan Kay</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15202&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=29469&amp;start=0&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=29469&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 15 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=eb37c8ced171ad6ceed41a572113fd3d">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Bing [Bot]</span>, <a href="./memberlist.php?mode=viewprofile&amp;u=17243&amp;sid=eb37c8ced171ad6ceed41a572113fd3d">osdever</a>, <span style="color: #9E8DA7;" class="username-coloured">Yahoo [Bot]</span> and 15 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=29469&amp;sid=eb37c8ced171ad6ceed41a572113fd3d"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php?sid=eb37c8ced171ad6ceed41a572113fd3d" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

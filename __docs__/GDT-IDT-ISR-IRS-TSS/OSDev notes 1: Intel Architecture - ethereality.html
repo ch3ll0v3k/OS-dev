@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 1: Intel Architecture - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 1: Intel Architecture</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>For more information on the CPU model and Intel assembly, see the <a href="notes-0">background
+notes</a>.</p>
+<h3 id="intel-architecture">Intel Architecture</h3>
+<p>The first thing probably going through your mind at the header here is "Didn't
+we just talk about the Intel architecture"? Yes, indeed. The background notes
+talked about the Intel CPU architecture; now, we're going to talk about the
+rest of the motherboard.</p>
+<h4 id="cpu-communication">CPU communication</h4>
+<p>So, what components are there to talk about? The CPU is obviously the big one;
+hopefully you already have a decent idea of how the CPU functions internally.
+However, we haven't mentioned how the CPU communicates with the rest of the
+hardware present within a computer system.</p>
+<p>There are three main methods of communication: ports, interrupts, and
+memory-mapped I/O. We'll go in order.</p>
+<p>Intel CPUs have 65,536 <sup id="fnref:port-count"><a class="footnote-ref" href="#fn:port-count" rel="footnote">1</a></sup> different "ports" available for
+communication purposes.  These are somewhat orthogonal to the main memory and
+allow for CPU-controlled, point-to-point bidirectional communication with
+peripherals.  That is to say, the CPU has ultimate control over when data is
+sent or received. Ports are also somewhat slow, on the order of 300-400
+nanoseconds between consecutive writes.  It is, however, the first issue that
+needs our attention: the CPU decides when to read or write. While polling is a
+plausible solution to this issue, event-based systems are in general much nicer
+to work with.</p>
+<p>This is the issue that interrupts are designed to handle. When an interrupt is
+issued to the processor, whatever code is executing is temporarily paused, and
+the interrupt handler begins execution instead (on a new stack, with register
+contents saved, etc. etc.). After the interrupt handler is finished, the
+original code being executed can resume. This is extremely useful, as one might
+imagine; interrupts are also used internally to the processor to handle events
+such as invalid memory accesses and other exceptional conditions. There are 256
+different interrupts available, of which the first 32 are reserved; hence,
+there are 224 useful interrupts available.</p>
+<p>The last, and probably most useful mechanism of communication, is that of
+memory-mapped I/O. What this means is that writes to particular memory
+addresses are not actually stored on the main system memory; instead, the data
+lines are redirected out to some piece of hardware for processing. This has the
+advantage of being fast (just as fast as main memory accesses!), thus avoiding
+the issue of ports requiring a significant delay between writes.<sup id="fnref:port-speed"><a class="footnote-ref" href="#fn:port-speed" rel="footnote">2</a></sup>
+They are also somewhat more flexible when the concept of virtual memory is
+introduced, removing clunky protection mechanisms like the I/O permission bit
+mask in the TSS (which we'll talk about later!) in favour of re-using the
+already mature paging mechanisms.</p>
+<p>Now, back to the subject of interrupts. There is a little bit of a problem:
+external interrupts are handled asynchronously, while interrupt handling is
+inherently synchronous. And what about the case of multiple processors? How do
+we decide which CPU handles an interrupt from, say, a hardware device?</p>
+<p>This is the job of the I/O APIC, or the Input/Output Advanced Programmable
+Interrupt Controller. It's a separate chip that sits on the motherboard and
+dispatches hardware interrupts to processors according to how it is programmed.</p>
+<p>These "external" (hardware) interrupts are differentiated by the internal
+interrupt-handling mechanism by means of a new name: IRQs, or "Interrupt
+ReQuests". The I/O APIC is responsible for converting IRQs into actual
+interrupts on the processor.</p>
+<p>To recap: the CPU can communicate with external devices via ports and
+memory-mapped I/O; external devices can communicate back via ports,
+memory-mapped I/O, and interrupt requests. Interrupt requests are handled by
+the I/O APIC, which passes off the interrupt to some processor for processing.</p>
+<h4 id="hardware-organization">Hardware organization</h4>
+<p>The next topic to talk about is how the hardware bus is actually organized.
+While there are many different standards out there for providing host/slave
+communication (USB, PCI, Firewire, I<sup>2</sup>C, SMBus, SPI, and CAN to name
+a few), the one that is particularly interesting for the x86_64 case is PCI
+(Peripheral Component Interconnect).</p>
+<p>Most modern x86_64 systems use the PCI bus for accessing external hardware.
+Without getting into too many details, the main idea of PCI is that you have a
+tree-like bus system that allows for devices to communicate between each other;
+communication is not limited to CPU/device transfers. Most modern
+x86-compatible hardware devices that are not integrated onto the CPU
+northbridge or southbridge (and some that are!) use PCI for communication.</p>
+<p>If we have time, we'll talk about PCI in much greater detail later on; it's
+quite essential for doing anything other than an extremely small kernel. Want
+to access a hard drive at a speed of greater than 16MB/s? You'll want to
+communicate with the ATA controller for that, which is a PCI device. Want to
+start working on USB support for your kernel? The USB controller is usually a
+PCI device. Communicate with a graphics card? PCI device. Network card? PCI
+device. Sound card? Guess what --- it's a PCI device. As such, interfacing with
+the PCI bus is crucial for doing just about anything non-trivial.</p>
+<p>However, the PCI specification is 344 pages long (and the PCI express spec a
+further 860 pages), and to use most PCI devices you'll need an AML interpreter
+for ACPI; you can write one yourself (another 958-page specification) or use
+ACPICA (a mere 282 pages of documentation, plus some of the ACPI spec to
+understand what's happening) and . . . you get the picture. It's complicated.</p>
+<p>Even if we don't get around to ACPI and PCI{,e} in this workshop, I will try to
+put up some overall notes on the subject for your use later in case you want to
+expand upon your kernel.</p>
+<h3 id="memory-map">Memory map</h3>
+<p>There are several regions of memory that should not be reused, as they contain
+(potentially) useful information about the system. These include the BDA (BIOS
+Data Area), EBDA (Enhanced BIOS Data Area), MP tables, ACPI tables, and so
+forth.</p>
+<p>Of particular interest to us are the BDA and the ACPI tables. The BDA is
+located at address <code>0x400</code> and is 152 bytes long. The interesting values are,
+in particular, <code>word [0x400]</code> and <code>byte [0x475]</code> -- the port for the first
+installed serial port, and the number of detected hard drives, respectively.</p>
+<p>We'll talk <em>way</em> more about the ACPI tables when we get to LAPIC setup, SMP,
+and all that fun stuff. For the moment, all that's important to know is that
+the ACPI tables are important.</p>
+<h3 id="legacy-booting">(Legacy) booting</h3>
+<p>There are a couple of ways that a modern x86_64 system can boot: legacy boot,
+UEFI, and PXE to name a few. The simplest of these, and hence the one that we
+will focus on, is the so-called "legacy" boot process.</p>
+<p>It's referred to as such due to its origins, the original IBM PC. The idea is
+that a particular part of each hard drive/floppy disk/etc. contains a special
+signature that marks the disk as "bootable", e.g. that it has code appropriate
+for execution. Being the age it is, the signature is not exactly very exciting.
+To wit, the 511th and 512th bytes of the disk must contain <code>0x55</code> and <code>0xaa</code>,
+respectively.  If so, then the preceding 445 bytes are used as code
+<sup id="fnref:floppycode"><a class="footnote-ref" href="#fn:floppycode" rel="footnote">3</a></sup>, loaded to physical address <code>0x7c00</code>.</p>
+<p>445 bytes is not very much code, though, and certainly is not enough for a
+fully-fledged kernel. So, the usual boot process does not involve directly
+executing the kernel, but instead begins with a bootloader.</p>
+<p>The job of the bootloader is to load the kernel from disk and into memory, then
+jump to the kernel entry point so that the rest of the boot process can begin.
+Bootloaders are kind of difficult to write, for obvious reasons: you need to
+have full hard drive and filesystem drivers in 445 bytes, or else make some
+hack-ish shortcuts (such as hardcoding the LBA location on disk of a file).
+Furthermore, the kernel is likely stored in a very particular format, and so
+the bootloader needs to know a fair amount of information about the kernel in
+order to load it into memory appropriately.</p>
+<p>However, some intelligent people noticed this issue and came up with a standard
+called the Multiboot standard. The idea of the Multiboot standard is to try and
+fix the interface between bootloader and kernel. Since we don't want to write a
+bootloader -- I don't think it's very interesting work, at least not compared
+to the other topics at hand -- we'll just write our kernels to be
+Multiboot-compatible.</p>
+<p>Without going into too many details, the general idea is that
+Multiboot-compatible bootloaders are supposed to be able to load ELF
+executables into memory, so long as a special Multiboot header is found early
+on within the file. The header, three dwords in length, should contain
+<code>0x1badb002</code> for the first "magic" dword; the second contains flags that
+describe how the kernel should be loaded. The third dword is a checksum, such
+that the sum of all three dwords (modulo <img alt="Generated by LaTeX" src="/img/gen/fc1ad1e8be2d915908e89ee69245646d.png" style="vertical-align: 0px;" /> of course) is zero.</p>
+<p>Everything else -- the entry point, etc. -- is read from the ELF information.
+This is wonderful, because it means that we can re-use the existing Linux
+toolchain to generate our kernels, albeit with some careful restrictions. This
+is not to say that we have access to libc and all our usual userspace goodies,
+of course -- we still don't -- but at the very least we don't have to find/make
+a special compiler to get our kernel development off the ground.</p>
+<p>In particular, we need to ensure two things: that the Multiboot header is in
+the appropriate location, and that the appropriate physical/virtual load
+addresses are present in the ELF information. We'll revisit this later on in
+this set of notes, after we talk about . . .</p>
+<h3 id="virtual-memory-and-paging">Virtual memory and paging</h3>
+<p>If you've worked with low-level userspace programming at any point, you've
+likely run into the situation where you've two programs running concurrently
+that are both accessing, strangely enough, the same memory address. But they're
+different programs, so that memory address contains two different values. Most
+people are aware of the concept of virtual address spaces, but have you ever
+stopped to think about how that's actually implemented in the kernel? Obviously
+one way to do it would be to, upon a context switch, copy the entire contents
+of memory out of some sort of cold storage and into the correct locations. But
+that's very expensive, especially when you have multiple GB's of memory to
+throw around.</p>
+<p>Plus, if you stare at those addresses for a moment, you'll realize that the
+memory addresses in use for, say, the stack are well outside of the physical
+memory installed in your system (at least I'd assume so --- otherwise, I want
+some of your 16 exabytes of RAM!). Both of these are accomplished at the same
+time by use of memory paging.</p>
+<p>The idea is to provide a level of indirection, so that memory address <code>0x42</code>
+doesn't necessarily map to the physical address <code>0x42</code>. Of course, providing a
+per-byte map is a little expensive, so instead it's done on a page granularity.
+Pages are 4096 (<code>0x1000</code>) bytes long on x86 systems <sup id="fnref:hugepages"><a class="footnote-ref" href="#fn:hugepages" rel="footnote">4</a></sup>.</p>
+<p>To clarify, here's the idea. Suppose you have the memory address <code>0x123456</code>.
+Memory is mapped with page granularity, so we basically take entire pages of
+the virtual address space at a time and map them sequentially onto physical
+memory. So, to figure out where address <code>0x123456</code> is going, we first need to
+know where the page <code>0x123000</code> is being mapped to. Once we know that, we can
+add <code>0x456</code> to the address and figure out the exact physical mapping for the
+virtual address <code>0x123456</code>.</p>
+<p>Now, while it's possible to have a flat list of page mappings on, say, a 32-bit
+x86 system (where you only have 1048576 pages; at 4 bytes per that's only 4MB
+for everything), it's not feasible on x86_64. Even with a reduced 48-bit
+virtual address space (as mentioned in the background notes) you still need
+512GB of memory to provide mappings for each 4KB page. As such, x86 does not
+use a flat paging structure, but instead uses a tree structure. Note that for
+a 64-bit virtual address space, we've defaulted to assuming we need eight bytes
+(64 bits) to describe each page mapping. This isn't strictly necessary, but
+it's how x86_64 works, so we'll run with it.</p>
+<p>The idea is essentially as follows: pages mappings are read from page tables,
+in groups of 512. So each page table describes how 512 separate pages of
+virtual memory are mapped into physical memory, using eight bytes each. Of
+course, not all these entries need be present. If you think of page mappings as
+leaf nodes in the tree, then the page tables are just the nodes at height one.</p>
+<p>We also have the nodes at height two, called the page directories. Each page
+directory stores how to get to 512 different page tables, ultimately
+responsible for describing a full 262,144 pages (1GB) of virtual memory
+translation. Above the page directories are the page directory pointer tables
+(PDPT) -- amongst the worst-named terms you'll come across, anywhere -- which
+reference 512 page directories; and finally there's the PML4 (Page Map Level 4)
+table, which describes 512 page directory pointer tables, for a total of <img alt="Generated by LaTeX" src="/img/gen/406b1643403c14984f38764e2c5cebce.png" style="vertical-align: -1px;" /> bits of address space.</p>
+<p>If that doesn't make sense yet, don't worry about it overly much. It'll be
+revisited in much more detail -- with examples! -- when it becomes more
+important later on.</p>
+<h3 id="a-hello-world-kernel">A Hello, World! kernel</h3>
+<p>Now it's time: the "Hello, World!", x86_64-kernel style. We can break down this
+kernel into essentially two steps: first, getting the processor into Long mode
+(that is to say, 64-bit mode), and then printing the message.</p>
+<p>I've provided an implementation of a multiboot wrapper in the refcode repo that
+can be used to perform the first step, for two reasons. First of all, it's
+rather complicated, and requires a pretty large amount of up-front work to get
+operating correctly.  Second, it's actually pretty boring. It's a good
+introduction to the CPU control registers and MSRs, yes, but the idea is to
+keep the first set of notes (and hence, the first presentation) lighter than
+the rest to keep up with technical difficulties and other such padding. Second,
+it's the kind of code that doesn't really vary very much between kernels, so
+writing it multiple times is just a little bit silly. For the sake of
+completeness, though, I'll describe how to enter long mode.</p>
+<h4 id="getting-into-long-mode">Getting into long mode</h4>
+<p>As mentioned, getting into Long mode is a little complicated. First, the CPU
+must be in protected mode, which it will be after a Multiboot kernel is
+invoked. Step one, down!</p>
+<p>Second: PAE paging must be set up, but not yet enabled. That is to say, we need
+paging, and PAE (Physical Address Extensions) also has to be set
+up as part of this process. This is done by setting up the paging tables,
+enabling PAE, but not yet enabling paging. The reason for this is that how the
+paging structures are interpreted depends upon what mode the processor is in.</p>
+<p>Third: compatibility mode must be entered; this is done by setting the
+appropriate bit in the EFER MSR. Compatibility mode is a submode of long mode
+where the code being executed is still assumed to be 32-bit code, in a 32-bit
+address space. Paging, however, is <em>not</em> required in compatibility mode. It is
+required for 64-bit long mode, however, and so before entering 64-bit long
+mode, paging has to be enabled.</p>
+<p>Finally: one must jump into a 64-bit code segment. This involves setting up a
+GDT with appropriate code/data segments and then performing a far jump. We'll
+talk about the GDT entries in significantly more detail at some later point,
+in particular when we talk about how to set up userspace.</p>
+<h4 id="writing-things-to-the-screen">Writing things to the screen</h4>
+<p>So, let's say we're in long mode and can execute whatever code we wish. How do
+we draw things to the screen? This might seem like it will be complicated at
+first, but thankfully, the default 80x24 console is memory-mapped as a
+two-dimensional array at address <code>0xb8000</code>. Each character requires two bytes
+to specify: first, the ASCII character to display. The second byte stores
+extended attributes for the character, such as the colour and whether it should
+be blinking; <code>0x7</code> is a nice neutral white colour and black background. For
+more details, consult the VGA documentation.</p>
+<p>Let's be nice and clear the screen to start with, though. This gives us the
+following code:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">kmain</span><span class="symbol">(</span><span class="usertype">uint64_t</span><span class="normal"> </span><span class="function">__attribute__</span><span class="symbol">((</span><span class="normal">unused</span><span class="symbol">))</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">phy_maps</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">vidmem </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uint8_t </span><span class="symbol">*)(</span><span class="number">0xb8000</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="keyword">for</span><span class="symbol">(</span><span class="type">int</span><span class="normal"> i </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">&lt;</span><span class="normal"> </span><span class="number">80</span><span class="symbol">*</span><span class="number">24</span><span class="symbol">*</span><span class="number">2</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">++)</span><span class="normal"> vidmem</span><span class="symbol">[</span><span class="normal">i</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="keyword">const</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">string </span><span class="symbol">=</span><span class="normal"> </span><span class="string">"Hello, World!"</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">const</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">p </span><span class="symbol">=</span><span class="normal"> string</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="type">int</span><span class="normal"> x </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">while</span><span class="symbol">(*</span><span class="normal">p</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        vidmem</span><span class="symbol">[</span><span class="normal">x</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">p</span><span class="symbol">;</span>
+<span class="normal">        vidmem</span><span class="symbol">[</span><span class="normal">x</span><span class="symbol">+</span><span class="number">1</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="number">7</span><span class="symbol">;</span>
+<span class="normal">        x </span><span class="symbol">+=</span><span class="normal"> </span><span class="number">2</span><span class="symbol">;</span>
+<span class="normal">        p </span><span class="symbol">++;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// hang because we don't have anything better to do right now</span>
+<span class="normal">    </span><span class="keyword">while</span><span class="symbol">(</span><span class="number">1</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{}</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>Note that we can access the video memory at <code>0xb8000</code> directly like this
+because "identity paging" (i.e. passthrough paging) was set up by the assembly
+multiboot wrapper for the first 2MB for the sake of simplicity.</p>
+<h4 id="compiling-and-linking-everything-together">Compiling and linking everything together</h4>
+<p>Two things left: first, we need to compile all this code together and package
+it up into a multiboot ELF executable. If you're feeling lazy (and are using
+C), you are welcome to re-use the buildsystem from the reference kernel.</p>
+<p>However, for the sake of completeness, here's what is happening. The
+compilation stage is straightforward: an ordinary C compiler/x86 assembler is
+sufficient, though we do have to inform the C compiler that a "freestanding"
+environment is in use, i.e. that we do not have access to glibc. For GCC, the
+use of the <code>-ffreestanding -nostdlib</code> flags are sufficient.</p>
+<p>The linking is a little more complicated.  The linked code needs to know the
+absolute <sup id="fnref:relative"><a class="footnote-ref" href="#fn:relative" rel="footnote">5</a></sup> address of every part of the code and/or data in the
+kernel. There is a bit of a problem, though --- by the time the Multiboot
+loader actually reads and loads the ELF executable, paging is not yet set up.
+That is to say, virtual memory isn't set up! So we can't actually just load the
+kernel directly into the virtual memory address, because that doesn't exist
+just yet.</p>
+<p>However, ELF executables have support for loading an executable to a different
+address than it's linked to. (To be technical, this is the difference between
+<code>p_paddr</code> and <code>p_vaddr</code> in the program header; <code>p_vaddr</code> is the link address
+and <code>p_paddr</code> is the load address.) But we need to tell the linker to do so . .
+.</p>
+<p>GNU ld, the linker that I personally use, supports this by means of a link
+script. Essentially, it's a configuration file that describes how the input
+object files are to be linked and loaded. It's rather annoying to set up, and I
+sincerely suggest that you simply reuse the linker script provided in the
+reference kernel's buildsystem. It will provide a file called <code>kernel.bin</code> that
+contains the Multiboot-loadable kernel.</p>
+<h4 id="running-the-kernel">Running the kernel</h4>
+<p>Now, how do we actually get to the point of running this kernel? As mentioned
+earlier, we don't want to really run kernels on bare-metal hardware just yet.
+There's the possibility of hardware damage, and failing that, running on a
+virtual machine speeds up the development/deployment cycle significantly.</p>
+<p>If you're using qemu, then you can now run this kernel directly with
+<code>qemu-system-x86_64 -kernel kernel.bin</code>. For Bochs, however, you'll need to
+generate a disk image of some sort (I personally prefer generating CD images,
+but floppies and hard drive images are also fair game) and set that as the boot
+target. Note that the generated CD image can also be used in qemu. See the
+background notes for how to generate a CD image.</p>
+<h3 id="suggested-work">Suggested work</h3>
+<p>By this point, you should have a working buildsystem and be able to run the
+reference kernel to get a simple message printed to the screen.</p>
+<p>At this point, in preparation for the next couple of sets of notes, you should
+start writing some support code. We're working within a freestanding
+environment, and very little of the C standard libraries are available.
+Starting with <code>memcpy</code>/<code>memmove</code>, <code>strlen</code>, <code>sprintf</code>, and friends would be a
+good place to start. Don't worry about <code>malloc</code> and <code>free</code> just yet --- we'll
+get to those soon enough. Writing some C wrappers around the <code>inb</code>/<code>outb</code>
+assembly instructions will be handy later on, as well. Try to get
+semi-comfortable with inline assembly.</p>
+<p>You'll also need some data structures. This may be difficult without <code>malloc</code>
+and <code>free</code>, but writing them in userspace and then porting them over later
+(once you have <code>malloc</code>/<code>free</code>) may be a good idea. You should consider, as
+starting points, vector, linked list, balanced binary trees, and hash table
+implementations. I have an <a href="http://git.ethv.net/avl.git">AVL tree
+implementation</a> that may work as a starting point
+for a balanced binary tree if you don't feel like implementing one yourself.</p>
+<h3 id="further-reading">Further reading</h3>
+<ul>
+<li><a href="http://www.ibm.com/developerworks/library/l-linuxboot/index.html">Inside the Linux boot
+    process</a>
+    for a high-level overview of all the steps taken as Linux boots itself.</li>
+<li>The <a href="www.gnu.org/software/grub/manual/multiboot/multiboot.html">Multiboot
+    specification</a>
+    for all the details if you want to write your own Multiboot wrapper.</li>
+<li>The <a href="/weblog/002-program-loading-on-linux-1">Program Loading on Linux</a> weblog
+    series for more details on ELF executables, in particular part 2. Or, you
+    can go straight to the source and read the <a href="http://www.x86-64.org/documentation_folder/abi.pdf">SysV ABI supplement for
+    x86_64</a>.</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:port-count">
+<p>Several of these ports are reserved for Intel internal use, so
+in reality there are more like 65,528 ports.&#160;<a class="footnote-backref" href="#fnref:port-count" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:port-speed">
+<p>Ports are, by today's standards, an antiquated method of
+communication. As far as I am aware, they are mostly included for legacy
+support reasons. We'll not make much use of ports in our adventures in
+kernel-land, but there are five instances where they will be extremely handy
+(PIC, PIT, IDE, serial console, and PCI).&#160;<a class="footnote-backref" href="#fnref:port-speed" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:floppycode">
+<p>You can use 510 bytes on a floppy, but only if you don't mind
+losing the ability to have a DOS-compatible filesystem on said floppy.&#160;<a class="footnote-backref" href="#fnref:floppycode" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:hugepages">
+<p>This isn't strictly true, because PAE (required for use of
+x86_64) has larger pages as well, 2MB to be exact. A processor extension on
+Intel's Nehalem and later processors (I'm not sure what the equivalent is for
+AMD) allows use of 1GB pages. We'll revisit this in all the wonderful details
+during the next set of notes.&#160;<a class="footnote-backref" href="#fnref:hugepages" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:relative">
+<p>Technically speaking, x86_64 supports RIP-relative addressing, so
+all that <em>needs</em> to be known are the relative locations of each bit of code.
+However, for simplicity's sake, we'll not do this and instead go the more
+traditional route of having everything absolutely defined at link-time.&#160;<a class="footnote-backref" href="#fnref:relative" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:08 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

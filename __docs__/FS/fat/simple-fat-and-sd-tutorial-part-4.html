@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="http://codeandlife.com/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="http://codeandlife.com/wp-content/themes/twentyfifteen/js/html5.js"></script>
+	<![endif]-->
+	<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
+<title>Simple FAT and SD Tutorial Part 4 &#8211; Code and Life</title>
+<style type='text/css' media='screen' >.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img, .followwrap li.icon_text a img, .followwrap li.iconOnly a img{border-width:0 !important;background-color:none;}#follow.right {width:32px;position:fixed; right:0; top:100px;background-color:#878787;padding:10px 0;font-family:impact,charcoal,arial, helvetica,sans-serif;-moz-border-radius-topleft: 5px;-webkit-border-top-left-radius:5px;-moz-border-radius-bottomleft:5px;-webkit-border-bottom-left-radius:5px;border:2px solid #fff;border-right-width:0}#follow.right ul {padding:0; margin:0; list-style-type:none !important;font-size:24px;color:black;}
+#follow.right ul li {padding-bottom:10px;list-style-type:none !important;padding-left:4px;padding-right:4px}
+#follow img{border:none;}#follow.right ul li.follow {margin:0 4px;}
+#follow.right ul li.follow img {border-width:0;display:block;overflow:hidden; background:transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/images/impact/follow-right.png) no-repeat -0px 0px;height:79px;width:20px;}
+#follow.right ul li a {display:block;}
+#follow.right ul li.follow span, #follow ul li a span {display:none}.share {margin:0 3px 3px 0;}
+ul.row li {float:left;list-style-type:none;list-style:none;}
+li.iconOnly a span.head {display:none}
+#follow.left ul.size16 li.follow{margin:0px auto !important}
+li.icon_text a {padding-left:0;margin-right:3px}
+li.text_only a {background-image:none !important;padding-left:0;}
+li.text_only a img {display:none;}
+li.icon_text a span{background-image:none !important;padding-left:0 !important; }
+li.iconOnly a span.head {display:none}
+ul.socialwrap li {margin:0 3px 3px 0 !important;}
+ul.socialwrap li a {text-decoration:none;}ul.row li {float:left;line-height:auto !important;}
+ul.row li a img {padding:0}.size16 li a,.size24 li a,.size32 li a, .size48 li a, .size60 li a {display:block}ul.socialwrap {list-style-type:none !important;margin:0; padding:0;text-indent:0 !important;}
+ul.socialwrap li {list-style-type:none !important;background-image:none;padding:0;list-style-image:none !important;}
+ul.followwrap {list-style-type:none !important;margin:0; padding:0}
+ul.followwrap li {margin-right:3px;margin-bottom:3px;list-style-type:none !important;}
+#follow.right ul.followwrap li, #follow.left ul.followwrap li {margin-right:0px;margin-bottom:0px;}
+.shareinpost {clear:both;padding-top:0px}.shareinpost ul.socialwrap {list-style-type:none !important;margin:0 !important; padding:0 !important}
+.shareinpost ul.socialwrap li {padding-left:0 !important;background-image:none !important;margin-left:0 !important;list-style-type:none !important;text-indent:0 !important}
+.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img{border-width:0}ul.followrap li {list-style-type:none;list-style-image:none !important;}
+div.clean {clear:left;}
+div.display_none {display:none;}
+.button_holder_bottom,.button_holder_left{margin-right:5px;display:inline}.button_holder_right{margin-left:5px;display:inline}.button_holder_show_interactive {display:inline;margin-right:5px;}.button_holder_bottom iframe,.button_holder_left iframe,.button_holder_right iframe,.button_holder_show_interactive iframe{vertical-align:top}.tall *[id*='___plusone']{position:relative;top:-12px}</style><style type='text/css' media='print' >.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img, .followwrap li.icon_text a img, .followwrap li.iconOnly a img{border-width:0 !important;background-color:none;}#follow.right {width:32px;position:fixed; right:0; top:100px;background-color:#878787;padding:10px 0;font-family:impact,charcoal,arial, helvetica,sans-serif;-moz-border-radius-topleft: 5px;-webkit-border-top-left-radius:5px;-moz-border-radius-bottomleft:5px;-webkit-border-bottom-left-radius:5px;border:2px solid #fff;border-right-width:0}#follow.right ul {padding:0; margin:0; list-style-type:none !important;font-size:24px;color:black;}
+#follow.right ul li {padding-bottom:10px;list-style-type:none !important;padding-left:4px;padding-right:4px}
+#follow img{border:none;}#follow.right ul li.follow {margin:0 4px;}
+#follow.right ul li.follow img {border-width:0;display:block;overflow:hidden; background:transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/images/impact/follow-right.png) no-repeat -0px 0px;height:79px;width:20px;}
+#follow.right ul li a {display:block;}
+#follow.right ul li.follow span, #follow ul li a span {display:none}.share {margin:0 3px 3px 0;}
+ul.row li {float:left;list-style-type:none;list-style:none;}
+li.iconOnly a span.head {display:none}
+#follow.left ul.size16 li.follow{margin:0px auto !important}
+li.icon_text a {padding-left:0;margin-right:3px}
+li.text_only a {background-image:none !important;padding-left:0;}
+li.text_only a img {display:none;}
+li.icon_text a span{background-image:none !important;padding-left:0 !important; }
+li.iconOnly a span.head {display:none}
+ul.socialwrap li {margin:0 3px 3px 0 !important;}
+ul.socialwrap li a {text-decoration:none;}ul.row li {float:left;line-height:auto !important;}
+ul.row li a img {padding:0}.size16 li a,.size24 li a,.size32 li a, .size48 li a, .size60 li a {display:block}ul.socialwrap {list-style-type:none !important;margin:0; padding:0;text-indent:0 !important;}
+ul.socialwrap li {list-style-type:none !important;background-image:none;padding:0;list-style-image:none !important;}
+ul.followwrap {list-style-type:none !important;margin:0; padding:0}
+ul.followwrap li {margin-right:3px;margin-bottom:3px;list-style-type:none !important;}
+#follow.right ul.followwrap li, #follow.left ul.followwrap li {margin-right:0px;margin-bottom:0px;}
+.shareinpost {clear:both;padding-top:0px}.shareinpost ul.socialwrap {list-style-type:none !important;margin:0 !important; padding:0 !important}
+.shareinpost ul.socialwrap li {padding-left:0 !important;background-image:none !important;margin-left:0 !important;list-style-type:none !important;text-indent:0 !important}
+.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img{border-width:0}ul.followrap li {list-style-type:none;list-style-image:none !important;}
+div.clean {clear:left;}
+div.display_none {display:none;}
+.button_holder_bottom,.button_holder_left{margin-right:5px;display:inline}.button_holder_right{margin-left:5px;display:inline}.button_holder_show_interactive {display:inline;margin-right:5px;}.button_holder_bottom iframe,.button_holder_left iframe,.button_holder_right iframe,.button_holder_show_interactive iframe{vertical-align:top}.tall *[id*='___plusone']{position:relative;top:-12px}</style><link rel="image_src" href="http://www.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?default=&amp;size=110.jpg" /> 
+<link rel="alternate" type="application/rss+xml" title="Code and Life &raquo; Feed" href="http://codeandlife.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Code and Life &raquo; Comments Feed" href="http://codeandlife.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Code and Life &raquo; Simple FAT and SD Tutorial Part 4 Comments Feed" href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/codeandlife.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.5.4"}};
+			!function(a,b,c){function d(a){var c,d,e,f=b.createElement("canvas"),g=f.getContext&&f.getContext("2d"),h=String.fromCharCode;if(!g||!g.fillText)return!1;switch(g.textBaseline="top",g.font="600 32px Arial",a){case"flag":return g.fillText(h(55356,56806,55356,56826),0,0),f.toDataURL().length>3e3;case"diversity":return g.fillText(h(55356,57221),0,0),c=g.getImageData(16,16,1,1).data,d=c[0]+","+c[1]+","+c[2]+","+c[3],g.fillText(h(55356,57221,55356,57343),0,0),c=g.getImageData(16,16,1,1).data,e=c[0]+","+c[1]+","+c[2]+","+c[3],d!==e;case"simple":return g.fillText(h(55357,56835),0,0),0!==g.getImageData(16,16,1,1).data[0];case"unicode8":return g.fillText(h(55356,57135),0,0),0!==g.getImageData(16,16,1,1).data[0]}return!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i;for(i=Array("simple","flag","unicode8","diversity"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='beautyorange-wp-code-prettifier-css'  href='http://codeandlife.com/wp-content/plugins/beauty-orange-wordpress-code-prettifier/prettify.css?ver=4.5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='cptch_stylesheet-css'  href='http://codeandlife.com/wp-content/plugins/captcha/css/style.css?ver=4.5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='dashicons-css'  href='http://codeandlife.com/wp-includes/css/dashicons.min.css?ver=4.5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='cptch_desktop_style-css'  href='http://codeandlife.com/wp-content/plugins/captcha/css/desktop_style.css?ver=4.5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfifteen-fonts-css'  href='https://fonts.googleapis.com/css?family=Noto+Sans%3A400italic%2C700italic%2C400%2C700%7CNoto+Serif%3A400italic%2C700italic%2C400%2C700%7CInconsolata%3A400%2C700&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='genericons-css'  href='http://codeandlife.com/wp-content/themes/twentyfifteen/genericons/genericons.css?ver=3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfifteen-style-css'  href='http://codeandlife.com/wp-content/themes/twentyfifteen/style.css?ver=4.5.4' type='text/css' media='all' />
+<style id='twentyfifteen-style-inline-css' type='text/css'>
+	/* Color Scheme */
+
+	/* Background Color */
+	body {
+		background-color: #674970;
+	}
+
+	/* Sidebar Background Color */
+	body:before,
+	.site-header {
+		background-color: #2e2256;
+	}
+
+	/* Box Background Color */
+	.post-navigation,
+	.pagination,
+	.secondary,
+	.site-footer,
+	.hentry,
+	.page-header,
+	.page-content,
+	.comments-area,
+	.widecolumn {
+		background-color: #ffffff;
+	}
+
+	/* Box Background Color */
+	button,
+	input[type="button"],
+	input[type="reset"],
+	input[type="submit"],
+	.pagination .prev,
+	.pagination .next,
+	.widget_calendar tbody a,
+	.widget_calendar tbody a:hover,
+	.widget_calendar tbody a:focus,
+	.page-links a,
+	.page-links a:hover,
+	.page-links a:focus,
+	.sticky-post {
+		color: #ffffff;
+	}
+
+	/* Main Text Color */
+	button,
+	input[type="button"],
+	input[type="reset"],
+	input[type="submit"],
+	.pagination .prev,
+	.pagination .next,
+	.widget_calendar tbody a,
+	.page-links a,
+	.sticky-post {
+		background-color: #2e2256;
+	}
+
+	/* Main Text Color */
+	body,
+	blockquote cite,
+	blockquote small,
+	a,
+	.dropdown-toggle:after,
+	.image-navigation a:hover,
+	.image-navigation a:focus,
+	.comment-navigation a:hover,
+	.comment-navigation a:focus,
+	.widget-title,
+	.entry-footer a:hover,
+	.entry-footer a:focus,
+	.comment-metadata a:hover,
+	.comment-metadata a:focus,
+	.pingback .edit-link a:hover,
+	.pingback .edit-link a:focus,
+	.comment-list .reply a:hover,
+	.comment-list .reply a:focus,
+	.site-info a:hover,
+	.site-info a:focus {
+		color: #2e2256;
+	}
+
+	/* Main Text Color */
+	.entry-content a,
+	.entry-summary a,
+	.page-content a,
+	.comment-content a,
+	.pingback .comment-body > a,
+	.author-description a,
+	.taxonomy-description a,
+	.textwidget a,
+	.entry-footer a:hover,
+	.comment-metadata a:hover,
+	.pingback .edit-link a:hover,
+	.comment-list .reply a:hover,
+	.site-info a:hover {
+		border-color: #2e2256;
+	}
+
+	/* Secondary Text Color */
+	button:hover,
+	button:focus,
+	input[type="button"]:hover,
+	input[type="button"]:focus,
+	input[type="reset"]:hover,
+	input[type="reset"]:focus,
+	input[type="submit"]:hover,
+	input[type="submit"]:focus,
+	.pagination .prev:hover,
+	.pagination .prev:focus,
+	.pagination .next:hover,
+	.pagination .next:focus,
+	.widget_calendar tbody a:hover,
+	.widget_calendar tbody a:focus,
+	.page-links a:hover,
+	.page-links a:focus {
+		background-color: #2e2256; /* Fallback for IE7 and IE8 */
+		background-color: rgba( 46, 34, 86, 0.7);
+	}
+
+	/* Secondary Text Color */
+	blockquote,
+	a:hover,
+	a:focus,
+	.main-navigation .menu-item-description,
+	.post-navigation .meta-nav,
+	.post-navigation a:hover .post-title,
+	.post-navigation a:focus .post-title,
+	.image-navigation,
+	.image-navigation a,
+	.comment-navigation,
+	.comment-navigation a,
+	.widget,
+	.author-heading,
+	.entry-footer,
+	.entry-footer a,
+	.taxonomy-description,
+	.page-links > .page-links-title,
+	.entry-caption,
+	.comment-author,
+	.comment-metadata,
+	.comment-metadata a,
+	.pingback .edit-link,
+	.pingback .edit-link a,
+	.post-password-form label,
+	.comment-form label,
+	.comment-notes,
+	.comment-awaiting-moderation,
+	.logged-in-as,
+	.form-allowed-tags,
+	.no-comments,
+	.site-info,
+	.site-info a,
+	.wp-caption-text,
+	.gallery-caption,
+	.comment-list .reply a,
+	.widecolumn label,
+	.widecolumn .mu_register label {
+		color: #2e2256; /* Fallback for IE7 and IE8 */
+		color: rgba( 46, 34, 86, 0.7);
+	}
+
+	/* Secondary Text Color */
+	blockquote,
+	.logged-in-as a:hover,
+	.comment-author a:hover {
+		border-color: #2e2256; /* Fallback for IE7 and IE8 */
+		border-color: rgba( 46, 34, 86, 0.7);
+	}
+
+	/* Border Color */
+	hr,
+	.dropdown-toggle:hover,
+	.dropdown-toggle:focus {
+		background-color: #2e2256; /* Fallback for IE7 and IE8 */
+		background-color: rgba( 46, 34, 86, 0.1);
+	}
+
+	/* Border Color */
+	pre,
+	abbr[title],
+	table,
+	th,
+	td,
+	input,
+	textarea,
+	.main-navigation ul,
+	.main-navigation li,
+	.post-navigation,
+	.post-navigation div + div,
+	.pagination,
+	.comment-navigation,
+	.widget li,
+	.widget_categories .children,
+	.widget_nav_menu .sub-menu,
+	.widget_pages .children,
+	.site-header,
+	.site-footer,
+	.hentry + .hentry,
+	.author-info,
+	.entry-content .page-links a,
+	.page-links > span,
+	.page-header,
+	.comments-area,
+	.comment-list + .comment-respond,
+	.comment-list article,
+	.comment-list .pingback,
+	.comment-list .trackback,
+	.comment-list .reply a,
+	.no-comments {
+		border-color: #2e2256; /* Fallback for IE7 and IE8 */
+		border-color: rgba( 46, 34, 86, 0.1);
+	}
+
+	/* Border Focus Color */
+	a:focus,
+	button:focus,
+	input:focus {
+		outline-color: #2e2256; /* Fallback for IE7 and IE8 */
+		outline-color: rgba( 46, 34, 86, 0.3);
+	}
+
+	input:focus,
+	textarea:focus {
+		border-color: #2e2256; /* Fallback for IE7 and IE8 */
+		border-color: rgba( 46, 34, 86, 0.3);
+	}
+
+	/* Sidebar Link Color */
+	.secondary-toggle:before {
+		color: #ffffff;
+	}
+
+	.site-title a,
+	.site-description {
+		color: #ffffff;
+	}
+
+	/* Sidebar Text Color */
+	.site-title a:hover,
+	.site-title a:focus {
+		color: rgba( 255, 255, 255, 0.7);
+	}
+
+	/* Sidebar Border Color */
+	.secondary-toggle {
+		border-color: #ffffff; /* Fallback for IE7 and IE8 */
+		border-color: rgba( 255, 255, 255, 0.1);
+	}
+
+	/* Sidebar Border Focus Color */
+	.secondary-toggle:hover,
+	.secondary-toggle:focus {
+		border-color: #ffffff; /* Fallback for IE7 and IE8 */
+		border-color: rgba( 255, 255, 255, 0.3);
+	}
+
+	.site-title a {
+		outline-color: #ffffff; /* Fallback for IE7 and IE8 */
+		outline-color: rgba( 255, 255, 255, 0.3);
+	}
+
+	/* Meta Background Color */
+	.entry-footer {
+		background-color: #f1f1f1;
+	}
+
+	@media screen and (min-width: 38.75em) {
+		/* Main Text Color */
+		.page-header {
+			border-color: #2e2256;
+		}
+	}
+
+	@media screen and (min-width: 59.6875em) {
+		/* Make sure its transparent on desktop */
+		.site-header,
+		.secondary {
+			background-color: transparent;
+		}
+
+		/* Sidebar Background Color */
+		.widget button,
+		.widget input[type="button"],
+		.widget input[type="reset"],
+		.widget input[type="submit"],
+		.widget_calendar tbody a,
+		.widget_calendar tbody a:hover,
+		.widget_calendar tbody a:focus {
+			color: #2e2256;
+		}
+
+		/* Sidebar Link Color */
+		.secondary a,
+		.dropdown-toggle:after,
+		.widget-title,
+		.widget blockquote cite,
+		.widget blockquote small {
+			color: #ffffff;
+		}
+
+		.widget button,
+		.widget input[type="button"],
+		.widget input[type="reset"],
+		.widget input[type="submit"],
+		.widget_calendar tbody a {
+			background-color: #ffffff;
+		}
+
+		.textwidget a {
+			border-color: #ffffff;
+		}
+
+		/* Sidebar Text Color */
+		.secondary a:hover,
+		.secondary a:focus,
+		.main-navigation .menu-item-description,
+		.widget,
+		.widget blockquote,
+		.widget .wp-caption-text,
+		.widget .gallery-caption {
+			color: rgba( 255, 255, 255, 0.7);
+		}
+
+		.widget button:hover,
+		.widget button:focus,
+		.widget input[type="button"]:hover,
+		.widget input[type="button"]:focus,
+		.widget input[type="reset"]:hover,
+		.widget input[type="reset"]:focus,
+		.widget input[type="submit"]:hover,
+		.widget input[type="submit"]:focus,
+		.widget_calendar tbody a:hover,
+		.widget_calendar tbody a:focus {
+			background-color: rgba( 255, 255, 255, 0.7);
+		}
+
+		.widget blockquote {
+			border-color: rgba( 255, 255, 255, 0.7);
+		}
+
+		/* Sidebar Border Color */
+		.main-navigation ul,
+		.main-navigation li,
+		.widget input,
+		.widget textarea,
+		.widget table,
+		.widget th,
+		.widget td,
+		.widget pre,
+		.widget li,
+		.widget_categories .children,
+		.widget_nav_menu .sub-menu,
+		.widget_pages .children,
+		.widget abbr[title] {
+			border-color: rgba( 255, 255, 255, 0.1);
+		}
+
+		.dropdown-toggle:hover,
+		.dropdown-toggle:focus,
+		.widget hr {
+			background-color: rgba( 255, 255, 255, 0.1);
+		}
+
+		.widget input:focus,
+		.widget textarea:focus {
+			border-color: rgba( 255, 255, 255, 0.3);
+		}
+
+		.sidebar a:focus,
+		.dropdown-toggle:focus {
+			outline-color: rgba( 255, 255, 255, 0.3);
+		}
+	}
+</style>
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='twentyfifteen-ie-css'  href='http://codeandlife.com/wp-content/themes/twentyfifteen/css/ie.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='twentyfifteen-ie7-css'  href='http://codeandlife.com/wp-content/themes/twentyfifteen/css/ie7.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+<script type='text/javascript' src='http://codeandlife.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='http://codeandlife.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var cptch_vars = {"nonce":"8693794733","ajaxurl":"http:\/\/codeandlife.com\/wp-admin\/admin-ajax.php","enlarge":"0"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://codeandlife.com/wp-content/plugins/captcha/js/front_end_script.js?ver=4.5.4'></script>
+<link rel='https://api.w.org/' href='http://codeandlife.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://codeandlife.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://codeandlife.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Simple FAT and SD Tutorial Part 3' href='http://codeandlife.com/2012/04/25/simple-fat-and-sd-tutorial-part-3/' />
+<link rel='next' title='Logic analysis with Bus Pirate' href='http://codeandlife.com/2012/05/05/logic-analysis-with-bus-pirate/' />
+<meta name="generator" content="WordPress 4.5.4" />
+<link rel="canonical" href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/" />
+<link rel='shortlink' href='http://codeandlife.com/?p=558' />
+<link rel="alternate" type="application/json+oembed" href="http://codeandlife.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F" />
+<link rel="alternate" type="text/xml+oembed" href="http://codeandlife.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&#038;format=xml" />
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-3381993-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+<style type="text/css" id="custom-background-css">
+body.custom-background { background-color: #dbd0e2; }
+</style>
+</head>
+
+<body class="single single-post postid-558 single-format-standard custom-background">
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+	<div id="sidebar" class="sidebar">
+		<header id="masthead" class="site-header" role="banner">
+			<div class="site-branding">
+										<p class="site-title"><a href="http://codeandlife.com/" rel="home">Code and Life</a></p>
+											<p class="site-description">Programming, electronics and other cool tech stuff</p>
+									<button class="secondary-toggle">Menu and widgets</button>
+			</div><!-- .site-branding -->
+		</header><!-- .site-header -->
+
+			<div id="secondary" class="secondary">
+
+		
+		
+					<div id="widget-area" class="widget-area" role="complementary">
+						<aside id="recent-posts-4" class="widget widget_recent_entries">		<h2 class="widget-title">Recent Posts</h2>		<ul>
+					<li>
+				<a href="http://codeandlife.com/2016/05/29/picoscope-2208b-mso-review/">Picoscope 2208B MSO Review</a>
+						</li>
+					<li>
+				<a href="http://codeandlife.com/2016/05/06/new-picotech-2208b-unboxing-video/">New Picotech 2208B Unboxing Video!</a>
+						</li>
+					<li>
+				<a href="http://codeandlife.com/2016/04/24/ir-signal-recorder-with-arduino-uno/">IR signal recorder with Arduino Uno</a>
+						</li>
+					<li>
+				<a href="http://codeandlife.com/2016/04/18/beaglebone-black-gpio-benchmark/">BeagleBone Black GPIO Benchmark</a>
+						</li>
+				</ul>
+		</aside>		<aside id="text-5" class="widget widget_text"><h2 class="widget-title">Sponsored by</h2>			<div class="textwidget"><div style="text-align: center; padding: 10px;"><a href="http://picotech.com/obo107"><img src="http://codeandlife.com/data/CAL-2200B.gif"/></a></div>
+</div>
+		</aside><aside id="linkcat-2" class="widget widget_links"><h2 class="widget-title">Check these out</h2>
+	<ul class='xoxo blogroll'>
+<li><a href="http://joonaspihlajamaa.com" title="Author&#8217;s home page">Author&#039;s Home Page</a></li>
+<li><a href="/2012/01/22/avr-attiny-usb-tutorial-part-1/" rel="me" title="V-USB tutorial for ATtiny and other 8-bit AVR microcontrollers">AVR USB Tutorial</a></li>
+<li><a href="https://www.mrosupply.com/popular_products/popular-motors/" title="MROSupply.com" target="_blank">MRO Supply</a></li>
+<li><a href="/2012/07/03/benchmarking-raspberry-pi-gpio-speed/" rel="me" title="Benchmarking RaspPi GPIO speed">Raspberry Pi GPIO Benchmark</a></li>
+
+	</ul>
+</aside>
+<aside id="text-6" class="widget widget_text">			<div class="textwidget"><div style="text-align: center; padding: 10px;"><a href="https://www.mrosupply.com/popular_products/acme-products/ "><img src="http://codeandlife.com/data/MROsupply.jpg"/></a></div>
+
+<!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+LT!-- CAL responsive side --GT
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-0208008275241530"
+     data-ad-slot="4930811343"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script> --></div>
+		</aside><aside id="nav_menu-3" class="widget widget_nav_menu"><h2 class="widget-title">Navigate</h2><div class="menu-main-menu-container"><ul id="menu-main-menu" class="menu"><li id="menu-item-237" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-237"><a href="http://codeandlife.com/topics/electronics/">Electronics</a></li>
+<li id="menu-item-750" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-750"><a href="http://codeandlife.com/topics/raspberry-pi/">Raspberry Pi</a></li>
+<li id="menu-item-238" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-238"><a href="http://codeandlife.com/topics/v-usb-electronics/">V-USB tutorials</a></li>
+<li id="menu-item-241" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-241"><a href="http://codeandlife.com/topics/reviews/">Reviews</a></li>
+<li id="menu-item-239" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-239"><a href="http://codeandlife.com/topics/general/">General</a></li>
+<li id="menu-item-240" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-240"><a href="http://codeandlife.com/topics/coding/">Web coding</a></li>
+<li id="menu-item-1782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1782"><a href="http://codeandlife.com/about/">About</a></li>
+</ul></div></aside><aside id="tag_cloud-3" class="widget widget_tag_cloud"><h2 class="widget-title">Common tags</h2><div class="tagcloud"><a href='http://codeandlife.com/tags/adafruit/' class='tag-link-230 tag-link-position-1' title='4 topics' style='font-size: 10.413793103448pt;'>adafruit</a>
+<a href='http://codeandlife.com/tags/arduino/' class='tag-link-129 tag-link-position-2' title='10 topics' style='font-size: 18.620689655172pt;'>arduino</a>
+<a href='http://codeandlife.com/tags/atmega88/' class='tag-link-118 tag-link-position-3' title='3 topics' style='font-size: 8pt;'>atmega88</a>
+<a href='http://codeandlife.com/tags/attiny/' class='tag-link-64 tag-link-position-4' title='12 topics' style='font-size: 20.310344827586pt;'>ATtiny</a>
+<a href='http://codeandlife.com/tags/attiny45/' class='tag-link-92 tag-link-position-5' title='3 topics' style='font-size: 8pt;'>ATtiny45</a>
+<a href='http://codeandlife.com/tags/attiny85/' class='tag-link-93 tag-link-position-6' title='3 topics' style='font-size: 8pt;'>ATtiny85</a>
+<a href='http://codeandlife.com/tags/attiny2313/' class='tag-link-65 tag-link-position-7' title='12 topics' style='font-size: 20.310344827586pt;'>ATtiny2313</a>
+<a href='http://codeandlife.com/tags/avr/' class='tag-link-63 tag-link-position-8' title='14 topics' style='font-size: 22pt;'>AVR</a>
+<a href='http://codeandlife.com/tags/avrdude/' class='tag-link-221 tag-link-position-9' title='4 topics' style='font-size: 10.413793103448pt;'>avrdude</a>
+<a href='http://codeandlife.com/tags/benchmark/' class='tag-link-200 tag-link-position-10' title='4 topics' style='font-size: 10.413793103448pt;'>benchmark</a>
+<a href='http://codeandlife.com/tags/composite-video/' class='tag-link-214 tag-link-position-11' title='3 topics' style='font-size: 8pt;'>composite video</a>
+<a href='http://codeandlife.com/tags/diptrace/' class='tag-link-170 tag-link-position-12' title='3 topics' style='font-size: 8pt;'>diptrace</a>
+<a href='http://codeandlife.com/tags/diy/' class='tag-link-109 tag-link-position-13' title='4 topics' style='font-size: 10.413793103448pt;'>diy</a>
+<a href='http://codeandlife.com/tags/fat/' class='tag-link-137 tag-link-position-14' title='3 topics' style='font-size: 8pt;'>fat</a>
+<a href='http://codeandlife.com/tags/gpio/' class='tag-link-197 tag-link-position-15' title='4 topics' style='font-size: 10.413793103448pt;'>gpio</a>
+<a href='http://codeandlife.com/tags/hack/' class='tag-link-110 tag-link-position-16' title='6 topics' style='font-size: 14.034482758621pt;'>hack</a>
+<a href='http://codeandlife.com/tags/isp/' class='tag-link-130 tag-link-position-17' title='3 topics' style='font-size: 8pt;'>isp</a>
+<a href='http://codeandlife.com/tags/keyboard/' class='tag-link-185 tag-link-position-18' title='5 topics' style='font-size: 12.344827586207pt;'>keyboard</a>
+<a href='http://codeandlife.com/tags/library/' class='tag-link-151 tag-link-position-19' title='3 topics' style='font-size: 8pt;'>library</a>
+<a href='http://codeandlife.com/tags/linux/' class='tag-link-40 tag-link-position-20' title='4 topics' style='font-size: 10.413793103448pt;'>linux</a>
+<a href='http://codeandlife.com/tags/logic-analyzer/' class='tag-link-165 tag-link-position-21' title='4 topics' style='font-size: 10.413793103448pt;'>logic analyzer</a>
+<a href='http://codeandlife.com/tags/ntsc/' class='tag-link-215 tag-link-position-22' title='3 topics' style='font-size: 8pt;'>ntsc</a>
+<a href='http://codeandlife.com/tags/oscilloscope/' class='tag-link-83 tag-link-position-23' title='7 topics' style='font-size: 15.241379310345pt;'>oscilloscope</a>
+<a href='http://codeandlife.com/tags/pcb/' class='tag-link-177 tag-link-position-24' title='5 topics' style='font-size: 12.344827586207pt;'>pcb</a>
+<a href='http://codeandlife.com/tags/pcb-layout/' class='tag-link-178 tag-link-position-25' title='3 topics' style='font-size: 8pt;'>pcb layout</a>
+<a href='http://codeandlife.com/tags/picoscope/' class='tag-link-81 tag-link-position-26' title='11 topics' style='font-size: 19.586206896552pt;'>picoscope</a>
+<a href='http://codeandlife.com/tags/picoscope-3206b/' class='tag-link-224 tag-link-position-27' title='3 topics' style='font-size: 8pt;'>picoscope 3206b</a>
+<a href='http://codeandlife.com/tags/picotech/' class='tag-link-86 tag-link-position-28' title='6 topics' style='font-size: 14.034482758621pt;'>picotech</a>
+<a href='http://codeandlife.com/tags/ps2/' class='tag-link-295 tag-link-position-29' title='3 topics' style='font-size: 8pt;'>ps/2</a>
+<a href='http://codeandlife.com/tags/putty/' class='tag-link-194 tag-link-position-30' title='3 topics' style='font-size: 8pt;'>putty</a>
+<a href='http://codeandlife.com/tags/python/' class='tag-link-36 tag-link-position-31' title='5 topics' style='font-size: 12.344827586207pt;'>python</a>
+<a href='http://codeandlife.com/tags/rails/' class='tag-link-24 tag-link-position-32' title='3 topics' style='font-size: 8pt;'>rails</a>
+<a href='http://codeandlife.com/tags/raspberry-pi-2/' class='tag-link-191 tag-link-position-33' title='10 topics' style='font-size: 18.620689655172pt;'>raspberry pi</a>
+<a href='http://codeandlife.com/tags/rasppi/' class='tag-link-192 tag-link-position-34' title='4 topics' style='font-size: 10.413793103448pt;'>rasppi</a>
+<a href='http://codeandlife.com/tags/review/' class='tag-link-80 tag-link-position-35' title='7 topics' style='font-size: 15.241379310345pt;'>review</a>
+<a href='http://codeandlife.com/tags/sd/' class='tag-link-138 tag-link-position-36' title='4 topics' style='font-size: 10.413793103448pt;'>sd</a>
+<a href='http://codeandlife.com/tags/serial/' class='tag-link-195 tag-link-position-37' title='6 topics' style='font-size: 14.034482758621pt;'>serial</a>
+<a href='http://codeandlife.com/tags/sparkfun/' class='tag-link-228 tag-link-position-38' title='3 topics' style='font-size: 8pt;'>sparkfun</a>
+<a href='http://codeandlife.com/tags/sump/' class='tag-link-167 tag-link-position-39' title='3 topics' style='font-size: 8pt;'>sump</a>
+<a href='http://codeandlife.com/tags/tutorial/' class='tag-link-116 tag-link-position-40' title='12 topics' style='font-size: 20.310344827586pt;'>tutorial</a>
+<a href='http://codeandlife.com/tags/uart/' class='tag-link-157 tag-link-position-41' title='4 topics' style='font-size: 10.413793103448pt;'>uart</a>
+<a href='http://codeandlife.com/tags/usb/' class='tag-link-48 tag-link-position-42' title='10 topics' style='font-size: 18.620689655172pt;'>usb</a>
+<a href='http://codeandlife.com/tags/v-usb/' class='tag-link-66 tag-link-position-43' title='11 topics' style='font-size: 19.586206896552pt;'>V-USB</a>
+<a href='http://codeandlife.com/tags/video/' class='tag-link-176 tag-link-position-44' title='4 topics' style='font-size: 10.413793103448pt;'>video</a>
+<a href='http://codeandlife.com/tags/wordpress/' class='tag-link-18 tag-link-position-45' title='3 topics' style='font-size: 8pt;'>wordpress</a></div>
+</aside>			</div><!-- .widget-area -->
+		
+	</div><!-- .secondary -->
+
+	</div><!-- .sidebar -->
+
+	<div id="content" class="site-content">
+
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+
+		
+<article id="post-558" class="post-558 post type-post status-publish format-standard hentry category-electronics tag-atmega88 tag-fat tag-sd tag-sdhc tag-tutorial tag-uart">
+	
+	<header class="entry-header">
+		<h1 class="entry-title">Simple FAT and SD Tutorial Part 4</h1>	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<p><a href="http://codeandlife.com/wp-content/uploads/2012/04/sd_final.jpg"><img src="http://codeandlife.com/wp-content/uploads/2012/04/sd_final-300x247.jpg" alt="" title="SD project, final version" width="300" height="247" class="alignleft size-medium wp-image-559" srcset="http://codeandlife.com/wp-content/uploads/2012/04/sd_final-300x247.jpg 300w, http://codeandlife.com/wp-content/uploads/2012/04/sd_final-1024x844.jpg 1024w, http://codeandlife.com/wp-content/uploads/2012/04/sd_final.jpg 1200w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>In the previous parts of this <a href="http://codeandlife.com/2012/04/02/simple-fat-and-sd-tutorial-part-1/" title="Simple FAT and SD Tutorial Part 1">tutorial</a>, we have built both an <a href="http://codeandlife.com/2012/04/07/simple-fat-and-sd-tutorial-part-2/" title="Simple FAT and SD Tutorial Part 2">FAT library</a> as well as a <a href="http://codeandlife.com/2012/04/25/simple-fat-and-sd-tutorial-part-3/" title="Simple FAT and SD Tutorial Part 3">test program to communicate with the SD card</a>. Now it&#8217;s time to wrap it up with final parts of code to read a file from SD card and print it out.</p>
+<p>This part will utilize the previously made FAT library with a few tweaks &#8211; it turned out that some byte and word-sized values needed explicit casting to <code>unsigned long</code> so that the calculations worked as they should. The new library and all code shown here can be found from the <a href="http://codeandlife.com/data/fat_tutorial4.zip">updated project zip</a>.</p>
+<h2>Initializing the SD card automatically</h2>
+<p>Instead of manually pressing 1, 2, and 3, we&#8217;ll now write a single function to initialize the SD card to SPI mode. For standard SD (not high capacity SDHC) cards, it&#8217;s enough to:</p>
+<ol>
+<li>Send clock pulses for 80 cycles (&#8220;read&#8221; 10 bytes)</li>
+<li>Send command 0x40 (it should return 1)</li>
+<li>Send command 0x41 until it returns 0 (it returns 1 while the card is busy)</li>
+<li>Send command 0x50 to set read block size (as well as write block size)</li>
+</ol>
+<p>Here&#8217;s the code to do just that (sd_sector and sd_pos will be used shortly):<br />
+<span id="more-558"></span></p>
+<pre class="prettyprint lang-c">
+unsigned long sd_sector;
+unsigned short sd_pos;
+
+char SD_init() {
+    char i;
+	
+    // ]r:10
+    CS_DISABLE();
+    for(i=0; i&lt;10; i++) // idle for 1 bytes / 80 clocks
+        SPI_write(0xFF);
+		
+    // [0x40 0x00 0x00 0x00 0x00 0x95 r:8] until we get &quot;1&quot;
+    for(i=0; i&lt;10 &amp;&amp; SD_command(0x40, 0x00000000, 0x95, 8) != 1; i++)
+        _delay_ms(100);
+			
+    if(i == 10) // card did not respond to initialization
+        return -1;
+		
+    // CMD1 until card comes out of idle, but maximum of 10 times
+    for(i=0; i&lt;10 &amp;&amp; SD_command(0x41, 0x00000000, 0xFF, 8) != 0; i++)
+        _delay_ms(100);
+
+    if(i == 10) // card did not come out of idle
+        return -2;
+		
+    // SET_BLOCKLEN to 512
+    SD_command(0x50, 0x00000200, 0xFF, 8);
+	
+    sd_sector = sd_pos = 0;
+	
+    return 0;
+}
+</pre>
+<h2>Reading data from SD card</h2>
+<p>Reading data from SD cards (as well as writing it) is done in discrete blocks. The read command is given the offset of data to be read, and it returns X bytes, where X is the size of transfer block set during initialization. For normal SD cards, block size can be set to smaller than the 512 used in the initialization code, but for higher capacity SDHC and SDXC cards the block size is always 512 bytes, so I decided to use that so there would be less code changes in case I wanted to support SDHC cards later on.</p>
+<p>Because I wanted to support systems that have only 128 or 256 bytes of SRAM (if you remember from earlier parts, the FAT library uses a 32 byte buffer), reading all 512 bytes into memory is not possible. Instead, we capture a small window of the data. For example, to read bytes 32-63 (zero-based indexing, so 32 bytes starting from 33rd byte) from a 512 byte sector, we issue a read command for the whole sector, but discard the first 32 bytes, then capture the next 32 bytes, and then again skip the remaining 448 bytes plus 2 CRC bytes. Here&#8217;s the read command:</p>
+<pre class="prettyprint lang-c">
+// TODO: This function will not exit gracefully if SD card does not do what it should
+void SD_read(unsigned long sector, unsigned short offset, unsigned char * buffer, 
+             unsigned short len) {
+    unsigned short i, pos = 0;
+    
+    CS_ENABLE();
+    SPI_write(0x51);
+    SPI_write(sector&gt;&gt;15); // sector*512 &gt;&gt; 24
+    SPI_write(sector&gt;&gt;7);  // sector*512 &gt;&gt; 16
+    SPI_write(sector&lt;&lt;1);  // sector*512 &gt;&gt; 8
+    SPI_write(0);          // sector*512
+    SPI_write(0xFF);
+    
+    for(i=0; i&lt;10 &amp;&amp; SPI_write(0xFF) != 0x00; i++) {} // wait for 0
+    
+    for(i=0; i&lt;10 &amp;&amp; SPI_write(0xFF) != 0xFE; i++) {} // wait for data start
+    
+    for(i=0; i&lt;offset; i++) // &quot;skip&quot; bytes
+        SPI_write(0xFF);
+        
+    for(i=0; i&lt;len; i++) // read len bytes
+        buffer[i] = SPI_write(0xFF);
+        
+    for(i+=offset; i&lt;512; i++) // &quot;skip&quot; again
+        SPI_write(0xFF);
+        
+    // skip checksum
+    SPI_write(0xFF);
+    SPI_write(0xFF);    
+
+    CS_DISABLE();    
+}
+</pre>
+<p>The read command (0x51) is much like all other SD commands and it takes a 32-bit address &#8211; we use the sector number and multiply it by 512 (<code>sector&lt;&lt;9</code>). Note that SDHC cards use sector addressing and not byte addressing, so this would not be needed for SDHC. After sending the command, SD card responds with &#8220;0&#8221; to indicate the command has been received, and then it sends 0xFF until data is ready, at which point it sends 0xFE, then the 512 bytes of data and finally 2 bytes of checksum. Pretty straightforward!</p>
+<h2>Providing FAT library disk functions</h2>
+<p>As you probably recall, we now need to provide FAT library two functions to navigate around the SD card: <code>fat16_seek()</code> and <code>fat16_read()</code>. Now that we have our flexible <code>SD_read()</code> function, it&#8217;s really just a matter of keeping two pointers, current SD sector (<code>sd_sector</code>) and offset within that (<code>sd_offset</code>), which we just set when the library wants to seek, and pass to <code>SD_read</code> when the FAT library wants to read bytes (and increment the pointers afterwards). Without further ado, here are the wrapper functions:</p>
+<pre class="prettyprint lang-c">
+void fat16_seek(unsigned long offset) {
+    sd_sector = offset &gt;&gt; 9;
+    sd_pos = offset &amp; 511;        
+}
+
+char fat16_read(unsigned char bytes) {
+    SD_read(sd_sector, sd_pos, fat16_buffer, bytes);
+    sd_pos+=(unsigned short)bytes;
+    
+    if(sd_pos == 512) {
+        sd_pos = 0;
+        sd_sector++;
+    }
+    
+    return bytes;
+}
+</pre>
+<p>Note that the read function can be very simple because we know the reads never cross sector boundaries &#8211; the FAT library reads 32 bytes at a time, and 512 is a multiple of that. If that was not true, the read function would need some additional logic to deal with it.</p>
+<h2>Wrapping it all up</h2>
+<p>We now have <strong>all</strong> the helper functions we need. We have the UART. We speak through the SPI. We command the SD card. We understand the FAT. Here&#8217;s a simple main function to enjoy our accomplishments through reading a file called <code>README.TXT</code> and displaying it over UART:</p>
+<pre class="prettyprint lang-c">
+int main(int argc, char *argv[]) {
+    char i, ret;
+    short offset = 0x1B0;
+
+    USARTInit(64); // 20 MHz / (16 * 19200 baud) - 1 = 64.104x
+    
+    SPI_init();    
+    
+    uwrite_str(&quot;Start&#92;r&#92;n&quot;);
+        
+    if(ret = SD_init()) {
+        uwrite_str(&quot;SD err: &quot;);
+        uwrite_hex(ret);
+        return -1;
+    }
+    
+    if(ret = fat16_init()) {
+        uwrite_str(&quot;FAT err: &quot;);
+        uwrite_hex(ret);
+        return -1;
+    }
+        
+    if(ret = fat16_open_file(&quot;README  &quot;, &quot;TXT&quot;)) {
+        uwrite_str(&quot;Open: &quot;);
+        uwrite_hex(ret);
+        return -1;
+    }
+    
+    while(fat16_state.file_left) {
+        ret = fat16_read_file(FAT16_BUFFER_SIZE);
+        for(i=0; i&lt;ret; i++)
+            USARTWriteChar(fat16_buffer[i]);
+    }
+       
+    return 0;
+}
+</pre>
+<p>Here&#8217;s the output from our glorious test program:</p>
+<p><a href="http://codeandlife.com/wp-content/uploads/2012/04/run.png"><img src="http://codeandlife.com/wp-content/uploads/2012/04/run.png" alt="" title="Sample run" width="642" height="307" class="alignnone size-full wp-image-568" srcset="http://codeandlife.com/wp-content/uploads/2012/04/run.png 642w, http://codeandlife.com/wp-content/uploads/2012/04/run-300x143.png 300w" sizes="(max-width: 642px) 100vw, 642px" /></a></p>
+<p>That&#8217;s all! You can now read SD cards with your ATmega. And best of all, you should also understand every nook and cranny of the code used to do that. Pretty cool! If you have a ATmega with 1 kB of SRAM, you could quite easily implement SD writing, or write some nice code for navigating the SD card directories. Or maybe you&#8217;d like to upgrade the library to support FAT32 or SDHC cards. The choice is yours!</p>
+<p>Thanks for reading the tutorial, I hope you found it useful. Remember to subscribe to the feed for more tutorials and interesting projects in the future. And of course, all feedback is very welcome, too!</p>
+<div class='shareinpost'><ul class="socialwrap row"><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Digg this post : Simple FAT and SD Tutorial Part 4'  href='http://digg.com/submit?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;title=Simple+FAT+and+SD+Tutorial+Part+4&amp;bodytext=%0D%0A%0D%0AIn+the+previous+parts+of+this+tutorial%2C+we+have+built+both+an+FAT+library+as+well+as+a+test+program+to+communicate+with+the+SD+card.+Now+it%27s+time+to+wrap+it+up+with+final+parts+of+code+to+read+a+file+from+SD+card+and+print+it+out.%0D%0A%0D%0AThis+part+will+utilize+the+previously+made+FAT+library+with+a+few+tweaks+-+it+tur'  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='digg'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-297px 0px'   /> <span class="head">Digg this post</span></a></li><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Recommend this post : Simple FAT and SD Tutorial Part 4 on Facebook'  href='http://www.facebook.com/sharer.php?u=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;t=Simple+FAT+and+SD+Tutorial+Part+4'  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='facebook'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-396px 0px'   /> <span class="head">Recommend on Facebook</span></a></li><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Share this post : Simple FAT and SD Tutorial Part 4 on Google+'  href='https://plusone.google.com/_/+1/confirm?hl=en&amp;url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;title=Simple+FAT+and+SD+Tutorial+Part+4'  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='gplus'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-825px 0px'   /> <span class="head">Share on Google+</span></a></li><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Share this post : Simple FAT and SD Tutorial Part 4 on Reddit'  href='http://www.reddit.com/submit?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;title=Simple+FAT+and+SD+Tutorial+Part+4'  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='reddit'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1749px 0px'   /> <span class="head">share via Reddit</span></a></li><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Share this post : Simple FAT and SD Tutorial Part 4 with Stumblers'  href='http://www.stumbleupon.com/submit?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;title=Simple+FAT+and+SD+Tutorial+Part+4'  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='stumble'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1980px 0px'   /> <span class="head">Share with Stumblers</span></a></li><li class="iconOnly"><a  rel='nofollow'  target='_blank'  title='Tweet this post : Simple FAT and SD Tutorial Part 4 on Twitter'  href="http://twitter.com/share?url=http%3A%2F%2Fcodeandlife.com%2F2012%2F04%2F27%2Fsimple-fat-and-sd-tutorial-part-4%2F&amp;text="  ><img  src='http://codeandlife.com/wp-content/plugins/share-and-follow/images/blank.gif'  height='32' width='32'  class='image-32' alt='twitter'  style='background: transparent url(http://codeandlife.com/wp-content/plugins/share-and-follow/default/32/sprite-feb-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-132px -33px'   /> <span class="head">Tweet about it</span></a></li></ul><div class="clean"></div> </div>	</div><!-- .entry-content -->
+
+<!-- div>
+<a href="http://www.newark.com/"><img style="margin: 10px 20px" src="/data/newark.jpg"></a>
+</div -->
+
+<!-- CAL responsive -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-0208008275241530"
+     data-ad-slot="6547145342"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+	
+<div class="author-info">
+	<h2 class="author-heading">Published by</h2>
+	<div class="author-avatar">
+		<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />	</div><!-- .author-avatar -->
+
+	<div class="author-description">
+		<h3 class="author-title">Joonas Pihlajamaa</h3>
+
+		<p class="author-bio">
+			Coding since 1990 in Basic, C/C++, Perl, Java, PHP, Ruby and Python, to name a few. Also interested in math, movies, anime, and the occasional slashdot now and then. Oh, and I also have a real life, but lets not talk about it!			<a class="author-link" href="http://codeandlife.com/author/admin/" rel="author">
+				View all posts by Joonas Pihlajamaa			</a>
+		</p><!-- .author-bio -->
+
+	</div><!-- .author-description -->
+</div><!-- .author-info -->
+
+	<footer class="entry-footer">
+		<span class="posted-on"><span class="screen-reader-text">Posted on </span><a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/" rel="bookmark"><time class="entry-date published" datetime="2012-04-27T20:47:57+00:00">April 27, 2012</time><time class="updated" datetime="2012-05-17T22:56:13+00:00">May 17, 2012</time></a></span><span class="byline"><span class="author vcard"><span class="screen-reader-text">Author </span><a class="url fn n" href="http://codeandlife.com/author/admin/">Joonas Pihlajamaa</a></span></span><span class="cat-links"><span class="screen-reader-text">Categories </span><a href="http://codeandlife.com/topics/electronics/" rel="category tag">Electronics</a></span><span class="tags-links"><span class="screen-reader-text">Tags </span><a href="http://codeandlife.com/tags/atmega88/" rel="tag">atmega88</a>, <a href="http://codeandlife.com/tags/fat/" rel="tag">fat</a>, <a href="http://codeandlife.com/tags/sd/" rel="tag">sd</a>, <a href="http://codeandlife.com/tags/sdhc/" rel="tag">sdhc</a>, <a href="http://codeandlife.com/tags/tutorial/" rel="tag">tutorial</a>, <a href="http://codeandlife.com/tags/uart/" rel="tag">uart</a></span>			</footer><!-- .entry-footer -->
+
+</article><!-- #post-## -->
+
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			28 thoughts on &ldquo;Simple FAT and SD Tutorial Part 4&rdquo;		</h2>
+
+		
+		<ol class="comment-list">
+					<li id="comment-668" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href='http://codeandlife.com/2012/05/05/logic-analysis-with-bus-pirate/' rel='external nofollow' class='url'>Logic analysis with Bus Pirate &raquo; Code and Life</a> 			</div>
+</li><!-- #comment-## -->
+		<li id="comment-703" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-703" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/87e66e6c78135947649a16dc49b843f6?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/87e66e6c78135947649a16dc49b843f6?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Jack</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-703">
+							<time datetime="2012-05-17T20:07:38+00:00">
+								May 17, 2012 at 20:07							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi &#8211; A link to Part 2 seems to be missing. (I found it anyway, but presumably<br />
+a snipe hunt is&#8217;nt what you intended&#8230;</p>
+<p>Useful stuff &#8211; Thanks for putting it up.</p>
+<p> Jack</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=703#respond' onclick='return addComment.moveForm( "div-comment-703", "703", "respond", "558" )' aria-label='Reply to Jack'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-706" class="comment byuser comment-author-admin bypostauthor even depth-2">
+			<article id="div-comment-706" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>jokkebk</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-706">
+							<time datetime="2012-05-17T22:57:43+00:00">
+								May 17, 2012 at 22:57							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hmm, there is a link to part 2 in the very beginning in this article, although a bit hidden. It would be nice to have some kind of automatic &#8220;table of contents&#8221; for the full tutorial set, but so far I have just linked every post to the previous part.</p>
+<p>Anyway, now that you reminded me, I&#8217;ll also add links to the next part to the end of each part.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=706#respond' onclick='return addComment.moveForm( "div-comment-706", "706", "respond", "558" )' aria-label='Reply to jokkebk'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-738" class="pingback odd alt thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href='http://codeandlife.com/2012/05/16/worlds-simplest-logic-analyzer-for-5/' rel='external nofollow' class='url'>World&#8217;s Simplest Logic Analyzer for $5 &raquo; Code and Life</a> 			</div>
+</li><!-- #comment-## -->
+		<li id="comment-742" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-742" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/fde9cfc618eb397ac3f019c460420ade?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/fde9cfc618eb397ac3f019c460420ade?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">David Cook</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-742">
+							<time datetime="2012-05-28T07:38:12+00:00">
+								May 28, 2012 at 07:38							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thank you very much, Mr. Pihlajamaa, for this wonderful tutorial.</p>
+<p>You save beginners a lot of time by helping them past the sticking points.</p>
+<p>Dave Cook</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=742#respond' onclick='return addComment.moveForm( "div-comment-742", "742", "respond", "558" )' aria-label='Reply to David Cook'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+		<li id="comment-2059" class="comment odd alt thread-even depth-1">
+			<article id="div-comment-2059" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://1.gravatar.com/avatar/7e4decdaa8cd407a25e693de5f685630?s=56&#038;d=mm&#038;r=g' srcset='http://1.gravatar.com/avatar/7e4decdaa8cd407a25e693de5f685630?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">stephen</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-2059">
+							<time datetime="2012-09-27T09:11:42+00:00">
+								September 27, 2012 at 09:11							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>good lesson</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=2059#respond' onclick='return addComment.moveForm( "div-comment-2059", "2059", "respond", "558" )' aria-label='Reply to stephen'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+		<li id="comment-3188" class="comment even thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-3188" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://1.gravatar.com/avatar/4ac54acdd7b9114be832223a498129b6?s=56&#038;d=mm&#038;r=g' srcset='http://1.gravatar.com/avatar/4ac54acdd7b9114be832223a498129b6?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://aisi555.blogspot.com' rel='external nofollow' class='url'>nyoman yudi</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-3188">
+							<time datetime="2012-12-12T03:23:59+00:00">
+								December 12, 2012 at 03:23							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thanks &#8230; finally i made it work after 2 days<br />
+i tweak your example  and made attiny2313 play wav<br />
+the video is here <a href="http://www.youtube.com/watch?v=N-ZO4oiwpXY" rel="nofollow">http://www.youtube.com/watch?v=N-ZO4oiwpXY</a></p>
+<p>once again &#8230;THANK YOU VERY MUCH</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=3188#respond' onclick='return addComment.moveForm( "div-comment-3188", "3188", "respond", "558" )' aria-label='Reply to nyoman yudi'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-3396" class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+			<article id="div-comment-3396" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>jokkebk</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-3396">
+							<time datetime="2012-12-27T15:27:03+00:00">
+								December 27, 2012 at 15:27							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>You&#8217;re welcome. Very cool to see such a project! I haven&#8217;t yet tried to output any audio with MCU projects, your example makes me want to try it out. :)</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=3396#respond' onclick='return addComment.moveForm( "div-comment-3396", "3396", "respond", "558" )' aria-label='Reply to jokkebk'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-3462" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-3462" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://1.gravatar.com/avatar/a9baadb777dd6a293bc9ed5486623167?s=56&#038;d=mm&#038;r=g' srcset='http://1.gravatar.com/avatar/a9baadb777dd6a293bc9ed5486623167?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Gokay</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-3462">
+							<time datetime="2012-12-31T22:45:39+00:00">
+								December 31, 2012 at 22:45							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi,it is very fruitful tutorial.As to me I have a problem with the writing single block(512 byte)of data to SD card.I initialized SD card (CMD0,0x95)(CMD1,0xFF) and set the block length(CMD16,0xff) successfully.<br />
+Below you can see the result.</p>
+<p>CMD 40  FF 01 FF FF FF FF FF FF FF FF<br />
+CMD 41  FC 07 FF FF FF FF FF FF FF FF<br />
+CMD 41  FC 07 FF FF FF FF FF FF FF FF<br />
+CMD 41  FF 01 FF FF FF FF FF FF FF FF<br />
+CMD 41  FF 00 FF FF FF FF FF FF FF FF<br />
+CMD 50  FF 00 FF FF FF FF FF FF FF FF</p>
+<p>The problem is that when i send &#8216;Single Block Write&#8217; Command to SD card I get an 0x00 response.(i know it is OK!) after I send data token which is 0xFE and send 512 bytes chunks of data and send two bytes CRC<br />
+consecutively. I  cannot get any response whether data is accepted or not.<br />
+Here is below you can see the result.</p>
+<p>CMD 58  FF 00 FF FF FF FF FF FF FF FF.</p>
+<p>And below you can find my shortened code.</p>
+<p> response=send_SDCommand(WRITE_SINGLE_BLOCK,startBlock&lt;&lt;9,0xFF);</p>
+<p>      if(response!=0)<br />
+      {<br />
+         return response;</p>
+<p>      }</p>
+<p>           SD_CS_ASSERT();// CS Low<br />
+      //????????????what is going on here<br />
+        SPI_transmit(0xFE);   data token. we have to send it before.<br />
+         for(i=0;i&lt;512;i++)</p>
+<p>           SPI_transmit(&#039;A&#039;);</p>
+<p>            SPI_transmit(0xFF); // \<br />
+            SPI_transmit(0xFF); // \  16 bit dummy CRC </p>
+<p>            //Every data block written to the card is acknowledged by a data response token. It isone byte long and has the following format<br />
+             //  XXX0SSS1                           // S= STATUS bits(3)<br />
+                                                    //if S&#039;s 010= Data accepted.<br />
+                                                    //if S&#039;s 101’—Data rejected due to a CRC error.<br />
+               response=SPI_transmit(0xFF);                                     //110’—Data Rejected due to a Write Error.<br />
+             if((response &amp; 0x1F)!=0x05)</p>
+<p>                 {<br />
+                  SD_CS_DEASSERT();<br />
+                  rs232_Stream(&quot;0x05  errorrrrrr&#8230;&quot;);<br />
+                  return 1; </p>
+<p>                 }</p>
+<p>Thank you !</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=3462#respond' onclick='return addComment.moveForm( "div-comment-3462", "3462", "respond", "558" )' aria-label='Reply to Gokay'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-4026" class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+			<article id="div-comment-4026" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>jokkebk</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-4026">
+							<time datetime="2013-04-20T17:05:50+00:00">
+								April 20, 2013 at 17:05							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>You seem to have done quite a good job on the writing part, congratulations for that! Unfortunately I haven&#8217;t tried writing SD cards myself, so can&#8217;t help you much. Maybe some microcontroller forum would have people who could help?</p>
+<p>Only thing that springs to my mind that you might want to check is that if one needs to send clock pulses to the card afterwards so it can do processing, maybe if you send some bogus data after write command, you get a response after a while? It&#8217;s been a year since I tinkered with SD and SPI so I&#8217;m most likely very off in this one, though&#8230;</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=4026#respond' onclick='return addComment.moveForm( "div-comment-4026", "4026", "respond", "558" )' aria-label='Reply to jokkebk'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-3489" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-3489" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/37241c92214d8fdbddd01d7e7fa87112?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/37241c92214d8fdbddd01d7e7fa87112?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">ganesh</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-3489">
+							<time datetime="2013-01-09T17:40:54+00:00">
+								January 9, 2013 at 17:40							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>thanks  very useful work</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=3489#respond' onclick='return addComment.moveForm( "div-comment-3489", "3489", "respond", "558" )' aria-label='Reply to ganesh'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+		<li id="comment-4048" class="comment odd alt thread-even depth-1 parent">
+			<article id="div-comment-4048" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/e5322e734d821d2c2cbb5ec42ed8de8b?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/e5322e734d821d2c2cbb5ec42ed8de8b?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.ultimatrue.com' rel='external nofollow' class='url'>Ahmed Eldamarawy</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-4048">
+							<time datetime="2013-04-30T02:32:56+00:00">
+								April 30, 2013 at 02:32							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>thank you for the nice and organized presentation that you made for all of us.<br />
+i hope you can also explain how to write to on FAT16 SDs.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=4048#respond' onclick='return addComment.moveForm( "div-comment-4048", "4048", "respond", "558" )' aria-label='Reply to Ahmed Eldamarawy'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-4177" class="comment byuser comment-author-admin bypostauthor even depth-2">
+			<article id="div-comment-4177" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>jokkebk</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-4177">
+							<time datetime="2013-06-09T15:49:50+00:00">
+								June 9, 2013 at 15:49							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thanks! I&#8217;ll probably write a post on FAT writing in the summer months, stay tuned. :)</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=4177#respond' onclick='return addComment.moveForm( "div-comment-4177", "4177", "respond", "558" )' aria-label='Reply to jokkebk'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-10563" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-10563" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">andraz</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-10563">
+							<time datetime="2014-08-25T19:15:37+00:00">
+								August 25, 2014 at 19:15							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi. Thank you for this tutorial it has helped a lot. I have a problem though. In fuction sd_init the sentence for(i=0; i&lt;10 &amp;&amp; SD_command(0x40, 0x00000000, 0x95, 8) != 1; i++)<br />
+ does not compile since SD_command is void. We get R1 written in buffer. I allways get the response: FF01FFFFFFFFFFFF Is that correct and  what should function SD_command return?<br />
+I apologise if I sound stupid, but I am very new to this&#8230;</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=10563#respond' onclick='return addComment.moveForm( "div-comment-10563", "10563", "respond", "558" )' aria-label='Reply to andraz'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-10567" class="comment byuser comment-author-admin bypostauthor even depth-2 parent">
+			<article id="div-comment-10567" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>Joonas Pihlajamaa</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-10567">
+							<time datetime="2014-08-25T20:53:55+00:00">
+								August 25, 2014 at 20:53							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>No problem. The only issue is that in 30 months, I&#8217;ve also mostly forgotten everything about this. The SD_command is covered in previous part of the tutorial, you might want to try that one first, part 3 also covers at least partially the supposed output.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=10567#respond' onclick='return addComment.moveForm( "div-comment-10567", "10567", "respond", "558" )' aria-label='Reply to Joonas Pihlajamaa'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-10575" class="comment odd alt depth-3 parent">
+			<article id="div-comment-10575" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">andraz</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-10575">
+							<time datetime="2014-08-26T12:24:07+00:00">
+								August 26, 2014 at 12:24							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I understand. I have read the previous part and SD_command is declared as void so it doesn&#8217;t return anything.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=10575#respond' onclick='return addComment.moveForm( "div-comment-10575", "10575", "respond", "558" )' aria-label='Reply to andraz'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-10577" class="comment byuser comment-author-admin bypostauthor even depth-4 parent">
+			<article id="div-comment-10577" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>Joonas Pihlajamaa</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-10577">
+							<time datetime="2014-08-26T12:56:41+00:00">
+								August 26, 2014 at 12:56							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Ah sorry, my bad. The fat88.c in the updated project zip (link early on in this part 4) contains a version that returns unsigned char.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=10577#respond' onclick='return addComment.moveForm( "div-comment-10577", "10577", "respond", "558" )' aria-label='Reply to Joonas Pihlajamaa'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-10606" class="comment odd alt depth-5">
+			<article id="div-comment-10606" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/6e9f0b9b6b2476bc6659d24f3073bbe9?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">andraz</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-10606">
+							<time datetime="2014-08-27T19:28:52+00:00">
+								August 27, 2014 at 19:28							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>OK great. Thank you.</p>
+				</div><!-- .comment-content -->
+
+							</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-15259" class="comment even thread-even depth-1">
+			<article id="div-comment-15259" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/bc15444a580f1dbafbe4b355bfea8b24?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/bc15444a580f1dbafbe4b355bfea8b24?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='https://github.com/tz1/sparkfun/tree/master/fat32lib' rel='external nofollow' class='url'>tz</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-15259">
+							<time datetime="2015-01-29T01:57:08+00:00">
+								January 29, 2015 at 01:57							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I also wrote a SD card driver &#8211; mainly for openlog, but I have a few variations.  The lib is at <a href="https://github.com/tz1/sparkfun/tree/master/fat32lib" rel="nofollow">https://github.com/tz1/sparkfun/tree/master/fat32lib</a> &#8211; but there&#8217;s also &#8220;hyperlog&#8221; that adds an external SPI RAM to the mix since part of the SD card spec is it can take up to 250mS to do housekeeping, so you would lose data at higher speeds.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=15259#respond' onclick='return addComment.moveForm( "div-comment-15259", "15259", "respond", "558" )' aria-label='Reply to tz'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+		<li id="comment-22346" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-22346" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Omkar</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22346">
+							<time datetime="2015-09-01T15:31:08+00:00">
+								September 1, 2015 at 15:31							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Please give me the link for part1 and part 2<br />
+Also if this code is modified for pic16 wud it work the same?</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22346#respond' onclick='return addComment.moveForm( "div-comment-22346", "22346", "respond", "558" )' aria-label='Reply to Omkar'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-22347" class="comment byuser comment-author-admin bypostauthor even depth-2 parent">
+			<article id="div-comment-22347" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>Joonas Pihlajamaa</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22347">
+							<time datetime="2015-09-01T19:41:21+00:00">
+								September 1, 2015 at 19:41							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>You can find the link to first part in the beginning of this article:</p>
+<p><a href="http://codeandlife.com/2012/04/02/simple-fat-and-sd-tutorial-part-1/" rel="nofollow">http://codeandlife.com/2012/04/02/simple-fat-and-sd-tutorial-part-1/</a></p>
+<p>In the end of part 1, there is a link to part 2, and so on. :)</p>
+<p>Pic16 should work the same, unless its voltages are different from an AVR chip.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22347#respond' onclick='return addComment.moveForm( "div-comment-22347", "22347", "respond", "558" )' aria-label='Reply to Joonas Pihlajamaa'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-22383" class="comment odd alt depth-3 parent">
+			<article id="div-comment-22383" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Omkar</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22383">
+							<time datetime="2015-09-04T13:51:35+00:00">
+								September 4, 2015 at 13:51							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Please could u tell me the modifications for a fat32 sd card</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22383#respond' onclick='return addComment.moveForm( "div-comment-22383", "22383", "respond", "558" )' aria-label='Reply to Omkar'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-22412" class="comment byuser comment-author-admin bypostauthor even depth-4">
+			<article id="div-comment-22412" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>Joonas Pihlajamaa</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22412">
+							<time datetime="2015-09-06T20:11:46+00:00">
+								September 6, 2015 at 20:11							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I might&#8217;ve originally included some links to FAT32, but basically you&#8217;ll need to read the FAT32 specs yourself and see what the difference is, I haven&#8217;t done that myself. Quick google on &#8220;fat32 specification&#8221; gave for example this page:</p>
+<p><a href="https://www.pjrc.com/tech/8051/ide/fat32.html" rel="nofollow">https://www.pjrc.com/tech/8051/ide/fat32.html</a></p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22412#respond' onclick='return addComment.moveForm( "div-comment-22412", "22412", "respond", "558" )' aria-label='Reply to Joonas Pihlajamaa'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-22394" class="comment odd alt thread-even depth-1 parent">
+			<article id="div-comment-22394" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Omkar</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22394">
+							<time datetime="2015-09-05T14:39:55+00:00">
+								September 5, 2015 at 14:39							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>The sd_command is a void function so how can it return any value<br />
+You have used the return value from the sd_command function in the for loop in the sd_init function.<br />
+Please tell me any solution..<br />
+Thanks  a lott</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22394#respond' onclick='return addComment.moveForm( "div-comment-22394", "22394", "respond", "558" )' aria-label='Reply to Omkar'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-22411" class="comment byuser comment-author-admin bypostauthor even depth-2 parent">
+			<article id="div-comment-22411" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=56&#038;d=mm&#038;r=g' srcset='http://2.gravatar.com/avatar/81b999b5595e55d9098637c54d0c86f1?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn"><a href='http://www.joonaspihlajamaa.com' rel='external nofollow' class='url'>Joonas Pihlajamaa</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22411">
+							<time datetime="2015-09-06T20:10:50+00:00">
+								September 6, 2015 at 20:10							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi! Good question. I took a look into my source files and there is a version of SD_command in fat88.c which does indeed return a value. So you should check that out. :)</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22411#respond' onclick='return addComment.moveForm( "div-comment-22411", "22411", "respond", "558" )' aria-label='Reply to Joonas Pihlajamaa'>Reply</a></div>			</article><!-- .comment-body -->
+<ol class="children">
+		<li id="comment-22462" class="comment odd alt depth-3">
+			<article id="div-comment-22462" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=56&#038;d=mm&#038;r=g' srcset='http://0.gravatar.com/avatar/62c9b285a4469552c5121e917b294099?s=112&amp;d=mm&amp;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' />						<b class="fn">Omkar</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/#comment-22462">
+							<time datetime="2015-09-09T14:48:23+00:00">
+								September 9, 2015 at 14:48							</time>
+						</a>
+											</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>You have used the fat16_read function in which there is a variable fat_buffer but it is not defined anywhere.<br />
+So where it is defined?<br />
+Thank You.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='http://codeandlife.com/2012/04/27/simple-fat-and-sd-tutorial-part-4/?replytocom=22462#respond' onclick='return addComment.moveForm( "div-comment-22462", "22462", "respond", "558" )' aria-label='Reply to Omkar'>Reply</a></div>			</article><!-- .comment-body -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-23549" class="pingback even thread-odd thread-alt depth-1">
+			<div class="comment-body">
+				Pingback: <a href='http://codeandlife.com/2012/04/25/simple-fat-and-sd-tutorial-part-3/' rel='external nofollow' class='url'>Simple FAT and SD Tutorial Part 3 | Code and Life</a> 			</div>
+</li><!-- #comment-## -->
+		<li id="comment-24732" class="pingback odd alt thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href='http://codeandlife.com/2016/05/29/picoscope-2208b-mso-review/' rel='external nofollow' class='url'>Picoscope 2208B MSO Review &#8211; Code and Life</a> 			</div>
+</li><!-- #comment-## -->
+		</ol><!-- .comment-list -->
+
+		
+	
+	
+					<div id="respond" class="comment-respond">
+			<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2012/04/27/simple-fat-and-sd-tutorial-part-4/#respond" style="display:none;">Cancel reply</a></small></h3>				<form action="http://codeandlife.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+					<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" aria-required='true' required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required='true' required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" /></p>
+<p class="cptch_block"><br /><span class="cptch_wrap">
+				<label class="cptch_label" for="cptch_input">
+					<span class="cptch_span"><img class="cptch_img " src="data: image/png;base64,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" /></span>
+					<span class="cptch_span">&nbsp;&minus;&nbsp;</span>
+					<span class="cptch_span"><input id="cptch_input" class="cptch_input" type="text" autocomplete="off" name="cptch_number" value="" maxlength="2" size="2" aria-required="true" required="required" style="margin-bottom:0;display:inline;font-size: 12px;width: 40px;" /></span>
+					<span class="cptch_span">&nbsp;=&nbsp;</span>
+					<span class="cptch_span"><img class="cptch_img " src="data: image/png;base64,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" /></span>
+					<input type="hidden" name="cptch_result" value="5nE=" />
+					<input type="hidden" name="cptch_time" value="1475043770" />
+					<input type="hidden" value="Version: 4.1.9" />
+				</label><span class="cptch_reload_button_wrap hide-if-no-js">
+					<noscript>
+						<style type="text/css">
+							.hide-if-no-js {
+								display: none !important;
+							}
+						</style>
+					</noscript>
+					<span class="cptch_reload_button dashicons dashicons-update"></span>
+				</span></span></p><p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='558' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="4d378e026e" /></p><p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="38"/></p>				</form>
+					</div><!-- #respond -->
+		
+</div><!-- .comments-area -->
+
+	<nav class="navigation post-navigation" role="navigation">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="http://codeandlife.com/2012/04/25/simple-fat-and-sd-tutorial-part-3/" rel="prev"><span class="meta-nav" aria-hidden="true">Previous</span> <span class="screen-reader-text">Previous post:</span> <span class="post-title">Simple FAT and SD Tutorial Part 3</span></a></div><div class="nav-next"><a href="http://codeandlife.com/2012/05/05/logic-analysis-with-bus-pirate/" rel="next"><span class="meta-nav" aria-hidden="true">Next</span> <span class="screen-reader-text">Next post:</span> <span class="post-title">Logic analysis with Bus Pirate</span></a></div></div>
+	</nav>
+		</main><!-- .site-main -->
+	</div><!-- .content-area -->
+
+
+	</div><!-- .site-content -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+						<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+		</div><!-- .site-info -->
+	</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+<script type='text/javascript' src='http://codeandlife.com/wp-content/plugins/akismet/_inc/form.js?ver=3.1.10'></script>
+<script type='text/javascript' src='http://codeandlife.com/wp-content/plugins/beauty-orange-wordpress-code-prettifier/prettify.js?ver=4.5.4'></script>
+<script type='text/javascript' src='http://codeandlife.com/wp-content/themes/twentyfifteen/js/skip-link-focus-fix.js?ver=20141010'></script>
+<script type='text/javascript' src='http://codeandlife.com/wp-includes/js/comment-reply.min.js?ver=4.5.4'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var screenReaderText = {"expand":"<span class=\"screen-reader-text\">expand child menu<\/span>","collapse":"<span class=\"screen-reader-text\">collapse child menu<\/span>"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://codeandlife.com/wp-content/themes/twentyfifteen/js/functions.js?ver=20150330'></script>
+<script type='text/javascript' src='http://codeandlife.com/wp-includes/js/wp-embed.min.js?ver=4.5.4'></script>
+
+</body>
+</html>

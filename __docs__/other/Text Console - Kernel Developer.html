@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Text Console - Kernel Developer</title><meta property="og:site_name" content="Kernel Developer" />
+<meta property="og:title" content="Text Console" />
+<meta property="og:description" content="Text based console: For this stuff below to work you need to be in the protected mode. The code below runs without using the BIOS.   As we are not using the BIOS, we need to write to the Text Mode..." />
+<meta property="og:url" content="http://kernelx.weebly.com/text-console.html" />
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+		<meta name="google-site-verification" content="gpVYB43N-7WTjc7ctEDGNx8Nyg-2e6HSgOOTzzd1dwI" />
+		<link id="wsite-base-style" rel="stylesheet" type="text/css" href="//cdn2.editmysite.com/css/sites.css?buildTime=1464384598" />
+<link rel="stylesheet" type="text/css" href="//cdn1.editmysite.com/editor/libraries/fancybox/fancybox.css?1464384598" />
+<link rel="stylesheet" type="text/css" href="/files/main_style.css?1464627945" title="wsite-theme-css" />
+<link href='//fonts.googleapis.com/css?family=Play:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+
+<style type='text/css'>
+.wsite-elements.wsite-not-footer div.paragraph, .wsite-elements.wsite-not-footer p, .wsite-elements.wsite-not-footer .product-block .product-title, .wsite-elements.wsite-not-footer .product-description, .wsite-elements.wsite-not-footer .wsite-form-field label, .wsite-elements.wsite-not-footer .wsite-form-field label, #wsite-content div.paragraph, #wsite-content p, #wsite-content .product-block .product-title, #wsite-content .product-description, #wsite-content .wsite-form-field label, #wsite-content .wsite-form-field label, .blog-sidebar div.paragraph, .blog-sidebar p, .blog-sidebar .wsite-form-field label, .blog-sidebar .wsite-form-field label {}
+#wsite-content div.paragraph, #wsite-content p, #wsite-content .product-block .product-title, #wsite-content .product-description, #wsite-content .wsite-form-field label, #wsite-content .wsite-form-field label, .blog-sidebar div.paragraph, .blog-sidebar p, .blog-sidebar .wsite-form-field label, .blog-sidebar .wsite-form-field label {}
+.wsite-elements.wsite-footer div.paragraph, .wsite-elements.wsite-footer p, .wsite-elements.wsite-footer .product-block .product-title, .wsite-elements.wsite-footer .product-description, .wsite-elements.wsite-footer .wsite-form-field label, .wsite-elements.wsite-footer .wsite-form-field label{}
+.wsite-elements.wsite-not-footer h2, .wsite-elements.wsite-not-footer .product-long .product-title, .wsite-elements.wsite-not-footer .product-large .product-title, .wsite-elements.wsite-not-footer .product-small .product-title, #wsite-content h2, #wsite-content .product-long .product-title, #wsite-content .product-large .product-title, #wsite-content .product-small .product-title, .blog-sidebar h2 {}
+#wsite-content h2, #wsite-content .product-long .product-title, #wsite-content .product-large .product-title, #wsite-content .product-small .product-title, .blog-sidebar h2 {}
+.wsite-elements.wsite-footer h2, .wsite-elements.wsite-footer .product-long .product-title, .wsite-elements.wsite-footer .product-large .product-title, .wsite-elements.wsite-footer .product-small .product-title{}
+#wsite-title {}
+.wsite-menu-default a {}
+.wsite-menu a {}
+.wsite-image div, .wsite-caption {}
+.galleryCaptionInnerText {}
+.fancybox-title {}
+.wslide-caption-text {}
+.wsite-phone {}
+.wsite-headline {}
+.wsite-headline-paragraph {}
+.wsite-button-inner {}
+.wsite-not-footer blockquote {}
+.wsite-footer blockquote {}
+.blog-header h2 a {}
+#wsite-content h2.wsite-product-title {}
+.wsite-product .wsite-product-price a {}
+</style>
+
+		<script><!--
+var STATIC_BASE = '//cdn1.editmysite.com/';
+var STYLE_PREFIX = 'wsite';
+//-->
+</script>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
+
+<script type="text/javascript" src="//cdn2.editmysite.com/js/lang/en/stl.js?buildTime=1464384598&"></script>
+<script src="//cdn2.editmysite.com/js/site/main.js?buildTime=1464384598"></script><script type="text/javascript">_W.configDomain = "www.weebly.com";</script><script>_W.relinquish && _W.relinquish()</script>
+<script type="text/javascript" src="//cdn2.editmysite.com/js/lang/en/stl.js?buildTime=1464384598&"></script><script> _W.themePlugins = [];</script><script type="text/javascript"><!--
+	
+	
+	(function(jQuery){
+		function initFlyouts(){
+			initPublishedFlyoutMenus(
+				[{"id":"916836488928552619","title":"Home","url":"index.html","target":"","nav_menu":false},{"id":"401658523102523128","title":"Tutorials","url":"tutorials.html","target":"","nav_menu":false},{"id":"191656081370630036","title":"Community Room","url":"community-room.html","target":"","nav_menu":false},{"id":"844060073786887345","title":"Support","url":"support.html","target":"","nav_menu":false}],
+				"644517772222149315",
+				'',
+				'active',
+				false,
+				{"navigation\/item":"<li {{#id}}id=\"{{id}}\"{{\/id}} class=\"wsite-menu-item-wrap\">\n\t<a\n\t\t{{^nav_menu}}\n\t\t\thref=\"{{url}}\"\n\t\t{{\/nav_menu}}\n\t\t{{#target}}\n\t\t\ttarget=\"{{target}}\"\n\t\t{{\/target}}\n\t\t{{#membership_required}}\n\t\t\tdata-membership-required=\"{{.}}\"\n\t\t{{\/membership_required}}\n\t\tclass=\"wsite-menu-item\"\n\t\t>\n\t\t{{{title_html}}}\n\t<\/a>\n\t{{#has_children}}{{> navigation\/flyout\/list}}{{\/has_children}}\n<\/li>\n","navigation\/flyout\/list":"<div class=\"wsite-menu-wrap\" style=\"display:none\">\n\t<ul class=\"wsite-menu\">\n\t\t{{#children}}{{> navigation\/flyout\/item}}{{\/children}}\n\t<\/ul>\n<\/div>\n","navigation\/flyout\/item":"<li {{#id}}id=\"{{id}}\"{{\/id}}\n\tclass=\"wsite-menu-subitem-wrap {{#is_current}}wsite-nav-current{{\/is_current}}\"\n\t>\n\t<a\n\t\t{{^nav_menu}}\n\t\t\thref=\"{{url}}\"\n\t\t{{\/nav_menu}}\n\t\t{{#target}}\n\t\t\ttarget=\"{{target}}\"\n\t\t{{\/target}}\n\t\tclass=\"wsite-menu-subitem\"\n\t\t>\n\t\t<span class=\"wsite-menu-title\">\n\t\t\t{{{title_html}}}\n\t\t<\/span>{{#has_children}}<span class=\"wsite-menu-arrow\">&gt;<\/span>{{\/has_children}}\n\t<\/a>\n\t{{#has_children}}{{> navigation\/flyout\/list}}{{\/has_children}}\n<\/li>\n"},
+				{}
+			)
+		}
+		if (jQuery) {
+			jQuery(document).ready(function() { jQuery(initFlyouts); });
+		}else{
+			if (Prototype.Browser.IE) window.onload = initFlyouts;
+			else document.observe('dom:loaded', initFlyouts);
+		}
+	})(window._W && _W.jQuery)
+//-->
+</script>
+		
+	</head>
+	<body class=" no-header-page wsite-theme-dark  wsite-page-text-console"><div id="nav-wrap">
+	<div id="page">
+		<div id="topnav">
+			<ul class="wsite-menu-default">
+					<li id="pg916836488928552619" class="wsite-menu-item-wrap">
+						<a
+								href="/"
+							class="wsite-menu-item"
+							>
+							Home
+						</a>
+						
+					</li>
+					<li id="pg401658523102523128" class="wsite-menu-item-wrap">
+						<a
+								href="/tutorials.html"
+							class="wsite-menu-item"
+							>
+							Tutorials
+						</a>
+						
+					</li>
+					<li id="pg191656081370630036" class="wsite-menu-item-wrap">
+						<a
+								href="/community-room.html"
+							class="wsite-menu-item"
+							>
+							Community Room
+						</a>
+						
+					</li>
+					<li id="pg844060073786887345" class="wsite-menu-item-wrap">
+						<a
+								href="/support.html"
+							class="wsite-menu-item"
+							>
+							Support
+						</a>
+						
+					</li>
+			</ul>
+			<div style="clear:both"></div>
+		</div>
+	</div>
+</div>
+<div id="header-wrap">
+	<div id="page">
+		<table id="header">
+			<tr>
+				<td id="logo"><span class="wsite-logo">
+
+	<a href="/">
+	
+	<span id="wsite-title">Kernel Developer</span>
+	
+	</a>
+
+</span></td>
+				<td id="header-right">
+					<table>
+						<tr>
+							<td class="phone-number"><span class="wsite-text wsite-phone">
+	Join Us on Facebook
+</span></td>
+							<td class="social"><div style="text-align:left;"><div style="height:0px;overflow:hidden"></div>
+<span class="wsite-social wsite-social-default"><a class='first-child wsite-social-item wsite-social-facebook' href='//www.facebook.com/InsideComputer?ref=hl' target='_blank'><span class='wsite-social-item-inner'></span></a><a class='last-child wsite-social-item wsite-social-youtube' href='http://www.youtube.com/user/KernelDeveloper' target='_blank'><span class='wsite-social-item-inner'></span></a></span>
+<div style="height:0px;overflow:hidden"></div></div></td>
+							<td class="search"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div id="banner-wrap" class="wsite-background">
+	<div id="page"></div>
+</div>
+<div id="main-wrap">
+	<div id="page">
+		<div id="main">
+			<div id="content"><div id='wsite-content' class='wsite-elements wsite-not-footer'>
+<h2 class="wsite-content-title" style="text-align:left;">Tutorial based on developing a text based console for a kernel</h2>
+<div class="paragraph" style="text-align:left;display:block;"><strong><u><font size="6">Text based console:</font></u></strong><br /><br />  For this stuff below to work you need to be in the protected mode. The code below runs without using the BIOS. <br /><br />&nbsp;  As we are not using the BIOS, we need to write to the Text Mode Video Memory. Text Mode Video Memory is a buffer located at 0xB8000 for&nbsp;Color&nbsp;Monitors and 0xB0000 for monochrome, hoping your kernel has the ability to detect the type of monitor and adjust the location of the video memory<strong><font color="#ffffff">(</font></strong>Look here for <a href="/detecting-video-card.html">detecting the video cards</a><font color="#ffffff">)</font>. Monochrome monitors are not used in the current standard, so you might directly write to B8000 Buffer. For a simple console we need to have a basic Scrolling function, Cursor and of course printing functions. The text mode takes 16 bits to display each character. The 16 bit is divided into 2 major parts of 8 bits each. The lower&nbsp;8 bit&nbsp;tells the display controller what character to print on the screen and is the ASCII Code Byte. And the upper 8 bits are for&nbsp;color&nbsp; Again, the upper&nbsp;8 bits&nbsp;are split into two minor parts, the lower 4 bits of the&nbsp;color&nbsp;byte carry foreground&nbsp;color&nbsp;and other upper 3 bits of the&nbsp;color&nbsp;byte carry background&nbsp;color&nbsp; The upper&nbsp;8 bits&nbsp;are called attribute byte and the lower&nbsp;8 bits&nbsp;are called character byte.<br /><br />  Example: 0xb8002: &lsquo;H&rsquo;, BackgroundColor, ForegroundColor<br /><br />  The example above shows an element of the video memory.<br /><br />  The screen is divided into rows and columns which form a grid. As the screen is divided into separate cells, to access a particular cell in the memory we use a formula which is given below. Y axis is the height and X axis is the length of the screen.<br /><br />(Imagine, &nbsp;this as &nbsp;a Window opened in your Operating System)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />  A123456789 &nbsp; &nbsp; &nbsp; &nbsp;<br />B123456789 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br />C123456789&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />  Here, The Letters A to A9 is the X axis and A1 to C1 is the Y axis. That is, X is the horizontal axis and Y is the vertical axis.&nbsp; <br /><br />  The Formula: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /><br />  element = (y * width_of_screen) + x<br /><br />  To have a basic text mode interface in a kernel we need functions to handle Scrolling of Window, Text Mode Cursor, and a function to setup the buffer and a function to print characters on the screen. <br /><br /><strong>      ------------------------------------------------------Text Mode Cursor----------------------------------------------------</strong><br /><br />  &nbsp;&nbsp;&nbsp; Cursor is a thick underscore which will be pointing our next column in the screen. We can see this cursor while the BIOS is booting. Now you must have realised &nbsp;what exactly the cursor is. We need to write to the VGA Hardware Controller to set the cursor. We send the command to the controller&rsquo;s command port 0x3D4 and send a byte through 0x3D5.<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; =&nbsp; &nbsp;= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br /><font color="#3366ff">&nbsp; &nbsp; &nbsp; void</font> <font color="#666666">cursormove</font>(<font color="#3366ff">int</font> <font color="#999999">row</font>, <font color="#3366ff">int</font> <font color="#999999">col</font>)<br />&nbsp; &nbsp; &nbsp; {<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#3366ff">unsigned </font><font color="#ff9900">short</font> <font color="#999999">location</font>=(<font color="#c0c0c0">row</font>*80) + col;<font color="#009900">/* Short is a 16bit type , the formula is used here*/</font><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<em><font color="#009900">//Cursor Low port</font></em><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#999999">outportb</font>(<font color="#996633">0x3D4</font>,<font color="#996633"> 0x0F</font>);<font color="#009900">//Sending the cursor low byte to the VGA Controller</font><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#999999">outportb</font>(<font color="#996633">0x3D5</font>, (<font color="#3333ff">unsigned </font><font color="#ff9900">char</font>)(<font color="#999999">location</font>&amp;<font color="#996633">0xFF</font>));<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<em><font color="#009900">//Cursor High port</font></em><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <font color="#999999">&nbsp;outportb</font>(<font color="#996633">0x3D4</font>, <font color="#996633">0x0E</font>);<font color="#009900">//Sending the cursor high byte to the VGA Controller</font><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<font color="#999999">outportb</font>(<font color="#996633">0x3D5</font>, (<font color="#3333ff">unsigned</font> <font color="#ff9900">char</font> )((<font color="#999999">location</font>&gt;&gt;<font color="#996633">8</font>)&amp;<font color="#996633">0xFF</font>));&nbsp;<font color="#009900">//Char is a 8bit type</font><br />  &nbsp;}<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br />  This function can be used to set the cursor location.<br /><br /><strong>  ---------------------------------------------------Scrolling Screen---------------------------------------------------------</strong><br /><br />  At some point we might almost fill up the entire screen, so we need to scroll the window by one line up, note that the top line or the first line will be plucked out of the memory when we move up by one line. You can use this bit of code to check and scroll up.<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br /><font color="#3333ff">    if</font>(cury &gt;=<font color="#996633"> 25</font>)<br />  &nbsp;&nbsp; {<br /><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#3333ff">unsigned</font> <font color="#ff9900">short</font> <font color="#999999">space</font> = <font color="#996633">0x20</font> | (<font color="#999999">attributebyte</font> &lt;&lt; <font color="#996633">8</font>);<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#009900">//attributebyte must be replaced your attributebyte</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<font color="#3333ff">int</font> <font color="#999999">tmp</font>;<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#3333ff">for</font> (<font color="#999999">tmp</font> = <font color="#996633">0</font><font color="#c0c0c0">*</font><font color="#996633">80</font>; <font color="#999999">tmp</font> &lt; <font color="#996633">24</font><font color="#c0c0c0">*</font><font color="#996633">80</font>; <font color="#999999">tmp</font>++)<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">videomemory</font><font color="#cc9933">[</font><font color="#999999">tmp</font><font color="#cc9933">]</font> = <font color="#999999">videomemory</font><font color="#cc9933">[</font><font color="#999999">tmp</font>+<font color="#996633">80</font><font color="#cc9933">]</font>;<font color="#009900">//B8000 or B0000 will be location of the buffer</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />  &nbsp;&nbsp;<font color="#009900">&nbsp;&nbsp;&nbsp;&nbsp; // Setting the last line</font><br />&nbsp; &nbsp; &nbsp; &nbsp;<font color="#3333ff">for</font> (<font color="#999999">tmp</font> = <font color="#996633">24</font>*<font color="#996633">80</font>; <font color="#999999">tmp</font> &lt; <font color="#996633">25</font>*<font color="#996633">80</font>; <font color="#999999">tmp</font>++)<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;<font color="#999999">videomemory</font>[<font color="#999999">tmp</font>] = <font color="#999999">space</font>;<font color="#009900">//Video memory &nbsp;is a pointer to the buffer</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#009900">// Move the cursor to last line</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#999999"> cury</font> = <font color="#996633">24</font>;<br />  &nbsp;&nbsp; }<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br />  This simple snippet of code will first move all the text up by one line, then set the last line and finally move the cursor to the last line.<br /><br /><strong>  ---------------------------------------------------Clearing the Screen-----------------------------------------------------</strong><br /><br />  We sometimes may require clearing the whole screen into a new blank screen. That&rsquo;s too simple; we will just have to replace all the elements in the video memory to blank spaces.<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br /><font color="#3333ff">  void </font><font color="#999999">clearscr</font>(<font color="#3333ff">unsigned</font> <font color="#ff9900">char</font> *<font color="#999999">attributebyte</font>)<br />  {<br /><br />  &nbsp;&nbsp; <font color="#3333ff">unsigned</font> <font color="#ff9900">short</font> <font color="#999999">space</font> =<font color="#996633"> 0x20</font> | (<font color="#999999">attributebyte</font> &lt;&lt; <font color="#996633">8</font>);<br />    &nbsp;&nbsp; <font color="#3333ff">int</font> i;<br /><br />  &nbsp;<font color="#3333ff">&nbsp; for</font> (<font color="#999999">i</font> =<font color="#996633"> 0</font>; <font color="#999999">i</font> &lt; <font color="#996633">80</font>*<font color="#996633">25</font>; <font color="#999999">i</font>++)<font color="#009900">//Goes on setting blank to each element</font><br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">videomemory</font><font color="#cc9933">[</font><font color="#999999">i</font><font color="#cc9933">]</font> =<font color="#999999"> space</font>;<br />  &nbsp;&nbsp; }<br /><br />  &nbsp;&nbsp;<font color="#999999"> cursormove</font>(<font color="#996633">0</font>,<font color="#996633">0</font>);<font color="#009900">//Sets cursor position to the top</font><br /><br />  }<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br />  The above function will clear the whole screen for us with a fresh new blank screen with a cursor at the top.<br /><br /><strong>  ------------------------------------------------Printing a Character--------------------------------------------------------</strong><br /><br />  Here the code gets little more complex. It would be easier if we could understand it. Once again add some data to the text memory.<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br /><font color="#3333ff">  void</font> <font color="#999999">print</font>(<font color="#ff9900">char </font><font color="#999999">chr</font>)<br />  {<br />  &nbsp;&nbsp;<font color="#3333ff"> unsigned</font> <font color="#ff9900">short</font> <font color="#999999">attribute</font> = <font color="#999999">attributebyte</font> &lt;&lt; <font color="#996633">8</font>;<font color="#009900">//attributebyte ?? You know</font><br />  &nbsp;&nbsp; <font color="#3333ff">unsigned</font> <font color="#ff9900">short</font> *<font color="#999999">location</font>;<br />  &nbsp;&nbsp; <font color="#3333ff">int</font> <font color="#999999">numtab</font> = <font color="#996633">8</font>;<font color="#009900">//Has the number of cells for the cursor to move on a tab</font><br />  &nbsp;&nbsp; <font color="#009900">// Handle a backspace</font><br />  &nbsp;&nbsp; <font color="#3333ff">if </font>(<font color="#999999">chr </font>== <font color="#996633">0x08</font> &amp;&amp; <font color="#999999">cur_x</font>)<br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_x</font>--;<font color="#009900">//Moves one step back</font><br />  &nbsp;&nbsp; }<br />    &nbsp;&nbsp; <font color="#009900">// Handle a tab (Currently numtab is is 8 ,so the cursor will move 8 blocks front &nbsp;</font><br />  &nbsp;&nbsp; <font color="#3333ff">else if</font> (<font color="#999999">chr</font> == <font color="#996633">0x09</font>)<br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_x</font> = (<font color="#999999">cur_x</font>+ <font color="#999999">numtab</font>) &amp; ~( <font color="#999999">numtab</font> -<font color="#996633">1</font>);<font color="#009900">//Pushes the cursor by a number stored in numtab</font><br />  &nbsp;&nbsp; }<br />  &nbsp;&nbsp; <font color="#009900">// Handle carriage return</font><br />  &nbsp;&nbsp; <font color="#3333ff">else if </font>(<font color="#999999">chr</font> == <font color="#666666">'\r'</font>)<br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_x</font> = <font color="#996633">0</font>;<font color="#009900">//You can understand this</font><br />  &nbsp;&nbsp; }<br />  &nbsp;&nbsp;<font color="#009900"> // Handle a newline </font><br />  &nbsp;&nbsp; <font color="#3333ff">else if</font> (<font color="#999999">chr</font> == <font color="#666666">'\n'</font>)<br />  &nbsp;&nbsp; {<br />&nbsp; &nbsp; &nbsp; <font color="#999999">&nbsp;cur_x</font> = <font color="#996633">0</font>;<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_y</font>++;<font color="#009900">//Increments cursor's Y axis by 1, i.e; Move's the cursor to the next newline</font><br />  &nbsp;&nbsp; }<br />  &nbsp;&nbsp; <font color="#009900">// Handle any other printable character.</font><br />  &nbsp;&nbsp; <font color="#3333ff">else if</font>(<font color="#999999">chr</font> &gt;=<font color="#666666">' '</font>)<br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">location</font> = <font color="#999999">video_memory</font> + (<font color="#999999">cur_y</font>*<font color="#996633">80</font> + <font color="#999999">cur_x</font>);<font color="#009900">//Get the </font>&nbsp;<font color="#009900">location </font>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *<font color="#999999">location</font> = <font color="#999999">chr</font> | <font color="#999999">attribute</font>;<font color="#009900">//Set a element</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_x</font>++;<font color="#009900">//Advance the cursor by 1</font><br />  &nbsp;&nbsp; }<br />  &nbsp;&nbsp;<font color="#3366ff"> if</font> (<font color="#999999">cur_x</font> &gt;= <font color="#666666">80</font>)<font color="#009900">//Handles if you are at the end of the line</font><br />  &nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_x</font> = <font color="#666666">0</font>;<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">cur_y</font> ++;<br />  &nbsp;&nbsp; }<br />    &nbsp;&nbsp; <font color="#009900">// Scroll the screen if needed.</font><br />  &nbsp;&nbsp;<font color="#999999"> scroll</font>();<br />  &nbsp;&nbsp; <font color="#999999">cursormove</font>(<font color="#999999">cur_y</font>,<font color="#999999">cur_x</font>);<br />  }<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br />  This function takes the input and checks for tab, newline, etc. and runs the command for each of those. If there is a character, the function will &nbsp;copy it to the video memory with its attributes.<br /><br /><strong>  -------------------------------------------------------Printing Strings------------------------------------------------------</strong><br /><br />  We can print a character but we also need to print multiple characters at once, this simple code will do it.This code here just counts the length of the string and then prints each character with print till all the characters are printed.<br /><br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br /><font color="#3366ff">  void</font> <font color="#999999">printstring</font>(<font color="#3333ff">unsigned</font> <font color="#ff9900">char</font> *<font color="#999999">text</font>)<br />  {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#3333ff"> int</font> i;<br />    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#3333ff"> for</font> (<font color="#999999">i </font>=<font color="#996633"> 0</font>; <font color="#999999">i</font> &lt; <font color="#999999">strlen</font>(<font color="#999999">text</font>); <font color="#999999">i</font>++)<font color="#009900">//You know strlen(String length)</font><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#999999">print</font>(<font color="#999999">text</font><font color="#cc9933">[</font><font color="#999999">i</font><font color="#cc9933">]</font>);<br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />  }= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp;<br />  We can print a string now, <br /><br />  Example:&nbsp;&nbsp;&nbsp; printstring(<font color="#666666">&ldquo;Hello, World&rdquo;</font>);<br /><br /><strong>Simple Output on the screen</strong>: Hello, World <strong>_</strong><br /><br /><strong>  ---------------------------------------------------------Setting Up----------------------------------------------------------</strong><br /><br />  We have to set the pointer 'videomemory' to the &nbsp;text memory to 0xB8000 or 0xB0000. Also set the screen for output. The code below is simple and easy to understand.<br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; =&nbsp;<br /><font color="#33ccff">#define VIDEOMEMORY 0xB8000 &nbsp;</font><br /><font color="#3333ff">  unsigned</font> <font color="#ff9900">char </font><font color="#999999">myattriburebyte</font> = (<font color="#996633">0 </font>&lt;&lt;<font color="#996633">4</font>) |(<font color="#996633">15</font> &amp; <font color="#996633">0x0F</font>);<br /><font color="#009900">  //An attribute byte which sets black as background colour and white as foreground</font><br /><font color="#3333ff">unsigned</font> <font color="#ff9900">short</font> *<font color="#999999">videomemory</font>;<br /><br /><font color="#3366ff">  void</font> <font color="#999999">init_console</font>()<br />  {<br /><font color="#999999">&nbsp; &nbsp; &nbsp;videomemory</font> = (<font color="#3333ff">unsigned short</font> *) <font color="#999999">VIDEOMEMORY</font>;<br /><font color="#999999">&nbsp; &nbsp; &nbsp;clearscr</font>(<font color="#999999">myattributebyte</font>);<br /><font color="#999999">&nbsp; &nbsp; &nbsp;printstring</font>(<font color="#666666">&ldquo;Text based console loaded. \n&rdquo;</font>);<br />  } <br />= &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp;&nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; = &nbsp; =&nbsp;<strong>-------------------------------------------------------------------------------------------------------------------------------</strong><strong>--------------------------------------------------------------------------------------------------------------------------------</strong>  <strong><font color="#666666" size="6">Troubleshooting:</font></strong><br /><br />  <strong><font color="#999999">Missing Strings:</font></strong><br /><br />  <em><font color="#ffffff">Sometimes printing individual characters works, but printing string fails. This usually is due to the .rodata section missing in you linker script. The GNU C Compiler option &ndash;fwritable-strings is a solution, but the real solution is to add .rodata to the linker script.</font></em><br /><br />  <strong><font color="#999999">&ldquo;vediomemory&rdquo; undefined:</font></strong><br /><br />  <em><font color="#ffffff">This is due to missing definition of videomemory. Define the videomemory as unsigned short (16bit) and as a pointer somewhere up where all functions can access it.</font></em><br /><br /><br /><font color="#ffffff" size="4"><em><strong><a href="/uploads/1/0/7/2/10726766/textconsole.docx">Portable document </a>available @ <a href="/">Downloads</a></strong></em></font><br /><br /><font color="#ffffff" size="4"><em><strong>Articles:</strong></em></font><br /><font color="#ffffff"><em><font size="3"><strong><a href="/detecting-video-card.html">Video Card Detection</a></strong></font><strong style="font-size: large;"><a href="/detecting-video-card.html">&nbsp;</a> </strong><strong style="line-height: 24px;"><font size="3">Monochrome or color?</font></strong></em></font><br /><br /><font color="#ffffff"><em><font size="3">External Links:</font></em></font><br /><a title="" href="http://www.brackeen.com/vga/">http://www.brackeen.com/vga/</a>&nbsp;A tutorial on setting video mode , drawing ,bitmaps, etc. written in C</div></div>
+</div>
+		</div>
+	</div>
+</div>
+<div id="footer-wrap">
+	<div id="page">
+		<div id="footer"><div id="weebly-footer-signup-container">
+	<div class="signup-container-header">
+		<div class="start-free">Create a <a class="link" href="http://www.weebly.com/?utm_source=internal&amp;utm_medium=footer&amp;utm_campaign=3" target="_blank">free website</a></div>
+		<div class="expand-icon"></div>
+		<div class="powered-by"><span>Powered by</span> <a class="link weebly-icon" href="http://www.weebly.com/?utm_source=internal&amp;utm_medium=footer&amp;utm_campaign=3" target="_blank" rel="nofollow"></a></div>
+
+		<div class="short-text">
+			<span>Create your own free website</span><span class="go-icon"></span>
+		</div>
+	</div>
+	<div class="signup-container-content">
+		<h2 class="headline">Start your own free website</h2>
+		<div class="description">A surprisingly easy drag &amp; drop site creator. <a class="thin-underline" href="http://www.weebly.com/?utm_source=internal&amp;utm_medium=footer&amp;utm_campaign=3" target="_blank" rel="nofollow">Learn more.</a></div>
+		<iframe id="weebly-footer-signup-iframe" frameborder="0" src="https://www.weebly.com/footer_signup.php" allowTransparency="true"></iframe>
+	</div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700" />
+<style>
+	@font-face {
+		font-family: 'wicons';
+		src: url(//cdn2.editmysite.com/fonts/wIcons/wicons.eot?buildTime=1474590307);
+		src: url(//cdn2.editmysite.com/fonts/wIcons/wicons.eot?buildTime=1474590307#iefix) format('embedded-opentype'),
+				 url(//cdn2.editmysite.com/fonts/wIcons/wicons.woff?buildTime=1474590307) format('woff'),
+				 url(//cdn2.editmysite.com/fonts/wIcons/wicons.ttf?buildTime=1474590307) format('truetype'),
+				 url(//cdn2.editmysite.com/fonts/wIcons/wicons.svg?buildTime=1474590307#wicons) format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
+	/* Hack to smooth out font rendering on Chrome for Windows */
+	@media screen and (-webkit-min-device-pixel-ratio: 0) {
+		@font-face {
+			font-family: 'wicons';
+			src: url(//cdn2.editmysite.com/fonts/wIcons/wicons.svg?buildTime=1474590307#wicons) format('svg');
+		}
+	}
+
+	@font-face {
+		font-family: 'wsocial';
+		src: url(//cdn2.editmysite.com/fonts/wSocial/wsocial.eot?buildTime=1474590307);
+		src: url(//cdn2.editmysite.com/fonts/wSocial/wsocial.eot?buildTime=1474590307#iefix) format('embedded-opentype'),
+				 url(//cdn2.editmysite.com/fonts/wSocial/wsocial.woff?buildTime=1474590307) format('woff'),
+				 url(//cdn2.editmysite.com/fonts/wSocial/wsocial.ttf?buildTime=1474590307) format('truetype'),
+				 url(//cdn2.editmysite.com/fonts/wSocial/wsocial.svg?buildTime=1474590307#wsocial) format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
+	/* Hack to smooth out font rendering on Chrome for Windows */
+	@media screen and (-webkit-min-device-pixel-ratio: 0) {
+		@font-face {
+			font-family: 'wsocial';
+			src: url(//cdn2.editmysite.com/fonts/wSocial/wsocial.svg?buildTime=1474590307#wsocial) format('svg');
+		}
+	}
+</style>
+
+<script type="text/javascript" src="//cdn2.editmysite.com/js/site/footerSignup.js?buildTime=1474590307"></script>
+<script type="text/javascript">
+	var script;
+	if (typeof Weebly == 'undefined') {
+		Weebly = {};
+	}
+	if (!Weebly.jQuery) {
+		script = document.createElement('script');
+		script.onload = function() {
+			Weebly.jQuery = jQuery.noConflict(true);
+			Weebly.footer.setupContainer(Weebly.jQuery, 'cdn2.editmysite.com', '1474590307', 'www.weebly.com');
+		};
+		script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js';
+		document.head.appendChild(script);
+	} else {
+		Weebly.footer.setupContainer(Weebly.jQuery, 'cdn2.editmysite.com', '1474590307', 'www.weebly.com');
+	}
+</script>
+
+<script type='text/javascript'>
+//<!--
+
+if (document.cookie.match(/(^|;)\s*is_mobile=1/)) {
+	var windowHref = window.location.href || '';
+	if (windowHref.indexOf('?') > -1) {
+		windowHref += '&';
+	} else {
+		windowHref += '?';
+	}
+	document.write(
+		"&nbsp;&nbsp;&nbsp;&nbsp;" +
+		"<a class='wsite-view-link-mobile' href='" + windowHref + "view=mobile'>Mobile Site</a>"
+	);
+}
+
+//-->
+</script></div>
+	</div>
+</div>
+
+		<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-31319251-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script><script type="text/javascript">
+
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-7870337-1']);
+	_gaq.push(['_setDomainName', 'none']);
+	_gaq.push(['_setAllowLinker', true]);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+
+</script>
+
+<!-- Quantcast Tag -->
+<script type="text/javascript">
+var _qevents = _qevents || [];
+
+(function() {
+var elem = document.createElement('script');
+elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
+elem.async = true;
+elem.type = "text/javascript";
+var scpt = document.getElementsByTagName('script')[0];
+scpt.parentNode.insertBefore(elem, scpt);
+})();
+
+_qevents.push({
+qacct:"p-0dYLvhSGGqUWo",
+labels:"l0,u10726766.u10726766s757019124455535475"
+});
+</script>
+
+<noscript>
+<div style="display:none;">
+<img src="//pixel.quantserve.com/pixel/p-0dYLvhSGGqUWo.gif?labels=l0,u10726766.u10726766s757019124455535475" border="0" height="1" width="1" alt="Quantcast"/>
+</div>
+</noscript>
+<!-- End Quantcast tag -->
+
+
+<script>
+
+	(function(jQuery) {
+		try {
+			if (jQuery) {
+				jQuery('div.blog-social div.fb-like').attr('class', 'blog-social-item blog-fb-like');
+				var $commentFrame = jQuery('#commentArea iframe');
+				if ($commentFrame.length > 0) {
+					var frameHeight = jQuery($commentFrame[0].contentWindow.document).height() + 50;
+					$commentFrame.css('min-height', frameHeight + 'px');
+				}
+				if (jQuery('.product-button').length > 0){
+					jQuery(document).ready(function(){
+						jQuery('.product-button').parent().each(function(index, product){
+							if(jQuery(product).attr('target') == 'paypal'){
+								if (!jQuery(product).find('> [name="bn"]').length){
+									jQuery('<input>').attr({
+										type: 'hidden',
+										name: 'bn',
+										value: 'DragAndDropBuil_SP_EC'
+									}).appendTo(product);
+								}
+							}
+						});
+					});
+				}
+			}
+			else {
+				// Prototype
+				$$('div.blog-social div.fb-like').each(function(div) {
+					div.className = 'blog-social-item blog-fb-like';
+				});
+				$$('#commentArea iframe').each(function(iframe) {
+					iframe.style.minHeight = '410px';
+				});
+			}
+		}
+		catch(ex) {}
+	})(window._W && _W.jQuery);
+
+</script>
+<div id="eu-cookie" class="notification" style="display: none;">
+	<span id="eu-cookie-content"></span>
+	<span id="eu-cookie-close">&#10005</span>
+</div>
+
+<script type="text/javascript">
+	(function($) {
+		var cookie_location = '';
+
+		// this cookie_content should already be pre-encoded from CookieSettingView.js
+		var cookie_content = '' || _W.stl('templates.publish.virtual-includes.footerCode_1');
+
+		if (!_W.getCookie('757019124455535475_cookie_policy') || (_W.getCookie('757019124455535475_cookie_policy') !== cookie_content)){
+			if (cookie_location === 'top' || cookie_location === 'bottom'){
+				$('#eu-cookie-content').text(decodeURIComponent(cookie_content));
+				(cookie_location === 'top') ? animateFromTop() : animateFromBottom();
+				$('#eu-cookie').show();
+			}
+		}
+
+		$('#eu-cookie-close').click(function(){
+			_W.setCookie('757019124455535475_cookie_policy', cookie_content, 100000);
+			$('#eu-cookie').hide();
+		});
+
+		function animateFromTop(){
+			$('#eu-cookie').css({
+				'top': '0px',
+				'animation': 'reveal-top 1 2s'
+			});
+		}
+
+		function animateFromBottom(){
+			$('#eu-cookie').css({
+				'bottom': '0px',
+				'animation': 'reveal-bottom 1 2s'
+			});
+		}
+	})(window._W && _W.jQuery);
+
+</script>
+
+
+		
+	</body>
+</html>

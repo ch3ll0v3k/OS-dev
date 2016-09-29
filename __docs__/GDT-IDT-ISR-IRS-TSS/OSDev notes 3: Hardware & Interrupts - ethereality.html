@@ -1,0 +1,469 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 3: Hardware & Interrupts - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 3: Hardware & Interrupts</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>Now that we have some basic infrastructure up and running (i.e. the ability to
+run some 64-bit code, map memory, and some data structures) we should start
+interacting with some hardware. A word of warning: this set of notes takes a
+great deal of shortcuts in the name of expediency; I'll try to mark the
+locations where assumptions are made, but I may miss some. If you're using this
+as a guide and something isn't working, follow these two easy steps: A) blame
+me, B) send me an email with your problem and we'll work it out.</p>
+<h3 id="interrupts-the-local-apic">Interrupts: the local APIC</h3>
+<p>It's time to get some interrupts flowing appropriately, because interrupts are
+required for pretty much everything interesting in kernel-land.</p>
+<p>Let's begin by talking about what the local APIC is. APIC, by itself, is an
+acronym that you'll see used in a fair number of places. As stated in the
+previous set of notes, it stands for "Advanced Programmable Interrupt
+Controller", but unfortunately there are at least two types of interrupt
+controllers in use on modern platforms: local APICs and I/O APICs. We'll talk
+about the I/O APIC in a moment. To quote the Intel Software Developer's Manual:</p>
+<blockquote>
+<p>The local APIC performs two primary functions for the processor:</p>
+<ul>
+<li>It receives interrupts from the processor’s interrupt pins, from internal
+sources and from an external I/O APIC (or other external interrupt
+controller). It sends these to the processor core for handling.</li>
+<li>In multiple processor (MP) systems, it sends and receives interprocessor
+interrupt (IPI) messages to and from other logical processors on the system
+bus. IPI messages can be used to distribute interrupts among the processors
+in the system or to execute system wide functions (such as, booting up
+processors or distributing work among a group of processors).</li>
+</ul>
+</blockquote>
+<p>That is to say, the local APIC is the bit of circuitry in the processor that
+decides how to handle interrupts and exceptions. Now, the combination of the
+local APIC and I/O APIC replace what was originally the 8259 PIC on the IBM PC
+architecture. For legacy support reasons, modern PICs still start up in a 8259
+emulation mode; so the first step towards using the local APIC is to disable
+the old 8259 PIC support. <sup id="fnref:mspic"><a class="footnote-ref" href="#fn:mspic" rel="footnote">1</a></sup></p>
+<p>Since we don't really care about the 8259 PIC for the purposes of these notes,
+we just want to disable the PIC to use the I/O APIC and local APICs. Here's how
+you do such a thing:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">disable_pic</span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">/* Set ICW1 */</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0x20</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0x11</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0xa0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0x11</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">/* Set ICW2 (IRQ base offsets) */</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0x21</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xe0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0xa1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xe8</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">/* Set ICW3 */</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0x21</span><span class="symbol">,</span><span class="normal"> </span><span class="number">4</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0xa1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">/* Set ICW4 */</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0x21</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0xa1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">/* Set OCW1 (interrupt masks) */</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0x21</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xff</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">outb</span><span class="symbol">(</span><span class="number">0xa1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xff</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>This essentially sets up the PIC and then disables it. Consult the PIC
+documentation for more details if you really are curious.</p>
+<p>Unlike the 8259 PIC, which is controlled by means of port <code>0x20</code>, <code>0x21</code>,
+<code>0xa0</code>, and <code>0xa1</code>, the local APIC is controlled by means of memory-mapped
+registers. The base address of these registers is controlled by a MSR, in
+particular the <code>APIC_BASE</code> MSR (index <code>0x1b</code>); the default value at reset is
+<code>0xfee00000</code>. That is to say, to control the local APIC, you write values to
+the <em>physical</em> addresses <code>0xfee00000</code> and above.</p>
+<p>Since the local APIC was introduced in the era of 32-bit processors, the APIC
+registers are 32 bits wide. However, there are several 256-bit registers that
+are used by the local APIC; these are split up into eight separate 32-bit
+registers. You'll often see APIC registers referenced by index; in order to
+access APIC register <code>i</code>, you access physical memory location <code>0xfee00000 +
+0x10 * i</code>. I'm not sure why 16 bytes are reserved for each APIC register.</p>
+<p>Table 10-1 in the Intel Software Developer's Manual contains the table of all
+APIC registers. Some of the more immediately-useful ones:</p>
+<ul>
+<li>Index 2 contains the local APIC ID, a number unique amongst all processors on
+    the system. This can be used to determine what the active processor is, for
+    example.</li>
+<li>Index <code>0xb</code> contains the EOI (End-Of-Interrupt) register, which is used to
+    signal the local APIC that the current interrupt has been handled. We'll
+    talk about this more in a moment.</li>
+<li>Index <code>0xf</code> contains the Spurious Interrupt Vector Register, which will be
+    used a couple of times.</li>
+</ul>
+<h4 id="enabling-the-local-apic">Enabling the local APIC</h4>
+<p>At this point, now that the 8259 PIC has been disabled, we should enable the
+local APIC. The software-disable configuration bit for the local APIC is bit 8
+of the Spurious Interrupt Vector register, so we should set that by reading
+its contents, setting bit 8, and then write the result back. The C code to do
+this looks something like:</p>
+<pre><code><span class="usertype">uint32_t</span><span class="normal"> val </span><span class="symbol">=</span><span class="normal"> </span><span class="function">phy_mem_read32</span><span class="symbol">(</span><span class="number">0xfee000f0</span><span class="symbol">);</span>
+<span class="normal">val </span><span class="symbol">|=</span><span class="normal"> </span><span class="symbol">(</span><span class="number">1</span><span class="symbol">&lt;&lt;</span><span class="number">8</span><span class="symbol">);</span>
+<span class="function">phy_mem_write32</span><span class="symbol">(</span><span class="number">0xfee000f0</span><span class="symbol">,</span><span class="normal"> val</span><span class="symbol">);</span>
+</code></pre>
+<p>Now we're ready to start processing interrupts! Well, not quite.</p>
+<h4 id="interrupt-handlers">Interrupt handlers</h4>
+<p>In the original description of interrupts, the concept of an interrupt handler
+was introduced; that is to say, the bit of code that is executed when a 
+particular interrupt arrives. We need one for each interrupt vector (256 of
+them!), but we can of course re-use the same code --- nothing says the handlers
+have to be different!.</p>
+<p>There's a bit of a problem, though: the interrupt handler is called without any
+arguments of any sort, so it's impossible to tell exactly <em>which</em> interrupt was
+triggered, unless you have unique interrupt handlers for each interrupt. So
+we'll probably end up creating 256 interrupt handlers anyhow . . .</p>
+<p>For the moment, we only care about one or two different interrupt vectors, so
+we'll just create a catch-all interrupt handler to use for those we don't care
+about.</p>
+<p>Only a couple of registers are saved before the interrupt handlers are invoked,
+so we should be writing the interrupt handlers in assembly. (Nothing says we
+can't call higher-level code from the assembly, though! So the assembly
+interrupt handlers are likely to be extremely short.)</p>
+<p>Here's a bare-bones interrupt handler for us to dissect:</p>
+<pre><code><span class="normal">basic_interrupt_handler</span><span class="symbol">:</span>
+<span class="normal">        iretq</span>
+</code></pre>
+<p>Well, that was easy. First question: what is this <code>iretq</code>? Well, let's take a
+look at what happens, exactly, when an interrupt handler is invoked. If this is
+unclear, or if some details are missing, I recommend section 6.14 of the Intel
+SDM.</p>
+<p>The first thing that happens when the processor receives an interrupt is that
+it changes stacks. (Yes, you can have multiple stacks, just don't try to mix
+them. Headaches will result.) The stack that it changes to, specifically, is
+one of the ISTs (Interrupt Stack Table); which of the ISTs it selects is based
+on the interrupt index and is specified inside the IDT, which we'll address in
+a moment. Once the stack has been switched, the contents of the registers <code>ss</code>,
+<code>rsp</code>, <code>rflags</code>, <code>cs</code>, and <code>rip</code> are put onto this new stack.</p>
+<p>So, the <code>iretq</code> instruction inverts this procedure, popping <code>rip</code>, <code>cs</code>,
+<code>rflags</code>, <code>rsp</code>, and <code>ss</code> off the stack and back into the registers,
+essentially leaving the state of those particular registers unchanged. If we
+want to use anything more (such as <code>rax</code>, which is useful!) we'll have to save
+them somewhere; I recommend the stack.<sup id="fnref:kernel-gs"><a class="footnote-ref" href="#fn:kernel-gs" rel="footnote">2</a></sup></p>
+<h4 id="eois">EOIs</h4>
+<p>There's a problem with this interrupt handler, however: we need to inform the
+local APIC that the interrupt has been handled. This is done by sending an EOI
+("End Of Interrupt") message by writing any value you like to the EOI register.
+Of course, things aren't quite that simple, because you shouldn't signal an EOI
+for all interrupts; only those that modify the local APIC's ISR (in-service
+register) should have a corresponding EOI sent.</p>
+<p>Which interrupts modify the ISR? Anything not delivered by a NMI, SMI, INIT,
+ExtINT, start-up, or INIT-deassert interrupt. Which are not delivered by such?
+Well, it entirely depends on how the registers are set up. For example, a timer 
+event could deliver an NMI or a regular interrupt, or an IPI could be chosen to
+be delivered as either an NMI or an ExtINT . . .</p>
+<p>. . . at some point you realize there has to be some orthogonal approach to
+this problem, because solving it on a case-by-case basis is a huge headache.
+Since we only care about interrupts that modify the ISR, suppose we know we
+just finished handling an interrupt with number <code>n</code>. Now we can just check the
+<code>n</code>th bit of the ISR to check if its set; if so, we need to send the local APIC
+an EOI. The ISR is split across the eight local APIC registers <code>0x10</code> through
+<code>0x17</code>, with <code>0x10</code> storing the first 32 bits, <code>0x11</code> storing the second 32
+bits, and so forth. To send an EOI, write any value you like into the APIC EOI
+register (the value will not be kept, the action of actually performing the
+write is what causes the EOI to be sent). I recommend the value 1.</p>
+<p>Okay, so we know how to create interrupt handlers. Now, how do we tell the
+processor what our handlers are for each interrupt?</p>
+<h4 id="interrupt-descriptor-table">Interrupt Descriptor Table</h4>
+<p>Enter the Interrupt Descriptor Table, or IDT. The IDT is (on 64-bit systems) a
+4096-byte wide table (256 entries of sixteen bytes each) that stores, amongst
+other things, pointers to the interrupt handlers. The format of an IDT is a
+little weird (it harkens back to the days when silicon functionality was at a
+premium and programmer convenience came a distant second). Rather than try to
+reproduce it in text, here's the appropriate figure from the Intel SDM for a
+64-bit IDT entry (Figure 6-7):</p>
+<p><img alt="Intel SDM Figure 6-7" class="centre-img" src="static/64bitIDT.png" /></p>
+<p>Some of these should be self-explanatory and/or previously mentioned: obviously
+the interrupt handler is present (<code>P</code> bit set) and once we talk about the TSS,
+the IST field will be clear. The code selector will be whatever your kernel
+code segment is (<code>0x08</code> in the reference kernel) and DPL will be 0 (we'll talk
+about DPL later). Set the offset to the address of the code to use as an
+interrupt handler. So the only thing left is the type.</p>
+<p>There are two types of entries that are of interest: either <code>0xe</code> or <code>0xf</code>. A
+value of <code>0xe</code> indicates an interrupt gate, whereas a <code>0xf</code> indicates a trap
+gate. The only difference is how further interrupts are handled; an interrupt
+gate will atomically disable other interrupts until the current interrupt is
+fully handled; whereas a trap gate will keep interrupt enabled.</p>
+<p>Once the IDT is all set up, we need to tell the CPU about it. The <code>lidt</code>
+instruction is how this is performed; it's handled exactly the same way as the
+<code>lgdt</code> instruction was previously, via a pointer to a ten-byte region storing
+the virtual address and the length. (You can have an IDT that has less than 256
+entries if you don't want to handle all interrupts, but we'd like to
+eventually, so let's get things set up properly the first time around.)</p>
+<p>Phew. Now let's talk about the TSS and ISTs.</p>
+<h4 id="the-task-state-segment">The Task State Segment</h4>
+<p>The TSS (Task State Segment) is a region of memory that is used to configure
+processor behaviour under certain conditions. Like the IDT, it's loaded by the
+use of a special instruction, this time <code>ltr</code> (Load Task Register). Unlike the
+IDT, though, <code>ltr</code> doesn't take an address, it instead takes a GDT index ---
+which, yes, we'll talk about in a minute.</p>
+<p>Back in the 32-bit days of yore, the TSS used to be a wonderful thing. It let
+you do hardware context switching, manage I/O port privileges on a per-task
+basis, do automatic "recursive" task switching of recursion depth one (i.e.
+automatically context-switch upon calling certain addresses, and switching back
+when finished), and more. These 64-bit days, it just contains the ISTs and the
+port access stuff . . .  but while waxing nostalgic is interesting for me, it's
+less so to read. So, let's talk about ISTs.</p>
+<p>ISTs, as mentioned before, are the interrupt stack tables, which allow you to
+specify the stack to use when handling an interrupt. This is important,
+especially for handling things like page faults and double faults, where you've
+got a relatively serious problem (some problem with memory, or a second
+interrupt occurred while handling another) and will want a known-good stack to
+handle it with.</p>
+<p>There are seven ISTs available, IST1 through IST7. They are stored as
+contiguous 64-bit pointers located in the TSS starting at offset 36; the
+pointer should be towards the top of the stack. <sup id="fnref:overunderflow"><a class="footnote-ref" href="#fn:overunderflow" rel="footnote">3</a></sup></p>
+<p>The only other thing of interest in the TSS right now is the I/O privilege map;
+however we haven't talked about CPL and IOPL yet (nor do we have time/space in
+this set of notes) so I'll just say the bare minimum required to make the TSS
+valid: set the word at offset 102 to <code>0x68</code>, and the last two bytes of the TSS
+(word offset 104) to <code>0xffff</code>, for a total of 106 bytes in the TSS.</p>
+<p>Now, the only things left to do are to add the TSS to the GDT and load the TR
+with the index. The format of a 64-bit GDT TSS entry is specified in Figure 7-4
+of the Intel SDM:</p>
+<p><img alt="Intel SDM Figure 7-4" class="centre-img" src="static/64bitTSS.png" /></p>
+<p>The type to use for a TSS reference is <code>0x9</code>. The granularity flag determines
+whether the limit should be interpreted as number of bytes or as a number of
+4KB pages; since the TSS is 106 bytes long, <code>G</code> should be zero.</p>
+<p>Note that a TSS requires two consecutive GDT slots, as it is 16 bytes wide.</p>
+<h4 id="enabling-interrupts">Enabling Interrupts!</h4>
+<p>Now it's time to enable interrupts. This can be done by setting the <code>IF</code> flag
+in <code>rflags</code>; which is usually done by use of the <code>sti</code> instruction, leading to
+code like:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">enable_interrupts</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="function">__asm__</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"sti"</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+</code></pre>
+<h3 id="interrupts-the-io-apic">Interrupts: the I/O APIC</h3>
+<p>Now that we can handle interrupts internally within the processor, it's time to
+get external interrupts routed appropriately.</p>
+<p>Like the local APIC, the I/O APIC is controlled via memory-mapped registers.
+Unlike the local APIC, however, the I/O APIC only has two 32-bit registers; an
+index register and a data register. To access a register <code>i</code>, you write the
+value <code>i</code> into the index register and read/write from/to the data register.</p>
+<p>You should consult the Intel 82093AA datasheet for the complete list of 
+registers, but the interesting ones are <code>IOREDTBL0</code> through <code>IOREDTBL23</code>, the
+I/O redirection tables for IRQs 0 through 23. Each is 64 bits wide (i.e. two
+32-bit I/O APIC registers), and <code>IOREDTBL0</code> starts at index <code>0x10</code>.</p>
+<p>The format of an <code>IOREDTBLn</code> is as follows:</p>
+<ul>
+<li>Bits 0-7 contain the interrupt vector this IRQ should turn into.</li>
+<li>Bits 8-10 describe the interrupt type. You want this to be 000.</li>
+<li>Bit 11 describes the "destination mode"; you want this to be 0 unless you are
+    confident otherwise.</li>
+<li>Bits 12-15 you shouldn't have to worry about right now, but leave them
+    unchanged when you write the register back.</li>
+<li>Bit 16 contains the interrupt mask; if this is set, the IRQ is masked and
+    will not be processed.</li>
+<li>Bits 17-55 are reserved.</li>
+<li>Bits 56-63 contain the local APIC ID to deliver the interrupt to.</li>
+</ul>
+<p>Note that we haven't talked about the actual address that the I/O APIC's
+registers are mapped to. This is because the address changes from system to
+system. However, both qemu and Bochs always map the I/O APIC to address
+<code>0xfec00000</code>. We'll talk about how to find the I/O APIC base address in a later
+set of notes, when we start talking about the ACPI tables. The index register
+for an I/O APIC is located at its base address for memory-mapped I/O, and its
+data register <code>0x10</code> higher up.</p>
+<p>So, then. The approach that you'd use to set an IRQ to map to a particular
+interrupt vector would be something like: (assuming the presence of helper
+functions <code><span class="normal"> </span><span class="function">ioapic_write</span><span class="symbol">()</span></code> and <code><span class="normal"> </span><span class="function">ioapic_read</span><span class="symbol">()</span></code>)</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">ioapic_set_irq</span><span class="symbol">(</span><span class="usertype">uint8_t</span><span class="normal"> irq</span><span class="symbol">,</span><span class="normal"> </span><span class="usertype">uint64_t</span><span class="normal"> apic_id</span><span class="symbol">,</span><span class="normal"> </span><span class="usertype">uint8_t</span><span class="normal"> vector</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">uint32_t</span><span class="normal"> low_index </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0x10</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> irq</span><span class="symbol">*</span><span class="number">2</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">uint32_t</span><span class="normal"> high_index </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0x10</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> irq</span><span class="symbol">*</span><span class="number">2</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">1</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> high </span><span class="symbol">=</span><span class="normal"> </span><span class="function">ioapic_read</span><span class="symbol">(</span><span class="normal">high_index</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">// set APIC ID</span>
+<span class="normal">    high </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="symbol">~</span><span class="number">0xff000000</span><span class="symbol">;</span>
+<span class="normal">    high </span><span class="symbol">|=</span><span class="normal"> apic_id </span><span class="symbol">&lt;&lt;</span><span class="normal"> </span><span class="number">24</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="function">ioapic_write</span><span class="symbol">(</span><span class="normal">high_index</span><span class="symbol">,</span><span class="normal"> high</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> low </span><span class="symbol">=</span><span class="normal"> </span><span class="function">ioapic_read</span><span class="symbol">(</span><span class="normal">low_index</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">// unmask the IRQ</span>
+<span class="normal">    low </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="symbol">~(</span><span class="number">1</span><span class="symbol">&lt;&lt;</span><span class="number">16</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">// set to physical delivery mode</span>
+<span class="normal">    low </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="symbol">~(</span><span class="number">1</span><span class="symbol">&lt;&lt;</span><span class="number">11</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">// set to fixed delivery mode</span>
+<span class="normal">    low </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="symbol">~</span><span class="number">0x700</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="comment">// set delivery vector</span>
+<span class="normal">    low </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="symbol">~</span><span class="number">0xff</span><span class="symbol">;</span>
+<span class="normal">    low </span><span class="symbol">|=</span><span class="normal"> vector</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="function">ioapic_write</span><span class="symbol">(</span><span class="normal">low_index</span><span class="symbol">,</span><span class="normal"> low</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>And there you have it! You can now route IRQs to interrupt vectors on given
+processors to your heart's content.</p>
+<h3 id="keyboard-input">Keyboard input</h3>
+<p>Now, let's make things interesting and try to get some keyboard input going.
+The very first thing to do is to use the lovely local APIC interrupt handler
+and I/O APIC IRQ routing infrastructure that you've just built to set up IRQ 1
+(the keyboard IRQ) to be handled by some interrupt; I suggest the use of
+interrupt <code>0x40</code>, since it's out of the way of the internal CPU exceptions.</p>
+<p>Now, let's say that we receive IRQ 1 and process it appropriately. We're
+sitting in some code, now, and ready to inform the rest of the kernel that a
+key has been pressed. But which key? . . .</p>
+<p>To figure this out, we'll have to contact the keyboard controller. Or at least,
+the emulation of the keyboard controller, since a dedicated keyboard controller
+of the sort we'll be writing code to interface with hasn't been included
+verbatim for quite some time.</p>
+<p>The scancode for the key will be a single byte waiting on port <code>0x60</code>. Once the
+scancode has been read, the keyboard controller needs to be reset. The
+following snippet will reset the keyboard controller so it can send the next
+key:</p>
+<pre><code><span class="usertype">uint8_t</span><span class="normal"> a </span><span class="symbol">=</span><span class="normal"> </span><span class="function">inportb</span><span class="symbol">(</span><span class="number">0x61</span><span class="symbol">);</span>
+<span class="normal">a </span><span class="symbol">|=</span><span class="normal"> </span><span class="number">0x82</span><span class="symbol">;</span>
+<span class="function">outportb</span><span class="symbol">(</span><span class="number">0x61</span><span class="symbol">,</span><span class="normal"> a</span><span class="symbol">);</span>
+<span class="normal">a </span><span class="symbol">&amp;=</span><span class="normal"> </span><span class="number">0x7f</span><span class="symbol">;</span>
+<span class="function">outportb</span><span class="symbol">(</span><span class="number">0x61</span><span class="symbol">,</span><span class="normal"> a</span><span class="symbol">);</span>
+</code></pre>
+<p>If you want to figure out what this does and why to do it this exact way,
+consult the Intel 8042 keyboard controller documentation. For the moment, we
+have more interesting things to work with. Such as, how do we figure out what
+key was pressed or released?</p>
+<p>Bit 7 of the scancode will be clear if the key was pressed, and set if
+released. The first seven bits provide a keyboard scancode; a list of common
+keyboard scancodes in a C header is <a href="static/keycodes.h">provided</a>.</p>
+<p>Now you'll want to set up some sort of keyboard buffer, probably a circular
+one, to pass the keyboard input back into the rest of the kernel. You'll
+probably also want to make use of the keyboard input; I suggest prompting the
+user for a string to print.</p>
+<h3 id="exceptions">Exceptions</h3>
+<p>The last thing to mention here are exceptions, internally-generated interrupts
+triggered when error conditions are met. These have hardcoded interrupt vectors
+in the range <code>[0,31]</code>, and often have error codes attached (i.e. another qword
+pushed onto the stack after the stack switch). A complete list is available in
+the Intel SDM (section 6.15), but here are a couple of useful ones:</p>
+<ul>
+<li>
+<p>Divide Error, interrupt 0. This triggers when you pass a divisor of zero to
+    a <code>div</code> or <code>idiv</code> instruction.</p>
+</li>
+<li>
+<p>Stack Fault, interrupt 12. In x86_64, this indicates that either the stack
+    segment selector was invalid, or you tried to store a non-canonical address
+    into <code>rsp</code>.</p>
+</li>
+<li>
+<p>General Protection Fault, interrupt 13. This indicates some sort of rather
+    serious error has occurred. A couple of examples: loading a segment register
+    with a GDT offset of a TSS, writing to a reserved control register bit,
+    using an aligned SSE instruction on a non-16-byte-aligned address.
+    The error code should give you some idea of the source of the interrupt; in
+    addition, the saved instruction pointer will tell you the exact instruction
+    that caused the exception.</p>
+</li>
+<li>
+<p>Page fault, interrupt 14. This indicates an error has occurred that has
+    something to do with paging. Some examples: accessing memory with a paging
+    tree entry without the present bit set, writing to a read-only page, or
+    accessing a kernel-only page as a userspace process. The page fault is 
+    somewhat unique in that there are actually two exception codes provided; 
+    one on the stack and one in the <code>cr2</code> register. The <code>cr2</code> register stores
+    the virtual address that caused the page fault to occur, and the stack
+    exception code contains five bits:</p>
+<ul>
+<li>Bit zero is the present bit; clear if fault is due to a non-present page
+    and set otherwise.</li>
+<li>Bit one is the write/read bit; set if the memory access that caused the
+    exception was a write, and clear otherwise.</li>
+<li>Bit two is set if the CPU was in userspace at the time of exception,
+    and clear otherwise.</li>
+<li>Bit three is set if the exception was caused by a reserved flag in the
+    paging structures being set.</li>
+<li>Bit four is set if the memory access causing the fault was an instruction
+    fetch.</li>
+</ul>
+</li>
+</ul>
+<p>One tricky bit is that software could trigger an interrupt 14 (by using
+<code><span class="normal"> </span><span class="keyword">int</span><span class="normal"> </span><span class="number">14</span></code>) and if your interrupt 14 handler is expecting an
+exception code, it could potentially read from memory it's not supposed to.</p>
+<p>This wouldn't be a problem if there was an actual way to determine the
+interrupt source. Unfortunately there's no way to tell directly if the source
+of an interrupt was an exception or not. If you assume that your kernel code
+does not invoke any interrupts (via the <code><span class="normal"> </span><span class="keyword">int</span></code> instruction), then
+all will be well for the moment. We'll get to how to prevent userspace programs
+from invoking interrupts willy-nilly when we talk about userspace.</p>
+<h3 id="suggested-work">Suggested work</h3>
+<p>If you haven't already, I strongly suggest you get your interrupt framework up
+and running; this includes setting up the local APIC, interrupt handling
+(including the IDT and TSS), and also configuring the I/O APIC appropriately.
+Once that's finished, I recommend you get keyboard input working, to the point
+where you can at least pause and wait for a keypress before continuing; a very
+useful debugging tool.</p>
+<p>I'd also recommend adding GPF and PF interrupt handlers. For now just printing
+a message and pausing should be enough of a handler.</p>
+<h3 id="further-resources">Further resources</h3>
+<p>See Chapter 6 of the Intel SDM for details on interrupt handling; Chapter 10
+for details on the local APIC. The Intel 82093AA I/O APIC datasheet (<a href="http://bochs.sourceforge.net/techspec/intel-82093-apic.pdf.gz">Bochs
+mirror</a>) is a
+good place for everything I/O APIC.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:mspic">
+<p>To be pedantic, we actually want to disable the emulation of the
+master and slave PICs. That's a historical detail that isn't relevant right
+now, though.&#160;<a class="footnote-backref" href="#fnref:mspic" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:kernel-gs">
+<p>Actually, I'd recommend making use of the <code>swapgs</code> instruction
+and the <code>KERNEL_GS_BASE</code> MSR, but that's not a topic we'll touch until later.&#160;<a class="footnote-backref" href="#fnref:kernel-gs" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:overunderflow">
+<p>There is no built-in mechanism for detecting stack overflow
+(or underflow, for that matter) on x86; as a result I suggest you buffer the
+stacks with unmapped pages to "detect" these conditions via page faults.&#160;<a class="footnote-backref" href="#fnref:overunderflow" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:09 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

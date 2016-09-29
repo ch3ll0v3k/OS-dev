@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Talk:GCC Cross-Compiler - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "Talk", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 1, "wgPageName": "Talk:GCC_Cross-Compiler", "wgTitle": "GCC Cross-Compiler", "wgCurRevisionId": 16555, "wgArticleId": 1967, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-bash {line-height: normal;}
+.source-bash li, .source-bash pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for bash
+ * CSS class: source-bash, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.bash.source-bash .de1, .bash.source-bash .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.bash.source-bash  {font-family:monospace;}
+.bash.source-bash .imp {font-weight: bold; color: red;}
+.bash.source-bash li, .bash.source-bash .li1 {font-weight: normal; vertical-align:top;}
+.bash.source-bash .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.bash.source-bash .li2 {font-weight: bold; vertical-align:top;}
+.bash.source-bash .kw1 {color: #000000; font-weight: bold;}
+.bash.source-bash .kw2 {color: #c20cb9; font-weight: bold;}
+.bash.source-bash .kw3 {color: #7a0874; font-weight: bold;}
+.bash.source-bash .co0 {color: #666666; font-style: italic;}
+.bash.source-bash .co1 {color: #800000;}
+.bash.source-bash .co2 {color: #cc0000; font-style: italic;}
+.bash.source-bash .co3 {color: #000000; font-weight: bold;}
+.bash.source-bash .co4 {color: #666666;}
+.bash.source-bash .es1 {color: #000099; font-weight: bold;}
+.bash.source-bash .es2 {color: #007800;}
+.bash.source-bash .es3 {color: #007800;}
+.bash.source-bash .es4 {color: #007800;}
+.bash.source-bash .es5 {color: #780078;}
+.bash.source-bash .es_h {color: #000099; font-weight: bold;}
+.bash.source-bash .br0 {color: #7a0874; font-weight: bold;}
+.bash.source-bash .sy0 {color: #000000; font-weight: bold;}
+.bash.source-bash .st0 {color: #ff0000;}
+.bash.source-bash .st_h {color: #ff0000;}
+.bash.source-bash .nu0 {color: #000000;}
+.bash.source-bash .re0 {color: #007800;}
+.bash.source-bash .re1 {color: #007800;}
+.bash.source-bash .re2 {color: #007800;}
+.bash.source-bash .re4 {color: #007800;}
+.bash.source-bash .re5 {color: #660033;}
+.bash.source-bash .ln-xtra, .bash.source-bash li.ln-xtra, .bash.source-bash div.ln-xtra {background-color: #ffc;}
+.bash.source-bash span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-1 ns-talk page-Talk_GCC_Cross-Compiler action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">Talk:GCC Cross-Compiler</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Repeatable_Error_with_Cygwin_64.3F"><span class="tocnumber">1</span> <span class="toctext">Repeatable Error with Cygwin 64?</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Unwieldy_Configurations_Table_Size"><span class="tocnumber">2</span> <span class="toctext">Unwieldy Configurations Table Size</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Building_Target-libgcc"><span class="tocnumber">3</span> <span class="toctext">Building Target-libgcc</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Compilation_of_x86_64-elf_Target"><span class="tocnumber">4</span> <span class="toctext">Compilation of x86_64-elf Target</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Cross-Reference_Suggestion"><span class="tocnumber">5</span> <span class="toctext">Cross-Reference Suggestion</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Binutils_requires_Flex_.26_Bison"><span class="tocnumber">6</span> <span class="toctext">Binutils requires Flex &amp; Bison</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#What_does_it_Do.3F"><span class="tocnumber">7</span> <span class="toctext">What does it Do?</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Texinfo"><span class="tocnumber">8</span> <span class="toctext">Texinfo</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Version_Junkies..."><span class="tocnumber">9</span> <span class="toctext">Version Junkies...</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#GMP.2C_MPFR_and_MPC"><span class="tocnumber">10</span> <span class="toctext">GMP, MPFR and MPC</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#RE:_New_.22Note_2.22"><span class="tocnumber">11</span> <span class="toctext">RE: New "Note 2"</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#On_Mac_OS_X_Lion"><span class="tocnumber">12</span> <span class="toctext">On Mac OS X Lion</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Multiple_Versions_Simultaneously"><span class="tocnumber">13</span> <span class="toctext">Multiple Versions Simultaneously</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Repeatable_Error_with_Cygwin_64.3F"> Repeatable Error with Cygwin 64? </span></h2>
+<p>I got a chance to have a play with my cross-compilers today (as you do...) and had a go at following the tutorial on the 64 bit version of Cygwin on Windows 8.1. Binutils version is 2.24 and GCC is 4.9.1, target is x86_64-elf. On "make install-gcc", I get the error:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="bash source-bash"><pre class="de1">Verify that you have permission to grant a GFDL license <span class="kw1">for</span> all
+new text <span class="kw1">in</span> tm.texi, <span class="kw1">then</span> copy it to ..<span class="sy0">/</span>..<span class="sy0">/</span>gcc-4.9.0<span class="sy0">/</span>gcc<span class="sy0">/</span>doc<span class="sy0">/</span>tm.texi.</pre></div></div>
+<p>I'm obviously not the first to get this error (<a rel="nofollow" class="external text" href="http://stackoverflow.com/questions/23839851/gcc-cross-compiler-cygwin64-gfdl-license-tm-texi">reference</a>). This seems to be some sort of file version control issue. In my case, copying the file as suggested by the error message did <i>not</i> work. What <i>did</i> work was to re extract the tar file containing the original GCC source, overwriting the GCC source files (I assume this resets date stamps). After this, I changed back to my build-gcc folder, ran 'make install-gcc' and the process went swimmingly. I can therefore confirm that the tutorial works OK in Cygwin64 with the above proviso. I've not added this to the list of common errors in the article as I don't have time to test repeatability and would like others to confirm that this is a real issue first. (PS: Diffutils also required as the build process uses cmp at this point) --<a href="/User:Aj" title="User:Aj">Aj</a> 16:49, 25 July 2014 (CDT)
+</p><p>PS: It also seems like in Cygwin64, the dependency libintl-devel is also not installed by default and needs to be added to Cygwin for successful compilation, even with --disable-nls. --<a href="/User:Aj" title="User:Aj">Aj</a> 06:29, 28 July 2014 (CDT)
+</p>
+<h2> <span class="mw-headline" id="Unwieldy_Configurations_Table_Size">Unwieldy Configurations Table Size</span></h2>
+<p>I've just added another working config and the table of "known good" configurations is now getting a little big when viewed on a 1024x768 4:3 monitor. The situation is only going to get worse, so could I make some suggestions:
+</p>
+<ol><li> Remove GCC versions &lt; 4.0.0 <i>and/or</i>
+</li><li> Make the table reverse-chronological, so GCC 4.5.0 / Binutils 2.20 would be at the top left and version numbers would decrease rightwards and downwards, so no horizontal scroling for the latest version. <i>and/or</i>
+</li><li> Something else... <i>and/or</i>
+</li><li> Club together and buy me a nice widescreen monitor&#160;;o)
+</li></ol>
+<p>Any thoughts, before I make such a big change? I favour option 2 (or 4!) so that all information is left intact --<a href="/User:Aj" title="User:Aj">Aj</a> 12:29, 11 February 2010 (UTC)
+</p>
+<dl><dd> I support this, there should be a minimal resolution that all the articles should target.. most of my monitors are &lt;= 1024x768, so that's my biased recommendation. --<a href="/User:Brynet-inc" title="User:Brynet-inc">Brynet-Inc</a> 03:00, 13 February 2010 (UTC)
+</dd></dl>
+<dl><dd> I would go with option 1, since GCC4 is (AFAIK) fairly standard and mature now. If we go with option 1 however, I would also suggest dumping the other information regarding GCC3 from the article. Option 2 is an idea, but it won't decrease the size of the table and it's getting a bit big IMHO. --<a href="/User:Creature" title="User:Creature">Creature</a> 11:46, 13 February 2010 (UTC)
+</dd></dl>
+<dl><dd> I don't agree with option 1, there still may be people using that version of the compiler. --<a href="/User:Brynet-inc" title="User:Brynet-inc">Brynet-Inc</a> 20:42, 13 February 2010 (UTC)
+</dd></dl>
+<dl><dd> What if we were to split the table into two tables: one for GCC3 and one for GCC4? That would fix the exaggerated width and make it a little less overwhelming. --<a href="/User:Creature" title="User:Creature">Creature</a> 11:18, 14 February 2010 (UTC)
+</dd></dl>
+<dl><dd> I have copied the table section to <a href="/User:AJ/GCC_Cross-Compiler" title="User:AJ/GCC Cross-Compiler" class="mw-redirect">User:AJ/GCC_Cross-Compiler</a> so that I can play around with the layouts. I won't do anything to the main article yet. I think this is such a well-used article that I will start a topic on the forums once I have a suggested replacement. --<a href="/User:Aj" title="User:Aj">Aj</a> 09:22, 15 February 2010 (UTC)
+</dd></dl>
+<h2> <span class="mw-headline" id="Building_Target-libgcc">Building Target-libgcc</span></h2>
+<p>At the end of cross-compiler creation, I always run make all-target-libgcc install-target-libgcc for long long integer support and so on. I wonder if this should be added to the Cross-Compiler tutorial, as the sensible time to do this is when you already have a configured build directory. If so, how should it be added; perhaps just as a footnote or should it actually be listed as an (optional) additional build command at the end of the GCC build? --<a href="/User:Aj" title="User:Aj">Aj</a> 10:56, 3 August 2009 (UTC)
+</p>
+<dl><dd>+1 for adding this to the tutorial. I think it would be best to keep it away from the bulk of the tutorial and leave it as a "Now you're done" sort of thing. That way people (especially those new to this kind of stuff) will be happy to leave with a cross-compiler without libgcc, and those who are interested in the additional features libgcc provides will read further. My 2c. --<a href="/User:Pcmattman" title="User:Pcmattman">pcmattman</a> 12:02, 3 August 2009 (UTC)
+</dd></dl>
+<dl><dd> I have inserted this information before the troubleshooting section. The idea is that the libgcc targets should be built while the configured gcc directory still exists, so I hope to catch people before they close Bash and delete their temporary build-gcc directory. I have also added a link to a summary of libgcc and have deleted the (dead) link to bill gaitliff's site - he used to offer a free advice page, but now seems to provide commercial cross-compiler services under a different URL. --<a href="/User:Aj" title="User:Aj">Aj</a> 10:04, 25 August 2009 (UTC)
+</dd></dl>
+<h2> <span class="mw-headline" id="Compilation_of_x86_64-elf_Target">Compilation of x86_64-elf Target</span></h2>
+<p>I have just tried with GCC 4.3.1 and 4.3.2 and it appears that GCC no longer requires the x86_64-elf target adding manually for configuration (it now works in exactly the same way as i586-elf. I am going to make a few changes to the article to reflect this, but where does this leave the specific x86_64 Cross compiler article? Deleted? Added as a cross-reference for people building against older versions? --<a href="/User:Aj" title="User:Aj">Aj</a> 10:41, 29 September 2008 (UTC)
+</p>
+<dl><dd>I would put that information in the x86_64 crosscompiler article, rather than adding it here, since people are told to go there anyway. - <a href="/User:Combuster" title="User:Combuster">Combuster</a> 10:58, 29 September 2008 (UTC)
+</dd></dl>
+<h2> <span class="mw-headline" id="Cross-Reference_Suggestion">Cross-Reference Suggestion</span></h2>
+<p>I was thinking of referencing the Porting Newlib article from Step 2 of this tutorial and/or the Articles section at the end of the page - any problems with that? --<a href="/index.php?title=User:AJ&amp;action=edit&amp;redlink=1" class="new" title="User:AJ (page does not exist)">AJ</a> 07:38, 1 October 2007 (CDT)
+</p>
+<dl><dd>No problem at all. - <a href="/User:Combuster" title="User:Combuster">Combuster</a> 10:51, 1 October 2007 (CDT)
+</dd></dl>
+<h2> <span class="mw-headline" id="Binutils_requires_Flex_.26_Bison">Binutils requires Flex &amp; Bison</span></h2>
+<p>I'm editing the article because flex and bison are still required for at least binutils 4.2.2. <a href="/index.php?title=User:CodeAnxiety&amp;action=edit&amp;redlink=1" class="new" title="User:CodeAnxiety (page does not exist)">CodeAnxiety</a> 01:45, 31 January 2008 (CST)
+</p>
+<h2> <span class="mw-headline" id="What_does_it_Do.3F">What does it Do?</span></h2>
+<p>After reading through part 1, i fail to see what is done that cannot be done by GCC before creation of this cross compiler. It seems to be a waste of time, and nothing is specified about the platform that can't be accomplished by all other versions of GCC. --<a href="/index.php?title=User:Tyler&amp;action=edit&amp;redlink=1" class="new" title="User:Tyler (page does not exist)">Tyler</a> 22:50, 15 March 2007 (CDT)
+</p><p>Either your answer is in <a href="/GCC_Cross-Compiler#Why_an_OS_developer_should_build_a_cross-compiler" title="GCC Cross-Compiler">GCC_Cross-Compiler#Why_an_OS_developer_should_build_a_cross-compiler</a>, otherwise, could you please be more clear in <i>what</i> the problem is exactly? - <a href="/User:Combuster" title="User:Combuster">Combuster</a> 04:03, 16 March 2007 (CDT)
+</p><p>My problem is... this tutorial does not show you how to "solve" any of these problems. It tells you how to recompile GCC to make only ELF files... something GCC can do anyway, ridding you of the problems. --<a href="/index.php?title=User:Tyler&amp;action=edit&amp;redlink=1" class="new" title="User:Tyler (page does not exist)">Tyler</a> 08:25, 16 March 2007 (CDT)
+</p><p>The main difference is that the GCC you are building is a Stage 1 toolchain, not a bootstrapped toolchain. (Not ELF vs COFF like you think) A dedicated crosscompiler does not think its compiling for windows/linux and as such does not fill in the gaps for you. It does just what you ask and only what you ask and nothing more, which is something you cant say of a stock GCC. Some of these 'features' you can override with commandline parameters, but some will stubbornly persist. - <a href="/User:Combuster" title="User:Combuster">Combuster</a> 04:45, 19 March 2007 (CDT)
+</p>
+<dl><dd>Actually, the <i>main</i> difference is that, to my knowlegde, Cygwin GCC doesn't allow you to generate ELF binaries without the help of objcopy. Several other problems - like careless inclusion of system headers, error messages being posted to the forum that cannot be reproduced by people using a different host OS, and more - are also solved by this tutorial. <a href="/User:Solar" title="User:Solar">Solar</a> 09:57, 3 April 2007 (CDT)
+</dd></dl>
+<dl><dd>Like <a href="/User:Solar" title="User:Solar">Solar</a> says, Cygwin GCC can't create ELF binaries by default. Creating a cross compiler fixes that, and more, and is pretty easily done. - <a href="/User:Quok" title="User:Quok">Quok</a> 20:30, 3 April 2007 (CDT)
+</dd></dl>
+<h2> <span class="mw-headline" id="Texinfo"> Texinfo </span></h2>
+<p>Has anyone else had problems building Binutils/GCC when Texinfo is not installed? I am not sure what it is used for, but for some reason when not installed the Make fails. -- <a href="/index.php?title=User:Tyler&amp;action=edit&amp;redlink=1" class="new" title="User:Tyler (page does not exist)">Tyler</a> 14:02, 13 September 2007 (CDT)
+</p>
+<dl><dd> AFAIK texinfo should only be used to make the documentation.  On my setup, running 'make all-gcc' does not, by default, attempt to create the documentation and 'make install-gcc' does not attempt to install it, so texinfo shouldn't be required.  Having said that, I do have texinfo installed, so I might not have noticed a call to it.  <a href="/User:Jnc100" title="User:Jnc100">John</a> 14:41, 13 September 2007 (CDT)
+</dd></dl>
+<dl><dd><dl><dd> I've never got as far as GCC without Texinfo, so i wouldn't know, it dies in the Binutils build, during a make all. Does Make all create documentation? -- <a href="/index.php?title=User:Tyler&amp;action=edit&amp;redlink=1" class="new" title="User:Tyler (page does not exist)">Tyler</a> 15:25, 13 September 2007 (CDT)
+</dd></dl>
+</dd></dl>
+<dl><dd><dl><dd><dl><dd> Yes, I'm afraid it does.  There is a 'make all-binutils' command, but that also seems to try building in the bfd/doc directory.  Apparently running configure with the --without-docdir option stops it trying to install the documentation.  I don't know if it stops it trying to make it however.  <a href="/User:Jnc100" title="User:Jnc100">John</a> 16:35, 13 September 2007 (CDT)
+</dd></dl>
+</dd></dl>
+</dd></dl>
+<dl><dd><dl><dd><dl><dd><dl><dd>I checked my cygwin setup, and noticed texinfo is installed without me specifically selecting it, so it either is a dependency of one of the other packages I do have, or its installed by default. Since solar's regression test of removing, reinstalling, selecting the basic install + the packages listed always results in an environment that can build the crosscompiler, I don't think its an error in the tutorial. - <a href="/User:Combuster" title="User:Combuster">Combuster</a> 02:55, 14 September 2007 (CDT)
+</dd></dl>
+</dd></dl>
+</dd></dl>
+</dd></dl>
+<dl><dd><dl><dd><dl><dd><dl><dd>For those having problems building binutils without texinfo installed, run the configure step as normal. When that finishes, do this:
+</dd><dd>echo "MAKEINFO =&#160;:" &gt;&gt; Makefile
+</dd><dd>That command overrides the MAKEINFO variable in the Makefile, setting it to something that does not exist. This causes make to skip attempting to build (and subsequently install) the documentation. --<a href="/User:Quok" title="User:Quok">quok</a> 06:20, 26 August 2008 (UTC)
+</dd></dl>
+</dd></dl>
+</dd></dl>
+</dd></dl>
+<h2> <span class="mw-headline" id="Version_Junkies..."> Version Junkies... </span></h2>
+<p>Pretty impressive to see how GCC 4.5.0 is listed in the "compatibility matrix", when it has not even hit ftp.gnu.org yet... someone *is* eager to use the latest...&#160;;-) -- <a href="/User:Solar" title="User:Solar">Solar</a> 07:52, 12 February 2010 (UTC)
+</p>
+<ul><li> I was thinking exactly the same thing... --<a href="/User:Creature" title="User:Creature">Creature</a> 17:19, 12 February 2010 (UTC)
+</li></ul>
+<h2> <span class="mw-headline" id="GMP.2C_MPFR_and_MPC"> GMP, MPFR and MPC </span></h2>
+<p>See <a href="/Talk:Cross-Compiler_Successful_Builds" title="Talk:Cross-Compiler Successful Builds">Talk:Cross-Compiler_Successful_Builds</a> and corresponding <a rel="nofollow" class="external text" href="http://forum.osdev.org/viewtopic.php?f=8&amp;p=176033#p176033">forum thread</a>. These supporting libraries are general-purpose and not specific to your cross-compiling target, so it is best to install them the way your system usually installs packages, instead of compiling them from source. Which you can do properly only when you're root and remember to install to /usr/local, while no SysAdmin should have anything against installing them on a shared system you might be using.
+</p>
+<h2> <span class="mw-headline" id="RE:_New_.22Note_2.22"> RE: New "Note 2" </span></h2>
+<p>Quote: "Cygwin users should use the default Windows 'terminal'. Else you may get the error message &lt;path-to-as&gt;/as.exe: Bad Address". Can someone explain this one to me? This tutorial works fine in the Cygwin bash shell, as well as from the Windows 'cmd' shell (if the Cygwin /bin is in your PATH). This note seems misleading and misguided. --<a href="/User:Pcmattman" title="User:Pcmattman">pcmattman</a> 05:20, 13 December 2010 (UTC)
+</p>
+<dl><dd>I cannot picture why this should be, either. I did send the user (whose only activity on either the Wiki and the forum was this edit) a PM on the forum asking him to elaborate, and reverted his edit until he does. -- <a href="/User:Solar" title="User:Solar">Solar</a> 10:03, 13 December 2010 (UTC)
+</dd></dl>
+<h2> <span class="mw-headline" id="On_Mac_OS_X_Lion"> On Mac OS X Lion </span></h2>
+<p>I was building a cross-compiler (binutils 2.22, gcc 4.6.2) for i386-elf on Mac OS X 10.7.2 with Xcode 4.1 using this tutorial (from memory at first, but I double checked to make sure that I wasn't screwing things up), when I came across a rather peculiar issue. The toolchain would successfully compile and install, but when I went to use it, it would start spewing out internal compiler errors. Below are the commands I used when building the toolchain, as well as a reduction for reproducing the errors.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="bash source-bash"><pre class="de1"><span class="kw3">export</span> <span class="re2">PREFIX</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>local<span class="sy0">/</span>cross
+<span class="kw3">export</span> <span class="re2">TARGET</span>=i386-elf
+<span class="kw3">export</span> <span class="re2">MAKEFLAGS</span>=<span class="st0">&quot;-j 16&quot;</span>
+<span class="kw2">mkdir</span> <span class="re5">-p</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>build-<span class="br0">&#123;</span>binutils,<span class="kw2">gcc</span><span class="br0">&#125;</span><span class="sy0">/</span>
+curl ftp:<span class="sy0">//</span>ftp.gnu.org<span class="sy0">/</span>gnu<span class="sy0">/</span>binutils<span class="sy0">/</span>binutils-<span class="nu0">2.22</span>.tar.bz2 <span class="sy0">|</span> <span class="kw2">tar</span> <span class="re5">-x</span> <span class="re5">-f</span> - <span class="re5">-C</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>
+curl ftp:<span class="sy0">//</span>ftp.gnu.org<span class="sy0">/</span>gnu<span class="sy0">/</span>gcc<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>gcc-core-4.6.2.tar.bz2 <span class="sy0">|</span> <span class="kw2">tar</span> <span class="re5">-x</span> <span class="re5">-f</span> - <span class="re5">-C</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>
+curl ftp:<span class="sy0">//</span>ftp.gnu.org<span class="sy0">/</span>gnu<span class="sy0">/</span>gmp<span class="sy0">/</span>gmp-5.0.2.tar.bz2 <span class="sy0">|</span> <span class="kw2">tar</span> <span class="re5">-x</span> <span class="re5">-f</span> - <span class="re5">-C</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>
+curl ftp:<span class="sy0">//</span>ftp.gnu.org<span class="sy0">/</span>gnu<span class="sy0">/</span>mpfr<span class="sy0">/</span>mpfr-3.1.0.tar.bz2 <span class="sy0">|</span> <span class="kw2">tar</span> <span class="re5">-x</span> <span class="re5">-f</span> - <span class="re5">-C</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>
+curl http:<span class="sy0">//</span>www.multiprecision.org<span class="sy0">/</span>mpc<span class="sy0">/</span>download<span class="sy0">/</span>mpc-<span class="nu0">0.9</span>.tar.gz <span class="sy0">|</span> <span class="kw2">tar</span> <span class="re5">-x</span> <span class="re5">-f</span> - <span class="re5">-C</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>
+<span class="kw3">cd</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>build-binutils<span class="sy0">/</span>
+..<span class="sy0">/</span>binutils-<span class="nu0">2.22</span><span class="sy0">/</span>configure <span class="re5">--prefix</span>=<span class="re1">$PREFIX</span> <span class="re5">--target</span>=<span class="re1">$TARGET</span> <span class="re5">--disable-nls</span>
+<span class="kw2">make</span> all
+<span class="kw2">sudo</span> <span class="kw2">make</span> <span class="kw2">install</span>
+<span class="kw3">export</span> <span class="re2">PATH</span>=<span class="re1">$PATH</span>:<span class="re1">$PREFIX</span><span class="sy0">/</span>bin
+<span class="kw3">cd</span> ~<span class="sy0">/</span>src<span class="sy0">/</span>build-gcc<span class="sy0">/</span>
+<span class="kw2">mv</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>gmp-5.0.2<span class="sy0">/</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>gmp<span class="sy0">/</span>
+<span class="kw2">mv</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>mpfr-3.1.0<span class="sy0">/</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>mpfr<span class="sy0">/</span>
+<span class="kw2">mv</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>mpc-<span class="nu0">0.9</span><span class="sy0">/</span> ..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>mpc<span class="sy0">/</span>
+..<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>configure <span class="re5">--prefix</span>=<span class="re1">$PREFIX</span> <span class="re5">--target</span>=<span class="re1">$TARGET</span> <span class="re5">--disable-nls</span> <span class="re5">--without-headers</span> <span class="re5">--with-mpfr-include</span>=<span class="re1">$HOME</span><span class="sy0">/</span>src<span class="sy0">/</span>gcc-4.6.2<span class="sy0">/</span>mpfr<span class="sy0">/</span>src<span class="sy0">/</span> <span class="re5">--with-mpfr-lib</span>=<span class="re1">$HOME</span><span class="sy0">/</span>src<span class="sy0">/</span>build-gcc<span class="sy0">/</span>mpfr<span class="sy0">/</span>src<span class="sy0">/</span>.libs<span class="sy0">/</span>
+<span class="kw2">make</span> all-gcc
+<span class="kw2">sudo</span> <span class="kw2">make</span> install-gcc</pre></div></div>
+<p>Source file (reduction.c):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> _start<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Built using:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="bash source-bash"><pre class="de1">i386-elf-gcc <span class="re5">-ffreestanding</span> <span class="re5">-c</span> reduction.c</pre></div></div>
+<p>Diagnostics:
+</p>
+<pre>reduction.c:3:1: internal compiler error: in execute_ipa_pass_list, at passes.c:1921
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See &lt;http://gcc.gnu.org/bugs.html&gt; for instructions.</pre>
+<p>Preprocessed source:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2"># 1 &quot;reduction.c&quot;</span>
+<span class="co2"># 1 &quot;&lt;built-in&gt;&quot;</span>
+<span class="co2"># 1 &quot;&lt;command-line&gt;&quot;</span>
+<span class="co2"># 1 &quot;reduction.c&quot;</span>
+<span class="kw4">void</span> _start<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>After researching for a bit, I discovered that the issue is caused by Xcode 4.1's side-by-side installation of gcc, clang, and llvm-gcc.
+</p>
+<pre>$ readlink /usr/bin/gcc /usr/bin/g++
+llvm-gcc-4.2
+llvm-g++-4.2</pre>
+<p>By default, "gcc" will invoke llvm-gcc, which triggers some sort of bug in gcc's code (I didn't bother figuring out what specifically). To work around this, I set these variables at the beginning (along with PREFIX, TARGET, and MAKEFLAGS):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="bash source-bash"><pre class="de1"><span class="kw3">export</span> <span class="re2">CC</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>bin<span class="sy0">/</span>gcc-<span class="nu0">4.2</span>
+<span class="kw3">export</span> <span class="re2">CXX</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>bin<span class="sy0">/</span>g++-<span class="nu0">4.2</span>
+<span class="kw3">export</span> <span class="re2">CPP</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>bin<span class="sy0">/</span>cpp-<span class="nu0">4.2</span>
+<span class="kw3">export</span> <span class="re2">LD</span>=<span class="sy0">/</span>usr<span class="sy0">/</span>bin<span class="sy0">/</span>gcc-<span class="nu0">4.2</span></pre></div></div>
+<p>And repeated the rest of the process as-is. Doing so creates a functional toolchain.
+</p><p>The reason I am posting this is because I suggest that these instructions be added to the tutorial, possibly in the Troubleshooting section. I'd go ahead and add it but I'm pretty new to the wiki and don't know if there's a change approval process or what.&#160;:) --<a href="/index.php?title=User:Nokurn&amp;action=edit&amp;redlink=1" class="new" title="User:Nokurn (page does not exist)">Nokurn</a> 05:47, 29 November 2011 (UTC)
+</p>
+<dl><dd>Very good description of the problem. Thank you!
+</dd><dd>But I am confused. Your cross-compiler should reside in /usr/local/cross/bin, named i386-elf-gcc. (As your example call shows.) Whatever /usr/bin/gcc is or points to shouldn't affect it in the least. Neither should your CC / CXX / ... exports solve the problem...?!? -- <a href="/User:Solar" title="User:Solar">Solar</a> 07:11, 29 November 2011 (UTC)
+<dl><dd>$CC &amp; co. are used when compiling the cross-compiler. Something about using llvm-gcc to produce the cross-compiler triggers a bug of some sort in the gcc source code, so you get a defective i386-elf-gcc. At least, that's what I've come to think. I don't know how else to explain why the host compiler would affect the resulting cross-compiler. I'd dig into the gcc source code to try to figure it out but I've heard so many horror stories about that codebase that I'm breaking into a cold sweat just by entertaining the idea... --<a href="/index.php?title=User:Nokurn&amp;action=edit&amp;redlink=1" class="new" title="User:Nokurn (page does not exist)">Nokurn</a> 07:18, 29 November 2011 (UTC)
+<dl><dd>Ah, I see - you set those exports <i>while compiling the cross-compiler</i>, not while using it (as I initially understood). That's definitely worth a bug report to upstream (GCC)... Funny enough, a quick Google shows that <a rel="nofollow" class="external text" href="http://llvm.org/docs/GettingStarted.html#brokengcc">the animosities are mutual</a>.&#160;:-D I'll extend the tutorial ASAP. -- <a href="/User:Solar" title="User:Solar">Solar</a> 14:58, 29 November 2011 (UTC)
+<dl><dd>I'll look into putting together a bug report for them. Thanks for adding it. Great tutorial by the way. --<a href="/index.php?title=User:Nokurn&amp;action=edit&amp;redlink=1" class="new" title="User:Nokurn (page does not exist)">Nokurn</a> 22:28, 29 November 2011 (UTC)
+</dd></dl>
+</dd></dl>
+</dd></dl>
+</dd></dl>
+<h2> <span class="mw-headline" id="Multiple_Versions_Simultaneously"> Multiple Versions Simultaneously </span></h2>
+<p>You can have multiple versions installed simultaneously by setting the --program-prefix and --program-suffix options during configuration. In my case I do --program-suffix=-$GCC_OR_BINUTILS_VERSION --program-prefix=$TARGET- where $GCC_OR_BINUTILS_VERSION is the version of gcc or binutils you are installing.      - ChosenOreo
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 218/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1967-0!*!0!!en!*!* and timestamp 20160922191124 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=Talk:GCC_Cross-Compiler&amp;oldid=16555">http://wiki.osdev.org/index.php?title=Talk:GCC_Cross-Compiler&amp;oldid=16555</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks catlinks-allhidden'></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Talk%3AGCC_Cross-Compiler" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main"><span><a href="/GCC_Cross-Compiler"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk" class="selected"><span><a href="/Talk:GCC_Cross-Compiler"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/Talk:GCC_Cross-Compiler" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=Talk:GCC_Cross-Compiler&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=Talk:GCC_Cross-Compiler&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/Talk:GCC_Cross-Compiler" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/Talk:GCC_Cross-Compiler" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=Talk:GCC_Cross-Compiler&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=Talk:GCC_Cross-Compiler&amp;oldid=16555" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 28 July 2014, at 06:29.</li>
+											<li id="footer-info-viewcount">This page has been accessed 25,092 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.192 secs. -->
+	</body>
+</html>

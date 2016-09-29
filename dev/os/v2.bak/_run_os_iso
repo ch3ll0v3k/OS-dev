@@ -1,0 +1,15 @@
+#!/bin/bash
+# ---------------------------------------------------------------------
+echo 'qemu-system-i386 ./os.iso'
+qemu-system-i386 -m 64 -cdrom ./os.iso -boot d
+
+
+# -boot d -cdrom /dev/cdrom -m 512
+
+# ---------------------------------------------------------------------
+# Linux/Multiboot boot specific:
+# -kernel bzImage use 'bzImage' as kernel image
+# -append cmdline use 'cmdline' as kernel command line
+# -initrd file    use 'file' as initial ram disk
+# -dtb    file    use 'file' as device tree image
+# ---------------------------------------------------------------------

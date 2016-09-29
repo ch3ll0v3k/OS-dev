@@ -1,0 +1,114 @@
+https://en.wikibooks.org/wiki/QEMU/Images
+
+// ====================================================================
+qemu -m 256 -hda winxp.img -hdb pagefile.img -hdc testdata.img -hdd tempfiles.img -enable-kvm
+
+NB: QEMU doesn't support both -hdc and -cdrom at the same time, as they both represent the first device on the second IDE channel.
+
+
+
+qemu -m 256 -hda winxp.img -cdrom winxpsp2.iso -enable-kvm
+
+If you are running an x86-64 Linux (i.e. 64-bit), you will need to run the x86-64 version of QEMU to be able to utilise kqemu:
+
+qemu-system-x86_64 -m 256 -hda winxp.img -cdrom winxpsp2.iso -enable-kvm
+
+
+// ====================================================================
+
+if [format]:
+
+raw: [default]
+    Raw disk image format (default). This format has the advantage of being simple and easily exportable to all other emulators. If your file system supports holes (for example in ext2 or ext3 on Linux or NTFS on Windows), then only the written sectors will reserve space. Use qemu-img info to know the real size used by the image or ls -ls on Unix/Linux. 
+
+qcow2:
+    QEMU image format, the most versatile format. Use it to have smaller images (useful if your file system does not supports holes, for example: on Windows), optional AES encryption, zlib based compression and support of multiple VM snapshots. 
+
+qcow:
+    Old QEMU image format. Only included for compatibility with older versions. 
+
+cow:
+    User Mode Linux Copy On Write image format. The cow format is included only for compatibility with previous versions. It does not work with Windows. 
+
+vmdk:
+    VMware 3 and 4 compatible image format. 
+
+cloop:
+    Linux Compressed Loop image, useful only to reuse directly compressed CD-ROM images present for example in the Knoppix CD-ROMs. 
+
+// ====================================================================
+// Create a disk image(ex: fake hard drive), 
+// in the case of debian, i make it ~750M, this should be enough for my needs.
+
+qemu-img create hdd.img 750M
+
+// or use qcow format for smaller image
+
+qemu-img create -f qcow hdd.qcow.img 750M
+
+// Then start the Debian installation CD with QEMU and our new image as the HD.
+qemu -cdrom debian.iso -hda hdd.img -boot d
+
+
+// ====================================================================
+What's the best way to create a fixed size disk with qemu-img ? 
+I tried doing this., and it always seems to be creating a virtual /growing disk, 
+doing a ls returns the actual small size of the vmdk.
+
+is there a way to create a "fixed size" disk?
+
+root@local:/tmp# qemu-img create -f vmdk test.vmdk 2G
+Formatting 'test.vmdk', fmt=vmdk size=2147483648 compat6=off zeroed_grain=off
+
+root@local:/tmp# qemu-img info test.vmdk
+image: test.vmdk
+file format: vmdk
+virtual size: 2.0G (2147483648 bytes)
+disk size: 12K
+
+root@local:/tmp# ls -lah test.vmdk
+-rw-r--r-- 1 root root 320K May 13 09:15 test.vmdk
+
+
+>>> 
+The vmdk disk can be created with [-o subformat=monolithicFlat]
+option. A flat disk image fills unused space. 
+
+Doc http://qemu.weilnetz.de/qemu-doc.html#qemu_005fimg_005finvocation
+
+// ====================================================================
+qemu-img create rootfs.ext2 64M
+
+// Formating 'rootfs.ext2', fmt=raw, size=204800 kB
+
+sudo mkfs.ext2 rootfs.ext2
+
+>>> mke2fs 1.41.12 (17-May-2010)
+>>> rootfs.ext2 is not a block special device.
+>>> Proceed anyway? (y,n) y
+>>> Filesystem label=
+>>> OS type: Linux
+>>> Block size=1024 (log=0)
+>>> Fragment size=1024 (log=0)
+>>> Stride=0 blocks, Stripe width=0 blocks
+>>> 51200 inodes, 204800 blocks
+>>> 10240 blocks (5.00%) reserved for the super user
+>>> First data block=1
+>>> Maximum filesystem blocks=67371008
+>>> 25 block groups
+>>> 8192 blocks per group, 8192 fragments per group
+>>> 2048 inodes per group
+>>> Superblock backups stored on blocks: 
+>>>     8193, 24577, 40961, 57345, 73729
+
+>>> Writing inode tables: done
+>>> Writing superblocks and filesystem accounting information: done
+
+// Now loop mount the partition image file
+
+mkdir mnt
+sudo mount -o loop rootfs.ext2 mnt
+
+
+
+// ====================================================================

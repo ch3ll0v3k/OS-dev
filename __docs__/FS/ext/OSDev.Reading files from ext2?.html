@@ -1,0 +1,1532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - Reading files from ext2?</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://f.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://f.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://f.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://f.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://f.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://f.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - Reading files from ext2?" href="http://f.osdev.org/feed.php?f=1&amp;t=29172" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '15';
+	var base_url = './viewtopic.php?f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Wed Sep 28, 2016 12:56 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">View unanswered posts</a> | <a href="./search.php?search_id=active_topics&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=29172&amp;start=0&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Reading files from ext2?</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>2</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 28 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b&amp;start=15">2</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=29172&amp;start=0&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=29172&amp;view=previous&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=29172&amp;view=next&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247375"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247375&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247375"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 9:28 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I loaded the superblock from sectors 2 and 3 and I saved block size in sectors (2 &lt;&lt; field found in superblock)<br />Also, I got number of blocks and inodes in each group.<br />For now, how do I calculate at which physical sector inode 2 resides?<br /><br /><div class="quotetitle">wiki.osdev.org/Ext2 wrote:</div><div class="quotecontent">Next, we have to determine which block contains our inode. This is achieved from:<br /><br />containing block = (index * INODE_SIZE) / BLOCK_SIZE<br /><br />where INODE_SIZE is either fixed at 128 if VERSION &lt; 1 or defined by a field in the Superblock if VERSION &gt;= 1.0, and BLOCK_SIZE is defined by a field in the Superblock. <br /></div><br />I don't understand which block does it mean. I doubt it is the physical one.<br /><br />Has anybody any ideas?<br /><br />Regards,<br />glauxosdev</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247378"></a>
+				<b class="postauthor">madanra</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247378&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247378"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 11:15 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Sep 07, 2009 12:01 pm<br /><b>Posts:</b> 139
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Just above the bit you quoted, it says:<br /><div class="quotetitle">wiki.osdev.org/Ext2 wrote:</div><div class="quotecontent">Once we know which group an inode resides in, we can look up the actual inode by first retrieving that block group's inode table's starting address (see Block Group Descriptor above).</div>So the start address of the inode table is given in the Block Group Descriptor.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10108&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247379"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247379&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247379"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 11:33 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Sorry, I was a bit unclear.  <img src="./images/smilies/eusa_doh.gif" alt="#-o" title="d'oh!" />  <br />I meant: How do we calculate at which physical sector does block group descriptor reside?</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247380"></a>
+				<b class="postauthor">madanra</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247380&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247380"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 12:15 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Sep 07, 2009 12:01 pm<br /><b>Posts:</b> 139
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">The block group descriptor table immediately follow the superblock.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10108&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247382"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247382&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247382"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 1:16 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Sorry again, but what about the physical address of block group containing inode 2?<br />I'm tired and I can't concentrate at anything, that's why I was unable ask my question properly.<br /><br />Regards,<br />glauxosdev</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247383"></a>
+				<b class="postauthor">madanra</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247383&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247383"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 1:35 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Sep 07, 2009 12:01 pm<br /><b>Posts:</b> 139
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">That information is in the block group descriptor table, as I said.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10108&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247384"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247384&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247384"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 24, 2015 4:21 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I think you should read this document rather than relying just upon the wiki: <!-- m --><a class="postlink" href="http://www.nongnu.org/ext2-doc/ext2.html">http://www.nongnu.org/ext2-doc/ext2.html</a><!-- m --> . It tells you everything you need to know.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247391"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247391&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247391"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Mar 25, 2015 8:55 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Using <a href="http://homepage.smc.edu/morgan_david/cs40/analyze-ext2.htm" class="postlink">this</a> document and my hex editor, I can find (I hope  <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /> ) data of inode 2, which is the root directory entry. if I am not mistaken.<br />But after that my ext2 formatted stick and the document don't agree.<br />The document says that filename starts at byte 9th (the interesting thing is that this information is followed by a &quot;?&quot;).<br />But in my hex dump I see no filename there.<br />Instead I see &quot;lost+found&quot; at offset 32 from directory entry, and &quot;system&quot; (the directory I want to look) at offset 92.<br />After the last filename I see only null bytes.<br />So I wonder, what are those bytes there between the filenames, and before them?<br /><br />@Iansjack: I had already found that document and it looked complicated.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247392"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247392&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247392"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Mar 25, 2015 9:26 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Look at your directory again, bearing in mind the following:<br /><br />The first entry will be for a directory called &quot;.&quot;.<br />The second entry will be for a directory called &quot;..&quot;.<br />After that there is (possibly) the Indexed Directory Root Information Structure.<br />The third entry will be for a directory called &quot;lost+found&quot;.<br />The fourth entry will be for your directory &quot;system&quot; (assuming that's the first of your files on the disk).<br /><br /><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I had already found that document and it looked complicated.</div>Well, it's not a trivially simple subject. Wait until you get to writing files and working out the trebly-indirect blocks; the calculations will make your head hurt. And then there's all the metadata that needs to be updated.<br /><br />Nobody said it was going to be easy.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247428"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247428&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247428"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Mar 26, 2015 1:57 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Ok, I found the &quot;4.1.6. Sample Dir&quot; section, and from my hex editor I see that my directory resides in inode 1FC1h. I can find it at offset 2040400h. What are the calculations between those two values?<br />I don't undestand exactly how we determine which physical sector contains that inode.<br />(Wiki's article seems to overcomplicate this? Or is this issue even more complicated?)<br /><br />Regards,<br />glauxosdev</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247429"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247429&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247429"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Mar 26, 2015 4:32 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I have to refer you again to the document I linked to. It contains all the information that you need and gives details of all the structures that describe the file system. Very briefly, to locate the information in a file (or directory):<br /><br />1. Read the directory entry for the file. From this you find its associated inode number.<br /><br />2. Read that inode from the array of inodes.<br /><br />3. Read the entry in the inode listing the first data block of the file.<br /><br />4. Convert that blockno to an offset (a trivial calculation since you know where the first data block is and how many bytes there are in a block).<br /><br />5. Read the block from the disk; you now have the first BLOCKSIZE bytes of the file.<br /><br />6. Repeat 3 - 5 for the remaining data blocks. The only complication here is that above a certain number you have to deal with indirect pointers, then (possibly) doubly- and triply-indirect pointers.<br /><br />You have to read that document and understand what the structures, such as the superblock, are telling you. And reading a file, where you aren't changing anything on the disk, is trivial compared to creating a new one and writing to it as you then have all sorts of housekeeping to take care of.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247529"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247529&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247529"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 31, 2015 9:21 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br />Based on your advice and various documents, I wrote some code but it just doesn't load the kernel. I searched for sample ext2 bootsectors just to borrow some ideas, but I found nothing relevant. I have found bootsectors for fat12 and grub, which is for partitioned disks (if I am not mistaken). Edit: I was mistaken.<br />Could you point me to a ext2 bootsector? I promise, I will <span style="font-weight: bold">not</span> copy-paste, I will just get some ideas.  <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /> <br /><br />Regards,<br />glauxosdev</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">glauxosdev</a> on Wed Apr 01, 2015 12:32 pm, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247536"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247536&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247536"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 31, 2015 1:24 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I'm afraid that I can't help you there. With a boot sector you only have 512 bytes to play with so you have to be pretty adept at assembler programming, and thoroughly understand the file system, if you want to cram a program that can read an arbitrary file from an ext2 file system into that space. Most boot loaders will use the boot sector to load a second-stage loader from a known location. That will have more space to play with and will be able to load the kernel from the file system. Personally I am of the school of thought that says there are plenty of good bootloaders (e.g. GRUB) already, so why reinvent the wheel. But perhaps you have a particular interest in bootloaders.<br /><br />I'd gauge that your current problem is that you don't understand the file system enough to do this. So what I would suggest is that you write a user program to read an ext2 file system from a disk image file. That way you will be able to write the code in C and use a debugger to step through it and inspect the value of variables to see that you are reading the right information. Play with that until you understand the file system well enough for your purposes. Then, and only then, you may be able to write a bootloader in assembler; but I still think you'll have a hard time fitting it into 512 bytes.<br /><br />Do you have a particular aversion to using GRUB?<br /><br />Of course, later you will no doubt want to write a full-blown filesystem handler. My recommendation would be to use a higher-level language, such as C, rather than assembler, but it's up to you. But whatever language you choose you need to really understand how the filesystem works before you can complete the task.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p247539"></a>
+				<b class="postauthor">glauxosdev</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247539&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247539"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 31, 2015 1:48 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15912_1434471426.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jan 20, 2015 9:01 am<br /><b>Posts:</b> 119
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">Most boot loaders will use the boot sector to load a second-stage loader from a known location.</div> How do we know that <span style="font-weight: bold">known</span> location?<br /><br /><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">But perhaps you have a particular interest in bootloaders.</div> I just want to make an OS from start to finish.<br /><br /><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">That way you will be able to write the code in C</div> I write all of my OS in assembly.<br /><br /><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">Do you have a particular aversion to using GRUB?</div> Simply by design as I explained already.<br /><br /><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">I still think you'll have a hard time fitting it into 512 bytes</div> That's almost right, actually they are 510 bytes. <img src="./images/smilies/icon_wink.gif" alt=":wink:" title="Wink" /> <br /><br />Ok, I will try to understand the filesystem better, but I will not bother loading from a known location. It's just pointless. Why even MikeOS loads then its kernel from fat12 and not from a known location? Yes, I know fat12 is simpler than ext2.<br /><br />Regards,<br />glauxosdev</div>
+
+					
+						<span class="postbody"><br />_________________<br />Do remember osdev is full of crazy people. You are usually one and don't even realize it. - Sortie<br /><br />By the way <a href="https://gitlab.com/glauxosdever/glaux-os" class="postlink">here</a> is my OS.</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15912&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p247543"></a>
+				<b class="postauthor">madanra</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Reading files from ext2?</div><div style="float: right;"><a href="./viewtopic.php?p=247543&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b#p247543"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Mar 31, 2015 3:09 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Sep 07, 2009 12:01 pm<br /><b>Posts:</b> 139
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">In an ext2 partition, you have 1024 bytes for the bootloader, as the superblock doesn't start until 1024 bytes in. Of course, the MBR will probably only load the first 512 bytes, so you have to load the second 512 bytes yourself. Once you have 1024 bytes to play with, that is definitely enough to read a file from ext2; I have written such a bootloader, with pretty comprehensive error checking. That does require significant hand optimisation of the assembly to save space though. You can write it in considerably less space if you simply read inode 5 (reserved for a second-stage bootloader) rather than having to read the root directory and parse the directory structure.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10108&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=29172&amp;start=0&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>2</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 28 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b&amp;start=15">2</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Bing [Bot]</span> and 8 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=29172&amp;sid=58aa6a7f54081bfb7bb5b6d2c5f2538b"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php?sid=58aa6a7f54081bfb7bb5b6d2c5f2538b" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

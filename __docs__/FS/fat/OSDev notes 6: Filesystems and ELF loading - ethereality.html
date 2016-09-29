@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 6: Filesystems and ELF loading - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 6: Filesystems and ELF loading</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>Now that we have the ability to read and write from hard drives, it seems
+logical to talk about what we can actually do with said access. While it is
+certainly possible to use a hard drive as a single file, it is usually
+desirable to divide it up into a heirarchical file structure of some sort. Once
+we have a filesystem, this seems like a golden opportunity to make the leap
+towards loading arbitrary programs from disk and greatly extending the
+extensibility of our kernels.</p>
+<p>This set of notes is dedicated to the twin topics of filesystems and program
+loading; first, we'll talk about some general filesystem concepts and issues,
+and then discuss, briefly, particular examples of filesystems -- FAT32 and
+and ext2. Afterwards, we'll talk about ELF (Executable and Linking Format)
+files and how to load them.</p>
+<h3 id="what-is-a-filesystem-exactly">What is a filesystem, exactly?</h3>
+<p>Before we continue, it's probably good to define exactly what a filesystem is.
+There are a couple of definitions around, but the one that I like is that a
+filesystem is a method of structuring a flat address space of storage into
+smaller, resizable chunks with enforceable limits and unique addressing.</p>
+<p>In practice, filesystems usually provide a heirarchical tree-like structure
+(and sometimes a graph in the case of hardlinked directories) with named nodes
+to provide the unique addressing schema. The "enforceable limits" are provided
+by a meta-structure with information like file sizes, permissions,
+creation/access/modification timestamps, and so forth. For the moment, we
+haven't really implemented support for getting the current date/time from the
+RTC, nor have we talked about anything related to permissions checking, so the
+only part we're really interested in is the file size.</p>
+<p>TODO: more details.</p>
+<p>One of the major issues that a filesystem has to address is that of
+fragmentation, for exactly the same reasons that a heap has to address
+fragmentation: file deletion and/or resizing. Unlike the heap situation,
+however, we do not necessarily expect a file to be contiguously stored on disk,
+because moving data around on a hard drive is significantly slower than moving
+memory contents (in terms of either bandwidth or latency, several orders of
+magnitude are involved). A file broken into multiple smaller pieces is said to
+be fragmented.</p>
+<p>Another major issue is that writes to the underlying hard drive cannot be
+considered atomic. Bad sectors happen, as do power failures. In both cases, a
+write may silently fail, not fully complete, or even corrupt existing data. In
+other words, error correction is not something that can be fully brushed aside,
+although we will for the purposes of keeping these notes relatively reasonable
+in length.</p>
+<p>Which brings up a very important point: as with ATA, we will be entirely
+ignoring error conditions. If you want to write a robust filesystem wrapper,
+you should consider all the edge cases you can think of, in addition to
+throughly stress-testing it with random failures; I would suggest that your
+implementation use a simple read/write-from-disk API such that you can
+transport it out into an environment where you can control failures (such as an
+automated testing framework), and then run fuzz-testing on both the input and
+the read/write action successes.</p>
+<h3 id="some-example-filesystems">Some example filesystems</h3>
+<p>The two filesystems that I'd like to mention here are FAT32 and ext2,
+though the only one we'll talk about in any detail will be FAT32 due to its
+(relative) simplicity. And while the vast majority of hard drives you'll come
+across will be partitioned, for the moment the partitioning scheme isn't
+interesting, and we'll assume for the moment that all filesystems take up the
+entire disk.</p>
+<h4 id="fat32">FAT32</h4>
+<p>We'll start off with a brief overview of FAT32 (more details to come later!).
+FAT32 is actually a variant of older filesystems called FAT12 and FAT16, which
+is what you'll see used on floppies and old hard drives, respectively. The
+difference between FAT12 and FAT16 is the cluster index size (12 bits vs. 16
+bits); FAT32, on the other hand, introduces a couple of nice changes from FAT16
+that make implementation a little nicer.</p>
+<p>There are a couple of important concepts to talk about with respect to FAT32.
+The first is the concept of sectors and clusters; like a hard drive accessed
+via LBA, a FAT32 partition is divided up into sectors of a particular size;
+however, unlike LBA, the sector size may vary between partitions. Sectors are
+grouped together into "clusters", which are the basic unit of allocation for
+the dynamically-allocated portions of the filesystem. For example, a 16MB disk
+might be divided up into 512-byte sectors and clusters of four sectors each,
+providing 2<sup>15</sup> sectors and (roughly, we'll get to this in a moment)
+2<sup>13</sup> clusters in total.</p>
+<p>The second concept to talk about is the FAT (File Allocation Table) from which
+the filesystem gets its name. The concept is pretty simple; you allocate
+clusters to files. If a single cluster is sufficient to contain the entire file
+contents, then huzzah. Otherwise, you need to use multiple clusters, and this
+is where the FAT comes in. The FAT is simple a gigantic array of pointers, with
+one pointer for each cluster on the disk. These are used as "next" pointers; so
+if a file spans two clusters, the first cluster will point to the second
+cluster in its FAT entry. This keeps the meta-informational structures at a
+fixed size (no need to store an arbitrarily-long list of clusters!), at a
+one-time fixed cost. The "32" in FAT32 comes from the fact that each FAT entry
+is 32 bits wide, providing a maximum of 2<sup>32</sup> clusters on disk.</p>
+<p>Clusters that are the last cluster in a chain (which could be singleton) point
+to a special sentinel cluster. That way, you can easily append onto the file
+simply by changing the linked cluster from the last in the chain (append onto
+the linked list) and modifying the meta-information to reflect the new file
+size.</p>
+<p>Directories are handled in a very sensible way; a directory is really a linked
+list of pointers to the starting clusters of files, and is stored in a linked
+list of clusters itself. In this manner, a directory is really just a file that
+has a special flag set somewhere and whos contents are interpreted in a very
+particular way. <sup id="fnref:debugging-fat-note"><a class="footnote-ref" href="#fn:debugging-fat-note" rel="footnote">1</a></sup></p>
+<p>In FAT32, the root directory of the partition is a regular directory whos
+cluster index is stored in the FAT partition header; this partition header also
+stores useful information like the number of clusters and so forth. Details in
+a moment. (Note that FAT12 and FAT16 use a special "root directory" area, this
+leads to special-casing in the implementation and is in general annoying.)</p>
+<p>There's a misleading statement above, actually. FAT32 may have 32-bit-wide FAT
+entries, but the upper four bits are actually reserved, so you can in reality
+only have 2<sup>28</sup> clusters. Subtract the sentinel clusters and you have
+slightly less; however, the count is close enough to 2<sup>28</sup> that for
+our purposes right now, it's "good enough". (I haven't been able to find any
+concrete information on this, but I suspect they limited it to 28 bits to
+coincide with LBA28 nicely.)</p>
+<h4 id="fat32_1">FAT32</h4>
+<p>The reference code repository contains a directory called <code>fat32access</code>; inside
+is a (mostly) complete FAT32 partition manipulator, along with a file called
+<code>fat32test.prepared.xz</code>. The xzipped file is a snapshot of a test 512MB
+partition that contains a couple of test files and directories, sufficient for
+testing purposes. The partition manipulator simply uses memory-mapped I/O to
+interact; in your kernel implementation, these should probably be using the ATA
+PIO wrapper that you've (hopefully) written. Please note that it was not
+written with efficiency in mind; for speed purposes, it is very common to cache
+many of the data structures that the provided program simply accesses directly.</p>
+<p>The place to start when looking at a FAT32 partition is the FAT32 header. This
+is 512 bytes wide (regardless of the size of a FAT32 sector); the format can be
+seen in this excerpt from the FAT32 manipulator:</p>
+<pre><code><span class="keyword">struct</span><span class="normal"> </span><span class="classname">fat32_header_t</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> jmp</span><span class="symbol">[</span><span class="number">3</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="comment">// zero-padded and not necessarily NULL-terminated!</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> oem</span><span class="symbol">[</span><span class="number">8</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> bytes_per_sector</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> sectors_per_cluster</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> reserved_sector_count</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> fat_count</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> directory_entry_count</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> sector_count_small</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> media_type</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> sectors_per_fat_small</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> sectors_per_track</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> head_count</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> hidden_sector_count</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> sector_count_large</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="comment">// extended attributes</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> sectors_per_fat_large</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> fat_flags</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> version</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> root_cluster</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> fsinfo_sector</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> backup_boot_sector</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> reserved</span><span class="symbol">[</span><span class="number">12</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> drive_number</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> nt_flags</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> signature</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> serial</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="comment">// spaces-padded and not NULL-terminated!</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> label</span><span class="symbol">[</span><span class="number">11</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="comment">// spaces-padded and not NULL-terminated; and never trust the contents.</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> identifier</span><span class="symbol">[</span><span class="number">8</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> bootcode</span><span class="symbol">[</span><span class="number">420</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> bootsig</span><span class="symbol">;</span>
+<span class="cbracket">}</span><span class="normal"> </span><span class="function">__attribute__</span><span class="symbol">((</span><span class="normal">packed</span><span class="symbol">));</span>
+</code></pre>
+<p>Many of these have self-explanatory names (for example, <code>sectors_per_cluster</code>),
+but we'll spend a bit of discourse talking about the rest. <code>jmp</code> and <code>oem</code> can
+pretty much be ignored right about now; the former is essentially obsolete and
+the latter is ignored by pretty much every FAT32 driver out there.</p>
+<p>The first interesting element in this structure is <code>reserved_sector_count</code>.
+Essentially, a certain number of sectors are reserved at the beginning for the
+purposes of this header and some other filesystem-specific information
+(this can also be used for alignment purposes). The FAT begins immediately 
+after these reserved sectors.</p>
+<p>The next element in the structure, <code>fat_count</code>, is a little interesting.
+Because corruption in the middle of the FAT leads to bad times for everyone
+(except the people paid to do data-recovery), there are actually multiple
+copies of the FAT on the drive, placed contiguously. <sup id="fnref:contiguous-note"><a class="footnote-ref" href="#fn:contiguous-note" rel="footnote">2</a></sup> You
+would expect that each copy is a mirror of the others, but sadly, not quite.
+The entry <code>fat_flags</code> determines how multiple FATs are handled; the lower five
+bits of <code>fat_flags</code> contains the "active" FAT, and if bit 7 is clear, this is
+the only FAT that should be updated when changes are made to the filesystem.</p>
+<p>The next several elements can be ignored in FAT32; they're part of the old
+FAT12/16 header. Originally, <code>sector_count_small</code> contained a 16-bit count of
+the number of sectors on disk; however, since most sectors are 512 bytes, this
+limits us to 32MB disks. As FAT32 cannot be used on such small disks, this
+field isn't useful (originally, if set to zero, the 32-bit element
+<code>sector_count_large</code> was to be used instead). The next element of interest is
+<code>sectors_per_fat_large</code>; this is the number of sectors used for each FAT. Thus,
+the total number of sectors allocated to the FATs is <code>sectors_per_fat_large *
+fat_count</code>.</p>
+<p>The element <code>signature</code> should contain either <code>0x28</code> or <code>0x29</code> in order to be a
+fully-valid FAT32 partition, and <code>serial</code> is supposed to contain a random
+32-bit number that can be used to identify different disks. <sup id="fnref:birthday"><a class="footnote-ref" href="#fn:birthday" rel="footnote">3</a></sup></p>
+<p>With that out of the way, then, let's get to the actual clusters. The clusters
+begin immediately after the FATs; and so the filesystem content begins at
+sector <code>reserved_sectors + sectors_per_fat_large * fat_count</code>. The first two
+cluster indices are special, so you can find cluster number <code>i</code> at sector
+<code>reserved_sectors + sectors_per_fat_large * fat_count + sectors_per_cluster *
+(i-2)</code>. The content of a cluster is pretty obvious for a file; it's the file
+contents . . . however, for a directory, the cluster contents follow a specific
+format. In particular, each is 32 bytes long and has the following format:</p>
+<pre><code><span class="keyword">struct</span><span class="normal"> </span><span class="classname">fat_directory_entry_t</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">// padded with spaces and not NULL-terminated</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> filename</span><span class="symbol">[</span><span class="number">8</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="comment">// padded with spaces and not NULL-terminated</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> ext</span><span class="symbol">[</span><span class="number">3</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> attributes</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="type">char</span><span class="normal"> unused</span><span class="symbol">[</span><span class="number">8</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> cluster_high</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> time</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> date</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> cluster_low</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> file_size</span><span class="symbol">;</span>
+<span class="cbracket">}</span><span class="normal"> </span><span class="function">__attribute__</span><span class="symbol">((</span><span class="normal">packed</span><span class="symbol">));</span>
+</code></pre>
+<p>Something that you should notice immediately is that thre are only 11 bytes in
+total for the filename. This is not a typo, but is instead a fact of life --
+without some extra work, FAT32 only supports the 8.3 filenames of yore.
+Incidentally, the fact that <code>file_size</code> is only a <code><span class="normal"> uint32_t</span></code> (and
+is a multiple of bytes) is why older Windows systems could not handle files
+larger than 4GB.</p>
+<p>The first character of <code>filename</code> has a specific format. In particular, if it
+is a NULL character (<code>0x0</code>), then this is the last directory entry in the
+cluster that should be processed. (This is such that you don't have to zero the
+entire cluster upon allocation; only the first byte has to be.) If it's <code>0xe5</code>,
+then it should be skipped (it's available for future re-use). If it's <code>0x05</code>,
+then the first character should actually be a <code>0xe5</code>. There's no particular
+reason why the rest of the filename entries cannot store arbitrary ASCII
+values, however, to maintain compatibility they should be alphanumeric or
+amongst <code>#$%&'()-@</code>; filenames shorter than 8.3 should be padded with spaces
+as appropriate.</p>
+<p>There are six attribute bits. Bit 0 is the "read-only" bit; if set, the file
+should not be modified. Bit 1 is the "hidden" bit; obstensibly, if set then the
+file should not show up when the directory contents are listed. The third bit
+is the "system" bit, supposed to indicate that the file in question is part of
+the operating system and really, really, shouldn't be modified. The fourth bit
+is the "volume" bit; it's used for a couple of reasons, but nothing that we're
+interested in for the moment. The fifth bit is the directory bit, indicating
+that this entry is a directory instead of a file. The sixth bit, the "archive"
+bit, is supposed to be set as soon as a file is created or modified, hence
+letting a backup (archival) program know which files have changed since the
+last copy was made. (Assuming, of course, that the program clears the archival
+bits after the copies are made. Otherwise, it's a waste of a perfectly good
+bit.)</p>
+<p>To clear things up a little bit, let's suppose we have a FAT32 partition that
+has 12 clusters (this doesn't happen in reality -- you need at least 65,525
+clusters on a FAT32 partition, but bear with me here) of 512 bytes each. On
+this partition are the following files:</p>
+<ul>
+<li>/test.txt (200 bytes)</li>
+<li>/dir/test2.txt (200 bytes)</li>
+<li>/dir/test3.txt (900 bytes)</li>
+<li>/dir/nested/test4.txt (200 bytes)</li>
+</ul>
+<p>Suppose that there is exactly one sector per cluster, and that each sector is
+512 bytes long. Then one possible partition contents would be something like
+this: (keep in mind that there are other ways to do this, and please excuse the
+notation)</p>
+<pre><code>FAT[0x00] = 0x0ffffff8         (first two are special)
+FAT[0x01] = 0x0fffffff         (first two are special)
+FAT[0x02] = 0x0fffffff         (end of chain)
+FAT[0x03] = 0x0fffffff         (end of chain)
+FAT[0x04] = 0x0fffffff         (end of chain)
+FAT[0x05] = 0x0fffffff         (end of chain)
+FAT[0x06] = 0x0fffffff         (end of chain)
+FAT[0x07] = 0x0fffffff         (end of chain)
+FAT[0x08] = 0x00000007         (next one is 7)
+FAT[0x09] = 0x0fffffff         (end of chain)
+FAT[0x0a] = 0x00000000         (unused)
+
+cluster[0x0] = does not exist
+cluster[0x1] = does not exist
+cluster[0x2] = test.txt content
+cluster[0x3] = test2.txt content
+cluster[0x4] = test4.txt content
+cluster[0x5] = root directory content
+    entries[0] = {"test    ", "txt", 0x20, {0}, 0x0000, 0x0000, 0x0000, 0x0002, 200}
+    entries[1] = {"dir     ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0006, 0}
+    entries[2] = {{0}, {0}, 0, {0}, 0, 0, 0, 0, 0}
+cluster[0x6] = "/dir" directory content
+    entries[0] = {"test2   ", "txt", 0x20, {0}, 0x0000, 0x0000, 0x0000, 0x0003, 200}
+    entries[1] = {"test3   ", "txt", 0x20, {0}, 0x0000, 0x0000, 0x0000, 0x0008, 200}
+    entries[2] = {"nested  ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0009, 0}
+    entries[3] = {".       ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0006, 0}
+    entries[4] = {"..      ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0000, 0}
+    entries[5] = {{0}, {0}, 0, {0}, 0, 0, 0, 0, 0}
+cluster[0x7] = test3.txt content (last 388 bytes)
+cluster[0x8] = test3.txt content (first 512 bytes)
+cluster[0x9] = "/dir/nested" directory content
+    entries[0] = {"test4   ", "txt", 0x20, {0}, 0x0000, 0x0000, 0x0000, 0x0004, 0}
+    entries[1] = {".       ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0009, 0}
+    entries[2] = {"..      ", "   ", 0x10, {0}, 0x0000, 0x0000, 0x0000, 0x0006, 0}
+    entries[3] = {{0}, {0}, 0, {0}, 0, 0, 0, 0, 0}
+
+</code></pre>
+<p>This brings us to a couple of important points:</p>
+<ul>
+<li>By default, all directories except the root directory literally have a "."
+    and a ".." directory link that points to the current and parent
+    directories, respectively. This is very useful, as the only thing required
+    to store the "current" directory becomes the cluster index of the current
+    directory; all other navigation can be done relative to here.</li>
+<li>If a directory has the root directory as a parent, the cluster index can be
+    either zero or it can be the root cluster index specified in the FAT
+    header.</li>
+</ul>
+<h4 id="fat-long-name-extensions">FAT long name extensions</h4>
+<p>Let's be honest: the 8.3 filename limitation is rather annoying, especially to
+those used to Linux's penchant for allowing arbitrary UTF-8 characters. We'll
+briefly sketch the "long names" extension to FAT, often referred to as VFAT.</p>
+<p>The nice thing about VFAT is that filesystem drivers that only support the base
+FAT32 mechanism can still manipulate VFAT drives, albeit without support for
+the extended names in use.</p>
+<p>The idea is pretty simple: each directory entry that actually references a file
+is prefixed with one or more directory entries that contain the longer
+filename; each entry stores up to 13 characters. So, to store a file with a 
+name of "this is a long filename", we would have something like the following:</p>
+<pre><code>entries[i+0] = directory entry storing characters "this is a lon"
+entries[i+1] = directory entry storing characters "g filename\0"
+entries[i+2] = directory entry storing actual cluster index etc. (with dummy 8.3 name)
+
+</code></pre>
+<p>Of course, this is slightly unreliable: what if a non-long-filenames-compliant
+program were to remove a file with a long filename and not remove the
+long-filename entries? There is also a checksum present in each of the
+preceeding directory entries that allows us to determine if an entry really
+belongs to a file/directory entry or not.</p>
+<p>TODO: expand, include checksum.</p>
+<h3 id="programs-and-how-they-are-loaded">Programs and how they are loaded</h3>
+<p>On an entirely different note, now! How can we actually load programs from
+files into memory? Well, the key observation to make here is that programs
+really are just memory contents that we interpret in a special manner (namely,
+with a CPU instruction decoder). So, really, all that we need to do to load an
+executable is set up some memory ranges with appropriate content, presumably
+loaded from the executable file (or zeroed out, in the case of the bss).</p>
+<p>But wait --- who (or what) exactly performs this setting-up of memory ranges?
+There are really two options: either the kernel can do it, or a process can
+replace itself with a new executable. The former is probably the approach
+you'll want to take, as the latter <a href="/weblog/003-program-loading-on-linux-2#and-now-for-something-a-little-different-loading-an-executable">can be
+done</a>
+but is a little awkward to get right; a kernel implementation that sets up a 
+new address space with executable content has far fewer edge cases to deal
+with.</p>
+<p>And, on a more philosophical note --- we should stop and consider something
+before progressing much further. Why do we care about loading programs? I mean,
+yes, we want our kernel to actually be useful and all, but why now? There's an
+old adage, very applicable, that goes something like this:</p>
+<blockquote>
+<p>To the systems programmer, users and applications serve only to provide a
+test load.</p>
+</blockquote>
+<p>In other words, it's great because it lets us stress-test our kernels with new
+code from an outside source.</p>
+<p>The particular executable structure that I recommend, due to both simplicity
+and portability, is the Executable and Linkable Format, or ELF. ELF files are
+used in a lot of places; they're Linux's preferred executable format, but are
+also used on various BSDs and other platforms as well. The main reason,
+however, is that they are the default executable type generated by GNU binutils
+on Linux, and so creating them is extremely easy.</p>
+<h3 id="general-elf-structure">General ELF structure</h3>
+<p>ELF files contain a lot of different information and can be used in many
+different places; depending on the program that generates them, they really do
+contain arbitrary information, from executable code to DWARF debugging
+information to relocation information to program data to well, anything and
+everything to do with a program. ELF is, as a format, not always used for
+executables; it's also used for object files and core dumps, for example.</p>
+<p>However, right now we're only interested in a very small subset of information
+present for a small subset of executables. In particular, we want the mapping
+from file content to memory content; that is to say, which portions of the file
+are mapped to which memory addresses.</p>
+<p>TODO: program headers as mappings from file addresses to load addresses</p>
+<h3 id="simple-elf-loader-implementation">Simple ELF loader implementation</h3>
+<p>TODO: <code>exec</code>-style</p>
+<p>TODO: link to <a href="/weblog/003-program-loading-on-linux-2#and-now-for-something-a-little-different-loading-an-executable">weblog</a> for self-loader</p>
+<h3 id="suggested-work">Suggested work</h3>
+<p>I suggest you work on an implementation of a FAT32 (or other filesystem of your
+choice) driver, as well as a kernel ELF loader that creates a new process,
+given an ELF file. If you can get this far, then by the end of the next set of
+notes, you should have a fully-functional kernel complete with userspace
+programs and a simple shell.</p>
+<h3 id="further-reading">Further reading</h3>
+<ul>
+<li><a href="http://www.nobius.org/~dbg/">Practical File System Design with the Be File
+    System</a> is an excellent resource if you plan
+    to design your own filesystem.</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:debugging-fat-note">
+<p>Incidentally, there's nothing that prevents a directory
+and a file from referencing the same cluster. This can be useful for debugging
+purposes, though any half-intelligent disk integrity-checking program will
+scream at you if you do this.&#160;<a class="footnote-backref" href="#fnref:debugging-fat-note" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:contiguous-note">
+<p>I'm not sure why they made the decision to put them all
+contiguously; it seems to me that a bad head crash could take out multiple
+copies at the same time.&#160;<a class="footnote-backref" href="#fnref:contiguous-note" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:birthday">
+<p>I wouldn't rely on this; I've personally seen at least two disks
+factory-formatted with FAT32 that have serial number zero.&#160;<a class="footnote-backref" href="#fnref:birthday" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:08 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

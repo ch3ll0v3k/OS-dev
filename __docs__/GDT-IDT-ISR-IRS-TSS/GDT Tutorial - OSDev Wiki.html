@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>GDT Tutorial - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "GDT_Tutorial", "wgTitle": "GDT Tutorial", "wgCurRevisionId": 18813, "wgArticleId": 1531, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Level 1 Tutorials", "Tutorials", "X86 CPU"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><style type="text/css">/*<![CDATA[*/
+.source-asm {line-height: normal;}
+.source-asm li, .source-asm pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for asm
+ * CSS class: source-asm, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.asm.source-asm .de1, .asm.source-asm .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.asm.source-asm  {font-family:monospace;}
+.asm.source-asm .imp {font-weight: bold; color: red;}
+.asm.source-asm li, .asm.source-asm .li1 {font-weight: normal; vertical-align:top;}
+.asm.source-asm .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.asm.source-asm .li2 {font-weight: bold; vertical-align:top;}
+.asm.source-asm .kw1 {color: #00007f; font-weight: bold;}
+.asm.source-asm .kw2 {color: #0000ff; font-weight: bold;}
+.asm.source-asm .kw3 {color: #00007f;}
+.asm.source-asm .kw4 {color: #000000; font-weight: bold;}
+.asm.source-asm .kw5 {color: #000000; font-weight: bold;}
+.asm.source-asm .co1 {color: #666666; font-style: italic;}
+.asm.source-asm .co2 {color: #adadad; font-style: italic;}
+.asm.source-asm .es0 {color: #000099; font-weight: bold;}
+.asm.source-asm .br0 {color: #009900; font-weight: bold;}
+.asm.source-asm .sy0 {color: #339933;}
+.asm.source-asm .st0 {color: #7f007f;}
+.asm.source-asm .nu0 {color: #0000ff;}
+.asm.source-asm .ln-xtra, .asm.source-asm li.ln-xtra, .asm.source-asm div.ln-xtra {background-color: #ffc;}
+.asm.source-asm span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-GDT_Tutorial action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">GDT Tutorial</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><table style="font-size:95%; line-height:1.5em; padding:0.25em; float:right; margin: 0 0 8px 15px; clear:right; border:1px solid #aaaaaa; background:#eee; text-align:center;;"><tr><th>Difficulty level</th></tr><tr><td><a href="/File:Difficulty_1.png" class="image"><img alt="Difficulty 1.png" src="/images/d/d3/Difficulty_1.png" width="46" height="14" /></a><br />Beginner</td></tr></table>
+<p>In the <a href="/Category:X86" title="Category:X86">Intel Architecture</a>, and more precisely in <a href="/Protected_mode" title="Protected mode" class="mw-redirect">protected mode</a>, most of the <a href="/Memory_management" title="Memory management">memory management</a> and <a href="/Interrupt_Service_Routines" title="Interrupt Service Routines">Interrupt Service Routines</a> are controlled through tables of descriptors. Each descriptor stores information about a single object (e.g. a service routine, a task, a chunk of code or data, whatever) the CPU might need at some time. If you try, for instance, to load a new value into a <a href="/Segment" title="Segment" class="mw-redirect">segment register</a>, the CPU needs to perform safety and access control checks to see whether you're actually entitled to access that specific memory area. Once the checks are performed, useful values (such as the lowest and highest addresses) are cached in invisible registers of the CPU.
+</p><p>Intel defined 3 types of tables: the <a href="/Interrupt_Descriptor_Table" title="Interrupt Descriptor Table">Interrupt Descriptor Table</a> (which supplants the <a href="/IVT" title="IVT" class="mw-redirect">IVT</a>), the Global Descriptor Table (<a href="/GDT" title="GDT" class="mw-redirect">GDT</a>) and the Local Descriptor Table. Each table is defined as a (size, <a href="/index.php?title=Linear_address&amp;action=edit&amp;redlink=1" class="new" title="Linear address (page does not exist)">linear address</a>) to the CPU through the <tt>LIDT</tt>, <tt>LGDT</tt>, <tt>LLDT</tt> instructions respectively. In most cases, the OS simply tells where those tables are once at boot time, and then simply goes writing/reading the tables through a pointer.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Survival_Glossary"><span class="tocnumber">1</span> <span class="toctext">Survival Glossary</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#What_should_i_put_in_my_GDT.3F"><span class="tocnumber">2</span> <span class="toctext">What should i put in my GDT?</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Basics"><span class="tocnumber">2.1</span> <span class="toctext">Basics</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Sysenter.2FSysexit"><span class="tocnumber">2.2</span> <span class="toctext">Sysenter/Sysexit</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Flat_Setup"><span class="tocnumber">2.3</span> <span class="toctext">Flat Setup</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Small_Kernel_Setup"><span class="tocnumber">3</span> <span class="toctext">Small Kernel Setup</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#How_can_we_do_that.3F"><span class="tocnumber">4</span> <span class="toctext">How can we do that?</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Disable_interrupts"><span class="tocnumber">4.1</span> <span class="toctext">Disable interrupts</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Filling_the_table"><span class="tocnumber">4.2</span> <span class="toctext">Filling the table</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Telling_the_CPU_where_the_table_stands"><span class="tocnumber">4.3</span> <span class="toctext">Telling the CPU where the table stands</span></a>
+<ul>
+<li class="toclevel-3 tocsection-11"><a href="#From_real_mode"><span class="tocnumber">4.3.1</span> <span class="toctext">From real mode</span></a></li>
+<li class="toclevel-3 tocsection-12"><a href="#From_flat.2C_protected_mode"><span class="tocnumber">4.3.2</span> <span class="toctext">From flat, protected mode</span></a></li>
+<li class="toclevel-3 tocsection-13"><a href="#From_non-flat_protected_mode"><span class="tocnumber">4.3.3</span> <span class="toctext">From non-flat protected mode</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-14"><a href="#Reload_segment_registers"><span class="tocnumber">4.4</span> <span class="toctext">Reload segment registers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-15"><a href="#What.27s_so_special_about_the_LDT.3F"><span class="tocnumber">5</span> <span class="toctext">What's so special about the LDT?</span></a></li>
+<li class="toclevel-1 tocsection-16"><a href="#What_is_the_IDT_and_is_it_needed.3F"><span class="tocnumber">6</span> <span class="toctext">What is the IDT and is it needed?</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="#Some_stuff_to_make_your_life_easy"><span class="tocnumber">7</span> <span class="toctext">Some stuff to make your life easy</span></a></li>
+<li class="toclevel-1 tocsection-18"><a href="#See_Also"><span class="tocnumber">8</span> <span class="toctext">See Also</span></a>
+<ul>
+<li class="toclevel-2 tocsection-19"><a href="#Articles"><span class="tocnumber">8.1</span> <span class="toctext">Articles</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#Threads"><span class="tocnumber">8.2</span> <span class="toctext">Threads</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#External_Links"><span class="tocnumber">8.3</span> <span class="toctext">External Links</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Survival_Glossary"> Survival Glossary </span></h2>
+<dl><dt> Segment
+</dt><dd> a logically contiguous chunk of memory with consistent properties (CPU's speaking)
+</dd><dt> Segment Register
+</dt><dd> a register of your CPU that refers to a segment for a special use (e.g. <tt>SS</tt>, <tt>CS</tt>, <tt>DS</tt> ...)
+</dd><dt> Selector
+</dt><dd> a reference to a descriptor you can load into a segment register; the selector is an offset of a descriptor table entry.  These entries are 8 bytes long, therefore selectors can have values 0x00, 0x08, 0x10, 0x18, ...
+</dd><dt> Descriptor
+</dt><dd> a memory structure (part of a table) that tells the CPU the attributes of a given segment
+</dd></dl>
+<h2> <span class="mw-headline" id="What_should_i_put_in_my_GDT.3F"> What should i put in my GDT? </span></h2>
+<h3> <span class="mw-headline" id="Basics"> Basics </span></h3>
+<p>For sanity purpose, you should always have these items stored in your GDT:
+</p>
+<ul><li> The null descriptor which is never referenced by the processor. Certain emulators, like Bochs, will complain about limit exceptions if you do not have one present. Some use this descriptor to store a pointer to the GDT itself (to use with the LGDT instruction). The null descriptor is 8 bytes wide and the pointer is 6 bytes wide so it might just be the perfect place for this.
+</li><li> A code segment descriptor (for your kernel, it should have type=0x9A)
+</li><li> A data segment descriptor (you can't write to a code segment, so add this with type=0x92)
+</li><li> A <a href="/TSS" title="TSS" class="mw-redirect">TSS</a> segment descriptor (trust me, keep a place for at least one)
+</li><li> Room for more segments if you need them (e.g. user-level, <a href="/LDT" title="LDT">LDTs</a>, more TSS, whatever)
+</li></ul>
+<h3> <span class="mw-headline" id="Sysenter.2FSysexit"> Sysenter/Sysexit </span></h3>
+<p>If you are using the Intel <tt>SYSENTER</tt>/<tt>SYSEXIT</tt> routines, the GDT must be structured like this:
+</p>
+<ul><li> Any descriptors preceding (null descriptor, special kernel stuff, etc.)
+</li><li> A <a href="/DPL" title="DPL">DPL</a> 0 code segment descriptor (the one that <tt>SYSENTER</tt> will use)
+</li><li> A DPL 0 data segment descriptor (for the <tt>SYSENTER</tt> stack)
+</li><li> A DPL 3 code segment (for the code after <tt>SYSEXIT</tt>)
+</li><li> A DPL 3 data segment (for the user-mode stack after <tt>SYSEXIT</tt>)
+</li><li> Any other descriptors
+</li></ul>
+<p>The segment of the DPL 0 code segment is loaded into an <a href="/MSR" title="MSR" class="mw-redirect">MSR</a>. The others are calculated based on that value. See the Intel Instruction Reference for <tt>SYSENTER</tt> and <tt>SYSEXIT</tt> for more information.
+</p><p>The actual values you store there will depend on your system design.
+</p>
+<h3> <span class="mw-headline" id="Flat_Setup"> Flat Setup </span></h3>
+<p>You want to have full 4 GiB addresses untranslated: just use
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">GDT<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu0">0</span><span class="br0">&#125;</span><span class="sy0">;</span>                     <span class="co1">// Selector 0x00 cannot be used</span>
+GDT<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu12">0xffffffff</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x9A</span><span class="br0">&#125;</span><span class="sy0">;</span>         <span class="co1">// Selector 0x08 will be our code</span>
+GDT<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu12">0xffffffff</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x92</span><span class="br0">&#125;</span><span class="sy0">;</span>         <span class="co1">// Selector 0x10 will be our data</span>
+GDT<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=&amp;</span>myTss<span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="kw4">sizeof</span><span class="br0">&#40;</span>myTss<span class="br0">&#41;</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x89</span><span class="br0">&#125;</span><span class="sy0">;</span> <span class="co1">// You can use LTR(0x18)</span></pre></div></div>
+<p>Note that in this model, code is not actually protected against overwriting since code and data segment overlaps.
+</p>
+<h2> <span class="mw-headline" id="Small_Kernel_Setup"> Small Kernel Setup </span></h2>
+<p>If you want (for specific reason) to have code and data clearly separated (let's say 4 MiB for both, starting at 4 MiB as well), just use:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">GDT<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu0">0</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu0">0</span><span class="br0">&#125;</span><span class="sy0">;</span>                      <span class="co1">// Selector 0x00 cannot be used</span>
+GDT<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu12">0x04000000</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu12">0x03ffffff</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x9A</span><span class="br0">&#125;</span><span class="sy0">;</span> <span class="co1">// Selector 0x08 will be our code</span>
+GDT<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=</span><span class="nu12">0x08000000</span><span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="nu12">0x03ffffff</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x92</span><span class="br0">&#125;</span><span class="sy0">;</span> <span class="co1">// Selector 0x10 will be our data</span>
+GDT<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span>.<span class="me1">base</span><span class="sy0">=&amp;</span>myTss<span class="sy0">,</span> .<span class="me1">limit</span><span class="sy0">=</span><span class="kw4">sizeof</span><span class="br0">&#40;</span>myTss<span class="br0">&#41;</span><span class="sy0">,</span> .<span class="me1">type</span><span class="sy0">=</span><span class="nu12">0x89</span><span class="br0">&#125;</span><span class="sy0">;</span>  <span class="co1">// You can use LTR(0x18)</span></pre></div></div>
+<p>That means whatever you load at physical address 4 MiB will appear as code at <tt>CS:0</tt> and what you load at physical address 8 MiB will appear as data at <tt>DS:0</tt>. However it might not be the best design.
+</p>
+<h2> <span class="mw-headline" id="How_can_we_do_that.3F"> How can we do that? </span></h2>
+<h3> <span class="mw-headline" id="Disable_interrupts"> Disable interrupts </span></h3>
+<p>If they're enabled, turn them off or you're in for trouble.
+</p>
+<h3> <span class="mw-headline" id="Filling_the_table"> Filling the table </span></h3>
+<p>You noticed that I didn't give a real structure for <tt>GDT[]</tt>, didn't you? That's on purpose. The actual structure of descriptors is a little messy for backwards compatibility with the 286's GDT. Base address are split on 3 different fields and you cannot encode any limit you want. Plus, here and there, you have flags that you need to set up properly if you want things to work.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="coMULTI">/**
+ * \param target A pointer to the 8-byte GDT entry
+ * \param source An arbitrary structure describing the GDT entry
+ */</span>
+<span class="kw4">void</span> encodeGdtEntry<span class="br0">&#40;</span><span class="kw4">uint8_t</span> <span class="sy0">*</span>target<span class="sy0">,</span> <span class="kw4">struct</span> GDT source<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="co1">// Check the limit to make sure that it can be encoded</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>source.<span class="me1">limit</span> <span class="sy0">&gt;</span> <span class="nu0">65536</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>source.<span class="me1">limit</span> <span class="sy0">&amp;</span> <span class="nu12">0xFFF</span><span class="br0">&#41;</span> <span class="sy0">!=</span> <span class="nu12">0xFFF</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        kerror<span class="br0">&#40;</span><span class="st0">&quot;You can't do that!&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="br0">&#125;</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span>source.<span class="me1">limit</span> <span class="sy0">&gt;</span> <span class="nu0">65536</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="co1">// Adjust granularity if required</span>
+        source.<span class="me1">limit</span> <span class="sy0">=</span> source.<span class="me1">limit</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">12</span><span class="sy0">;</span>
+        target<span class="br0">&#91;</span><span class="nu0">6</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0xC0</span><span class="sy0">;</span>
+    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+        target<span class="br0">&#91;</span><span class="nu0">6</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x40</span><span class="sy0">;</span>
+    <span class="br0">&#125;</span>
+&#160;
+    <span class="co1">// Encode the limit</span>
+    target<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> source.<span class="me1">limit</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+    target<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>source.<span class="me1">limit</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+    target<span class="br0">&#91;</span><span class="nu0">6</span><span class="br0">&#93;</span> <span class="sy0">|=</span> <span class="br0">&#40;</span>source.<span class="me1">limit</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xF</span><span class="sy0">;</span>
+&#160;
+    <span class="co1">// Encode the base </span>
+    target<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> source.<span class="me1">base</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+    target<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>source.<span class="me1">base</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+    target<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>source.<span class="me1">base</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+    target<span class="br0">&#91;</span><span class="nu0">7</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>source.<span class="me1">base</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">24</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+&#160;
+    <span class="co1">// And... Type</span>
+    target<span class="br0">&#91;</span><span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> source.<span class="me1">type</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Okay, that's rather ugly, but it's the most 'for dummies' I can come with ... hope you know about masking and shifting. You can hard-code that rather than convert it at runtime, of course. This code assumes that you only want 32-bit segments.
+</p>
+<h3> <span class="mw-headline" id="Telling_the_CPU_where_the_table_stands"> Telling the CPU where the table stands </span></h3>
+<p>Some assembly example is required here. While you could use <a href="/Inline_assembly" title="Inline assembly" class="mw-redirect">inline assembly</a>, the memory packing expected by <tt>LGDT</tt> and <tt>LIDT</tt> makes it much easier to write a small assembly routine instead. As said above, you'll use <tt>LGDT</tt> instruction to load the base address and the limit of the GDT. Since the base address should be a linear address, you'll need a bit of tweaking depending of your current <a href="/MMU" title="MMU">MMU</a> setup.
+</p>
+<h4> <span class="mw-headline" id="From_real_mode"> From real mode </span></h4>
+<p>The linear address should here be computed as <tt>segment * 16 + offset</tt>. I'll assume <tt>GDT</tt> and <tt>GDT_end</tt> are symbols in the current data segment.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="asm source-asm"><pre class="de1">gdtr <span class="kw4">DW</span> <span class="nu0">0</span> <span class="co1">; For limit storage</span>
+     <span class="kw4">DD</span> <span class="nu0">0</span> <span class="co1">; For base storage</span>
+&#160;
+setGdt<span class="sy0">:</span>
+   <span class="kw1">XOR</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="kw3">EAX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">AX</span><span class="sy0">,</span> <span class="kw3">DS</span>
+   <span class="kw1">SHL</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="nu0">4</span>
+   <span class="kw1">ADD</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="st0">''</span>GDT<span class="st0">''</span>
+   <span class="kw1">MOV</span>   <span class="br0">&#91;</span>gdtr <span class="sy0">+</span> <span class="nu0">2</span><span class="br0">&#93;</span><span class="sy0">,</span> <span class="kw3">eax</span>
+   <span class="kw1">MOV</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="st0">''</span>GDT_end<span class="st0">''</span>
+   <span class="kw1">SUB</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="st0">''</span>GDT<span class="st0">''</span>
+   <span class="kw1">MOV</span>   <span class="br0">&#91;</span>gdtr<span class="br0">&#93;</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">LGDT</span>  <span class="br0">&#91;</span>gdtr<span class="br0">&#93;</span>
+   <span class="kw1">RET</span></pre></div></div>
+<h4> <span class="mw-headline" id="From_flat.2C_protected_mode"> From flat, protected mode </span></h4>
+<p>"Flat" meaning the base of your data segment is 0 (regardless of whether paging is on or off). This is the case if you're just been booted by <a href="/GRUB" title="GRUB">GRUB</a>, for instance. I'll assume you call <tt>setGdt(GDT, sizeof(GDT))</tt>.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="asm source-asm"><pre class="de1">gdtr <span class="kw4">DW</span> <span class="nu0">0</span> <span class="co1">; For limit storage</span>
+     <span class="kw4">DD</span> <span class="nu0">0</span> <span class="co1">; For base storage</span>
+&#160;
+setGdt<span class="sy0">:</span>
+   <span class="kw1">MOV</span>   <span class="kw3">EAX</span><span class="sy0">,</span> <span class="br0">&#91;</span><span class="kw3">esp</span> <span class="sy0">+</span> <span class="nu0">4</span><span class="br0">&#93;</span>
+   <span class="kw1">MOV</span>   <span class="br0">&#91;</span>gdtr <span class="sy0">+</span> <span class="nu0">2</span><span class="br0">&#93;</span><span class="sy0">,</span> <span class="kw3">EAX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">AX</span><span class="sy0">,</span> <span class="br0">&#91;</span><span class="kw3">ESP</span> <span class="sy0">+</span> <span class="nu0">8</span><span class="br0">&#93;</span>
+   <span class="kw1">MOV</span>   <span class="br0">&#91;</span>gdtr<span class="br0">&#93;</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">LGDT</span>  <span class="br0">&#91;</span>gdtr<span class="br0">&#93;</span>
+   <span class="kw1">RET</span></pre></div></div>
+<h4> <span class="mw-headline" id="From_non-flat_protected_mode"> From non-flat protected mode </span></h4>
+<p>If your data segment has a non-zero base (e.g. you're using a <a href="/Higher_Half_Kernel" title="Higher Half Kernel">Higher Half Kernel</a> during the segmentation trick), you'll have to "<tt>ADD EAX, base_of_your_data_segment_which_you_should_know</tt>" between the "<tt>MOV EAX, ...</tt>" and the "<tt>MOV ..., EAX</tt>" instructions of the sequence above.
+</p>
+<h3> <span class="mw-headline" id="Reload_segment_registers"> Reload segment registers </span></h3>
+<p>Whatever you do with the GDT has no effect on the CPU until you load selectors into segment registers. You can do this using:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="asm source-asm"><pre class="de1">reloadSegments<span class="sy0">:</span>
+   <span class="co1">; Reload CS register containing code selector:</span>
+   <span class="kw1">JMP</span>   <span class="nu0">0x08</span><span class="sy0">:</span>reload_CS <span class="co1">; 0x08 points at the new code selector</span>
+<span class="sy0">.</span>reload_CS<span class="sy0">:</span>
+   <span class="co1">; Reload data segment registers:</span>
+   <span class="kw1">MOV</span>   <span class="kw3">AX</span><span class="sy0">,</span> <span class="nu0">0x10</span> <span class="co1">; 0x10 points at the new data selector</span>
+   <span class="kw1">MOV</span>   <span class="kw3">DS</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">ES</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">FS</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">GS</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">MOV</span>   <span class="kw3">SS</span><span class="sy0">,</span> <span class="kw3">AX</span>
+   <span class="kw1">RET</span></pre></div></div>
+<p>An explanation of the above code can be found <a rel="nofollow" class="external text" href="http://stackoverflow.com/questions/23978486/far-jump-in-gdt-in-bootloader">here</a>.
+</p>
+<h2> <span class="mw-headline" id="What.27s_so_special_about_the_LDT.3F"> What's so special about the LDT? </span></h2>
+<p>Much like the GDT (global descriptor table), the LDT (<i>local</i> descriptor table) contains descriptors for memory segments description, call gates, etc. The good thing with the LDT is that each task can have its own LDT and that the processor will automatically switch to the right LDT when you use hardware task switching.
+</p><p>Since its content may be different in each task, the LDT is not a suitable place to put system stuff such as TSS or other LDT descriptors: Those are the sole property of the GDT. Since it is meant to change often, the command used for loading an LDT is a bit different from the GDT and IDT loading. Rather than giving directly the LDT's base address and size, those parameters are stored in a descriptor of the GDT (with proper "LDT" type) and the selector of that entry is given.
+</p>
+<pre>               GDTR (base + limit)
+              +-- GDT ------------+
+              |                   |
+SELECTOR ---&gt; [LDT descriptor     ]----&gt; LDTR (base + limit)
+              |                   |     +-- LDT ------------+
+              |                   |     |                   |
+             ...                 ...   ...                 ...
+              +-------------------+     +-------------------+
+</pre>
+<p>Note that with 386+ processors, the paging has made LDT almost obsolete, and there's no longer need for multiple LDT descriptors, so you can almost safely ignore the LDT for OS developing, unless you have by design many different segments to store.
+</p>
+<h2> <span class="mw-headline" id="What_is_the_IDT_and_is_it_needed.3F"> What is the IDT and is it needed? </span></h2>
+<p>As said above, the IDT (Interrupt Descriptor Table) loads much the same way as the GDT and its structure is roughly the same except that it only contains gates and not segments. Each gate gives a full reference to a piece of code (code segment, privilege level and offset to the code in that segment) that is now bound to a number between 0 and 255 (the slot in the IDT).
+</p><p>The IDT will be one of the first things to be enabled in your kernel sequence, so that you can catch hardware exceptions, listen to external events, etc. See <a href="/index.php?title=Interrupts_for_dummies&amp;action=edit&amp;redlink=1" class="new" title="Interrupts for dummies (page does not exist)">Interrupts for dummies</a> for more information about the interrupts of X86 family.
+</p>
+<h2> <span class="mw-headline" id="Some_stuff_to_make_your_life_easy">Some stuff to make your life easy</span></h2>
+<p>Tool for easily creating GDT entries.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co1">// Used for creating GDT segment descriptors in 64-bit integer form.</span>
+&#160;
+<span class="co2">#include &lt;stdio.h&gt;</span>
+<span class="co2">#include &lt;stdint.h&gt;</span>
+&#160;
+<span class="co1">// Each define here is for a specific flag in the descriptor.</span>
+<span class="co1">// Refer to the intel documentation for a description of what each one does.</span>
+<span class="co2">#define SEG_DESCTYPE(x)  ((x) &lt;&lt; 0x04) // Descriptor type (0 for system, 1 for code/data)</span>
+<span class="co2">#define SEG_PRES(x)      ((x) &lt;&lt; 0x07) // Present</span>
+<span class="co2">#define SEG_SAVL(x)      ((x) &lt;&lt; 0x0C) // Available for system use</span>
+<span class="co2">#define SEG_LONG(x)      ((x) &lt;&lt; 0x0D) // Long mode</span>
+<span class="co2">#define SEG_SIZE(x)      ((x) &lt;&lt; 0x0E) // Size (0 for 16-bit, 1 for 32)</span>
+<span class="co2">#define SEG_GRAN(x)      ((x) &lt;&lt; 0x0F) // Granularity (0 for 1B - 1MB, 1 for 4KB - 4GB)</span>
+<span class="co2">#define SEG_PRIV(x)     (((x) &amp;  0x03) &lt;&lt; 0x05)   // Set privilege level (0 - 3)</span>
+&#160;
+<span class="co2">#define SEG_DATA_RD        0x00 // Read-Only</span>
+<span class="co2">#define SEG_DATA_RDA       0x01 // Read-Only, accessed</span>
+<span class="co2">#define SEG_DATA_RDWR      0x02 // Read/Write</span>
+<span class="co2">#define SEG_DATA_RDWRA     0x03 // Read/Write, accessed</span>
+<span class="co2">#define SEG_DATA_RDEXPD    0x04 // Read-Only, expand-down</span>
+<span class="co2">#define SEG_DATA_RDEXPDA   0x05 // Read-Only, expand-down, accessed</span>
+<span class="co2">#define SEG_DATA_RDWREXPD  0x06 // Read/Write, expand-down</span>
+<span class="co2">#define SEG_DATA_RDWREXPDA 0x07 // Read/Write, expand-down, accessed</span>
+<span class="co2">#define SEG_CODE_EX        0x08 // Execute-Only</span>
+<span class="co2">#define SEG_CODE_EXA       0x09 // Execute-Only, accessed</span>
+<span class="co2">#define SEG_CODE_EXRD      0x0A // Execute/Read</span>
+<span class="co2">#define SEG_CODE_EXRDA     0x0B // Execute/Read, accessed</span>
+<span class="co2">#define SEG_CODE_EXC       0x0C // Execute-Only, conforming</span>
+<span class="co2">#define SEG_CODE_EXCA      0x0D // Execute-Only, conforming, accessed</span>
+<span class="co2">#define SEG_CODE_EXRDC     0x0E // Execute/Read, conforming</span>
+<span class="co2">#define SEG_CODE_EXRDCA    0x0F // Execute/Read, conforming, accessed</span>
+&#160;
+<span class="co2">#define GDT_CODE_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
+                     SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+                     SEG_PRIV(0)     | SEG_CODE_EXRD</span>
+&#160;
+<span class="co2">#define GDT_DATA_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
+                     SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+                     SEG_PRIV(0)     | SEG_DATA_RDWR</span>
+&#160;
+<span class="co2">#define GDT_CODE_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
+                     SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+                     SEG_PRIV(3)     | SEG_CODE_EXRD</span>
+&#160;
+<span class="co2">#define GDT_DATA_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
+                     SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+                     SEG_PRIV(3)     | SEG_DATA_RDWR</span>
+&#160;
+<span class="kw4">void</span>
+create_descriptor<span class="br0">&#40;</span><span class="kw4">uint32_t</span> base<span class="sy0">,</span> <span class="kw4">uint32_t</span> limit<span class="sy0">,</span> <span class="kw4">uint16_t</span> flag<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="kw4">uint64_t</span> descriptor<span class="sy0">;</span>
+&#160;
+    <span class="co1">// Create the high 32 bit segment</span>
+    descriptor  <span class="sy0">=</span>  limit       <span class="sy0">&amp;</span> <span class="nu12">0x000F0000</span><span class="sy0">;</span>         <span class="co1">// set limit bits 19:16</span>
+    descriptor <span class="sy0">|=</span> <span class="br0">&#40;</span>flag <span class="sy0">&lt;&lt;</span>  <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0x00F0FF00</span><span class="sy0">;</span>         <span class="co1">// set type, p, dpl, s, g, d/b, l and avl fields</span>
+    descriptor <span class="sy0">|=</span> <span class="br0">&#40;</span>base <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0x000000FF</span><span class="sy0">;</span>         <span class="co1">// set base bits 23:16</span>
+    descriptor <span class="sy0">|=</span>  base        <span class="sy0">&amp;</span> <span class="nu12">0xFF000000</span><span class="sy0">;</span>         <span class="co1">// set base bits 31:24</span>
+&#160;
+    <span class="co1">// Shift by 32 to allow for low part of segment</span>
+    descriptor <span class="sy0">&lt;&lt;=</span> <span class="nu0">32</span><span class="sy0">;</span>
+&#160;
+    <span class="co1">// Create the low 32 bit segment</span>
+    descriptor <span class="sy0">|=</span> base  <span class="sy0">&lt;&lt;</span> <span class="nu0">16</span><span class="sy0">;</span>                       <span class="co1">// set base bits 15:0</span>
+    descriptor <span class="sy0">|=</span> limit  <span class="sy0">&amp;</span> <span class="nu12">0x0000FFFF</span><span class="sy0">;</span>               <span class="co1">// set limit bits 15:0</span>
+&#160;
+    <span class="kw3">printf</span><span class="br0">&#40;</span><span class="st0">&quot;0x%.16llX<span class="es1">\n</span>&quot;</span><span class="sy0">,</span> descriptor<span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span>
+&#160;
+<span class="kw4">int</span>
+main<span class="br0">&#40;</span><span class="kw4">void</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    create_descriptor<span class="br0">&#40;</span><span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    create_descriptor<span class="br0">&#40;</span><span class="nu0">0</span><span class="sy0">,</span> <span class="nu12">0x000FFFFF</span><span class="sy0">,</span> <span class="br0">&#40;</span>GDT_CODE_PL0<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    create_descriptor<span class="br0">&#40;</span><span class="nu0">0</span><span class="sy0">,</span> <span class="nu12">0x000FFFFF</span><span class="sy0">,</span> <span class="br0">&#40;</span>GDT_DATA_PL0<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    create_descriptor<span class="br0">&#40;</span><span class="nu0">0</span><span class="sy0">,</span> <span class="nu12">0x000FFFFF</span><span class="sy0">,</span> <span class="br0">&#40;</span>GDT_CODE_PL3<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    create_descriptor<span class="br0">&#40;</span><span class="nu0">0</span><span class="sy0">,</span> <span class="nu12">0x000FFFFF</span><span class="sy0">,</span> <span class="br0">&#40;</span>GDT_DATA_PL3<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+    <span class="kw1">return</span> <span class="nu0">0</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<h3> <span class="mw-headline" id="Articles"> Articles </span></h3>
+<ul><li> <a href="/Global_Descriptor_Table" title="Global Descriptor Table">Global Descriptor Table</a>
+</li></ul>
+<h3> <span class="mw-headline" id="Threads"> Threads </span></h3>
+<h3> <span class="mw-headline" id="External_Links"> External Links </span></h3>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 269/1000000
+Post-expand include size: 340/2097152 bytes
+Template argument size: 44/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1531-0!*!0!!en!2!* and timestamp 20160926031254 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=GDT_Tutorial&amp;oldid=18813">http://wiki.osdev.org/index.php?title=GDT_Tutorial&amp;oldid=18813</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/Category:Level_1_Tutorials" title="Category:Level 1 Tutorials">Level 1 Tutorials</a></li><li><a href="/Category:Tutorials" title="Category:Tutorials">Tutorials</a></li><li><a href="/Category:X86_CPU" title="Category:X86 CPU">X86 CPU</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=GDT_Tutorial" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/GDT_Tutorial"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:GDT_Tutorial"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/GDT_Tutorial" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=GDT_Tutorial&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=GDT_Tutorial&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/GDT_Tutorial" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/GDT_Tutorial" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=GDT_Tutorial&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=GDT_Tutorial&amp;oldid=18813" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 9 January 2016, at 08:21.</li>
+											<li id="footer-info-viewcount">This page has been accessed 199,417 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.199 secs. -->
+	</body>
+</html>

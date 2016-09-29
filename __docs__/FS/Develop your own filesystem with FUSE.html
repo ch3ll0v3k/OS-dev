@@ -1,0 +1,1138 @@
+
+
+
+<!DOCTYPE html>
+  <html lang="en">
+<head>
+<meta charset="UTF-8"/>	
+<meta name="viewport" content="width=device-width, initial-scale=1"/>      
+<link rel="icon" href="//www.ibm.com/favicon.ico"/>
+<link rel="canonical" href="http://www.ibm.com/developerworks/library/l-fuse/index.html"/>
+<meta name="geo.country" content="ZZ"/>
+<meta name="dcterms.rights" content="© Copyright IBM Corporation 2006, 2014"/>
+<meta name="dcterms.date" content="2014-10-14"/>
+<meta name="description" content="With Filesystem in Userspace (FUSE), you can develop a user space filesystem framework without understanding filesystem internals or learning kernel module programming. Follow this simple, step-by-step guide to install, customize, and enable FUSE and AFS, so you can create your own fully functional filesystem in user space in Linux."/>	
+<meta name="keywords" content="fuse,filesystem in user space,afs,lwp,rx,rpc,remote procedure call,andrew filesystem,ufo project,openafs,lufs,cifs,userfs, tttlca"/>
+<meta name="robots" content="index,follow"/>
+<title>Develop your own filesystem with FUSE</title>
+    
+<script> 
+    digitalData = {
+        "page":{
+            "category":{
+                "primaryCategory":"SOFDCLNXZZ"
+            },
+            "pageInfo":{
+                "effectiveDate":"2006-02-28",
+                "language":"en",
+                "publishDate":"2014-10-14",
+                "publisher":"IBM Corporation",
+                "version":"v18",
+                "ibm":{
+                    "contentDelivery":"IBM developerWorks template",
+                    "contentProducer":"IBM developerWorks",
+                    "country":"ZZ",
+                    "owner":"developerWorks Content/Raleigh/IBM",
+                    "subject":"SWGC0",
+                    "type":"CT316",
+                    "topic":"Application development,C and C++",
+                    "contentArea":"linux",
+                },
+                "keywords":"fuse,filesystem in user space,afs,lwp,rx,rpc,remote procedure call,andrew filesystem,ufo project,openafs,lufs,cifs,userfs, tttlca",
+                "description":"With Filesystem in Userspace (FUSE), you can develop a user space filesystem framework without understanding filesystem internals or learning kernel module programming. Follow this simple, step-by-step guide to install, customize, and enable FUSE and AFS, so you can create your own fully functional filesystem in user space in Linux."
+            }
+        }
+    }; 
+</script>
+	
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@developerworks"/>
+<meta property="og:title" content="Develop your own filesystem with FUSE"/>
+<meta property="og:description" content="With Filesystem in Userspace (FUSE), you can develop a user space filesystem framework without understanding filesystem internals or learning kernel module programming. Follow this simple, step-by-step guide to install, customize, and enable FUSE and AFS, so you can create your own fully functional filesystem in user space in Linux."/>
+    <meta property="og:image" content="http://www.ibm.com/developerworks/i/dw-social-201508.png"/>
+<!-- SITE MON : START (DO NOT DELETE) -->
+<!-- developerWorks monitoring token -->
+<!-- SITE MON : END (DO NOT DELETE) -->
+
+<!-- HEADER_SCRIPTS_AND_CSS_INCLUDE -->
+<!-- BEGIN: Use this section to set page specific variables for the Page Tag -->
+<script language="JavaScript">var NTPT_PGEXTRA="ibmSkillLevel=1&ibmCmaId=104668&ibmContentAreas=linux";</script>
+<!--END -->
+<script src="//1.www.s81c.com/common/stats/ida_stats.js"></script>
+<link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet">
+<link href="//1.www.s81c.com/common/v18/css/syntaxhighlighter.css" rel="stylesheet">
+<script src="//1.www.s81c.com/common/v18/js/www.js"></script>
+<script src="//1.www.s81c.com/common/v18/js/syntaxhighlighter.js"></script>    
+<link href="//1.www.s81c.com/common/v18/css/tables.css" rel="stylesheet">
+<script src="//1.www.s81c.com/common/v18/js/tables.js"></script>   
+<!--  Masthead/footer  -->
+<link href="//dw1.s81c.com/developerworks/css/dw-mf/v18/dw-mf-v18.css?v=091916" rel="stylesheet">
+<!--[if lt IE 9]>
+    <link href="//dw1.s81c.com/developerworks/css/dw-mf/v18/dw-mf-ie8fix.css?v=022216" rel="stylesheet" />
+<![endif]-->
+<link href="//dw1.s81c.com/developerworks/css/v18/dw-article.css?v=091916a" rel="stylesheet">
+<!-- <link href="//dw1.s81c.com/developerworks/css/v17/dw-bluemix-regbar.css" media="screen,projection" rel="stylesheet" title="www" type="text/css"/> -->
+<script src="//dw1.s81c.com/developerworks/js/v18/dw-auth-properties.js?v=091516"></script>
+<script src="//dw1.s81c.com/developerworks/js/v18/dw-auth.js?v=091316"></script>
+<script src="//dw1.s81c.com/developerworks/js/dw-mf/v18/dw-mf.js?v=083016"></script>      
+<script type="text/javascript">jQuery(document).ready(function(){var $=jQuery;var dw_lang="en_US";var dw_source="dw";var dw_campaign="bluemix";var dw_content=window.location.pathname.split("/")[window.location.pathname.split("/").length-2];if(dw_content=="library"){dw_content=window.location.pathname.split("/")[window.location.pathname.split("/").length-1];dw_content=window.location.pathname.split("/")[window.location.pathname.split("/").length-3]+"-"+dw_content.substring(0,dw_content.indexOf(".html"))}var lnkID,lnkIDd,lnkIDt,bLinkEnd,bLinkTemp,idTrkr=[],idCnt;var omitList=["#","/catalog","/doc","/solutions"];$("#ibm-content-main a").each(function(index,item){var bLink=$(item).attr("href");if(bLink&&bLink.indexOf("/marketplace/cloud/developerworks/")>-1)bLink=bLink.replace("/developerworks/","/developer-program/");if(bLink&&(bLink.indexOf("//bluemix.net")>-1))bLink=bLink.replace("//bluemix.net","//www.bluemix.net");if(bLink&&(bLink.indexOf("//ace.ng.bluemix.net")>-1))bLink=bLink.replace("//ace.ng.bluemix.net","//www.bluemix.net");if(bLink&&(bLink.indexOf("//console.ng.bluemix.net")>-1))bLink=bLink.replace("//console.ng.bluemix.net","//www.bluemix.net");if(bLink&&((bLink.indexOf("/marketplace/cloud/developer-program")>-1)||(bLink.indexOf("developer.ibm.com/sso/bmregistration")>-1)||(bLink.indexOf("//www.bluemix.net")>-1)||(bLink.indexOf("//hub.jazz.net")>-1)||(bLink.indexOf("//developer.ibm.com/open")>-1))){var omitIt=false;for(var i=omitList.length-1;i>=0;--i){if(bLink.indexOf(omitList[i])!=-1){omitIt=true;break}}if(!(omitIt)){var linkClass="";if($(item).attr("class"))linkClass=$(item).attr("class");var dw_medium="article";if($(item).parents(".dw-article-sidebar").length!=0)dw_medium="sidebar";if($(item).children("img").length!=0)dw_medium="ad";bLinkEnd="";bLink=bLink.split("?");if((bLink[1])&&(bLink[1].indexOf("repository=")!=-1)){var deployBtn=true;bLink[0]=bLink[0]+"?"+bLink[1];bLink[1]=null}if((bLink[1])&&(bLink[1].indexOf("/")!=-1))bLinkEnd=bLink[1].substring(bLink[1].indexOf("/"));if($(item).attr("id")==null){bLinkTemp=bLink[0]+bLinkEnd;if((bLinkTemp.indexOf("developer.ibm.com/sso/bmregistration")>-1)||(bLinkTemp.indexOf(".bluemix")!=-1)){lnkIDd="bmix";if(bLinkTemp.indexOf("/#/solutions")!=-1){lnkIDd=lnkIDd+"-solution"}else if(bLinkTemp.indexOf("/solutions")!=-1){lnkIDd=lnkIDd+"-solution"}else if(bLinkTemp.indexOf("/#/store")!=-1){lnkIDd=lnkIDd+"-service"}else if(bLinkTemp.indexOf("/catalog")!=-1){lnkIDd=lnkIDd+"-service"}else if(bLinkTemp.indexOf("/docs")!=-1){lnkIDd=lnkIDd+"-docs"}else{lnkIDd=lnkIDd+"-home"}}else if(bLinkTemp.indexOf("//hub.jazz.net/")>-1){if((bLinkTemp.indexOf("//hub.jazz.net/git")>-1)||(bLinkTemp.indexOf("//hub.jazz.net/project")>-1)){lnkIDd=deployBtn?"devops-deploy":"devops-code"}else{lnkIDd=bLinkTemp.substring(bLinkTemp.indexOf("hub.jazz.net/")+13);lnkIDd=lnkIDd==""?"devops-home":"devops-"+lnkIDd.split("/")[0]}}else if(bLinkTemp.indexOf("//developer.ibm.com/open")>-1){lnkIDd=bLinkTemp.substring(bLinkTemp.indexOf("developer.ibm.com/open/")+23);if(lnkIDd.indexOf("/")!=-1)lnkIDd=lnkIDd.substring(0,lnkIDd.indexOf("/"));lnkIDd=lnkIDd.replace(/-/g,"");if(lnkIDd=="")lnkIDd="home";lnkIDd="dwopen-"+lnkIDd}else if(bLinkTemp.indexOf("/marketplace/cloud/developer-program")>-1){lnkIDd="dwpremium-marketplace"}if($(item).parent().attr("class")&&$(item).parent().attr("class").indexOf("ibm-button")!=-1){lnkIDt="btn"}else{lnkIDt="txt"}}bLink=bLink[0];if(bLink.indexOf("//developer.ibm.com/open")==-1){if(bLink.indexOf("//hub.jazz.net")>-1){if(!(deployBtn)&&((bLink.indexOf("//hub.jazz.net/git")>-1)||(bLink.indexOf("//hub.jazz.net/project")>-1))){bLink=bLink+"?utm_source="+dw_source+"&utm_medium="+dw_medium+"&utm_content="+dw_content+"&utm_campaign="+dw_campaign}else{if(deployBtn){bLink=bLink+"&cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium}else{bLink=bLink+"?utm_source="+dw_source+"&utm_campaign="+dw_campaign+"&utm_content="+dw_content+"&utm_medium="+dw_medium}}}else{if(bLink.indexOf("/#/")==-1){if(bLink.substring(bLink.length-7)=="/docs/#"){bLink=bLink.replace("/docs/#","/docs/"+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium)}else if(bLink.substring(bLink.length-5)=="/docs"){bLink=bLink.replace("/docs","/docs/"+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium)}else if(bLink.indexOf("/marketplace/cloud/developer-program")!=-1){bLink=bLink+"?cm_sp=dwpremium"+"-_-"+dw_content+"-_-"+dw_medium;}else{bLink=bLink+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium}}else{bLink=bLink.substring(0,bLink.indexOf("#"))+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium+bLink.substring(bLink.indexOf("#")-1)}}if(bLinkEnd)bLink=bLink+bLinkEnd;if(linkClass.indexOf("bluemix-home")==-1){if((bLink.indexOf("#")==-1)&&(bLink.indexOf("/solutions")==-1)&&(bLink.indexOf("/catalog")==-1)&&((bLink.indexOf("developer.ibm.com/sso/bmregistration")!=-1)||(bLink.indexOf("//www.bluemix.net/")!=-1))){if(bLink.indexOf("//www.bluemix.net/")!=-1)bLink=bLink.replace("//www.bluemix.net/","//developer.ibm.com/sso/bmregistration");if(bLink.indexOf("http://")==0)bLink=bLink.replace("http://","https://");if(bLink.indexOf("//")==0)bLink=bLink.replace("//","https://");if(bLink.indexOf("?cm_mmc=")!=-1)bLink=bLink.replace("?cm_mmc=","?lang="+dw_lang+"&ca=")}if((bLink.indexOf("#")==-1)&&(bLink.indexOf("/solutions")==-1)&&(bLink.indexOf("//www.bluemix.net?")!=-1)){bLink=bLink.replace("//www.bluemix.net","//developer.ibm.com/sso/bmregistration");if(bLink.indexOf("http://")==0)bLink=bLink.replace("http://","https://");if(bLink.indexOf("//")==0)bLink=bLink.replace("//","https://");if(bLink.indexOf("?cm_mmc=")!=-1)bLink=bLink.replace("?cm_mmc=","?lang="+dw_lang+"&ca=")}}if((bLink.indexOf("#")!=-1)&&(bLink.indexOf("solutions")!=-1)){bLinkTemp=bLink.substring(0,bLink.indexOf("?"));bLink=bLink.substring(bLink.indexOf("/#/")+3,bLink.length);bLink=bLinkTemp+bLink;bLinkTemp=bLink.substring(0,bLink.indexOf("solution="));bLink=bLink.substring(bLink.indexOf("/solution=")+10,bLink.length);bLink=bLinkTemp+bLink;bLink=bLink+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium}if((bLink.indexOf("#")!=-1)&&(bLink.indexOf("store")!=-1)){if(bLink.indexOf("&cloudOEPaneId=store")!=-1){bLinkTemp=bLink.split("&cloudOEPaneId=store");bLink=bLinkTemp[0]}bLinkTemp=bLink.substring(bLink.indexOf("serviceOfferingGuid=")+20,bLink.length);bLink=bLink.substring(0,bLink.indexOf(".net/")+5)+"catalog/"+bLinkTemp+"?cm_mmc="+dw_source+"-_-"+dw_campaign+"-_-"+dw_content+"-_-"+dw_medium}}if(bLink.indexOf("/marketplace/cloud/developer-program")!=-1){if(bLink.indexOf("http://")==0)bLink=bLink.replace("http://","https://");if(bLink.indexOf("//")==0)bLink=bLink.replace("//","https://");$(item).attr("href",bLink)}if($(item).attr("id")==null){lnkID="article-main-"+lnkIDd+"-"+lnkIDt;idCnt=0;$(idTrkr).each(function(index,item){if(item.indexOf(lnkID)!=-1){idCnt++}});if(idCnt>0){lnkID=lnkID+"-"+idCnt}$(item).attr("id",lnkID);idTrkr.push(lnkID)}else{lnkID=$(item).attr("id")}$(item).attr("href",bLink);$(item).attr("onclick","trkOBL('"+bLink+"','"+lnkID+"'); return false;");}}})});</script>  <script src="//dw1.s81c.com/developerworks/js/v18/dw-article.js?v=092116b"></script>
+<script src="//cdn.optimizely.com/js/5399420604.js"></script>
+
+</head>
+<body id="ibm-com" class="ibm-type dw-js-disabled">
+	
+
+<div id="ibm-top" class="ibm-landing-page">
+
+<!-- MASTHEAD_BEGIN -->
+<div id="ibm-masthead" role="banner" aria-label="IBM">
+    <div id="ibm-mast-options">
+        <ul role="toolbar" aria-labelledby="ibm-masthead">
+            <li id="ibm-geo" role="presentation"><a href="http://www.ibm.com/planetwide/select/selector.html" role="button" aria-label="United States selected - Choose a country">United States</a></li>
+        </ul>
+    </div>
+    <div id="ibm-universal-nav">    
+  
+        <nav role="navigation" aria-label="IBM">
+            <div id="ibm-home"><a href="http://www.ibm.com/us/en/">IBM®</a></div>
+            <ul id="ibm-menu-links" role="toolbar" aria-label="Site map">
+                <li><a href="http://www.ibm.com/sitemap/us/en/">Site map</a></li>
+            </ul> 
+        </nav>
+  
+        <div id="ibm-search-module" role="search" aria-labelledby="ibm-masthead">
+            <form id="ibm-search-form" action="https://www.ibm.com/Search/" method="get">
+                <p>
+                    <label for="q">IBM</label>
+                    <input type="text" maxlength="100" value="" placeholder="Search" name="q" id="q" aria-label="Search developerWorks"/>
+                    <input type="hidden" value="18" name="v"/>
+                    <input type="hidden" value="utf" name="en"/>
+                    <input type="hidden" value="en" name="lang"/>
+                    <input type="hidden" value="us" name="cc"/>
+                    <input type="hidden" name="sn" value="dw" />
+                    <input type="hidden" name="dws" value="dw" />
+                    <input type="hidden" name="hpp" value="20" />
+                    <input type="submit" id="ibm-search" class="ibm-btn-search" value="Submit"/>
+                </p>
+            </form>
+        </div>
+       
+    </div>
+</div><!-- MASTHEAD_END -->
+	    
+<!-- LAYOUT -->
+<div id="ibm-content-wrapper">
+    <!-- LEADSPACE_BEGIN -->
+    <header role="banner" aria-labelledby="ibm-pagetitle-h1">
+        
+        <!-- MASTHEAD_SITENAV_BEGIN -->
+        <div class="ibm-sitenav-menu-container">
+    <div class="ibm-sitenav-menu-name">
+        <a href="//www.ibm.com/developerworks/">
+            <img width="186" height="24" alt="developerWorks®" src="//dw1.s81c.com/developerworks/i/mf/dw-mf-wordmark.svg"/>
+        </a>
+    </div>
+    <div class="ibm-sitenav-menu-list">
+        <ul role="menubar">
+                            <li class="dw-navpage-learn ibm-haschildlist" role="presentation">
+                    <span role="menuitem"><a href="//www.ibm.com/developerworks/learn/">Learn</a></span>
+	                <ul role="menu" aria-label="Learn" id="dw-mega-learn">
+	                    <li role="presentation"> 
+                            <div class="ibm-columns">
+    	                        <div class="ibm-col-5-3 dw-mega-main">
+    	                           <h2>Learn with our tutorials and training</h2>
+    	                            <p class="dw-mega-main-p">developerWorks provides tutorials, articles and other
+    	                            technical resources to help you grow your development skills
+    	                            on a wide variety of topics and products. Learn about a specific
+    	                            product or take a course and get certified. So, what do you want to learn 
+    	                            about?</p>
+    	                            <p class="ibm-button-link">                                   
+                                        <a href="//www.ibm.com/developerworks/learn/" class="ibm-btn-pri">Choose a topic</a>
+                                    </p>
+    	                        </div>
+    	                        <div class="ibm-col-5-1 dw-mega-nav">
+    	                            <h3>Featured topics</h3>
+    	                            
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-mobile.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/learn/mobile">Mobile development</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-bigdata.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/learn/analytics">Big data</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-cognitive.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/learn/cognitive">Cognitive computing</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-cloud.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/learn/cloud">Cloud</a>
+                                        </div>
+    	                            </div>       	                            
+    	                        </div>	
+    	                        <div class="ibm-col-5-1 dw-mega-nav">
+    	                            <h3>Featured destinations</h3>
+    	                
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-swift.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/swift/?lnk=hm">Swift @ IBM</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-open.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/open/?lnk=hm">developerWorks Open</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-arch.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/architecture/?lnk=hm">Architecture center</a>
+                                        </div>
+    	                            </div>
+    	                            <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-premium.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/marketplace/cloud/developer-program/us/en-us?cm_sp=dwpremium-_-dwhome-_-icon">developerWorks Premium</a>
+                                        </div>
+    	                            </div>       	                            
+    	                        </div>  
+    	                                                       
+    	                    </div>                             
+                        </li>
+                    </ul>
+	            </li>
+                    
+                <li role="presentation" class="dw-navpage-develop ibm-haschildlist">
+                   <span role="menuitem"><a href="//www.ibm.com/developerworks/develop/">Develop</a></span>
+                    <ul role="menu" aria-label="Develop" id="dw-mega-develop">
+                        <li role="presentation">
+                            <div class="ibm-columns">
+                                <div class="ibm-col-5-3 dw-mega-main">
+                                    <h2>Develop with our trials &amp; downloads</h2>
+                                    <p class="dw-mega-main-p">Start developing with product trials, free downloads, and IBM Bluemix&trade; services.
+                                    Sort by topic or product name and find everything we have to offer.</p>
+                                    <p class="ibm-button-link">                                   
+                                        <a href="//www.ibm.com/developerworks/develop/" class="ibm-btn-pri">View all downloads &amp; trials</a>
+                                    </p>
+                                </div>
+                                <div class="ibm-col-5-1 dw-mega-nav">
+                                    <h3>Featured products</h3>
+                                    
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-bluemix.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/sso/bmregistration">Bluemix</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-websphere.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/downloads/ws/was/">Websphere Application Server</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-db2express.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/developerworks/downloads/im/db2express/">DB2 Express C</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-mobile.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//mobilefirstplatform.ibmcloud.com/">MobileFirst Platform Foundation</a>
+                                        </div>
+                                    </div>       	                            
+                                </div>	
+                                <div class="ibm-col-5-1 dw-mega-nav">
+                                    <h3>Featured destinations</h3>
+                                    
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-swift.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/swift/?lnk=hm">Swift @ IBM</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-open.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/open/?lnk=hm">developerWorks Open</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-arch.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/architecture/?lnk=hm">Architecture center</a>
+                                        </div>
+                                    </div>
+                                    <!--<div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-premium.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/marketplace/cloud/developer-program/us/en-us?cm_sp=dwpremium-_-dwhome-_-icon">developerWorks Premium</a>
+                                        </div>
+                                    </div> --> 
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-api-dest.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/api/">API Explorer</a>
+                                        </div>
+                                    </div>        	                            
+                                </div>  
+                                
+                            </div>                            
+                        </li>
+                    </ul>
+                </li>
+ 
+            
+                <li role="presentation" class="dw-navpage-connect ibm-haschildlist">
+                    <span role="menuitem"><a href="//www.ibm.com/developerworks/connect/">Connect</a></span>
+                    <ul role="menu" aria-label="Connect" id="dw-mega-connect">
+                        <li role="presentation">
+                            <div class="ibm-columns">
+                                <div class="ibm-col-5-3 dw-mega-main">
+                                    <h2>Find a community and connect</h2>
+                                    <p class="dw-mega-main-p">Learn from the experts and share with other developers in one of our
+                                        dev centers.  Ask questions and get answers with dW answers.  Search for local events
+                                        in your area.  All in developerWorks communities.</p>
+                                    <p class="ibm-button-link">                                   
+                                        <a href="//www.ibm.com/developerworks/connect/" class="ibm-btn-pri">View communities</a>
+                                    </p>
+                                </div>
+                                <div class="ibm-col-5-1 dw-mega-nav">
+                                    <h3>Featured Developer Centers</h3>
+                                    
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-jazz-dev.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//jazz.net/">Jazz.net</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-cloud-dev.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/cloud-analytics/">IBM Cloud Analytics DEV</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-bluemix-dev.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/bluemix/">Bluemix</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt=""
+                                                src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-api-dev.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/api/">API Explorer</a>
+                                        </div>
+                                    </div>       	                            
+                                </div>	
+                                <div class="ibm-col-5-1 dw-mega-nav">
+                                    <h3>Featured destinations</h3>
+                                    
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-swift.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/swift/?lnk=hm">Swift @ IBM</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-open.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/open/?lnk=hm">developerWorks Open</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-arch.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//developer.ibm.com/architecture/?lnk=hm">Architecture center</a>
+                                        </div>
+                                    </div>
+                                    <div class="dw-mega-nav-item">
+                                        <div class="dw-mega-nav-img">
+                                            <img width="30" height="30" alt="" src="//dw1.s81c.com/developerworks/i/v18/mega/dw-mplist-premium.png">
+                                        </div>
+                                        <div class="dw-mega-nav-link">
+                                            <a href="//www.ibm.com/marketplace/cloud/developer-program/us/en-us?cm_sp=dwpremium-_-dwhome-_-icon">developerWorks Premium</a>
+                                        </div>
+                                    </div>       	                            
+                                </div>  
+                                
+                            </div>                            
+                        </li>
+                    </ul>
+                </li> 
+            
+                <!-- dW featured -->
+                <!-- <li role="presentation" class="dw-navpage-devcenter"><strong>Subheading</strong></li> -->
+                <li role="presentation" class="dw-navpage-devcenter"><a role="menuitem" href="//developer.ibm.com/career-concierge/">Career Concierge</a></li>
+                <li role="presentation" class="dw-navpage-devcenter"><a role="menuitem" href="//developer.ibm.com/open/">dW Open</a></li>
+                <li role="presentation" class="dw-navpage-devcenter"><a role="menuitem" href="//developer.ibm.com/architecture/">Architecture Center</a></li>
+                <li role="presentation" class="dw-navpage-devcenter"><a role="menuitem" href="//developer.ibm.com/swift/">Swift @ IBM</a></li>  
+        </ul>
+    </div>
+</div>        <!-- MASTHEAD_SITENAV_END -->
+        
+        <!-- NAVIGATION_TRAIL_BEGIN -->
+        <div id="ibm-leadspace-head" class="ibm-alternate">
+            <div id="ibm-leadspace-body">
+                <nav aria-label="Breadcrumb" role="navigation">                     
+                            <ul id="dw-navigation-trail" itemscope="" itemtype="http://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem"><a itemprop="item" href="http://www.ibm.com/developerworks/learn/"><span itemprop="name">Learn</span></a><meta itemprop="position" content="1"/></li><li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem"><a itemprop="item" href="http://www.ibm.com/developerworks/linux/"><span itemprop="name">Linux</span></a><meta itemprop="position" content="2"/></li></ul>
+                </nav>
+            </div>
+        </div>
+        <!-- NAVIGATION_TRAIL_END -->
+        
+    </header>
+    <!-- LEADSPACE_END -->
+    
+    <!-- MAIN_CONTENT_BEGIN -->
+    <main role="main" aria-labelledby="ibm-pagetitle-h1"> 
+        <div id="ibm-pcon">
+            <!-- BEGIN_IBM-CONTENT -->
+            <div id="ibm-content">
+                <!-- BEGIN_IBM-CONTENT-BODY -->
+                <div id="ibm-content-body">
+                    <!-- BEGIN_IBM-CONTENT-MAIN -->
+                    <div id="ibm-content-main" class="dw-article">                        
+                        <!-- BEGIN_INTERIOR-COLUMNS -->
+                                <div class="ibm-columns dw-article-toc">
+                                    <!-- LEFT_6_2_CONTENT_COLUMN_BEGIN -->  
+                                    <div id="dw-article-toc-container" class="ibm-col-6-2">
+                                        <div id="dw-article-toc-body">
+                                            <h2>Contents</h2><div class="ibm-alternate-rule"><hr/></div><ul role="directory" aria-label="Table of contents" class="ibm-plain-list"><li><a href="#ibm-pagetitle-h1">Introduction</a></li><li><a href="#N1004F">Introducing FUSE</a></li><li><a href="#N1006F">Unpack FUSE</a></li><li><a href="#N10095">Build and install FUSE</a></li><li><a href="#N100C1">Customize the filesystem</a></li><li><a href="#N1022C">Define the RX RPC layer</a></li><li><a href="#N1025B">Create client and stub files</a></li><li><a href="#N1029B">Conclusion</a></li><li><a href="#artdownload">Downloadable resources</a></li><li><a href="#artrelatedtopics">Related topics</a></li><li><a href="#icomments">Comments</a></li></ul>
+                                        </div>
+                                    </div>
+                                    <!-- LEFT_6_2_CONTENT_COLUMN_END -->
+                                    
+                                    <!-- CENTER_6_4_CONTENT_COLUMN_BEGIN -->
+                                    <div class="ibm-col-6-4">
+                                        <h1 id="ibm-pagetitle-h1" class="ibm-h1">Develop your own filesystem with FUSE</h1><p class="dw-article-subhead">No kernel programming required</p>
+                                        <!-- Article Top Bar -->
+                                        <div class="ibm-columns dw-article-topbar">
+                                            <!-- Author and article info. -->
+                                            <div class="ibm-col-6-3 dw-article-metadata">
+                                                <div class="dw-article-avatar"><img width="42" height="42" src="//dw1.s81c.com/developerworks/i/v18/article/dw-author.png" alt=""/></div><div class="dw-article-authordate">Sumit Singh<br /><span class="dw-article-pubdate">Published on February 28,  2006</span><span class="dw-article-divider">/</span><span class="dw-article-updated">Updated: October 14,  2014</span></div>
+                                            </div>
+                                            <!-- Social -->
+                                            <div class="ibm-col-6-1 dw-article-social">
+                                                <!-- Sharing links -->
+                                                <div id="dw-article-share">
+                                                    <!-- empty div -->
+                                                </div>
+                                                <!-- Number of comments and link to comments -->
+                                                <div id="dw-article-cmts">
+                                                    <div class="dw-article-cmtslink">
+                                                        <a onclick="tocLink('#icomments')" href="#icomments" role="link" tabindex="0" aria-label="Comments">
+                                                            <img src="//dw1.s81c.com/developerworks/i/v18/article/dw-article-cmt-icon.png" width="29" height="29" alt="Comments"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="dw-article-cmtslink">
+                                                        <a onclick="tocLink('#icomments')" href="#icomments" role="link" tabindex="0">
+                                                            <div id="nCmts"></div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Article Body -->
+                                        
+                                        <p>A filesystem is a method for storing and organizing computer files and
+                directories and the data they contain, making it easy to find and access
+                them. If you are using a computer, you are most likely using more than one
+                kind of filesystem. A filesystem can provided extended capabilities. It
+                can be written as a wrapper over an underlying filesystem to manage its
+                data and provide an enhanced, feature-rich filesystem (such as cvsfs-fuse,
+                which provides a filesystem interface for CVS, or a Wayback filesystem,
+                which provides a backup mechanism to keep old copies of data).</p><p>Before the advent of user space filesystems, filesystem development was the
+                job of the kernel developer. Creating filesystems required knowledge of
+                kernel programming and the kernel technologies (like vfs). And debugging
+                required C and C++ expertise. But other developers needed to manipulate a
+                filesystem -- to add personalized features (such as adding history or
+                forward-caching) and enhancements.</p><h2 id="N1004F" class="ibm-h2">Introducing FUSE</h2><p>FUSE lets you develop a fully functional filesystem that has a simple API
+                library, can be accessed by non-privileged users, and provides a secure
+                implementation. And, to top it all off, FUSE has a proven track record of
+                stability.</p><p>With FUSE, you can develop a filesystem as executable binaries that are
+                linked to the FUSE libraries -- in other words, this filesystem framework
+                doesn't require you to learn filesystem internals or kernel module
+                programming.</p><p>When it comes to filesystems, the user space filesystem is not a new
+                design. A sampling of commercial and academic implementations of user
+                space filesystems include:</p><ul class="ibm-bullet-list"><li>LUFS is a hybrid user space filesystem framework that supports an
+                    indefinite number of filesystems transparently for any application. It
+                    consists of a kernel module and a user space daemon. Basically it
+                    delegates most of the VFS calls to a specialized daemon that handles
+                    them.</li><li>UserFS allows user processes to be mounted as a normal filesystem.
+                    This proof-of-concept prototype provides ftpfs, which allows anonymous
+                    FTP with a filesystem interface.</li><li>The Ufo Project is a global filesystem for Solaris that allows users
+                    to treat remote files exactly as if they were local.</li><li>OpenAFS is an open source version of the Andrew FileSystem.</li><li>CIFS is the Common Internet FileSystem.</li></ul><p>Unlike these commercial and academic examples, FUSE brings the capabilities
+                of this filesystem design to Linux. Because FUSE uses executables (instead
+                of, say, shared objects as LUFS uses), it makes debugging and developing
+                easier. FUSE works with both kernels (2.4.x and 2.6.x) and now supports
+                Java&#8482; binding, so you aren't limited to programming the filesystem
+                in C and C++. (See <a href="#artrelatedtopics">Related topics</a> for more
+                userland filesystems that use FUSE.)</p><p>To create a filesystem in FUSE, you need to install a FUSE kernel module
+                and then use the FUSE library and API set to create your filesystem. </p><h2 id="N1006F" class="ibm-h2">Unpack FUSE</h2><p> To develop a filesystem, first download the FUSE source code (look on
+                <a href="https://github.com">GitHub</a>) and unpack
+                the package: <code>tar -zxvf fuse-2.2.tar.gz</code>. This creates a FUSE
+                directory with the source code. The contents of the fuse-2.2 directory
+                are: </p><ul class="ibm-bullet-list"><li><strong>./doc</strong> contains FUSE-related documentation. At this
+                    point, there is only one file, how-fuse-works. </li><li><strong>./kernel</strong> contains the FUSE kernel module source code
+                    (which, of course, you don't need to know for developing a filesystem
+                    with FUSE). </li><li><strong>./include</strong> contains the FUSE API headers, which you
+                    need to create a filesystem. The only one you need now is fuse.h. </li><li><strong>./lib</strong> holds the source code to create the FUSE
+                    libraries that you will be linking with your binaries to create a
+                    filesystem. </li><li><strong>./util</strong> has the source code for the FUSE utility
+                    library. </li><li><strong>./example</strong>, of course, contains samples for your
+                    reference, like the fusexmp.null and hello filesystems.</li></ul><h2 id="N10095" class="ibm-h2">Build and install FUSE</h2><ol><li>Run the configure script from the fuse-2.2 directory:
+                    <code>./configure</code>. This creates the required makefiles,
+                    etc.</li><li>Run <code>./make</code> to build the libraries, binaries, and kernel
+                    module. Check the kernel directory for the file ./kernel/fuse.ko --
+                    this is the kernel module file. Also check the lib directory for
+                    fuse.o, mount.o, and helper.o.</li><li>Run <code>./make install</code> to complete the installation of FUSE.
+                        <br /><br /><strong>Alternative</strong>: Skip this step if you want
+                    to install the module in the kernel yourself using
+                    <code>insmod</code>. For example:
+                    <code>/usr/local/sbin/insmod ./kernel/fuse.ko</code> or
+                    <code>/sbin/insmod ./kernel/fuse.ko</code>. Remember to install the
+                    required module with root privileges.</li></ol><p> You can do the above steps in just one step if you want. From the fuse-2.2
+                directory, run <code>./configure; make; make install;</code>.
+                    <br /><br /><strong>Important</strong>: When making FUSE, you need to
+                have the kernel headers or source code in place. To keep things simple,
+                make sure that the kernel source code is in the /usr/src/ directory. </p><h2 id="N100C1" class="ibm-h2">Customize the filesystem</h2><p> Now let's create a filesystem so you can access your AFS space on a Linux
+                box with latest kernel, using an older Linux kernel. You will have two
+                processes: one server process running on a older Linux kernel, and the
+                FUSE client process running on a Linux box with the latest kernel.
+                Whenever a request comes to your FUSE client process, it contacts the
+                remote server process. For communication purposes, this filesystem uses RX
+                RPC code that is part of AFS, so you need to build OpenAFS. (Figure 1
+                gives an overview of this AFS filesystem.)</p><h5 id="N100C9" class="ibm-h5">Figure 1. Overview of AFS-FUSE
+                    filesystem</h5><img src="image1.gif" class="ibm-downsize" alt="Overview of AFS-FUSE filesystem" height="357" width="572"/><p class="ibm-ind-link"><a class="ibm-popup-link" onclick="IBMCore.common.widget.overlay.show('N100CD');return false;" href="#N100CD">View image at full size</a></p><div class="ibm-common-overlay ibm-overlay-alt-three" data-widget="overlay" id="N100CD"><img alt="Overview of AFS-FUSE filesystem" src="image1.gif" width="572" /></div><h3 id="N100D2" class="ibm-h3">Build OpenAFS</h3><ol><li>Download the OpenAFS Linux sources and untar the source. <p>In the
+                        directory where you have untarred the source, run
+                        <code>./make ./configure --enable-transarc-paths</code>. If
+                        <code>./configure</code> cannot understand the sysname for build,
+                        then use the <code>--with-afs-sysname</code> option with the
+                        appropriate sysname.</p><p>For a build on the Linux 2.4 kernel,
+                        use following command:
+                        <code>./configure --enable-transarc-paths --with-afs-sysname=i386_linux24</code>.</p></li><li>Run <code>./make</code>, and then run <code>./make dest</code>. Check
+                    for any errors during build. <p>If the build went okay, then your AFS
+                        source tree is ready to work with. At this stage, you need to
+                        prepare a development directory named afsfuse. In that directory,
+                        create two more directories: </p><ul class="ibm-bullet-list"><li>The <strong>include</strong> directory will contain the
+                            include headers from OpenAFS and FUSE.</li><li>The <strong>lib</strong> directory will contain the libraries
+                            from OpenAFS and FUSE.</li></ul></li><li>Copy the headers and libraries. <p>First copy the AFS headers from the
+                        OpenAFS directory by copying the directories and files from the
+                        dest\i386_linux24\include into the include directory. Then copy
+                        the FUSE headers from the fuse-2.2 directories into this
+                        directory. Repeat the same steps for libraries into the lib
+                        directory. </p></li><li>Create the structure of the application. <p>You need two sets of files
+                        for two sets of processes. Name the client process files using the
+                        naming scheme <strong>afsfuse_client.*</strong>; name the server
+                        process files <strong>afsfuse_server.*</strong>. </p><p>You will
+                        thus have an afsfuse_client.c file that will contain the FUSE
+                        process code, an afsfuse_server.c file that will contain the
+                        server code for the process running on a remote box, a makefile,
+                        and an rxgen file for creating the RPC header (like afsfuse.xg).
+                        </p><p>The afsfuse_client.c file will create afsfuse_client
+                        process code that will be called by the FUSE filesystem to create
+                        your filesystem (use the example fuse-2.2/example/fusexmp.c to
+                        create this file). </p></li></ol><h3 id="N10110" class="ibm-h3">Define necessary functions</h3><p> To create a filesystem with FUSE, you need to declare a structure variable
+                of type <code>fuse_operations</code> and pass it on to the
+                <code>fuse_main</code> function. The <code>fuse_operations</code>
+                structure carries a pointer to functions that will be called when the
+                appropriate action is required. Listing 1 shows the
+                <code>fuse_operations</code> structure.</p><h5 id="N10124" class="ibm-h5">Listing 1. Necessary functions in fuse_operation
+                    structure</h5><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">struct fuse_operations {
+    int (*getattr) (const char *, struct stat *);
+    int (*readlink) (const char *, char *, size_t);
+    int (*getdir) (const char *, fuse_dirh_t, fuse_dirfil_t);
+    int (*mknod) (const char *, mode_t, dev_t);
+    int (*mkdir) (const char *, mode_t);
+    int (*unlink) (const char *);
+    int (*rmdir) (const char *);
+    int (*symlink) (const char *, const char *);
+    int (*rename) (const char *, const char *);
+    int (*link) (const char *, const char *);
+    int (*chmod) (const char *, mode_t);
+    int (*chown) (const char *, uid_t, gid_t);
+    int (*truncate) (const char *, off_t);
+    int (*utime) (const char *, struct utimbuf *);
+    int (*open) (const char *, struct fuse_file_info *);
+    int (*read) (const char *, char *, size_t, off_t, struct fuse_file_info *);
+    int (*write) (const char *, const char *, size_t, off_t,struct fuse_file_info *);
+    int (*statfs) (const char *, struct statfs *);
+    int (*flush) (const char *, struct fuse_file_info *);
+    int (*release) (const char *, struct fuse_file_info *);
+    int (*fsync) (const char *, int, struct fuse_file_info *);
+    int (*setxattr) (const char *, const char *, const char *, size_t, int);
+    int (*getxattr) (const char *, const char *, char *, size_t);
+    int (*listxattr) (const char *, char *, size_t);
+    int (*removexattr) (const char *, const char *);
+};</pre></span><p>None of these operations are absolutely essential, but many are needed for
+                a filesystem to work properly. You can implement a full-featured
+                filesystem with the special-purpose methods <code>.flush</code>,
+                <code>.release</code>, or <code>.fsync</code>. (This article doesn't cover
+                any <code>xattr</code> functions.) The functions shown in Listing 1 are as
+                follows:</p><ul class="ibm-bullet-list"><li><code>getattr: int (*getattr) (const char *, struct stat *);</code><br />
+                    This is similar to <code>stat()</code>. The <code>st_dev</code> and
+                    <code>st_blksize</code> fields are ignored. The <code>st_ino</code>
+                    field is ignored unless the <code>use_ino</code> mount option is
+                    given.</li><li><code>readlink: int (*readlink) (const char *, char *, size_t);</code><br />
+                    This reads the target of a symbolic link. The buffer should be filled
+                    with a null-terminated string. The buffer size argument includes the
+                    space for the terminating null character. If the linkname is too long
+                    to fit in the buffer, it should be truncated. The return value should
+                    be "0" for success.</li><li><code>getdir: int (*getdir) (const char *, fuse_dirh_t, fuse_dirfil_t);</code><br />
+                    This reads the contents of a directory. This operation is the
+                    <code>opendir()</code>, <code>readdir()</code>, ...,
+                    <code>closedir()</code> sequence in one call. For each directory
+                    entry, the <code>filldir()</code> function should be called.</li><li><code>mknod: int (*mknod) (const char *, mode_t, dev_t);</code><br />
+                    This creates a file node. There is no <code>create()</code> operation;
+                    <code>mknod()</code> will be called for creation of all non-directory,
+                    non-symlink nodes.</li><li><code>mkdir: int (*mkdir) (const char *, mode_t);</code><br /><code>rmdir: int (*rmdir) (const char *);</code><br />
+                    These create and remove a directory, respectively.</li><li><code>unlink: int (*unlink) (const char *);</code><br /><code>rename: int (*rename) (const char *, const char *);</code><br />
+                    These remove and rename a file, respectively.</li><li><code>symlink: int (*symlink) (const char *, const char *);</code><br />
+                    This creates a symbolic link.</li><li><code>link: int (*link) (const char *, const char *);</code><br /> This
+                    creates a hard link to a file.</li><li><code>chmod: int (*chmod) (const char *, mode_t);</code><br /><code>chown: int (*chown) (const char *, uid_t, gid_t);</code><br /><code>truncate: int (*truncate) (const char *, off_t);</code><br /><code>utime: int (*utime) (const char *, struct utimbuf *);</code><br />
+                    These change the permission bits, owner and group, size, and
+                    access/modification times of a file, respectively.</li><li><code>open: int (*open) (const char *, struct fuse_file_info *);</code><br />
+                    This is the file open operation. No creation or truncation flags
+                    (<code>O_CREAT</code>, <code>O_EXCL</code>, <code>O_TRUNC</code>) will
+                    be passed to <code>open()</code>. This should check if the operation
+                    is permitted for the given flags. Optionally, <code>open()</code> may
+                    also return an arbitrary filehandle in the <code>fuse_file_info</code>
+                    structure, which will be passed to all file operations.</li><li><code>read: int (*read) (const char *, char *, size_t, off_t, struct fuse_file_info *);</code><br />
+                    This reads data from an open file. <code>read()</code> should return
+                    exactly the number of bytes requested, except on EOF or error;
+                    otherwise, the rest of the data will be substituted with zeroes. An
+                    exception to this is when the <code>direct_io</code> mount option is
+                    specified, in which case the return value of the <code>read()</code>
+                    system call will reflect the return value of this operation.</li><li><code>write: int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *);</code><br />
+                    This writes data to an open file. <code>write()</code> should return
+                    exactly the number of bytes requested except on error. An exception to
+                    this is when the <code>direct_io</code> mount option is specified (as
+                    in the <code>read()</code> operation).</li><li><code>statfs: int (*statfs) (const char *, struct statfs *);</code><br />
+                    This gets filesystem statistics. The <code>f_type</code> and
+                    <code>f_fsid</code> fields are ignored.</li><li><code>flush: int (*flush) (const char *, struct fuse_file_info *);</code><br />
+                    This represents flush-cached data. It is not equivalent to
+                    <code>fsync()</code> -- it's not a request to sync dirty data.
+                    <code>flush()</code> is called on each <code>close()</code> of a file
+                    descriptor, so if a filesystem wants to return write errors in
+                    <code>close()</code> and the file has cached dirty data, this is a
+                    good place to write back data and return any errors. Since many
+                    applications ignore <code>close()</code> errors, this is not always
+                    useful.</li></ul><p><strong>Note</strong>: The <code>flush()</code> method may be called more
+                than once for each <code>open()</code>. This happens if more than one file
+                descriptor refers to an opened file due to <code>dup()</code>,
+                <code>dup2()</code>, or <code>fork()</code> calls. It is not possible to
+                determine if a flush is final, so each flush should be treated equally.
+                Multiple write-flush sequences are relatively rare, so this shouldn't be a
+                problem.</p><ul class="ibm-bullet-list"><li><code>release: int (*release) (const char *, struct fuse_file_info *);</code><br />
+                    This releases an open file. <code>release()</code> is called when
+                    there are no more references to an open file -- all file descriptors
+                    are closed and all memory mappings are unmapped. For every
+                    <code>open()</code> call, there will be exactly one
+                    <code>release()</code> call with the same flags and file descriptor.
+                    It is possible to have a file opened more than once, in which case
+                    only the last release will count and no more reads/writes will happen
+                    on the file. The return value of release is ignored.</li><li><code>fsync: int (*fsync) (const char *, int, struct fuse_file_info *);</code><br />
+                    This synchronizes file contents. If the <code>datasync</code>
+                    parameter is non-zero, then only the user data should be flushed, not
+                    the meta data.</li><li><code>setxattr: int (*setxattr) (const char *, const char *, const char *, size_t, int);</code><br /><code>getxattr: int (*getxattr) (const char *, const char *, char *, size_t);</code><br /><code>listxattr: int (*listxattr) (const char *, char *, size_t);</code><br /><code>removexattr: int (*removexattr) (const char *, const char *);</code><br />
+                    These set, get, list, and remove extended attributes,
+                    respectively.</li></ul><h3 id="N10220" class="ibm-h3">The resulting filesystem</h3><p>Your filesystem will look something like this:</p><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">afsfuse_client   &lt;--RX[RPC]--&gt;   afsfuse_server</pre></span><p> The afsfuse_client will forward the filesystem calls passed to it to the
+                afsfuse_server residing on a different machine. The afsfuse_server will
+                service all the requests sent to it by the client and return the results
+                to the client. It does all the jobs necessary. The mechanism used for RPC
+                is RX. There is no caching involved for either data or metadata. </p><h2 id="N1022C" class="ibm-h2">Define the RX RPC layer</h2><p>Before going further, you need to define your RX RPC layer. To do that,
+                create an .xg file for rxgen, to describe your proxy and stub code that
+                will be linked with your afsfuse_client.c and afsfuse_server.c. Listing 2
+                shows how to create an afsfuse.xg file with the following contents:</p><h5 id="N10235" class="ibm-h5">Listing 2. Creating an afsfuse.xg
+                file</h5><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">#define MYMAXPATH 512
+%#include &lt;rx/rx.h&gt;
+%#include &lt;/rx_null.h &gt;
+%#define SAMPLE_SERVER_PORT 5000
+%#define SAMPLE_SERVICE_PORT 0
+/* i.e. user server's port */
+%#define SAMPLE_SERVICE_ID 4 /* Maximum number of requests that will be handled by this
+                                service simultaneously */
+/* This number will also be guaranteed to execute in parallel if no services' requests
+   are being processed */
+%#define SAMPLE_MAX 2 /* Minimum number of requests that are guaranteed to be handled
+                         immediately */
+%#define SAMPLE_MIN 1 /* Index of the "null" security class in the sample service. This
+                         must be 0 (there are N classes, numbered from 0. In this case,
+                         N is 1) */
+%#define SAMPLE_NULL 0 /********************** fuse4_file_info taken from fuse.h the
+                        rxgen does not understands fuse.h  mystat taken from man 2
+                        mystat these are required again rxgen does not understand the
+                        struct paras and will bump.. **********************/
+struct my_file_info { /** Open flags. Available in open() and release() */
+                     int flags; /** File handle. May be filled in by filesystem in
+                                    open(). Available in all other file operations */
+                     unsigned int fh; /** In case of a write operation indicates if
+                                          this was caused by a writepage */
+                     int writepage;
+                    };
+struct mystatfs {
+                    afs_uint32 f_type; /* type of filesystem (see below) */
+                    afs_uint32 f_bsize; /* optimal transfer block size */
+                    afs_uint32 f_blocks; /* total data blocks in file system */
+                    afs_uint32 f_bfree; /* free blocks in fs */
+                    afs_uint32 f_bavail; /* free blocks avail to non-superuser */
+                    afs_uint32 f_files; /* total file nodes in file system */
+                    afs_uint32 f_ffree; /* free file nodes in fs */
+                    afs_uint32 f_fsid1; /* file system id */
+                    afs_uint32 f_fsid2; /* file system id */
+                    afs_uint32 f_namelen; /* maximum length of filenames */
+                    afs_uint32 f_spare[6]; /* spare for later */
+                };
+struct mystat {
+                    afs_uint32 st_dev; /* device */
+                    afs_uint32 st_ino; /* inode */
+                    afs_uint32 st_mode; /* protection */
+                    afs_uint32 st_nlink; /* number of hard links */
+                    afs_uint32 st_uid; /* user ID of owner */
+                    afs_uint32 st_gid;/* group ID of owner */
+                    afs_uint32 st_rdev; /* device type (if inode device) */
+                    afs_uint32 st_size; /* total size, in bytes */
+                    afs_uint32 st_blksize; /* blocksize for filesystem I/O */
+                    afs_uint32 st_blocks; /* number of blocks allocated */
+                    afs_uint32 st_atim; /* time of last access */
+                    afs_uint32 st_mtim; /* time of last modification */
+                    afs_uint32 st_ctim; /* time of last change */
+                };
+struct my_dirhandle{
+                    afs_uint32 type;
+                    afs_uint32 inode;
+                    char name[MYMAXPATH];
+                };
+typedef my_dirhandle bulkmydirhandles&lt;&gt;;
+ /*********************phase 1 functions *********************************************/
+rxc_getattr(IN string mypath&lt;MYMAXPATH&gt;, IN int dummy) split = 1;
+rxc_getdirWrapper(IN string path&lt;MYMAXPATH&gt;, OUT bulkmydirhandles *handles) = 2;
+rxc_read(IN string path&lt;MYMAXPATH&gt;;, IN afs_uint32 size, IN afs_uint32 offset,
+         IN struct my_file_info *fi) split = 3;
+rxc_open(IN string path&lt;MYMAXPATH&gt;, IN int flags, OUT u_int *hd) = 4;
+rxc_write(IN string path&lt;MYMAXPATH&gt;,IN afs_uint32 size, IN afs_uint32 offset,
+          IN struct my_file_info *fi) split = 5;
+rxc_chmod(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 mode) = 6;
+rxc_chown(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 uid, IN afs_uint32 gid) = 7;
+rxc_utime(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 at,IN afs_uint32 mt) = 8;
+rxc_mknod(IN string path&lt;MYMAXPATH&gt;, afs_uint32 mode, afs_uint32 rdev) = 9 ;
+rxc_mkdir(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 mode) = 10;
+rxc_unlink(IN string path&lt;MYMAXPATH&gt;) = 11 ;
+rxc_rmdir(IN string path&lt;MYMAXPATH&gt;) = 12;
+rxc_rename(IN string from&lt;MYMAXPATH&gt;, IN string to&lt;MYMAXPATH&gt;) = 13;
+rxc_truncate(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 size) = 14;
+rxc_release(IN string path&lt;MYMAXPATH&gt;, IN struct my_file_info *fi) = 15;
+rxc_readlink(IN string path&lt;MYMAXPATH&gt;, IN afs_uint32 size,OUT string
+             data&lt;MYMAXPATH&gt;) = 16;
+rxc_symlink(IN string from&lt;MYMAXPATH&gt;, IN string to&lt;MYMAXPATH&gt;) = 17;
+rxc_link(IN string from&lt;MYMAXPATH&gt;, IN string to&lt;MYMAXPATH&gt;) = 18;
+rxc_statfs(IN string path&lt;MYMAXPATH&gt;, OUT struct mystatfs *stbuf) = 19;
+rxc_fsync(IN string path &lt;MYMAXPAT&gt;, IN int isdatasync, IN struct my_file_info
+          *fi) = 20 ;
+rxc_flush(IN string path &lt;MYMAXPATH&gt;, IN struct my_file_info *fi) = 21 ;</pre></span><p>When defining the RX RPC layer, note these points: </p><ul class="ibm-bullet-list"><li>You've defined <code>mystatfs</code>, <code>mystat</code>, and
+                    <code>my_file_info</code> as a wrapper over <code>statfs</code>,
+                    <code>stat</code>, and <code>fuse_file_info</code> structures. These
+                    will be transformed over wire using the generated XDR code. (XDR,
+                    External Data Representation, allows data to be wrapped in an
+                    architecture-independent manner so data can be transferred between
+                    heterogeneous computer systems.) </li><li>You've defined nearly one function for every member of structure
+                    <code>fuse_operations</code> with nearly the same parameters since the
+                    job of the afsfuse_client is just to take the calls from the FUSE
+                    filesystem and pass them on to the afsfuse_server. </li><li>You've hard-coded some values like <code>MYMAXPATH</code>, which you
+                    should obtain from the system -- hard-coding was done for the sake of
+                    simplicity. </li></ul><h2 id="N1025B" class="ibm-h2">Create client and stub files</h2><p> Next compile the afsfuse.xg file with rxgen to create client and stub
+                files. From the directory containing the source for your afsfuse_server
+                and afsfuse_client, run the command
+                <code>openafs-1.2.13/i386_linux24/dest/bin/rxgen afsfuse.xg</code>. This
+                creates the following files:</p><ul class="ibm-bullet-list"><li> afsfuse.cs.c is the client stub code to be linked with the
+                    afsfuse_client.c. </li><li> afsfuse.h is the header containing various definitions for your FUSE
+                    RX code. </li><li> afsfuse.ss.c is the server stub code (proxy code) to be linked with
+                    your afsfuse_server code. </li><li> afsfuse.xdr.c contains code to marshall the three structures you
+                    defined in your afsfuse.xg. </li></ul><p> Now add some code to the afsfuse_client.c and afsfuse_server.c to do the
+                real work. Most of the calls will look like this: </p><ul class="ibm-bullet-list"><li><code>Our_call_in_afs_fuse_client()</code>. Marshall the parameters
+                    and prepare for RPC. Call the afsfuse_server application over RX
+                    [RPC]. Demarshall the parameters. Copy the values to the formal
+                    parameters passed to this function. </li><li><code>Our_call_in_afs_fuse_server()</code>. Demarshall the parameters.
+                    Call the local filesystem or AFS-specific functions. Marshall the
+                    parameters and prepare for RPC. Make the RX RPC call. </li></ul><p>The afsfuse_client.c call looks like this:</p><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">int afsfuse_readlink(const char *path, char *buf, size_t size){
+    rx_connection *local&amp; int ret&amp; char *buffer = malloc (512)&amp;
+    memset(buffer,0,512)&amp; memset(buf,0,size)&amp; local = getconnection()&amp;
+    ret = rxc_rxc_readlink(local,path,512,&amp;buffer) // rpc call
+         relconnection(local)&amp;
+         strncpy(buf,buffer,512-1)&amp;
+        //&lt;- demarshall the parametrs
+        return ret&amp;
+    }</pre></span><p>The afsfuse_server.c call looks like this:</p><h5 id="N10283" class="ibm-h5">Listing 3. afsfuse_server.c
+                call</h5><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">int rxc_rxc_readlink( struct rx_call *call, char * path, afs_uint32 size, char**data)
+    { int ret&amp; char lbuff[512] ={0}&amp;
+    translatePath(path,lbuff)&amp; //&lt;- make filesystem call
+     *data = malloc(512)&amp;
+     res = readlink(lbuff, *data, 512-1)&amp;
+     if(res == -1) return -errno&amp; (*data)[res] = '\0'&amp; return 0&amp;
+    }</pre></span><p>Similarly, you can add code in other functions to enhance your filesystem. </p><p>You still need to create a makefile to compile your code. Remember to
+                include the following options while compiling code for the afsfuse_client:
+                <code>-D_FILE_OFFSET_BITS=64</code> and
+                <code>-DFUSE_USE_VERSION=22</code>.</p><h5 id="N10294" class="ibm-h5">Listing 4. Generating the makefile to compile client
+                code</h5><span class="dw-code-nohighlight"><pre data-widget="syntaxhighlighter" class="brush: js; html-script: true; gutter: true;">SRCDIR=./ LIBRX=${SRCDIR}lib/librx.a
+LIBS=${LIBRX} ${SRCDIR}lib/liblwp.a
+#CC = g++
+CFLAGS=-g -I. -I${SRCDIR}include -I${SRCDIR}include/fuse/ -DDEBUG ${XCFLAGS}
+    -D_FILE_OFFSET_BITS=64 -DFUSE_USE_VERSION=22
+afsfuse_client: afsfuse_client.o afsfuse.xdr.o ${LIBS} bulk_io.o afsfuse.cs.o
+    ${CC} ${CFLAGS} -o afsfuse_client afsfuse_client.o ${SRCDIR}lib/fuse/fuse.o
+    ${SRCDIR}lib/fuse/mount.o ${SRCDIR}lib/fuse/helper.o
+    ${SRCDIR}lib/fuse/fuse_mt.o bulk_io.o afsfuse.cs.o afsfuse.xdr.o ${LIBS}
+afsfuse_server: afsfuse_server.o afsfuse.xdr.o afsfuse.ss.o bulk_io.o ${LIBS}
+    ${CC} ${CFLAGS} -o afsfuse_server afsfuse_server.o bulk_io.o afsfuse.ss.o
+    afsfuse.xdr.o ${LIBS}
+#afsfuse_client.o: afsfuse.h
+#afsfuse_server.o: afsfuse.h
+bulk_io.o: ${CC} -c -g -I${SRCDIR}include bulk_io.c afsfuse.cs.c afsfuse.ss.c
+    afsfuse.er.c afsfuse.h afsfuse.xdr.c: afsfuse.xg rxgen afsfuse.xg
+afsfuse.xdr.o: afsfuse.xdr.c ${CC} -c -g -I{SRCDIR}include afsfuse.xdr.c
+all: afsfuse_server afsfuse_client
+clean: rm *.o rm afsfuse_client rm afsfuse_server</pre></span><p>Remember, you still need to use librx.a and liblwp.a to link to RX and LWP
+                code for RX. And fuse/fuse.o, fuse/helper.o, and fuse/mount.o are the FUSE
+                libraries you need to link your code to.</p><h2 id="N1029B" class="ibm-h2">Conclusion</h2><p>In this article, you've learned how to install FUSE and OpenAFS and how to
+                use them to create and customize your own user space filesystem, a fully
+                functional, stable filesystem in Linux that doesn't require you to patch
+                or recompile the active kernel -- you don't even have to be a kernel
+                module programmer. You've seen details of the two key concepts in enabling
+                a FUSE filesystem: how to install and configure the FUSE kernel module and
+                how to leverage the power of the FUSE libraries and APIs.</p><!--CMA ID: 104668--><!--Site ID: 1--><!--XSLT stylesheet used to transform this file: dw-document-html-8.0.xsl--> 
+                                        <!-- Article Resources -->
+                                        <div class="ibm-alternate-rule"><hr/></div><h4 id="artdownload" class="ibm-h4">Downloadable resources</h4><ul class="ibm-link-list"><li><a class="ibm-pdf-link" href="l-fuse-pdf.pdf">PDF</a></li><li><a class="ibm-download-link" href="http://www.ibm.com/developerworks/apps/download/index.jsp?contentid=104668&amp;filename=l-fuse.zip&amp;method=http&amp;locale=">AFSFuse filesystem sample code</a> (l-fuse.zip &#124; 9KB)</li></ul><div class="ibm-alternate-rule"><hr/></div><h4 id="artrelatedtopics" class="ibm-h4">Related topics</h4><ul><li>For an excellent example of FUSE in action, see <a href="http://www.computerworld.com/article/2547891/networking/google-hack--use-gmail-as-a-linux-filesystem.html">Google hack: Use Gmail as a Linux filesystem</a>, which details
+                    and dissects Google Gmail (Richard Jones, Computerworld, September
+                    2006). </li><li> Read this introductory article on <a href="http://lwn.net/Articles/68104/">implementing FUSE</a>. </li><li> The "<a href="http://www.ibm.com/developerworks/linux/library/l-fs/index.html">Common threads: Advanced filesystem implementor's guide</a>"
+                    (developerWorks) is a series of articles that can help you become a
+                    filesystem expert. </li><li> "<a href="http://www.ibm.com/developerworks/linux/library/l-affinity.html">Take charge of processor affinity</a>" (developerWorks, September
+                    2005) shows how to write better userspace applications. </li><li><a href="http://fuse-j.sourceforge.net/">FUSE-J provides Java
+                        bindings for FUSE</a> and comes with a "proof-of-concept" ZIP
+                    filesystem that seems to be pretty stable. </li><li> With <a href="http://www.ibm.com/developerworks/downloads/?S_TACT=105AGX03&amp;S_CMP=art">IBM trial software</a>, available for download directly from
+                    developerWorks, build your next development project on Linux. </li></ul>
+                                        <!-- Commenting -->
+<!-- INLINE_COMMENTS_BEGIN: -->
+<div class="ibm-alternate-rule"><hr/></div>
+<div id="dw-article-cmts-top" class="ibm-columns">
+    <div class="ibm-col-6-2">
+        <h4 id="icomments" class="ibm-h4">Comments</h4>
+        <div id="dw-article-cmts-login">
+            <p><a onClick="window.location=userLinks[0].url;" tabindex="0" role="link">Sign in</a> or 
+                <a onClick="window.location=userLinks[1].url;" tabindex="0" role="link">register</a> to add and subscribe to comments.</p>
+        </div>
+    </div>    
+    <div class="ibm-col-6-2" id="dw-notify"> 
+        <input type="checkbox" value="1" name="comment_notification" id="comment_notification" disabled="disabled">
+        <label for="comment_notification">Subscribe me to comment notifications</label>	   
+    </div>
+</div>
+
+<div class="dw-article-cmts-container">       
+    <div class="ibm-no-print" id="dw-icomments-container">	
+        
+    </div>
+</div>
+<!-- INLINE_COMMENTS_END -->                                        <!-- CENTER_6_4_CONTENT_COLUMN_END -->
+                                    </div>   
+                                </div>
+                        <!--Rating_Meta_BEGIN--><div class="metavalue">static.content.url=http://www.ibm.com/developerworks/js/artrating/</div><div class="metavalue">SITE_ID=1</div><div class="metavalue">Zone=Linux</div><div class="metavalue">ArticleID=104668</div><div class="metavalue">ArticleTitle=Develop your own filesystem with FUSE</div><div class="metavalue">publish-date=10142014</div><script language="javascript" type="text/javascript">document.write('<div class="metavalue">url='+location.href.replace(/</g,  '%3C')+'</div>');</script><!--Rating_Meta_END-->
+                    </div>
+                    <!-- END_IBM-CONTENT-MAIN -->
+                </div>
+                <!-- END_IBM-CONTENT-BODY -->
+            </div>
+            <!-- END_IBM-CONTENT -->
+        </div>
+        <!-- END_IBM-PCON -->
+    </main>
+    <!-- MAIN_CONTENT_END -->
+    
+    <!-- END_CONTENT-WRAPPER -->	
+</div>
+<!-- FOOTER_BEGIN -->
+<footer role="contentinfo" aria-label="IBM developerWorks">
+    <div id="dw-footer-module">
+        <section aria-label="Resources" role="contentinfo">
+            <div class="ibm-columns">
+                <div class="ibm-col-6-1 dw-footer-col-1">
+                    <ul class="dw-footer-site-links">
+                        <li class="dw-footer-heading" aria-label="developerWorks">developerWorks</li>
+                        <li><a href="//www.ibm.com/developerworks/aboutdw/">About</a></li>
+                        <li><a href="//www.ibm.com/developerworks/feedback">Help</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/developerworks/ideas">Submit content</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/developerworks/rfe/">RFE Community</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/developerworks/community/report/">Report abuse</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/developerworks/community/terms/thirdparty/">Third-party notice</a></li>
+                    </ul>
+                    <p class="dw-footer-social">
+                        <a href="//twitter.com/developerWorks">
+                            <img width="28" height="27" alt="Twitter" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-twitter.png"/>
+                        </a>
+                    </p>
+                    <p class="dw-footer-social-right">
+                        <a href="//www.facebook.com/developerworks">
+                            <img width="28" height="27" alt="Facebook" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-facebook.png"/>
+                        </a>
+                    </p>
+                    <br/>
+                    <p class="dw-footer-social">
+                        <a href="//www.linkedin.com/groups/IBM-developerWorks-8137234">
+                            <img width="28" height="27" alt="LinkedIn" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-linkedin.png"/>
+                        </a>
+                    </p>
+                    <p class="dw-footer-social-right">
+                        <a href="//www.youtube.com/user/developerworks">
+                            <img width="28" height="27" alt="YouTube" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-youtube.png"/>
+                        </a>
+                    </p>
+                    <br/>
+                    <p class="dw-footer-social">
+                        <a href="//plus.google.com/108822932610995774195/posts?partnerid=gplp0">
+                            <img width="28" height="27" alt="Google+" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-googleplus.png"/>
+                        </a>
+                    </p>
+                </div>
+                <div class="ibm-col-6-1 dw-footer-col-2">
+                    <ul>
+                        <li class="dw-footer-heading" aria-label="Join">Join</li>
+                        <li><a href="//developer.ibm.com/academic/">Faculty</a></li>
+                        <li><a href="//developer.ibm.com/students/">Students</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/isv/">Business Partners</a></li>
+                    </ul>
+                    <ul class="dw-footer-lang" aria-label="Select a language">
+                        <li class="dw-footer-heading">Select a language</li>
+                        <li><a href="//www.ibm.com/developerworks/">English</a></li>
+                        <li><a href="//www.ibm.com/developerworks/cn/" lang="zh">中文</a></li>
+                        <li><a href="//www.ibm.com/developerworks/jp/" lang="ja">日本語</a></li>
+                        <li><a href="//www.ibm.com/developerworks/ru/" lang="ru">Русский</a></li>
+                        <li class="dw-footer-newline"><a href="//www.ibm.com/developerworks/br/" lang="pt">Português (Brasil)</a></li>
+                        <li><a href="//www.ibm.com/developerworks/ssa/" lang="es">Español</a></li>
+                        <li><a href="//www.ibm.com/developerworks/vn/" lang="vi">Việt</a></li>
+                    </ul>
+                </div>
+                <div class="ibm-col-6-1 dw-footer-col-3"> </div>
+                <div class="ibm-col-6-1 dw-footer-col-4">
+                    <ul class="dw-footer-categories">
+                        <!-- <li class="dw-footer-category">
+                            <a href="//developer.ibm.com/events/">
+                                <div class="dw-footer-content-icon-events">
+                                    <img width="48" height="34" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-events.png"/>
+                                </div>
+                                <p>Events</p>
+                            </a>
+                        </li> -->
+                        <li class="dw-footer-category">
+                            <a href="//developer.ibm.com/tv/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="44" height="43" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-dwtv.png"/>
+                                </div>
+                                <p>dW TV</p>
+                            </a>
+                        </li>
+                        <li class="dw-footer-category">
+                            <a href="//www.ibm.com/developerworks/feeds/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="40" height="40" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-feeds.png"/>
+                                </div>
+                                <p>Feeds</p>
+                            </a>  
+                        </li>
+                    </ul>
+                </div>
+                <div class="ibm-col-6-1 dw-footer-col-5">
+                    <ul class="dw-footer-categories">
+                        <li class="dw-footer-category">
+                            <a href="//www.ibm.com/developerworks/newsletter/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="33" height="50" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-newsletters.png"/>
+                                </div>
+                                <p>Newsletters</p>
+                            </a>  
+                        </li>
+                        <li class="dw-footer-category">
+                            <a href="//developer.ibm.com/answers/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="46" height="38" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-dwanswers.png"/>
+                                </div>
+                                <p>dW Answers</p>
+                            </a>  
+                        </li>
+                        <li class="dw-footer-category">
+                            <a href="//developer.ibm.com/dwblog/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="44" height="43" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-dwblog.png"/>
+                                </div>
+                                <p>dW Blog</p>
+                            </a>  
+                        </li>
+                    </ul>
+                </div>
+                <div class="ibm-col-6-1 dw-footer-col-6">
+                    <ul class="dw-footer-categories">
+                        <li class="dw-footer-category">
+                            <a href="//www.ibm.com/marketplace/cloud/developer-program/us/en-us/?cm_sp=dwpremium-_-dwfooter-_-footer">
+                                <div class="dw-footer-content-icon">
+                                    <img width="35" height="45" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-premium.png"/>
+                                </div>
+                                <p>dW Premium</p>
+                            </a>  
+                        </li>
+                        <li class="dw-footer-category">
+                            <a href="//www.ibm.com/developerworks/develop/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="44" height="43" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-downloads.png"/>
+                                </div>
+                                <p>Downloads</p>
+                            </a>  
+                        </li>
+                        <li class="dw-footer-category">
+                            <a href="//developer.ibm.com/courses/">
+                                <div class="dw-footer-content-icon">
+                                    <img width="45" height="43" aria-hidden="true" alt="" src="//dw1.s81c.com/developerworks/i/mf/dw-footer-icon-courses.png"/>
+                                </div>
+                                <p>dW Courses</p>
+                            </a>  
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="dw-footer" class="ibm-padding-normal ibm-alternate">
+        <div class="ibm-columns">
+            <div class="ibm-col-1-1">
+                <div class="dw-footer-corporate-links">
+                <ul>
+                    <li><a href="//www.ibm.com/developerworks/aboutdw/contacts.html">Contact</a></li>
+                    <li><a href="//www.ibm.com/privacy/us/en/">Privacy</a></li>
+                    <li><a href="//www.ibm.com/developerworks/community/terms/use/">Terms of use</a></li>
+                    <li><a href="//www.ibm.com/accessibility/us/en/">Accessibility</a></li>
+                    <li><a onclick="truste.eu.clickListener();return false;" href="#">Cookie Preferences</a></li>
+                </ul>                 
+                </div>    
+            </div>
+        </div>
+    </div>        
+</footer> <!-- FOOTER_END -->
+
+<!-- END_IBM-TOP -->
+</div>
+
+<!-- SCRIPTS_INCLUDE_BEGIN -->
+<!-- Styles -->
+<link rel="stylesheet" type="text/css" href="/developerworks/maverick/css/plugin/comments/jquery-comments.css">
+<link rel="stylesheet" href="/developerworks/maverick/fonts/awesome-4.5.0/css/font-awesome.min.css">
+
+<!-- Libraries -->
+<script type="text/javascript" src="/developerworks/maverick/js/plugin/comments/jquery-comments.min.js"></script>
+<script type="text/javascript" src="/developerworks/maverick/js/plugin/formatter/moment-with-locales.js"></script>
+<script type="text/javascript" src="/developerworks/maverick/js/ContentComments.js"></script>
+<script type="text/javascript" src="/developerworks/js/v18/ContentCommentsFormatter.js"></script>
+<script type="text/javascript" language="JavaScript">
+
+	IBMCore.common.module.masthead.subscribe("ready", "customjs", setupCommentsPlugin).runAsap(setupCommentsPlugin);
+
+	function setupCommentsPlugin(){
+		//debugger;
+			//alert(userLinks);
+			var commentsInitInfo = {
+				contentId : $("div[class=metavalue]:contains('ArticleID=')").text().split("=")[1],
+				siteId :  $("div[class=metavalue]:contains('SITE_ID=')").text().split("=")[1],
+				pluginDivId : '#dw-icomments-container',
+				notifyElementId : "#comment_notification",
+				loginMessageDivId : "#dw-article-cmts-login",
+				totalCommentsDivId : "#nCmts"
+			};				
+								
+			ContentComments.Setup(commentsInitInfo);
+	}
+</script>
+<script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-41146412-3','auto');ga('require','linkid','linkid.js');var dcdate="2014-10-14";var cmaid="104668";ga('set','dimension1',dcdate);ga('set','dimension2',cmaid);var dw_canonical="http://www.ibm.com/developerworks/library/l-fuse/index.html";dw_canonical=dw_canonical.substring(dw_canonical.indexOf(".ibm.com")+8);ga('send','pageview',{'page':dw_canonical,'dimension1':dcdate,'dimension2':cmaid});var trkOBL=function(url,id){id=id.split("-");var cat="v18 article";var act="Bluemix";if(id[2]=="dwpremium")act="Premium";if(id[2]=="dwopen")act="dWOpen";if(id[2]=="devops")act="Devops";act=act+' '+id[3];if(id[4]){var label=id[4];if(label=="btn")label="button";if(label=="txt")label="text link";if(label=="bnr")label="banner";if(label=="tl")label="tile";if(label=="regbar")label="registration bar";if(label=="vp")label="video promotion"}var ab=0;if(id[5]){if(id[5]=="ABa")ab=1;if(id[5]=="ABb")ab=2;if(id[5]=="ABc")ab=3;if(id[5]=="ABd")ab=4;if(id[5]=="ABe")ab=5;if(id[5]=="ABf")ab=6;if(id[5]=="ABg")ab=7;if(id[5]=="ABh")ab=8}ga('send','event',cat,act,label,ab,{'page':dw_canonical,'hitCallback':function(){document.location=url}})}</script><!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    _paq.push(["setDomains", ["*.www.ibm.com/developerworks","*.www.ibm.com/developerworks"]]);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+    var u="//developer.ibm.com/piwik/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+</script>
+<noscript><p><img src="//developer.ibm.com/piwik/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+<!-- SCRIPTS_INCLUDE_END -->
+
+</body>
+</html>

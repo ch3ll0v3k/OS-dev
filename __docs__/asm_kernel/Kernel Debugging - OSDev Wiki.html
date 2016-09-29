@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Kernel Debugging - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "Kernel_Debugging", "wgTitle": "Kernel Debugging", "wgCurRevisionId": 16717, "wgArticleId": 1947, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Troubleshooting"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Kernel_Debugging action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">Kernel Debugging</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><p>Humans make mistakes. Some of these mistakes may end up being part of your OS. Since bugs are more difficult to find than to fix, this page provides a list of common techniques that can be used to isolate bugs in your OS.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Debug_statements_and_log_files"><span class="tocnumber">1</span> <span class="toctext">Debug statements and log files</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Pseudo-Breakpoints"><span class="tocnumber">2</span> <span class="toctext">Pseudo-Breakpoints</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Use_a_virtual_machine"><span class="tocnumber">3</span> <span class="toctext">Use a virtual machine</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Using_the_serial_port"><span class="tocnumber">4</span> <span class="toctext">Using the serial port</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Writing_logfiles_with_QEMU"><span class="tocnumber">4.1</span> <span class="toctext">Writing logfiles with QEMU</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#On_real_hardware"><span class="tocnumber">4.2</span> <span class="toctext">On real hardware</span></a>
+<ul>
+<li class="toclevel-3 tocsection-7"><a href="#With_remote_debugger_.2F_GDB"><span class="tocnumber">4.2.1</span> <span class="toctext">With remote debugger / GDB</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Use_gdb_with_Qemu"><span class="tocnumber">5</span> <span class="toctext">Use gdb with Qemu</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#GUI_frontends"><span class="tocnumber">6</span> <span class="toctext">GUI frontends</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Develop_in_hosted_environment"><span class="tocnumber">7</span> <span class="toctext">Develop in hosted environment</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Using_an_IDE"><span class="tocnumber">8</span> <span class="toctext">Using an IDE</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Related_Threads"><span class="tocnumber">9</span> <span class="toctext">Related Threads</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Debug_statements_and_log_files"> Debug statements and log files </span></h2>
+<p>The first solution is probably the easiest, and depends on what kind of information you
+want to get back from your debugger.
+</p><p>The problem with using a debugger such as ddd or gdb is that they require an OS to run....kinda
+useless when it's the OS itself that you want to debug.
+</p><p>Debugging is essentially being able to probe the contents of a variable at a specific breakpoint.
+When your program hits the breakpoint, you can probe the variable.
+</p><p>This can also be achieved without using a debugger, by instead inserting a line of code to
+write to the screen or to a log of some kind. This gives you the contents of the variable
+that you are interested in - but it means knowing in advance what variable to check, and when,
+and implies recompiling the kernel every time you want to check a different set of variables...
+but it is the simplest solution.
+</p>
+<h2> <span class="mw-headline" id="Pseudo-Breakpoints"> Pseudo-Breakpoints </span></h2>
+<p>In places where a full print or logging function is not feasible (such as when trying to isolate a single erroneous assembly language instruction), you can create a kind of 'pseudo-breakpoint' by inserting a HLT instruction into the code. These can be used to perform a binary space isolation (often referred to as a 'binary chop') through the code. The idea is to place the halt instruction at a point roughly halfway through the part of the code suspected to be at fault; if the CPU halts before the error occurs, then you know that the error is after the breakpoint, otherwise, it must be in the code before breakpoint. Repeat this procedure until the error is isolated. Unfortunately, this only works if the result of the error can be differentiated from the halt instruction itself, and it does little in the case of a problem occurring more than one repetition into loop, such as an array overrun.
+</p>
+<h2> <span class="mw-headline" id="Use_a_virtual_machine"> Use a virtual machine </span></h2>
+<p>A virtual machine is a program that simulates another computer (Java coders should be familiar with
+the concept).
+</p><p>There are a number of virtual machines that can simulate x86 machines, my favorite is Bochs
+(<a rel="nofollow" class="external free" href="http://bochs.sourceforge.net">http://bochs.sourceforge.net</a>). Bochs is capable of setting breakpoints in any kind of software
+(even if it is compiled without debugging info!), and provides an additional "debugging <tt>out</tt>
+port" you can easily access from within your kernel code to print debug messages.
+</p><p>The main downside to using a virtual machine like this is that all the code is displayed in
+assembler (or binary depending on what machine you choose) - instead of the C/C++ source you
+originally wrote. Also, simulating a virtual machine is slower than an actual machine, and the
+VM might not even behave exactly like the "real" hardware.
+</p><p>That being said, there are also a lot of other advantages to using a VM.
+For example, you don't have to reboot to test your new OS, you just start the VM.
+</p><p>Another virtual machine called Simics (<a rel="nofollow" class="external free" href="https://www.simics.net">https://www.simics.net</a>) is capable not only of breakpoints and displaying register information, but it is also capable of opening a port for use with debugging with DDD (the simics command is 'gdb-remote'). Using this combination, it is possible to see your C source code as you step through the OS!  However, the Bochs virtual machine is much faster at executing the OS than Simics and thus serves as a better virtual machine to <i>run</i> the OS, while Simics is the better <i>debugger</i> for those hard to find problems.
+</p>
+<h2> <span class="mw-headline" id="Using_the_serial_port"> Using the serial port </span></h2>
+<h3> <span class="mw-headline" id="Writing_logfiles_with_QEMU"> Writing logfiles with QEMU </span></h3>
+<p>QEMU allows you to redirect everything that you send to COM1 port to a file on your host computer. To enable this feature, you have to add the following flag when launching QEMU:
+</p>
+<pre>-serial file:serial.log
+</pre>
+<p>... while "serial.log" is the path to the output file. Once you have this feature enabled, you can write log entries by simply <a href="/Serial_Ports" title="Serial Ports">writing characters to the COM1 port</a> (reading from the file over the serial port is not supported).
+</p>
+<h3> <span class="mw-headline" id="On_real_hardware"> On real hardware </span></h3>
+<p>When your real computer resets due to a programming error, anything you might have put on the screen will instantly vanish. If you're tampering with the video card, you will often find yourself with no visual debugging method at all. If you have a pair of computers connected with a null-modem cable, you can instead send all debug statments over the serial port instead and record them on your development machine that is more stable. Using an actual serial terminal works just as well. It requires a bit of additional cabling, but it works fairly simple and can prove to be a very good replacement for a VM log.
+</p>
+<h4> <span class="mw-headline" id="With_remote_debugger_.2F_GDB"> With remote debugger / GDB </span></h4>
+<p>Since serial works two ways, you can also control your kernel remotely in case of problems. This can be a simple interface, but you can also attach GDB onto the serial port and potentially get a full blown debugger running.
+</p><p>This is however rather tricky, since it requires additional hardware, and special support coded into your kernel. You might want to read the <a rel="nofollow" class="external text" href="http://web.archive.org/web/20070415113206/http://www.kernelhacking.org/docs/kernelhacking-HOWTO/indexs09.html">kernel hacking how-to</a> and (at minimum) <a rel="nofollow" class="external text" href="http://sourceware.org/gdb/current/onlinedocs/gdb/Remote-Debugging.html#Remote-Debugging">chapter 20 of the GDB manual</a>, and chances are likely that your debugger will introduce even more bugs at first.
+</p>
+<h2> <span class="mw-headline" id="Use_gdb_with_Qemu"> Use gdb with Qemu </span></h2>
+<p>You can run Qemu to listen for a "gdb connection" before it starts executing any code to debug it.
+</p>
+<pre>qemu -s -S &lt;harddrive.img&gt;
+</pre>
+<p>...will setup Qemu to listen on port 1234 and wait for a gdb connection to it. Then, from a remote or local shell:
+</p>
+<pre>gdb 
+(gdb) target remote localhost:1234 
+</pre>
+<p>(Replace localhost with remote IP / URL if necessary.) Then start execution:
+</p><p>But that's not all, you can compile your source code under gcc with debugging symbols using "-g". This will add all the debugging symbols in the kernel image itself (Thus making it bigger ). There is also a way to put all of the debugging information in a separate file using the "objcopy" tool, which is part of the GNU binutils package.
+</p>
+<pre>objcopy --only-keep-debug kernel.elf kernel.sym
+</pre>
+<p>This will put the debugging information into a file called "kernel.sym". After that to strip your executable of debugging information you can do
+</p>
+<pre>objcopy --strip-debug kernel.elf
+</pre>
+<p>Or alternatively, if you are using a flat binary as your kernel image, you can do
+</p>
+<pre>objcopy -O binary kernel.elf kernel.bin
+</pre>
+<p>To produce a flat binary which can be debugged using the previously extracted debug information
+</p><p>You can import the symbols in gdb by pointing gdb to the file containing debug information
+</p>
+<pre>(gdb) symbol-file kernel.elf            &#160;;kernel.elf is the actual unstripped kernel image in this case
+</pre>
+<p>From there, you can see the actual C source code as it runs line per line! (Use the stepi instruction in gdb to execute the code line per line.)
+</p><p>Example&#160;:
+</p>
+<pre>$ qemu -s -S c.img
+warning: could not open /dev/net/tun: no virtual network emulation
+Waiting gdb connection on port 1234 
+
+(gdb) target remote localhost:1234
+Remote debugging using localhost:1234
+0x0000fff0 in&#160;?? ()
+(gdb) symbol-file kernel.b
+Reading symbols from kernel.b...done.
+
+(gdb) break kmain                       &#160;; This will add a break point to any function in your kernel code.
+Breakpoint 1 at 0x101800: file kernel/kernel.c, line 12.
+
+(gdb) continue
+
+Breakpoint 1, kmain (mdb=0x341e0, magic=0) at kernel/kernel.c:12
+12      {
+</pre>
+<p>The above started code execution, and will stop at kmain specified in the "break kmain" above.
+You can view registers at anytime with this command
+</p>
+<pre>(gdb) info registers
+</pre>
+<p>I won't start explaining all the nice things about gdb, but as you can see, it is a very powerful tool for debugging OSes.
+</p>
+<h2> <span class="mw-headline" id="GUI_frontends"> GUI frontends </span></h2>
+<p>While GDB provides a text-based user interface (available via the `-tui` command line option or by entering `wh` at the GDB prompt), you might want to use one of the available GUI frontents to GDB. These include but are not limited to:
+</p>
+<pre>* <a rel="nofollow" class="external text" href="http://www.kdbg.org/">kdbg</a>
+* <a rel="nofollow" class="external text" href="http://sources.redhat.com/insight/">insight</a>
+* <a rel="nofollow" class="external text" href="http://www.gnu.org/s/ddd/">ddd</a>
+* <a rel="nofollow" class="external text" href="http://visualkernel.com/">VisualKernel</a>
+</pre>
+<p>Attaching to a QEMU session works similar to the command line GDB described above.
+</p>
+<h2> <span class="mw-headline" id="Develop_in_hosted_environment"> Develop in hosted environment </span></h2>
+<p>Another possibility, which is also a great architectural exercise, is to code every software module in a hosted environment like Linux, and then port it to your OS. You can do this for kernel code too, not just usermode programs.
+</p><p>Suppose you want to develop your VFS interface implementation. Your already created the interface for block devices (doesn't matter if you already implemented it in your kernel). In this case, you can implement your block device interface as a set of wrappers that <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Adapter_pattern">adapts</a> your interface to POSIX calls. You will then implement your VFS interface (i.e., the code that will manage the filesystem drivers in your kernel) on top of those wrappers. You will then test&amp;debug your implementation all in the hosted environment, and when it is mature, you link it into your real kernel instead of into your hosted implementations. You will finally test your newly introduced code, now in the freestanding environment to ensure it works there as well.
+</p><p>Now, the Pros. First of all, you can use your favourite debugger. You can also use unit testing, for example, which is far better than testing software by hand, if you use the right method.
+</p><p>There are some Cons on this approach. For example, you are far from your target environment when you code like this. This is further aggravated by the fact that so-called <i>freestanding</i> environments are dramatically more sensitive to undefined behaviour, specially uninitialized variables. You can work around this limitation by asking the compiler to perform aggressive optimization while testing hosted, which make software more sensible to undefined behaviour, too. However, as the best debug environment is the final target environment, you will still want to test your code when you introduce in into your real kernel.
+</p><p>Another Con that will probably scare most people is that this approach requires you to consistently plan your interfaces beforehand. Depending on your specific requirements, you may still be able to avoid a too long planning phase. For example, if you want to throw away the hosted implementations once you get the modules working properly, then you don't have to bother maintaining the same interfaces forever.
+</p>
+<h2> <span class="mw-headline" id="Using_an_IDE"> Using an IDE </span></h2>
+<p>You can debug Linux kernel modules with Visual Studio if you use the VisualKernel plugin. Here's a tutorial showing a normal debugging session: <a rel="nofollow" class="external free" href="http://visualkernel.com/tutorials/kgdb/">http://visualkernel.com/tutorials/kgdb/</a>
+</p>
+<h2> <span class="mw-headline" id="Related_Threads"> Related Threads </span></h2>
+<ul><li><a href="http://forum.osdev.org/viewtopic.php?t=9514" class="extiw" title="topic:9514">Benchmarking and Debugging</a>
+</li><li><a href="http://forum.osdev.org/viewtopic.php?t=10140" class="extiw" title="topic:10140">Implementation of kassert()</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 62/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1947-0!*!0!!en!*!* and timestamp 20160927222250 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=Kernel_Debugging&amp;oldid=16717">http://wiki.osdev.org/index.php?title=Kernel_Debugging&amp;oldid=16717</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="/Category:Troubleshooting" title="Category:Troubleshooting">Troubleshooting</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Kernel_Debugging" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/Kernel_Debugging"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:Kernel_Debugging"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/Kernel_Debugging" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=Kernel_Debugging&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=Kernel_Debugging&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/Kernel_Debugging" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/Kernel_Debugging" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=Kernel_Debugging&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=Kernel_Debugging&amp;oldid=16717" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 14 September 2014, at 09:13.</li>
+											<li id="footer-info-viewcount">This page has been accessed 84,287 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.050 secs. -->
+	</body>
+</html>

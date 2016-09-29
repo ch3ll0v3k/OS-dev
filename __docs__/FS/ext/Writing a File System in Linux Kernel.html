@@ -1,0 +1,769 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Writing a File System in Linux Kernel</title>
+<meta name="description" content="Who This Article is for There are no complex or difficult concepts in this article, all required is a basic"/>
+<meta name="robots" content="noodb"/>
+<meta name="robots" content="noyaca"/>
+<link rel='stylesheet' type='text/css' href='http://kukuruku.co/templates/cache/kukuruku/A.9fd7432e2418fb6d9e23f00f31c5936d.css.pagespeed.cf.rbecl3mkE1.css'/>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Source+Sans+Pro:200,600|Oxygen:700|Lato:700&subset=latin' rel='stylesheet' type='text/css'>
+<link href="http://kukuruku.co/templates/skin/kukuruku/images/favicon.ico" rel="shortcut icon"/>
+<link rel="apple-touch-icon" sizes="57x57" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-57x57.png.pagespeed.ic.bmlycyn3-4.png">
+<link rel="apple-touch-icon" sizes="114x114" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-114x114.png.pagespeed.ic.LUV8YYPA1L.png">
+<link rel="apple-touch-icon" sizes="72x72" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-72x72.png.pagespeed.ic.KMP4Gt2vQB.png">
+<link rel="apple-touch-icon" sizes="144x144" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-144x144.png.pagespeed.ic.6SKIlkxYn1.png">
+<link rel="apple-touch-icon" sizes="60x60" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-60x60.png.pagespeed.ic.SYpIt3BPBU.png">
+<link rel="apple-touch-icon" sizes="120x120" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-120x120.png.pagespeed.ic.A3B_k4dsUJ.png">
+<link rel="apple-touch-icon" sizes="76x76" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-76x76.png.pagespeed.ic.SjCHJLkuFu.png">
+<link rel="apple-touch-icon" sizes="152x152" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xapple-touch-icon-152x152.png.pagespeed.ic.XzhSBlqnSl.png">
+<link rel="icon" type="image/png" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xfavicon-196x196.png.pagespeed.ic.o0JC9tGeTI.png" sizes="196x196">
+<link rel="icon" type="image/png" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xfavicon-160x160.png.pagespeed.ic.faWJVUlV5c.png" sizes="160x160">
+<link rel="icon" type="image/png" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xfavicon-96x96.png.pagespeed.ic.diwWkaUe73.png" sizes="96x96">
+<link rel="icon" type="image/png" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xfavicon-16x16.png.pagespeed.ic.zAVy1hh6x6.png" sizes="16x16">
+<link rel="icon" type="image/png" href="http://kukuruku.co/templates/skin/kukuruku/images/favicons/xfavicon-32x32.png.pagespeed.ic.5KMDTDfwN3.png" sizes="32x32">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="msapplication-TileImage" content="http://kukuruku.co/templates/skin/kukuruku/images/favicons/mstile-144x144.png">
+<link rel="search" type="application/opensearchdescription+xml" href="http://kukuruku.co/search/opensearch/" title="Kukuruku / Technology Hub"/>
+<link rel="alternate" type="application/rss+xml" href="http://kukuruku.co/rss/comments/61/" title="Writing a File System in Linux Kernel">
+<link rel="canonical" href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"/>
+<!--googleoff: all-->
+<script>//<![CDATA[
+var DIR_WEB_ROOT='http://kukuruku.co';var DIR_STATIC_SKIN='http://kukuruku.co/templates/skin/kukuruku';var DIR_ROOT_ENGINE_LIB='http://kukuruku.co/engine/lib';var LIVESTREET_SECURITY_KEY='98a9a6d2483dfa58c547da39d5256267';var SESSION_ID='b3qbru3mg5ql4iganj3d2s4eh2';var BLOG_USE_TINYMCE='';var TINYMCE_LANG='en';var aRouter=new Array();aRouter['error']='http://kukuruku.co/error/';aRouter['registration']='http://kukuruku.co/registration/';aRouter['profile']='http://kukuruku.co/profile/';aRouter['my']='http://kukuruku.co/my/';aRouter['blog']='http://kukuruku.co/hub/';aRouter['personal_blog']='http://kukuruku.co/personal_blog/';aRouter['index']='http://kukuruku.co/index/';aRouter['topic']='http://kukuruku.co/topic/';aRouter['login']='http://kukuruku.co/login/';aRouter['people']='http://kukuruku.co/people/';aRouter['settings']='http://kukuruku.co/settings/';aRouter['tag']='http://kukuruku.co/tag/';aRouter['talk']='http://kukuruku.co/talk/';aRouter['comments']='http://kukuruku.co/comments/';aRouter['rss']='http://kukuruku.co/rss/';aRouter['link']='http://kukuruku.co/link/';aRouter['question']='http://kukuruku.co/question/';aRouter['blogs']='http://kukuruku.co/hubs/';aRouter['search']='http://kukuruku.co/search/';aRouter['admin']='http://kukuruku.co/admin/';aRouter['ajax']='http://kukuruku.co/ajax/';aRouter['feed']='http://kukuruku.co/feed/';aRouter['stream']='http://kukuruku.co/stream/';aRouter['photoset']='http://kukuruku.co/photoset/';aRouter['subscribe']='http://kukuruku.co/subscribe/';aRouter['org']='http://kukuruku.co/org/';aRouter['newsletters']='http://kukuruku.co/newsletters/';aRouter['language']='http://kukuruku.co/language/';aRouter['openid_login']='http://kukuruku.co/openid_login/';aRouter['openid_settings']='http://kukuruku.co/openid_settings/';aRouter['besttopicsflow']='http://kukuruku.co/besttopicsflow/';aRouter['company']='http://kukuruku.co/company/';aRouter['companies']='http://kukuruku.co/companies/';aRouter['mainpreview']='http://kukuruku.co/mainpreview/';aRouter['page']='http://kukuruku.co/page/';aRouter['premoderation']='http://kukuruku.co/premoderation/';aRouter['sitemap']='http://kukuruku.co/sitemap/';
+//]]></script>
+<!--googleon: all-->
+<script>var tinyMCE=false;</script>
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-49490146-1','kukuruku.co');ga('require','displayfeatures');ga('send','pageview');</script>
+<meta property="fb:app_id" content="1446177405629271"/>
+<meta property="og:site_name" content="Kukuruku Hub"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="http://kukuruku.co/uploads/topics/preview/00/00/00/61/a17e06093b.jpg"/>
+<meta property="og:url" content="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"/>
+<meta property="og:title" content="Writing a File System in Linux Kernel"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@kukurukuco">
+<meta name="twitter:creator" content="@kukurukuco">
+<meta name="twitter:url" content="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"/>
+<meta name="twitter:domain" content="kukuruku.co"/>
+<meta name="twitter:title" content="Writing a File System in Linux Kernel"/>
+<meta name="twitter:description" content="Who This Article is for There are no complex or difficult concepts in this article, all required is a basic knowledge of the command line, the C language, Makefile and a general understanding about file systems. In this article I am going to describe the components necessary for development inside the Linux kernel, then we’ll write the simplest loadable kernel module and, finally, write a framework for the future file system. It’s a module that will register quite a useful (for now) file system in the kernel. The ones familiar with development inside Linux kernel may not find anything interesting here. Introduction A file system is one of the central OS subsystems. File systems continue to develop as operating systems evolve. Currently we have an entire heterogenetic zoo of file systems, from the old “classic” UFS, to the new exotic NILFS (though this idea isn’t new at all, look at LFS) and BTRFS. We aren’t going to try to throw down monsters like ext3/4 and BTRFS. Our file system will be of educational nature, and we will familiarize ourselves with the Linux kernel using its help. Environment Setup Before we get into the kernel, let’s prepare all the necessary steps"/>
+<meta name="twitter:image" content="http://kukuruku.co/uploads/topics/preview/00/00/00/61/a17e06093b.jpg"/>
+<script>var LS_ROUTER_ACTION='blog';var LS_ROUTER_EVENT='nix';</script>
+</head>
+<body class=" ls-user-role-guest logged-out ls-user-role-not-admin bpage action-blog event-nix"><noscript><meta HTTP-EQUIV="refresh" content="0;url='http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel?ModPagespeed=noscript'" /><style><!--table,div,span,font,p{display:none} --></style><div style="display:block">Please click <a href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel?ModPagespeed=noscript">here</a> if you are not redirected within a few seconds.</div></noscript>
+<nav class="knav navbar navbar-fixed-top" role="navigation">
+<div class="container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+☰
+</button>
+<a class="navbar-brand" rel="home" href="http://kukuruku.co"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZBAMAAAA2x5hQAAAAJ1BMVEUAAAD3lCD3lCD3lCD3lCD3lCD3lB73lCD3lCD3lCD3lB73lB/3lCC64nzOAAAACnRSTlMAIDBAUGC/v9/vGC0CrQAAAHJJREFUGNNj8DxpwMAAJkBgzpkJUAIEzpw5tWrZmTMHscl57gRqsYTpY1gAIg4wkMdrABECQONWBoDMBBKRQIMR9oGIM2d2rVq158zpVavPnDmAJgfWAtcHMol8ByWAiAIoRxNkJs7AOXPmJMgtWORg+gDniFBfYbAL8gAAAABJRU5ErkJggg=="/></a>
+</div>
+<div class="collapse navbar-collapse">
+<ul class="nav navbar-nav navbar-menu">
+<li><a href="http://kukuruku.co" class="nav-link home">Home</a></li>
+<li><a href="http://kukuruku.co/hubs/" class="nav-link hubs">Hubs</a></li>
+</ul>
+<ul class="nav navbar-nav user-actions navbar-right">
+<li>
+<a href="https://twitter.com/kukurukuco" target="_blank" class="nav-link twitter" title="Follow Us on Twitter"><i class="icon-twitter"></i></a>
+</li>
+<li>
+<a href="https://www.facebook.com/kukurukuco" target="_blank" class="nav-link facebook" title="Follow Us on Facebook"><i class="icon-facebook"></i></a>
+</li>
+<li>
+<button class="navbar-btn btn-link newsletters" title="Email Subscriptions"><i class="icon-envelope"></i></button>
+</li>
+<li>
+<a href="http://kukuruku.co/rss/index/" class="nav-link rss" alt="RSS Feed" title="RSS Feed"><i class="icon-rss"></i></a>
+</li>
+<li><button type="button" class="btn btn-success navbar-btn js-login-form-show kbtn signin"><i class="icon-user"></i>Write for us / Sign in</button></li>
+</ul>
+</div><!-- /.navbar-collapse -->
+</div>
+</nav>
+<article class="topic topic-type-topic js-topic published" itemscope itemtype="http://schema.org/Article">
+<div class="no-cover">
+<div class="cover-row">
+<div class="cover-content">
+<header role="banner" class="topic-header col-lg-6 col-md-9 center-block">
+<h1 class="topic-title" itemprop="name headline">Writing a File System in Linux Kernel
+</h1>
+<h5 class="author">
+<span class="by">Written by</span>
+<a href="http://habrahabr.ru/users/kmu1990/" class="name">kmu1990</a>
+|
+<time datetime="2014-05-25T18:02:48-04:00" title="25 May 2014" itemprop="datePublished">
+25 May 2014
+</time>
+|
+<a href="http://habrahabr.ru/company/spbau/blog/218833/" class="source" target="_blank">Original Source</a>
+</h5>
+<div class="ad-block">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Article Header Responsive -->
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5957750206575747" data-ad-slot="5852533318" data-ad-format="auto"></ins>
+<script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+</header>
+</div>
+</div>
+</div>
+<!-- /article header section -->
+<div class="col-sm-6 center-block social-share-block">
+<div id="fb-root"></div>
+<script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1446177405629271&version=v2.0";fjs.parentNode.insertBefore(js,fjs);}(document,'script','facebook-jssdk'));</script>
+<ul class="list-inline text-center">
+<li class="google">
+<!-- Place this tag where you want the share button to render. -->
+<div class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60" data-href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"></div>
+<!-- Place this tag after the last share tag. -->
+<script>(function(){var po=document.createElement('script');po.type='text/javascript';po.async=true;po.src='https://apis.google.com/js/platform.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(po,s);})();</script>
+</li>
+<li class="linkedin">
+<script src="//platform.linkedin.com/in.js">
+              lang: en_US
+            </script>
+<script type="IN/Share" data-url="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" data-counter="top"></script>
+</li>
+<li class="facebook">
+<div class="fb-like" data-href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" data-layout="box_count" data-action="like" data-show-faces="true" data-share="false"></div>
+</li>
+<li class="twitter">
+<a class="twitter-share-button" href="https://twitter.com/share" data-via="KukurukuCo" data-text="Writing a File System in Linux Kernel" data-count="vertical">Tweet</a>
+<script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));</script>
+</li>
+</ul>
+</div>
+<div class="col-lg-3 col-md-1 topic-col-left"></div>
+<div class="topic-content text col-lg-6 col-md-9" itemprop="articleBody">
+<h6>Who This Article is for</h6><br/>
+There are no complex or difficult concepts in this article, all required is a basic knowledge of the command line, the C language, Makefile and a general understanding about file systems.<br/>
+<br/>
+In this article I am going to describe the components necessary for development inside the Linux kernel, then we’ll write the simplest loadable kernel module and, finally, write a framework for the future file system. It’s a module that will register quite a useful (for now) file system in the kernel. The ones familiar with development inside Linux kernel may not find anything interesting here. <br/>
+<a name="cut" rel="nofollow"></a> <br/>
+<h4>Introduction</h4><br/>
+A file system is one of the central OS subsystems. File systems continue to develop as operating systems evolve. Currently we have an entire heterogenetic zoo of file systems, from the old “classic” <a href="http://en.wikipedia.org/wiki/Unix_File_System" rel="nofollow">UFS</a>, to the new exotic <a href="http://en.wikipedia.org/wiki/NILFS" rel="nofollow">NILFS</a> (though this idea isn’t new at all, look at <a href="http://en.wikipedia.org/wiki/Log-structured_File_System_(BSD)" rel="nofollow">LFS</a>) and <a href="http://en.wikipedia.org/wiki/Btrfs" rel="nofollow">BTRFS</a>. We aren’t going to try to throw down monsters like ext3/4 and BTRFS. Our file system will be of educational nature, and we will familiarize ourselves with the Linux kernel using its help. <br/>
+<br/>
+<h5>Environment Setup</h5><br/>
+Before we get into the kernel, let’s prepare all the necessary steps for building our OS module. I use Ubuntu, so I’m going to setup within this environment. Fortunately, it’s not difficult at all. To begin with, we’re going to need a compiler and building facilities:<br/>
+<br/>
+<pre class="prettyprint"><code>sudo apt-get install gcc build-essential</code></pre> <br/>
+Then we may need the kernel source code. We’ll go the easy route and won’t bother rebuilding the kernel from the source. We’ll just determine kernel headers; this should be enough to write a loadable module. The headers can be determined the following way:<br/>
+<br/>
+<pre class="prettyprint"><code>sudo apt-get install linux-headers-`uname -r`</code></pre><br/>
+And now I’m going to jump onto my soap box. Rummaging in the kernel on a working machine isn’t the smartest idea, so I strongly recommend you perform all these actions withiin a virtual machine. We won’t do anything dangerous so the stored data is safe. But if anything goes wrong, we’ll probably have to restart the system. Besides, it’s more comfortable to debug the kernel modules in a virtual machine (such as QEMU), though this question won’t be considered in the article. <br/>
+<br/>
+<h5>Environment Check Up</h5><br/>
+In order to check the environment we’ll write and start the kernel module, which won’t do anything useful (Hello, World!). Let’s consider the module code. I named it super.c (super is derived from superblock):<br/>
+<br/>
+<pre class="prettyprint"><code>#include &lt;linux/init.h&gt;
+  #include &lt;linux/module.h&gt;
+
+  static int __init aufs_init(void)
+  {
+      pr_debug(&quot;aufs module loaded\n&quot;);
+      return 0;
+  }
+
+  static void __exit aufs_fini(void)
+  {
+      pr_debug(&quot;aufs module unloaded\n&quot;);
+  }
+
+  module_init(aufs_init);
+  module_exit(aufs_fini);
+
+  MODULE_LICENSE(&quot;GPL&quot;);
+  MODULE_AUTHOR(&quot;kmu&quot;);</code></pre><br/>
+<br/>
+At the very beginning you can see two headers. They are an important part of any loadable module. Then two functions: aufs_init and aufs_fini follow. They will be called before and after the module roll-out. <br/>
+Some of you may be confused by __init label. __init is a hint to the kernel that the function is used during module initialization only. It means that after the module initialization it can be unloaded from memory. There is an analogous marker for the data; the kernel can ignore these hints. <br/>
+The reference to __init functions and data from the main module code is a potential error.<br/>
+That’s why during the module setup it should be checked that there are no such references. If such message is found, the kernel setup system will give out an alert. The similar check is carried out for __exit functions and data. If you want to know details about __init and __exit, you can refer to the <a href="http://lxr.free-electrons.com/source/include/linux/init.h?v=3.14" rel="nofollow">source code</a>.<br/>
+<br/>
+Please note that aufs_init returns int. Thus the kernel finds out that during the module initialization something went wrong. If the module hasn’t returned a zero value, it means that an error occurred during initialization. <br/>
+In order to find out which functions should be called at module loading and unloading, two macros module_init and module_exit are used. In order to learn details, refer to lxr, it’s really useful if you want to study the kernel. <br/>
+pr_debug – is a function (it’s a macro actually, but it doesn’t matter for now) of kernel output to the log, it’s very similar to the family of printf functions with some extensions (for example, for IP and MAC addresses printing. You will find a complete list of modifiers in the documentation of the kernel. Together with pr_debug, there is an entire family of macros: pr_info, pr_warn, pr_err and others. If you are familiar with Linux module development you know about printk function. pr_* open into printk calls, so you can use printk instead of them. <br/>
+<br/>
+Then there are macros with information about descendants – a license and an author. There are also other macros that allow to store manifold information about the module. For example MODULE_VERSION, MODULE_INFO, MODULE_SUPPORTED_DEVICE and others. By the way, if you’re using different form GPL license, you won’t be able to use some functions available for GPL modules. <br/>
+<br/>
+Now let’s build and start our module. We’ll write Makefile for this. It will build our module:<br/>
+<br/>
+<pre class="prettyprint"><code>obj-m := aufs.o
+aufs-objs := super.o
+
+CFLAGS_super.o := -DDEBUG
+
+all:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+
+clean:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean</code></pre><br/>
+Makefile calls Makefile for building, it should be located in /lib/modules/$(shell uname -r)/build catalogue (uname –r is a command that returns the version of the started kernel). If the headers (or source codes) of the kernel are located in another catalogue, you should fix it. <br/>
+<br/>
+obj-m allows to state the name of the future module. In our case it will be named aufs.ko (ko exactly – from kernel object). <br/>
+aufs-objs allows to indicate what source code aufs module should be built from. In our case super.c file will be used. You can also indicate different compiler flags, which will be used (in addition to those used by Makefile kernel) for object files building. In our case I pass –DDEBUG flag during super.c build. If we don’t pass the flag, we won’t see pr_debug output in the system log. <br/>
+<br/>
+In order to build the module make command should be executed. If everything’s fine, aufs.ko file will appear in the catalogue. It’s quite easy to load the module: <br/>
+<pre class="prettyprint"><code>sudo insmod ./aufs.ko</code></pre><br/>
+In order to make sure that the module is loaded you can look at lsmod command output. <br/>
+<pre class="prettyprint"><code>lsmod | grep aufs</code></pre><br/>
+In order to see the system log, dmesg command should be called. We’ll see messages from our module in it. It’s not difficult to unload the module: <br/>
+<pre class="prettyprint"><code>sudo rmmod aufs</code></pre><br/>
+<h5>Returning to the File System</h5><br/>
+Thus, the environment is adjusted and operates. We know how to build the simplest module, load and unload it. Now we should consider the file system. The file system design should begin “on paper”, from a thorough consideration of the data structures being usedr. But we’ll follow a simple path and defer the details of files and folders storage at the disk for the next time. Now we’ll write a framework of our future file system. <br/>
+<br/>
+The life of a file system begins with check-in. You can check-in the file system by calling <a href="http://lxr.free-electrons.com/source/fs/filesystems.c?v=3.14#L69" rel="nofollow">register_filesystem</a>. We’ll register the file system in the function of module initialization. There’s <a href="http://lxr.free-electrons.com/source/fs/filesystems.c?v=3.14#L101" rel="nofollow">unregister_filesystem</a> for the file system unregistration and we’ll call it in aufs_fini function of our module. <br/>
+<br/>
+Both functions accept a pointer to file_system_type structure as a parameter. It’ll “describe” the file system. Consider it as a class of the file system. <br/>
+There’re enough fields in the structure, but we’re interested in some of them only: <br/>
+<br/>
+<pre class="prettyprint"><code>static struct file_system_type aufs_type = {
+      .owner = THIS_MODULE,
+      .name = &quot;aufs&quot;,
+      .mount = aufs_mount,
+      .kill_sb = kill_block_super,
+      .fs_flags = FS_REQUIRES_DEV, 
+  };</code></pre><br/>
+First of all, we are interested in <strong>name</strong> field. It stores the file system name. This name will be used during the assembling. <br/>
+<br/>
+mount & kill_sb — are two fields containing pointers to functions. The first function will be called during the file system assembling, the second one during disassembly. It’s enough to implement one of them, and we’ll use kill_block_super instead of the second one, which is provided by the kernel. <br/>
+<br/>
+fs_flags — stores different flags. In our case it stores FS_REQUIRES_DEV flag, which says that our file system needs a disk for operation (though it’s not the case for the moment). You don’t have to indicate this flag if you don’t want to, everything will operate without it. <br/>
+Finally, owner field is necessary in order to setup a counter of links to the module. The link counter is necessary so that the module wouldn’t be unloaded too soon. For example, if the file system has been assembled, the module loading can lead to the crash. The link counter won’t allow to unload the module till its being used, i.e. until we disassembly the file system. <br/>
+<br/>
+Now let’s consider aufs_mount function. It should assemble the device and return the structure describing a root catalogue of the file system. It sounds quite complicated, but, fortunately, the kernel will do it for us as well: <br/>
+<br/>
+<pre class="prettyprint"><code>static struct dentry *aufs_mount(struct file_system_type *type, int flags,
+                                      char const *dev, void *data)
+  {
+      struct dentry *const entry = mount_bdev(type, flags, dev,
+                                                  data, aufs_fill_sb);
+      if (IS_ERR(entry))
+          pr_err(&quot;aufs mounting failed\n&quot;);
+      else
+          pr_debug(&quot;aufs mounted\n&quot;);
+      return entry;
+  }</code></pre><br/>
+The biggest part of work happens inside moun_bdev function. We are interested in its aufs_fill_sb parameter. It’s a pointer to the function (again), which will be called from mount_bdev in order to initialize the superblock. But before we move on to it, an important file subsystem of the kernel — dentry structure – should be considered. This structure represents a section of the path to the file name. For example, if we refer to /usr/bin/vim file, we’ll have different structure exemplars representing sections of / (root catalogue), bin/ and vim path. The kernel supports these structures cache. It allows to quickly find inode (another center structure) by the file (path) name. aufs_mount function should return dentry, which represents the root catalogue of our file system. aufs_fill_sb function will create it. <br/>
+<br/>
+Thus, for the moment aufs_fill_sb is the most important function in our module and it looks like the following: <br/>
+<br/>
+<pre class="prettyprint"><code>static int aufs_fill_sb(struct super_block *sb, void *data, int silent)
+  {
+      struct inode *root = NULL;
+
+      sb-&gt;s_magic = AUFS_MAGIC_NUMBER;
+      sb-&gt;s_op = &aufs_super_ops;
+
+      root = new_inode(sb);
+      if (!root)
+      {
+           pr_err(&quot;inode allocation failed\n&quot;);
+           return -ENOMEM;
+      }
+
+      root-&gt;i_ino = 0;
+      root-&gt;i_sb = sb;
+      root-&gt;i_atime = root-&gt;i_mtime = root-&gt;i_ctime = CURRENT_TIME;
+      inode_init_owner(root, NULL, S_IFDIR);
+
+      sb-&gt;s_root = d_make_root(root);
+      if (!sb-&gt;s_root)
+      {
+          pr_err(&quot;root creation failed\n&quot;);
+          return -ENOMEM;
+      }
+
+     return 0;
+ }</code></pre><br/>
+First of all, we fill super_block structure. What kind of structure is it? Usually file systems store in a special place of a disk partition (this place is chosen by file system) the set of file system parameters, such as the block size, the number of occupied/free blocks, file system version, “pointer” to the root catalogue, magic number, by which a driver can check that the necessary file system is stored on the disk. This structure is named superblock (look at the picture below). super_block structure in Linux kernel is mainly intended for similar goals, we save a magic number in it and dentry for the root catalogue (the one returned by mount_bdev).<br/>
+<br/>
+Besides, in s_op field of super_block structure we store a pointer to super_operations structure — these are super_block “class methods”, it’s another structure storing a lot of pointers to the functions. <br/>
+I’ll make another note here. Linux kernel is written on C, without support of different OOP features from the language side. But we can structure a program following OOP ideas without support from the language. So the structures storing a lot of pointers to the functions can be met quite often in the kernel. It’s a method of virtual functions implementation by current facilities. <br/>
+<br/>
+Let’s get back to super_block structure and its “methods”. We’re interested in its put_super field. We’ll save a “destructor” of our superblock in it” <br/>
+<br/>
+<pre class="prettyprint"><code>static void aufs_put_super(struct super_block *sb)
+  {
+      pr_debug(&quot;aufs super block destroyed\n&quot;);
+  }
+
+  static struct super_operations const aufs_super_ops = {
+      .put_super = aufs_put_super,
+  };</code></pre><br/>
+While aufs_put_super function does nothing useful, we use it just in order to type in the system log one more line. aufs_put_super function will be called within kill_block_super (see above) before super_block structure deleting. i.e. when disassembling the file system. <br/>
+<br/>
+Now let’s return to the most important aufs_fill_sb function. Before we create dentry for the root catalogue we should create an index node (inode) of the root catalogue. Inode structure is probably the most important one in the file system. Each file system object (a file, a folder, a special file, a magazine, etc.) identifies with inode. As well as super_block, inode structure reflects the way file systems are stored on a disk. Inode name comes from index node, meaning that it <br/>
+Indexes files and folders on a disk. Usually inside inode on a disk a directive to the place file data are stored on a disk (in which blocks he file content is stored), different access flags (available for read/write/execute), information about the file owner, time of creation/modification/writing/execution and other similar things are stored. <br/>
+<br/>
+We can’t read from the disk yet, so we’ll fill inode with fictive data. As time of creation/modification/writing/execution we use the current time and the kernel will assign the owner and access permissions (call inode_init_owner function). Finally, create dentry bound with the root inode. <br/>
+<br/>
+Skeleton Check Up<br/>
+<br/>
+The skeleton of our file system is ready. It’s time to check it. Building and loading of the file system driver doesn’t differ from building and loading of a general module. We’ll use loop device instead of a real disk for experiments. It’s a “disk” driver, which writes data not on the physical device, but to the file (disk image). Let’s create a disk image. It doesn’t store any data yet, so it’s simple: <br/>
+<pre class="prettyprint"><code>touch image</code></pre><br/>
+We should also create a catalogue, which will be an assembling point (root) of our file system:<br/>
+<pre class="prettyprint"><code>mkdir dir</code></pre><br/>
+Now using this image we’ll assemble our file system: <br/>
+<pre class="prettyprint"><code>sudo mount -o loop -t aufs ./image ./dir</code></pre><br/>
+If the operation ended successfully, we’ll see messages from our module in the system log. In order to disassemble the file system we should: <br/>
+<pre class="prettyprint"><code>sudo umount ./dir</code></pre><br/>
+Check the system log again.<br/>
+<br/>
+<h4>Summary</h4><br/>
+We familiarized ourselves with creation of loadable kernel modules and main structures of the file subsystem. We also wrote a real file system, which can assemble and disassemble only (it’s quite silly for the time being, but we’re going to fix it in future). <br/>
+<br/>
+Then we’re going to consider data reading from the disk. To begin with we’ll define the way data will be stored on disks. We’ll also learn how to read superblock and inodes from the disk. <br/>
+<br/>
+<h4>Links</h4><br/>
+<ul><li>The code to the article is available at <a href="https://github.com/krinkinmu/aufs_les1" rel="nofollow">github</a></li><li>An Indian has quite recently written a simple file system, he has performed <a href="https://github.com/psankar/simplefs" rel="nofollow">a big job</a></li><li>I understand that it’s not very correct educationally to send the newcomers to the kernel source code (though it’s useful to read them); I still recommend all the interested ones to look at the source code of a very simple <a href="http://lxr.free-electrons.com/source/fs/ramfs/" rel="nofollow">ramfs</a> file system. Besides, unlike our file system, ramfs doesn’t use a disk. It stores everything in the memory.</li></ul>
+</div>
+<aside class="col-lg-3 col-md-1 sidebar">
+<div class="block start-writing hidden-md hidden-sm hidden-xs text-center">
+<h3 class="title">WRITE FOR US</h3>
+<button type="button" class="btn btn-default js-login-form-show btn-become-author">Become an Author</button>
+</div>
+<script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<div class="ad-block hidden-md hidden-sm hidden-xs text-center">
+<!-- 300x600 -->
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-5957750206575747" data-ad-slot="4461810114"></ins>
+<script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+<div class="floating-box">
+<div class="ad-block hidden-md hidden-sm hidden-xs">
+<script>google_ad_client="ca-pub-5957750206575747";google_ad_slot="4872645719";google_ad_width=300;google_ad_height=250;</script>
+<!-- 300x250 ad unit -->
+<script src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</div>
+</div>
+</aside>
+<div class="clear"></div>
+<footer class="topic-footer col-lg-6 col-md-9 center-block">
+<ul class="topic-tags js-favourite-insert-after-form js-favourite-tags-topic-61 list-inline">
+<li><a rel="nofollow" class="tag" href="http://kukuruku.co/tag/linux%20kernel/">#linux kernel</a></li> </ul>
+<ul class="list-unstyled list-inline topic-info">
+<li>
+<span class="view-count">
+<i class="icon-eye"></i>
+<span class="counter">46224</span>
+</span>
+</li>
+<li class="comments-count">
+<a href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel#comments" title="Read comments" class="icon-comments">
+<span class="icon-comment"></span>
+</a>
+</li>
+<li class="social-share footer pull-right">
+<a href="https://news.ycombinator.com/submitlink?t=Writing a File System in Linux Kernel&amp;u=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="ycombinator" rel="nofollow">Y</a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://www.reddit.com/submit?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel&title=Writing a File System in Linux Kernel" class="reddit" rel="nofollow"><i class="icon-reddit"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="https://plus.google.com/share?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="google-plus" rel="nofollow"><i class="icon-google-plus"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://www.facebook.com/sharer.php?s=100&p[url]=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="facebook" rel="nofollow"><i class="icon-facebook"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://twitter.com/share?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel&amp;text=Writing a File System in Linux Kernel @KukurukuCo" class="twitter" rel="nofollow"><i class="icon-twitter"></i></a>
+</li>
+</ul>
+<div class="cards row">
+<section class="col-sm-6">
+<h6>Published by</h6>
+<div class="author">
+<div class="profile">
+<a href="http://kukuruku.co/profile/kukuruku/" class="profile-cover" style="background-image:url(http://kukuruku.co/uploads/images/00/00/01/2014/08/10/x3db732.jpg.pagespeed.ic.pTTwcP8J_k.jpg)">
+<span class="mask"></span>
+</a>
+<a href="http://kukuruku.co/profile/kukuruku/" alt="Kukuruku Hub" class="avatar"><script pagespeed_no_defer="">//<![CDATA[
+(function(){var d=window,e=document,f="documentElement",g="scrollTop",k="prototype",l="body",m="getAttribute",n="",p="1",q="data",r="img",s="load",t="number",u="on",v="onload",w="pagespeed_lazy_position",x="pagespeed_lazy_replaced_functions",y="pagespeed_lazy_src",z="position",A="relative",B="resize",C="scroll",D="src";d.pagespeed=d.pagespeed||{};var E=d.pagespeed,F=function(a){this.d=[];this.a=0;this.b=!1;this.o=a;this.e=null;this.i=0;this.j=200;this.c=!1};
+F[k].s=function(){var a=0;typeof d.pageYOffset==t?a=d.pageYOffset:e[l]&&e[l][g]?a=e[l][g]:e[f]&&e[f][g]&&(a=e[f][g]);var b=d.innerHeight||e[f].clientHeight||e[l].clientHeight;return{top:a,bottom:a+b,height:b}};F[k].n=function(a){var b=a[m](w);if(b)return parseInt(b,0);var b=a.offsetTop,c=a.offsetParent;c&&(b+=this.n(c));b=Math.max(b,0);a.setAttribute(w,b);return b};F[k].r=function(a){var b=this.n(a);return{top:b,bottom:b+a.offsetHeight}};
+F[k].q=function(a,b){if(a.currentStyle)return a.currentStyle[b];if(e.defaultView&&e.defaultView.getComputedStyle){var c=e.defaultView.getComputedStyle(a,null);if(c)return c.getPropertyValue(b)}return a.style&&a.style[b]?a.style[b]:n};F[k].p=function(a){if(!this.c&&(0==a.offsetHeight||0==a.offsetWidth))return!1;if(this.q(a,z)==A)return!0;var b=this.s(),c=a.getBoundingClientRect();c?(a=c.top-b.height,b=c.bottom):(c=this.r(a),a=c.top-b.bottom,b=c.bottom-b.top);return a<=this.a&&0<=b+this.a};
+F[k].m=function(a){this.l(a);var b=this;d.setTimeout(function(){var c=a[m](y);if(null!=c)if((b.b||b.p(a))&&-1!=a.src.indexOf(b.o)){var h=a.parentNode,G=a.nextSibling;h&&h.removeChild(a);a.getAttribute=a.k;a.removeAttribute(v);a.removeAttribute(y);a.removeAttribute(x);h&&h.insertBefore(a,G);a.src=c}else b.d.push(a)},0)};F[k].loadIfVisible=F[k].m;F[k].u=function(){this.b=!0;this.f()};F[k].loadAllImages=F[k].u;F[k].f=function(){var a=this.d,b=a.length;this.d=[];for(var c=0;c<b;++c)this.m(a[c])};
+F[k].h=function(a,b){return a.a?null!=a.a(b):null!=a[m](b)};F[k].v=function(){for(var a=e.getElementsByTagName(r),b=0;b<a.length;++b){var c=a[b];this.h(c,y)&&this.l(c)}};F[k].overrideAttributeFunctions=F[k].v;F[k].l=function(a){var b=this;this.h(a,x)||(a.k=a[m],a.getAttribute=function(a){a.toLowerCase()==D&&b.h(this,y)&&(a=y);return this.k(a)},a.setAttribute(x,p))};
+E.g=function(a,b,c){if(a.addEventListener)a.addEventListener(b,c,!1);else if(a.attachEvent)a.attachEvent(u+b,c);else{var h=a[u+b];a[u+b]=function(){c.call(this);h&&h.call(this)}}};E.t=function(a,b){var c=new F(b);E.lazyLoadImages=c;E.g(d,s,function(){c.c=!0;c.b=a;c.a=200;c.f()});0!=b.indexOf(q)&&((new Image).src=b);var h=function(){if(!(c.c&&a||c.e)){var b=c.j;(new Date).getTime()-c.i>c.j&&(b=0);c.e=d.setTimeout(function(){c.i=(new Date).getTime();c.f();c.e=null},b)}};E.g(d,C,h);E.g(d,B,h)};
+E.lazyLoadInit=E.t;})();
+
+pagespeed.lazyLoadInit(false, "/mod_pagespeed_static/1.JiBnMqyl6S.gif");
+
+//]]></script><img pagespeed_lazy_src="http://kukuruku.co/uploads/images/00/00/01/2014/08/10/xavatar_64x64.jpg,q185218.pagespeed.ic.ltJTCGN3dl.jpg" alt="Kukuruku Hub" class="img-circle" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/></a>
+<h4 class="name"><a rel="author" href="http://kukuruku.co/profile/kukuruku/">Kukuruku Hub</a></h4>
+</div>
+<div class="info">
+<span class="rating">
+RATING: <span class="value">15.51</span>
+</span>
+<button class="btn btn-success js-login-form-show pull-right">Follow</button>
+</div>
+</div>
+</section>
+<section class="col-sm-6">
+<h6>Published in</h6>
+<div class="hubs media">
+<div class="media-body">
+<h4 class="media-heading"><a href="http://kukuruku.co/hub/nix/" class="card-hub" title="*nix">*nix</a></h4>
+The *nix world is all about Unix-like systems, e.g., Linux, BSD, etc
+</div>
+</div>
+</section>
+</div>
+</footer>
+<div class="infobar clearfix">
+<div class="container">
+<div class="logo hidden-xs">
+<a rel="home" href="http://kukuruku.co"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZBAMAAAA2x5hQAAAAJ1BMVEUAAAD3lCD3lCD3lCD3lCD3lCD3lB73lCD3lCD3lCD3lB73lB/3lCC64nzOAAAACnRSTlMAIDBAUGC/v9/vGC0CrQAAAHJJREFUGNNj8DxpwMAAJkBgzpkJUAIEzpw5tWrZmTMHscl57gRqsYTpY1gAIg4wkMdrABECQONWBoDMBBKRQIMR9oGIM2d2rVq158zpVavPnDmAJgfWAtcHMol8ByWAiAIoRxNkJs7AOXPmJMgtWORg+gDniFBfYbAL8gAAAABJRU5ErkJggg==" alt="Kukuruku Hub"/></a>
+</div>
+<ul class="list-inline">
+<li>
+<div id="vote_area_topic_61" class="vote
+                                                                                                                                                                                                                        vote-count-positive
+                                                                                                                                                                                                            
+                                                                    ">
+<div class="vote-up js-login-form-show"><i class="icon-arrow-up"></i></div>
+<div class="vote-count" id="vote_total_topic_61" title="All votes: 1">
+1
+</div>
+<div class="vote-down js-login-form-show"><i class="icon-arrow-down"></i></div>
+</div>
+</li>
+<li>
+<small class="written-by hidden-xs">&nbsp;Written by <a href="http://habrahabr.ru/users/kmu1990/">kmu1990</a></small>
+</li>
+<li class="hidden-xs">
+<a href="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel#comments" title="Read comments" class="icon-comments">
+<span class="icon-comment-2"></span>
+</a>
+</li>
+<li class="social-share footer pull-right">
+<a href="https://news.ycombinator.com/submitlink?t=Writing a File System in Linux Kernel&amp;u=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="ycombinator" rel="nofollow">Y</a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://www.reddit.com/submit?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel&title=Writing a File System in Linux Kernel" class="reddit" rel="nofollow"><i class="icon-reddit"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="https://plus.google.com/share?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="google-plus" rel="nofollow"><i class="icon-google-plus"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://www.facebook.com/sharer.php?s=100&p[url]=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel" class="facebook" rel="nofollow"><i class="icon-facebook"></i></a>
+</li>
+<li class="social-share footer pull-right">
+<a href="http://twitter.com/share?url=http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel&amp;text=Writing a File System in Linux Kernel @KukurukuCo" class="twitter" rel="nofollow"><i class="icon-twitter"></i></a>
+</li>
+</ul>
+</div>
+</div>
+</article> <!-- /.topic -->
+<section class="recommended-articles col-lg-6 col-md-9 center-block">
+<h3 class="title">RECOMMENDED</h3>
+<ul class="articles-list list-inline list-unstyled">
+<li>
+<a href="http://kukuruku.co/hub/algorithms/" class="hub">Algorithms</a>
+<a href="http://kukuruku.co/hub/algorithms/exact-maximum-clique-for-large-or-massive-real-graphs" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/80/x2a6b0109d3_300crop.png.pagespeed.ic.EQ9_MqQYNV.jpg" width="100%" alt="Exact Maximum Clique for Large or Massive Real Graphs" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/algorithms/exact-maximum-clique-for-large-or-massive-real-graphs" class="article-title">Exact Maximum Clique for Large or Massive Real Graphs</a>
+</li>
+<li>
+<a href="http://kukuruku.co/hub/algorithms/" class="hub">Algorithms</a>
+<a href="http://kukuruku.co/hub/algorithms/julia-set" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/69/x75322d5e5f_300crop.jpg.pagespeed.ic.hCdNFcpu3s.jpg" width="100%" alt="Julia Set" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/algorithms/julia-set" class="article-title">Julia Set</a>
+</li>
+<li>
+<a href="http://kukuruku.co/hub/cpp/" class="hub">C++</a>
+<a href="http://kukuruku.co/hub/cpp/lock-free-data-structures-yet-another-treatise" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/60/244505c5b2_300crop.gif.pagespeed.ce.hA5-5Dlih9.gif" width="100%" alt="Lock-Free Data Structures. Yet Another Treatise" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/cpp/lock-free-data-structures-yet-another-treatise" class="article-title">Lock-Free Data Structures. Yet Another Treatise</a>
+</li>
+<li>
+<a href="http://kukuruku.co/hub/gamedev/" class="hub">Game Development</a>
+<a href="http://kukuruku.co/hub/gamedev/how-i-built-my-first-android-game-and-realized-creativity-is-all-about-iterations" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/56/x38bfa56575_300crop.png.pagespeed.ic.itOL63FXZb.jpg" width="100%" alt="How I built my first Android Game and realized creativity is all about iterations" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/gamedev/how-i-built-my-first-android-game-and-realized-creativity-is-all-about-iterations" class="article-title">How I built my first Android Game and realized creativity is all about iterations</a>
+</li>
+<li>
+<a href="http://kukuruku.co/hub/diy/" class="hub">DIY</a>
+<a href="http://kukuruku.co/hub/diy/usb-killer" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/55/x24b34beff3_300crop.gif.pagespeed.ic.ZjVatI7uGH.png" width="100%" alt="USB Killer" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/diy/usb-killer" class="article-title">USB Killer</a>
+</li>
+<li>
+<a href="http://kukuruku.co/hub/programming/" class="hub">Programming</a>
+<a href="http://kukuruku.co/hub/programming/i-do-not-know-c" class="article-image">
+<img pagespeed_lazy_src="http://kukuruku.co/uploads/topics/preview/00/00/01/48/x305ed27fb1_300crop.jpg.pagespeed.ic.2Cooa-WMwC.jpg" width="100%" alt="I Do Not Know C" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/>
+</a>
+<a href="http://kukuruku.co/hub/programming/i-do-not-know-c" class="article-title">I Do Not Know C</a>
+</li>
+</ul>
+</section>
+<section class="comments clearfix">
+<div id="disqus_thread" class="col-lg-6 col-md-9 center-block"></div>
+<script type="text/javascript" pagespeed_no_defer="">pagespeed.lazyLoadImages.overrideAttributeFunctions();</script><script>var disqus_config=function(){this.page.url='http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel';this.page.identifier='writing-a-file-system-in-linux-kernel';};(function(){var d=document,s=d.createElement('script');s.src='//kukuruku.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+<section class="article-user-signup text-center">
+<h3 class="title text-center">Write your own articles at Kukuruku Hub</h3>
+<button class="js-login-form-show btn-become-author">Start writing now</button>
+</section>
+<section class="comments clearfix">
+<div class="col-lg-6 col-md-9 center-block" id="comments">
+<header class="comments-header">
+<h3><span id="count-comments">0</span> comments</h3>
+<a name="comments"></a>
+</header>
+</div>
+<div class="col-lg-6 col-md-9 center-block">
+<div class="modal fade in modal-image-upload" id="window_upload_img">
+<div class="modal-dialog">
+<div class="modal-content">
+<header class="modal-header">
+<button type="button" class="close jqmClose" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title">Upload image</h4>
+</header>
+<div class="modal-body">
+<ul class="nav nav-tabs">
+<li class="active js-block-upload-img-item" data-type="pc"><a href="#">From PC</a></li>
+<li class="js-block-upload-img-item" data-type="link"><a href="#">From internet</a></li>
+</ul>
+<br/>
+<form method="POST" action="" enctype="multipart/form-data" id="block_upload_img_content_pc" onsubmit="return false;" class="tab-content js-block-upload-img-content" data-type="pc">
+<div class="form-group">
+<label for="img_file">File</label>
+<input type="file" name="img_file" id="img_file" value=""/>
+</div>
+<div class="form-group">
+<label for="form-image-align">Align</label>
+<select name="align" id="form-image-align" class="form-control">
+<option value="">No</option>
+<option value="left">Left</option>
+<option value="right">Right</option>
+<option value="center">Center</option>
+</select>
+</div>
+<div class="form-group">
+<label for="form-image-title">Title</label>
+<input type="text" name="title" id="form-image-title" value="" class="form-control"/>
+</div>
+<button type="submit" class="btn btn-success" onclick="ls.ajaxUploadImg('block_upload_img_content_pc','form_comment_text');">Submit</button>
+<button type="submit" class="btn btn-default jqmClose">Cancel</button>
+</form>
+<form method="POST" action="" enctype="multipart/form-data" id="block_upload_img_content_link" onsubmit="return false;" style="display: none;" class="tab-content js-block-upload-img-content" data-type="link">
+<div class="form-group">
+<label for="img_file">Image URL</label>
+<input type="text" name="img_url" id="img_url" value="http://" class="form-control"/>
+</div>
+<div class="form-group">
+<label for="form-image-url-align">Align</label>
+<select name="align" id="form-image-url-align" class="form-control">
+<option value="">No</option>
+<option value="left">Left</option>
+<option value="right">Right</option>
+<option value="center">Center</option>
+</select>
+</div>
+<div class="form-group">
+<label for="form-image-url-title">Title</label>
+<input type="text" name="title" id="form-image-url-title" value="" class="form-control"/>
+</div>
+<button type="submit" class="btn btn-success" onclick="ls.topic.insertImageToEditor(jQuery('#img_url').val(),jQuery('#form-image-url-align').val(),jQuery('#form-image-url-title').val());">Insert as external link</button>
+or
+<button type="submit" class="btn btn-success" onclick="ls.ajaxUploadImg('block_upload_img_content_link','form_comment_text');">Upload</button>
+<button type="submit" class="btn btn-default jqmClose">Cancel</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+<script>var markitupEditor={lang:{"panel_b":"bold","panel_i":"italic","panel_u":"underline","panel_s":"strike through","panel_url":"type link","panel_url_promt":"Type link","panel_code":"code","panel_video":"video","panel_image":"image","panel_cut":"cut","panel_quote":"quote","panel_list":"List","panel_list_ul":"UL LI","panel_list_ol":"OL LI","panel_title":"Header","panel_clear_tags":"clean up the tags","panel_video_promt":"Enter a link to the video","panel_list_li":"list item","panel_image_promt":"Enter the link to an image","panel_user":"user inserted","panel_user_promt":"Enter the user login"}};</script>
+<div id="reply" class="reply">
+<form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
+<textarea name="comment_text" id="form_comment_text" class="mce-editor markitup-editor form-control" placeholder="Any thoughts?"></textarea>
+<div class="pull-right">
+<button class="btn btn-default js-login-form-show btn-comment-preview">Preview</button>
+<button class="btn btn-success js-login-form-show btn-comment-send">Comment</button>
+</div>
+<input type="hidden" name="reply" value="0" id="form_comment_reply"/>
+<input type="hidden" name="cmt_target_id" value="61"/>
+</form>
+</div>
+</div>
+</section>
+<section class="read-more">
+<header class="text-center">
+<h3>Read Next</h3>
+</header>
+<ul class="list-inline item-list">
+<li title="Let’s go on talking about multithreading in the Linux kernel. Last time I told you about interrupts, the ways to process them, and tasklets. Since..." class="item col-sm-12 col-xs-12">
+<a href="http://kukuruku.co/hub/nix/multitasking-in-the-linux-kernel-workqueues">
+<div class="content">
+<div class="rm-cover" style="background-image: url(http://kukuruku.co/uploads/topics/preview/00/00/01/50/5f45230f03.jpg)"></div>
+<div class="rm-overlay"></div>
+<div class="table-row">
+<div class="row-fluid">
+<div class="col-md-10 col-sm-8 col-xs-10 center-block">
+<span class="url">Multitasking in the Linux Kernel. Workqueues</span>
+</div>
+</div>
+</div>
+<div class="view-count">
+<span class="eye glyphicon glyphicon-eye-open"></span>
+<span>9717</span>
+</div>
+</div>
+</a>
+<div class="hub">
+<a href="http://kukuruku.co/hub/nix/">*nix</a>
+</div>
+</li>
+</ul>
+</section>
+<footer id="footer">
+<div class="col-sm-10 center-block text-right">
+<ul class="list-inline footer-list">
+<li><a href="/page/about">About</a></li>
+<li><a href="/page/rules">Rules</a></li>
+<li><a href="/page/privacy">Privacy Policy</a></li>
+<li><a href="mailto:support@kukuruku.co">Contact us</a></li>
+<li>·</li>
+<li><a href="https://twitter.com/kukurukuco">Twitter</a></li>
+<li><a href="https://www.facebook.com/kukurukuco">Facebook</a></li>
+</ul>
+</div>
+</footer>
+<aside class="toolbar hidden-xs">
+<section class="toolbar-scrollup" id="toolbar_scrollup">
+<a href="#" onclick="return ls.toolbar.up.goUp();" title="Up" class="toolbar-topic-prev"><span class="glyphicon glyphicon-chevron-up"></span></a>
+</section>
+</aside>
+<div class="modal fade" id="empty-modal" tabindex="-1" role="dialog"><div class="modal-dialog"><div class="modal-content"></div></div></div>
+<div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+<div class="modal-dialog select-none">
+<div class="modal-content signin">
+<header class="modal-header">
+<button type="button" class="close jqmClose" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title" id="modal-title">Log In</h4>
+</header>
+<div class="modal-body">
+<form action="http://kukuruku.co/login/" method="post" class="form-horizontal form-signin" role="form">
+<small class="text-danger validate-error-hide validate-error-login"></small>
+<div class="input-group">
+<label for="signin-login" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></label>
+<input id="signin-login" type="text" class="form-control" name="login" value="" placeholder="Username / Email"/>
+</div>
+<div class="input-group">
+<label for="signin-password" class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></label>
+<input id="signin-password" type="password" class="form-control" name="password" placeholder="Password"/>
+</div>
+<div class="input-group">
+<label for="remember-me" class="pull-left remember-me">
+<input type="checkbox" id="remember-me" name="remember" checked> Remember me
+</label>
+<a href="#" class="pull-right reset-password-link">Forgot password?</a>
+</div>
+<input type="hidden" name="return-path" value="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"/>
+<button type="submit" name="submit_login" class="btn btn-success btn-block btn-signin">Log In</button>
+</form>
+﻿<div id="social-auth">
+<div class="or-block">
+<hr class="hr-or"/>
+<span class="span-or">or</span>
+</div>
+<ul class="networks">
+<li><a href="http://kukuruku.co/login/openid/github/" title="Sign in with Github" class="btn btn-lg btn-block btn-social btn-github"><i class="icon-github"></i>Sign in with Github</a></li>
+<li><a href="http://kukuruku.co/login/openid/twitter/?authorize=1" class="btn btn-lg btn-block btn-social btn-twitter" title="Sign in with Twitter"><i class="icon-twitter"></i>Sign in with Twitter</a></li>
+<li><button title="Sign in with Facebook" class="btn btn-lg btn-block btn-facebook btn-social"><i class="icon-facebook"></i>Sign in with Facebook</button></li>
+</ul>
+<div class="text-center np"><img pagespeed_lazy_src="http://kukuruku.co/plugins/autoopenid/templates/skin/default/img/lock.png.pagespeed.ce.QpfftFvLmY.png" width="12" height="14" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/> We'll never post to your Twitter, Facebook or Github account without your permission.</div>
+<script type="text/javascript" pagespeed_no_defer="">pagespeed.lazyLoadImages.overrideAttributeFunctions();</script><script>var socialAuth={facebook:{client_id:"1446177405629271",redirect_uri:'http://kukuruku.co/login/'+'openid/fb/',scope:"user_birthday,user_website,email,user_about_me"},twitter:{redirect_uri:'http://kukuruku.co/login/'+'openid/twitter/?authorize=1'}};</script>
+</div>
+</div>
+<div class="modal-footer text-right">
+<span>Don't have an account? <a href="#" class="link-signup">Sign up now</a></span>
+</div>
+</div><!-- /.modal-content signin -->
+<div class="modal-content signup">
+<header class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title" id="modal-title">Sign Up</h4>
+</header>
+<div class="modal-body">
+<form action="http://kukuruku.co/registration/" method="post" class="form-horizontal form-signup" role="form" autocomplete="off">
+<input style="display:none"/>
+<input type="password" style="display:none"/>
+<div class="input-group">
+<label for="signup-login" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></label>
+<input id="signup-login" type="text" class="form-control js-ajax-validate" name="login" value="" placeholder="Username" autocomplete="off"/>
+</div>
+<small class="text-danger validate-msg validate-error-hide validate-error-field-login"></small>
+<div class="input-group">
+<label for="signup-password" class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></label>
+<input id="signup-password" type="password" class="form-control" name="password" placeholder="Password" autocomplete="off"/>
+</div>
+<small class="text-danger validate-msg validate-error-hide validate-error-field-password"></small>
+<div class="input-group">
+<label for="signup-email" class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></label>
+<input id="signup-email" type="email" class="form-control" name="mail" placeholder="Email (optional)" autocomplete="off"/>
+</div>
+<small class="text-danger validate-msg validate-error-hide validate-error-field-mail"></small>
+<input type="hidden" name="return-path" value="http://kukuruku.co/hub/nix/writing-a-file-system-in-linux-kernel"/>
+<button type="submit" name="submit_register" class="btn btn-success btn-block btn-signup">Create Account</button>
+</form>
+﻿<div id="social-auth">
+<div class="or-block">
+<hr class="hr-or"/>
+<span class="span-or">or</span>
+</div>
+<ul class="networks">
+<li><a href="http://kukuruku.co/login/openid/github/" title="Sign in with Github" class="btn btn-lg btn-block btn-social btn-github"><i class="icon-github"></i>Sign in with Github</a></li>
+<li><a href="http://kukuruku.co/login/openid/twitter/?authorize=1" class="btn btn-lg btn-block btn-social btn-twitter" title="Sign in with Twitter"><i class="icon-twitter"></i>Sign in with Twitter</a></li>
+<li><button title="Sign in with Facebook" class="btn btn-lg btn-block btn-facebook btn-social"><i class="icon-facebook"></i>Sign in with Facebook</button></li>
+</ul>
+<div class="text-center np"><img pagespeed_lazy_src="http://kukuruku.co/plugins/autoopenid/templates/skin/default/img/lock.png.pagespeed.ce.QpfftFvLmY.png" width="12" height="14" src="/mod_pagespeed_static/1.JiBnMqyl6S.gif" onload="pagespeed.lazyLoadImages.loadIfVisible(this);"/> We'll never post to your Twitter, Facebook or Github account without your permission.</div>
+<script type="text/javascript" pagespeed_no_defer="">pagespeed.lazyLoadImages.overrideAttributeFunctions();</script><script>var socialAuth={facebook:{client_id:"1446177405629271",redirect_uri:'http://kukuruku.co/login/'+'openid/fb/',scope:"user_birthday,user_website,email,user_about_me"},twitter:{redirect_uri:'http://kukuruku.co/login/'+'openid/twitter/?authorize=1'}};</script>
+</div>
+</div>
+<div class="modal-footer text-right">
+<span>Already have an account? <a href="#" class="link-signin">Log in here</a></span>
+</div>
+</div>
+<div class="modal-content reset-password">
+<header class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title" id="modal-title">Reset Password</h4>
+</header>
+<div class="modal-body">
+<p>Enter the email address associated with your account, and we'll email you a link to reset your password.</p>
+<form action="http://kukuruku.co/login/reminder/" method="POST" id="popup-reminder-form">
+<div class="input-group">
+<label for="popup-reminder-mail" class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></label>
+<input itype="text" name="mail" id="popup-reminder-mail" class="form-control" placeholder="Email"/>
+</div>
+<small class="text-danger validate-msg validate-error-hide validate-error-reminder"></small>
+<div class="form-group">
+<button type="submit" name="submit_reminder" class="btn btn-success btn-block" id="popup-reminder-form-submit">Send Reset Link</button>
+</div>
+</form>
+</div>
+<div class="modal-footer text-right">
+<span>Already have an account? <a href="#" class="link-signin">Log in here</a></span>
+</div>
+</div>
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script src='http://kukuruku.co/templates/cache/kukuruku/aeb7423f06aafea67ae49d676ed76aa6.js'></script>
+<!--[if lt IE 9]><script type='text/javascript' src='http://kukuruku.co/engine/lib/external/html5shiv.js'></script><![endif]-->
+<script>ls.lang.load({"blog_join":"Connect","blog_leave":"Disconnect"});ls.registry.set('comment_max_tree',7);ls.registry.set('block_stream_show_tip',true);</script>
+</body>
+</html>

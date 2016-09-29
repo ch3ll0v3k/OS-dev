@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><title>Advogato: How Linux suspend and resume works in the ACPI age</title>
+<link rel="stylesheet" type="text/css" href="/css/global.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<script language="javascript" type="text/javascript" src="/css/v.js"></script>
+</head>
+
+<body>
+<div id="header"><img src="/images/advogato-rodent.png" width="300" height="100" alt="Advogato" /><span class="sitemap">&nbsp;[ <a href="/">Home</a> | <a href="/article/">Articles</a> | <a href="/acct/">Account</a> | <a href="/person/">People</a> | <a href="/proj/">Projects</a> | <a href="/faq.html">FAQ</a> ]&nbsp;</span><form id="searchbox_001849165863570039063:cqpkt1u7yfe" action="http://www.advogato.org/search.html"><input type="hidden" name="cx" value="001849165863570039063:cqpkt1u7yfe" /><input id="gi" name="q" type="text" size="16" /><input id="gs" type="submit" name="sa" value="Search" /><input type="hidden" name="cof" value="FORID:9" /></form><script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=searchbox_001849165863570039063%3Acqpkt1u7yfe"></script></div><div id="wrap"><div id="col1"><div class="node"><h1 class="level3">How Linux suspend and resume works in the ACPI age</h1><h2>Posted 7 Feb 2007 at 11:16 UTC by <a href="/person/mjg59/">mjg59</a> <span class="bm"><a href="javascript:void(0)" onclick="sbm(event,'http://www.advogato.org/article/913.html','How%20Linux%20suspend%20and%20resume%20works%20in%20the%20ACPI%20age')"><img src="/images/share.png" alt="Share This" title="Share This" /></a></span></h2>
+<div class="content"><p>Back in the APM days, everything was easy. You called an ioctl on&#13;
+/dev/apm, and the kernel made a BIOS call. After that, it was all up to&#13;
+the hardware. Sure, it never really worked properly, and it was&#13;
+basically impossible to debug what the hardware actually did. And then&#13;
+ACPI came along, and nothing worked at all. Several years later, we're&#13;
+almost back to where we were with APM. But what's actually happening&#13;
+when you hit that sleep key?</p></div><div class="content"><p>Without the ability to suspend and resume, laptop users are doomed to&#13;
+spend several hours of their lives waiting for machines to boot and&#13;
+shutdown. This is, clearly, suboptimal. APM made it fairly easy to&#13;
+implement this, because almost everything was handled by the BIOS. And&#13;
+that, in a nutshell, is one of the primary reasons why ACPI ended up in&#13;
+charge.&#13;
+&#13;
+</p><p> The biggest problem with APM is that it left policy in hardware. Don't&#13;
+want to suspend on lid closure? The OS doesn't get any say in the&#13;
+matter, though if you're lucky there might be a BIOS option to control&#13;
+it. Would prefer it if the BIOS didn't scribble all over the contents of&#13;
+your video registers while it tries to reprogram them (probably back to&#13;
+the defaults of the Windows drivers...)? Sucks to be you. Want the sleep&#13;
+button to trigger suspend to disk, not suspend to RAM? A-ha ha ha.&#13;
+&#13;
+</p><p> ACPI deals with that problem, by moving almost all the useful&#13;
+functionality out of hardware. The downside of this is that the&#13;
+functionality needs to be reimplemented in the OS. Which, given that the&#13;
+ACPI spec is around 600 pages long, has taken a little time.&#13;
+&#13;
+</p><p> (Of course, it turns out that most of the ACPI spec is entirely&#13;
+uninteresting for suspend and resume purposes, but that's not really the&#13;
+point right now)&#13;
+&#13;
+</p><p> So, firstly, lets have some ACPI jargon. ACPI itself stands for&#13;
+"Advanced Configuration and Power Interface". It's not just a power&#13;
+management spec - it provides the OS with a description of all the&#13;
+built-in hardware in your system, along with a certain degree of&#13;
+abstraction. It gives you information about interrupt routing, tells you&#13;
+if someone's just removed a hot-pluggable DVD drive from a laptop and&#13;
+may even let you control which video output is being used.&#13;
+&#13;
+</p><p> This information is provided in a table called the DSDT (Discrete System&#13;
+Descriptor Table). The DSDT is in a bytecode called AML (ACPI Machine&#13;
+Language), compiled from a simple language called ASL (ACPI Source&#13;
+Language, shockingly enough). At boot time, the system reads the DSDT,&#13;
+parses it and executes various methods. These can do pretty much&#13;
+anything, but on the bright side they're being executed in kernel&#13;
+context and (in principle) you can filter out anything that you really&#13;
+don't want to do (such as scribbling all over CMOS or something).&#13;
+&#13;
+</p><p> The final relevant piece of ACPI information is something called the&#13;
+FADT, or Fixed Address Descriptor Table. This gives the OS information&#13;
+about various register addresses. It's a static structure, and doesn't&#13;
+contain any executable code.&#13;
+&#13;
+</p><p> So, how does all of this stuff actually work?&#13;
+&#13;
+</p><p> First of all, the user hits the sleep key. This triggers a hardware&#13;
+interrupt, which is caught by the embedded controller. That pokes a&#13;
+register in the southbridge, which flags that a general purpose event&#13;
+has just occured. The OS notices this, and checks the DSDT for what's&#13;
+supposed to happen next. Generally, this just calls a notification&#13;
+event. This is bounced back out to userspace via /proc/acpi/events&#13;
+(currently, though it's going to be moved to the input layer in future)&#13;
+and userspace gets to choose what happens next.&#13;
+&#13;
+</p><p> Let's concentrate on the common scenario, which is that someone hitting&#13;
+the sleep button wants to suspend to RAM. Via some abstraction (either&#13;
+acpid, gnome-power-manager or kpowersave or something), userspace makes&#13;
+that decision and initiates the suspend to RAM process by either calling&#13;
+a suspend script directly or bouncing via HAL.&#13;
+&#13;
+</p><p> Depending on distribution, this ends up running a shell script or binary&#13;
+which attempts to prepare the system for suspend. Right now, this tends&#13;
+to involve a bunch of bandaids around various broken drivers - unloading&#13;
+modules and reloading them is one of the easiest workarounds for&#13;
+breakage. Finally, the string "mem" is written to /sys/power/state.&#13;
+&#13;
+</p><p> This jumps back into the kernel. First, userspace is stopped. This stops&#13;
+it getting horribly confused when a load of hardware mysteriously stops&#13;
+working. Then the kernel goes through the device tree and calls suspend&#13;
+methods on each bound driver. Individual drivers have responsibility for&#13;
+storing enough state in order to be able to reprogram the device on&#13;
+resume - ACPI doesn't make guarantees about what the hardware state is&#13;
+going to be when we come back. Once the kernel-side suspend code has&#13;
+been run, we execute a couple of ACPI methods - PTS (Prepare To Sleep)&#13;
+and GTS (Going To Sleep). These tend to poke various things that the&#13;
+kernel knows nothing about, and so a certain amount of magic may be&#13;
+involved.&#13;
+&#13;
+</p><p> At this point, the system should be fairly quiescent. Only two things to&#13;
+do now. Firstly, the address of the kernel wakeup code is written to an&#13;
+address contained in the FADT. Secondly, two magic values from the DSDT&#13;
+are written to registers described in the FADT. This usually causes some&#13;
+sort of system management trap, which makes sure that the memory is put&#13;
+in self-refresh mode and actually sequences the machine into suspend.&#13;
+For the S3 power state, this basically involves shutting the machine&#13;
+(other than the RAM) down completely.&#13;
+&#13;
+</p><p> Time passes.&#13;
+&#13;
+</p><p> The user presses the power button. The system switches on, jumps to the&#13;
+BIOS start address, does a certain amount of setup (programming the&#13;
+memory controller and so on) and then looks at the ACPI status register.&#13;
+This tells it that the machine was previously suspended to RAM, so it&#13;
+then jumps to the wakeup address programmed earlier. This leads it to a&#13;
+bunch of real-mode x86 code provided by the kernel, which programs the&#13;
+CPU back into protected mode and restores register state. Suddenly we're&#13;
+running kernel code again.&#13;
+&#13;
+</p><p> From this point onwards, it's much the reverse of the suspend process.&#13;
+We call the ACPI WAK method, resume all the drivers and restart&#13;
+userspace. The shell script suddenly starts running again and cleans up&#13;
+after itself, reloading any drivers that were unloaded before suspend.&#13;
+As far as userspace is concerned, the only thing that's happened is that&#13;
+the clock has jumped forward.&#13;
+&#13;
+</p><p> So why is this difficult?&#13;
+&#13;
+</p><p> In a lot of cases, it's just down to bugs in the drivers. Restoring&#13;
+hardware state can be hard, especially if you don't actually have all&#13;
+the documentation for the hardware to start with - traditionally, many&#13;
+Linux drivers have ended up depending on the BIOS to have programmed the&#13;
+hardware into a semi-sane state, and there's no guarantee that that will&#13;
+happen with ACPI. Other cases can just be oversights - for instance, the&#13;
+bug in the APIC (not to be confused with ACPI) code that meant a single&#13;
+register wasn't restored, resulting in some machines resuming without&#13;
+any interrupts being delivered.&#13;
+&#13;
+</p><p> The single biggest problem is video hardware. The spec doesn't require&#13;
+the BIOS to reprogram the video hardware at all, and so often it'll come&#13;
+back in an entirely unprogrammed state. This is an issue, since we (in&#13;
+general) have absolutely no idea how to bring a video card up from&#13;
+scratch. One of the easiest workarounds is to execute code from the&#13;
+video BIOS in the same way that the system BIOS does on machine startup.&#13;
+vbetool lets you do this from userspace, and it works a surprisingly&#13;
+large amount of the time. However, there's no guarantee that it'll be&#13;
+successful. Vendors often unmap that section of BIOS after the system&#13;
+has been brought up, since they've got far more BIOS code than will fit&#13;
+in the BIOS region of the legacy address space. In the long run, the&#13;
+only solution is drivers that know how to program an entirely&#13;
+uninitialised chip. The new modesetting branch of the Intel driver aims&#13;
+to do this, as do the developers of noveau.&#13;
+&#13;
+</p><p> Despite all this misery, ACPI support is generally improving. Most&#13;
+machines can now suspend and resume once more. The next big challenge is&#13;
+improving run-time power management in order to get battery life to at&#13;
+least the level it is under Windows, and ideally beyond that.  </p></div>
+<hr>
+<h4 class="level3"><a name="0"><b>Thanks</b></a>, posted 9 Feb 2007 at 20:28 UTC by <a href="/person/ncm/">ncm</a> <a href="#0" style="text-decoration: none">&raquo;</a>
+ <span style="display: none">(Master)</span></h4>
+<div><p>Thank you, Matthew.  I gave up on ACPI-suspend on my Dell D620, and &#13;
+switched to swsuspend2.  It mostly works, modulo the occasional OOPS&#13;
+while trying to suspend which I am inclined to blame on the bcm43xx&#13;
+driver.  Since the whole machine powers off, the BIOS is obliged to&#13;
+initialize everything when it comes back up.&#13;
+</p><p>CPU speed is another area where ACPI seems to over-complicate&#13;
+matters.  I see hardly any reason to operate the CPUs in any mode&#13;
+between completely powered-off and as fast as they can go.  In particular, &#13;
+"throttling modes" look completely pointless.  Maybe they're supposed to&#13;
+reduce power usage when people are running screen savers or other&#13;
+spin-loop processes that shouldn't be running at all?  &#13;
+</p><p>Probably the only solution, ultimately, to the ACPI/BIOS problem will&#13;
+be to "turn" a big laptop reseller, and count on them put the screws on&#13;
+the manufacturers.  In the meantime it's a holding action.&#13;
+</p><p>Now, if only I could find time to trace the code that maps key events&#13;
+to scripts on Debian, or find a page by somebody who did...</p></div>
+<h4 class="level3"><a name="1"><b>reverse-engineering for handhelds</b></a>, posted 10 Feb 2007 at 22:13 UTC by <a href="/person/lkcl/">lkcl</a> <a href="#1" style="text-decoration: none">&raquo;</a>
+ <span style="display: none">(Master)</span></h4>
+<div><p>we have to deal with this, a lot - nothing to do with ACPI, on the reverse-engineering project to get linux running on HTC (high tech corporation) handhelds (smartphones and pdas).  it's the one major irritating factor that can stop a device from being useful.&#13;
+&#13;
+</p><p> i managed to get linux running entirely on the ipaq hw6915 in just six weeks (because of the common hardware between the htc universal, ipaq hx4700 and a couple of others).&#13;
+&#13;
+</p><p> however, i spent a very frustrating further two weeks trying to work out what it was that was stopping the device from being able to resume: exactly as you say, interrupts weren't being enabled [in the end i had to give up as i was running out of time]&#13;
+&#13;
+</p><p> now the really annoying thing is that it is terribly difficult to track down why this is.&#13;
+&#13;
+</p><p> firstly, you're resuming: you _can't_ do any significant debugging: it either works, or it doesn't.  if you get it right, it resumes.  if you don't get it right, you've no way of communicating anything to find out why.&#13;
+&#13;
+</p><p> secondly, the booting is coming not from startup but from gnu-haret.exe which is the ARM / wince equivalent of LOADLIN.EXE for x86 / win32.  so, you're booting into linux with most of the hardware preinitialised.  on some devices, it is an absolute _bitch_ to work out the GPIO pin requirements, some of which require switching to alternate states and back with special timings in between to let buggy or glitchy hardware recover, because there's not enough current or something - you just don't know. &#13;
+&#13;
+</p><p> and on one device, 272 GPIO pins (192 on the CPU, 16 on a chip we've named EGPIO for 'extended gpio', and 64 on a separate custom I/O chip which we've named ASIC3) ... actually weren't enough, so the designers had to _borrow_ some of the I/O pins on the GSM radio rom (another 64 or so gpio pins - it's another ARM processor) and so you have to, unbelievably, communicate proprietary commands over a _serial_ line to specify which set of speakers are to be used!  (yes, this device i'm describing i think it has 5 speakers 2 of which are stereo speakers and 3 microphones and a headphone socket _and_ bluetooth audio _and_ a car-kit)&#13;
+&#13;
+</p></div>
+<h4 class="level3"><a name="2"><b>physics</b></a>, posted 13 Feb 2007 at 05:10 UTC by <a href="/person/ncm/">ncm</a> <a href="#2" style="text-decoration: none">&raquo;</a>
+ <span style="display: none">(Master)</span></h4>
+<div><p>Reverse engineering is like physics.  There's certainly a design because&#13;
+it (universe, gadget) exists.  There's equally no guarantee the design&#13;
+can be elucidated from obtainable evidence.  The only saving grace for&#13;
+reverse engineers is that increased complexity drives designers to more&#13;
+standardized components, because the designers have to be able to&#13;
+understand it themselves.  We just have to hold out until Linux is one&#13;
+of those components.  &#13;
+&#13;
+</p><p> Physicists, OTOH, are probably SOL. </p></div>
+<h4 class="level3"><a name="3"><b>tell me about it :)</b></a>, posted 13 Feb 2007 at 13:17 UTC by <a href="/person/lkcl/">lkcl</a> <a href="#3" style="text-decoration: none">&raquo;</a>
+ <span style="display: none">(Master)</span></h4>
+<div><p>yes.  the increased commoditisation and success of HTC means that they are endeavouring to drive down the development costs.&#13;
+&#13;
+</p><p> the HTC smartphone/PDAs (HTC designs all the iPAQs) from the past three or so years have all used the Akai 4641 sound chip instead of the rather esoteric philips UDA1380 (which is a pain to program in some of the hardware configurations it's been used in : the ADC and DAC clocks can be on separate ... it's a long story :) )&#13;
+&#13;
+</p><p> the first HTC device (the wallaby) was an _absolute_ bitch, and the only saving grace was that the next two revisions kept the majority of the components and also that one of the chips was also in the iPAQs, which the  HP/Compaq engineers had at least some scant internal documentation on.&#13;
+&#13;
+</p><p> but anyway - this is off-topic for the original article so i'll shut up now :)</p></div>
+</div>
+</div></div><div id="col2"><div class="login"><form method="post" action="/acct/loginsub.html" accept-charset="UTF-8"><p><input class="in" name="u" type="text" value="" alt="user name" title="user name" /></p><p><input class="in" name="pass" type="password" value="" alt="password" title="password" /></p><input class="lsub" type="submit" value="Login" /></form></div><p align="center"><script type="text/javascript"><!--
+google_ad_client = "pub-5939771709775559";
+google_ad_width = 200;
+google_ad_height = 200;
+google_ad_format = "200x200_as";
+google_ad_channel ="3783292610";
+google_color_border = "ffffff";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></p><div id="info"><b>New Advogato Features</b><p><b>New HTML Parser</b>: The long-awaited libxml2 based HTML parser
+code is live. It needs further work but already handles most
+markup better than the original parser.</p><p>Keep up with the latest Advogato features by reading the
+<a href="/person/robogato/diary.html">Advogato 
+status blog</a>.</p><p>If you're a C programmer with some spare time, take a look at the 
+<a href="http://www.advogato.org/proj/mod_virgule/">mod_virgule project 
+page</a> and help us with one of the tasks on the ToDo list!</p></div></div><div id="sbm"><div style="float: right;"><a href="javascript:sbmClose();">X</a></div><div><b>Share this page</b></div><ul><li><a id="bm_delicious" href="#"><img src="/images/bm-delicious.png" alt="del.icio.us" title="del.icio.us" />del.icio.us</a></li><li><a id="bm_digg" href="#"><img src="/images/bm-digg.png" alt="Digg This" title="Digg This" />Digg</a></li><li><a id="bm_google" href="#"><img src="/images/bm-google.png" alt="Google Bookmark" title="Google Bookmark" />Google bookmark</a></li><li><a id="bm_reddit" href="#"><img src="/images/bm-reddit.png" alt="reddit" title="reddit" />reddit</a></li><li><a id="bm_simpy" href="#"><img src="/images/bm-simpy.png" alt="Simpy" title="Simpy" />Simpy</a></li><li><a id="bm_stumble" href="#"><img src="/images/bm-stumble.png" alt="StumbleUpon" title="StumbleUpon" />StumbleUpon</a></li><li><a id="bm_furl" href="#"><img src="/images/bm-furl.png" alt="Furl" title="Furl" />Furl</a></li><li><a id="bm_newsvine" href="#"><img src="/images/bm-newsvine.png" alt="Newsvine" title="Newsvine" />Newsvine</a></li><li><a id="bm_technorati" href="#"><img src="/images/bm-technorati.png" alt="Technorati favorite" title="Technorati favorite" />Technorati</a></li><li><a id="bm_tailrank" href="#"><img src="/images/bm-tailrank.png" alt="Tailrank" title="Tailrank" />Tailrank</a></li></ul></div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2968274-1";
+urchinTracker();
+</script>
+</body>
+</html>

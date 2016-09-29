@@ -1,0 +1,27 @@
+#!/bin/bash
+OPT="-O2"
+GCC_PARAMD="-m32 -nostdlib -fno-builtin -fno-exceptions -fno-leading-underscore"
+GCC_PARAMD_2="-ffreestanding $OPT -std=gnu99 -ffreestanding $OPT -Wall -Wextra"
+
+LD_PARAMD="-T linker.ld -m elf_i386 $OPT -nostdlib -shared"
+
+unset LDFLAGS
+
+
+as --warn --32 boot.s -o boot.o
+
+gcc -c kernel.c -o kernel.o $GCC_PARAMD $GCC_PARAMD_2
+
+#gcc -T linker.ld -o kernel.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+
+ld $LD_PARAMD -o kernel.bin -ffreestanding  boot.o kernel.o #-lgcc
+
+
+
+if grub-file --is-x86-multiboot kernel.bin; then
+  echo multiboot confirmed
+else
+  echo the file is not multiboot
+fi
+
+

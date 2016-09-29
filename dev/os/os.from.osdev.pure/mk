@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# =====================================================================
+AS="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-as"
+GCC="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-gcc"
+LD="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-ld"
+
+OBJ_DIR="./obj"
+SRC_DIR="./src"
+
+# =====================================================================
+$AS $SRC_DIR/boot.s -o $OBJ_DIR/boot.o
+$GCC -c $SRC_DIR/kernel.c -o $OBJ_DIR/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+$GCC -T $SRC_DIR/linker.ld -o kernel.bin -ffreestanding -O2 -nostdlib $OBJ_DIR/boot.o $OBJ_DIR/kernel.o -lgcc
+# =====================================================================
+
+

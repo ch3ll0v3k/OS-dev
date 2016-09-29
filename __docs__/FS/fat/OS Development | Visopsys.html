@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" lang="en-GB">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-GB">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-GB">
+<!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>OS Development | Visopsys</title>
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="http://visopsys.org/xmlrpc.php">
+	<!--[if lt IE 9]>
+	<script src="http://visopsys.org/wp-content/themes/twentyfourteen/js/html5.js"></script>
+	<![endif]-->
+	<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Visopsys &raquo; Feed" href="http://visopsys.org/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Visopsys &raquo; Comments Feed" href="http://visopsys.org/comments/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/visopsys.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.6.1"}};
+			!function(a,b,c){function d(a){var c,d,e,f,g,h=b.createElement("canvas"),i=h.getContext&&h.getContext("2d"),j=String.fromCharCode;if(!i||!i.fillText)return!1;switch(i.textBaseline="top",i.font="600 32px Arial",a){case"flag":return i.fillText(j(55356,56806,55356,56826),0,0),!(h.toDataURL().length<3e3)&&(i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,65039,8205,55356,57096),0,0),c=h.toDataURL(),i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,55356,57096),0,0),d=h.toDataURL(),c!==d);case"diversity":return i.fillText(j(55356,57221),0,0),e=i.getImageData(16,16,1,1).data,f=e[0]+","+e[1]+","+e[2]+","+e[3],i.fillText(j(55356,57221,55356,57343),0,0),e=i.getImageData(16,16,1,1).data,g=e[0]+","+e[1]+","+e[2]+","+e[3],f!==g;case"simple":return i.fillText(j(55357,56835),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode8":return i.fillText(j(55356,57135),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode9":return i.fillText(j(55358,56631),0,0),0!==i.getImageData(16,16,1,1).data[0]}return!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i;for(i=Array("simple","flag","unicode8","diversity","unicode9"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='twentyfourteen-lato-css'  href='https://fonts.googleapis.com/css?family=Lato%3A300%2C400%2C700%2C900%2C300italic%2C400italic%2C700italic&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='genericons-css'  href='http://visopsys.org/wp-content/themes/twentyfourteen/genericons/genericons.css?ver=3.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfourteen-style-css'  href='http://visopsys.org/wp-content/themes/twentyfourteen/style.css?ver=4.6.1' type='text/css' media='all' />
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='twentyfourteen-ie-css'  href='http://visopsys.org/wp-content/themes/twentyfourteen/css/ie.css?ver=20131205' type='text/css' media='all' />
+<![endif]-->
+<script type='text/javascript' src='http://visopsys.org/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='http://visopsys.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<link rel='https://api.w.org/' href='http://visopsys.org/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://visopsys.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://visopsys.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.6.1" />
+<link rel="canonical" href="http://visopsys.org/osdev/" />
+<link rel='shortlink' href='http://visopsys.org/?p=33' />
+<link rel="alternate" type="application/json+oembed" href="http://visopsys.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fvisopsys.org%2Fosdev%2F" />
+<link rel="alternate" type="text/xml+oembed" href="http://visopsys.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fvisopsys.org%2Fosdev%2F&#038;format=xml" />
+<style type="text/css" id="custom-background-css">
+body.custom-background { background-image: url('http://visopsys.org/wp-content/uploads/2016/09/madeira.jpg'); background-repeat: no-repeat; background-position: top right; background-attachment: fixed; }
+</style>
+</head>
+
+<body class="page page-id-33 page-parent page-template page-template-page-templates page-template-full-width page-template-page-templatesfull-width-php custom-background masthead-fixed full-width footer-widgets singular">
+<div id="page" class="hfeed site">
+	
+	<header id="masthead" class="site-header" role="banner">
+		<div class="header-main">
+			<h1 class="site-title"><a href="http://visopsys.org/" rel="home">Visopsys</a></h1>
+
+			<div class="search-toggle">
+				<a href="#search-container" class="screen-reader-text" aria-expanded="false" aria-controls="search-container">Search</a>
+			</div>
+
+			<nav id="primary-navigation" class="site-navigation primary-navigation" role="navigation">
+				<button class="menu-toggle">Primary Menu</button>
+				<a class="screen-reader-text skip-link" href="#content">Skip to content</a>
+				<div class="menu-main-container"><ul id="primary-menu" class="nav-menu"><li id="menu-item-38" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38"><a href="http://visopsys.org/">Home</a></li>
+<li id="menu-item-19" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19"><a href="http://visopsys.org/about/">About</a></li>
+<li id="menu-item-22" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22"><a href="http://visopsys.org/news/">News</a></li>
+<li id="menu-item-26" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-26"><a href="http://visopsys.org/about/screenshots/">Screenshots</a></li>
+<li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29"><a href="http://visopsys.org/download/">Downloads</a></li>
+<li id="menu-item-11" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11"><a href="http://visopsys.org/forums/index.php">Forum</a></li>
+<li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32"><a href="http://visopsys.org/developers/">Developers</a></li>
+<li id="menu-item-37" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-33 current_page_item menu-item-37"><a href="http://visopsys.org/osdev/">OS Dev</a></li>
+</ul></div>			</nav>
+		</div>
+
+		<div id="search-container" class="search-box-wrapper hide">
+			<div class="search-box">
+				<form role="search" method="get" class="search-form" action="http://visopsys.org/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>			</div>
+		</div>
+	</header><!-- #masthead -->
+
+	<div id="main" class="site-main">
+
+<div id="main-content" class="main-content">
+
+
+	<div id="primary" class="content-area">
+		<div id="content" class="site-content" role="main">
+			
+<article id="post-33" class="post-33 page type-page status-publish hentry">
+	<header class="entry-header"><h1 class="entry-title">OS Development</h1></header><!-- .entry-header -->
+	<div class="entry-content">
+		<p align="left">This page is a small collection of source code, information, and links related to general Operating Systems&#8217; Development on the Web.</p>
+<p align="left"><a name="SOURCE"></a>SOURCE CODE</p>
+<p align="left">Here is some source code, written by Andy McLaughlin, which might be useful to programmers who are developing OS- like products on the x86 platform.   Files ending with an &#8220;.s&#8221; extension are NASM- compatible (Intel syntax) Assembler code.</p>
+<table border="1" cellpadding="2">
+<tbody>
+<tr>
+<td><a href="http://visopsys.org/osdev/enablea20/">enableA20.s</a></td>
+<td>This is a fairly versatile snippet of code for enabling the x86&#8217;s A20 address line.   It&#8217;s a little bit lengthy, but it seems to work more reliably than other examples I&#8217;ve tried.  Cut and paste it into one of your existing source files.</td>
+</tr>
+<tr>
+<td><a href="http://visopsys.org/osdev/vesamodes/">vesaModes.s</a></td>
+<td>This piece of 16-bit code will query the VESA BIOS for a supported graphics mode number based on the desired parameters of resolution and colour depth.  Cut and paste it into one of your existing source files.</td>
+</tr>
+</tbody>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>&nbsp;</p>
+<p><a name="LINKS"></a>LINKS</p>
+<p>Here are some selected links to sites useful to OS developers (much of this is specific to PC- style hardware architectures).  Please <a href="mailto:andy@visopsys.org">email me</a> about any broken links or erroneous descriptions.  Thanks.</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center">General</p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://chuos.genezys.net/wiki/Questions%20for%20an%20OS%20designer">Questions For an OS Designer</a></td>
+<td align="left" valign="top">So, why are you doing this anyway?  This should be required reading for anyone contemplating starting an OS project</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://wiki.osdev.org/Main_Page">The OSDev.org wiki</a></td>
+<td align="left" valign="top">Almost everything you need to know about OS development</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.nondot.org/sabre/os/">The Operating Systems Resource Center</a></td>
+<td align="left" valign="top">Great collection of technical information and tutorials</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.acm.uiuc.edu/sigops/roll_your_own/">SigOps: Create Your Own Operating System</a></td>
+<td align="left" valign="top">This is a broadly focused site about OS theory</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.cs.cmu.edu/afs/cs/user/ralf/pub/WWW/files.html">Ralf Brown&#8217;s Interrupt List</a> <a href="http://ctyme.com/rbrown.htm">(also try this HTML Version)</a></td>
+<td align="left" valign="top">Don&#8217;t start any OS project on an x86 machine without getting this first.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://docs.huihoo.com/help-pc/">HelpPC WWW conversion </a><a href="ftp://ftp.simtel.net/pub/simtelnet/msdos/info/helppc21.zip">(or download the actual HelpPC application)</a></td>
+<td align="left" valign="top">Likewise.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.sandpile.org/80x86/index.shtml">sandpile.org &#8212; 80&#215;86 index</a></td>
+<td align="left" valign="top">Lots of good information about x86 processors.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://sourceforge.net/projects/nasm">NASM &#8211; The Netwide Assembler Project &#8211; FREE 80&#215;86 assembler</a></td>
+<td align="left" valign="top">A GREAT little open- source assembler for x86 machines.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center"><b>File systems<br />
+</b></p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://e2fsprogs.sourceforge.net/ext2intro.html">Design and Implementation of the Second Extended File System</a></td>
+<td align="left" valign="top">The original EXT2 white paper</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.science.unitn.it/%7Efiorella/guidelinux/tlk/node95.html">The Second Extended File System</a></td>
+<td align="left" valign="top">Another EXT2 doc from a Linux site</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.penguin.cz/%7Emhi/fs/Filesystems-HOWTO/Filesystems-HOWTO.html">The Filesystems HOWTO</a></td>
+<td align="left" valign="top">Info about lots of different filesystems</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.dfsee.com/fsinfo.htm">File System Info</a></td>
+<td align="left" valign="top">HPFS, FAT, NTFS info</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.nongnu.org/ext2-doc/ext2.html">The Second Extended (EXT2) File System</a></td>
+<td align="left" valign="top">An EXT2 &#8220;book&#8221; by Dave Poirier.  Very good.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout">EXT4 Disk Layout</a></td>
+<td align="left" valign="top">Very detailed info about the new features found in EXT4</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.nondot.org/sabre/os/files/FileSystems/Ext2fs-overview-0.1.pdf">The Extended-2 (EXT2) Filesystem Overview</a></td>
+<td align="left" valign="top">A white paper by Gadi Oxman.  A bit dated, but good as an alternative source of EXT2 information.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.osta.org/specs">UDF (DVD) filesystem</a></td>
+<td align="left" valign="top">DVD-ROM filesystem format specifications</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://homepage.mac.com/wenguangwang/myhome/udf.html">UDF (DVD) filesystem</a></td>
+<td align="left" valign="top">Good intoduction to UDF</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center">File Formats</p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.wotsit.org/">Wotsit&#8217;s Format: The programmer&#8217;s file formats and data formats resource.</a></td>
+<td align="left" valign="top">This site is a godsend.  Information on file formats of almost any kind.   Look here before you go anywhere else.</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.maverick-os.dk/FileSystemFormats/Standard_DiskFormat.html">Standard Disk Format (Maverick)</a></td>
+<td align="left" valign="top">All about the format of the x86 Master Boot Sector</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.delorie.com/djgpp/doc/coff/">DJGPP COFF Spec</a></td>
+<td align="left" valign="top">About the COFF object file format</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.dcs.ed.ac.uk/%7Emxr/gfx/">The Graphics File Format Page</a></td>
+<td align="left" valign="top">Info about lots of graphic file formats</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://fontforge.sourceforge.net/pcf-format.html">PCF Bitmap Font Files</a></td>
+<td align="left" valign="top">X11 (Linux, Unix) font file format</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center">PC Hardware References</p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.intel.com/products/processor/manuals/index.htm">Pentium(r)Processor &#8211; Manuals</a></td>
+<td align="left" valign="top">You need this if you&#8217;re going to do any coding in x86 Assembly language</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.ata-atapi.com/">ATA-ATAPI.COM &#8212; ATA ATAPI IDE EIDE</a><br />
+<a href="http://www.repairfaq.org/filipg/LINK/F_IDE-tech.html">Fil&#8217;s FAQ-Link-In Corner: IDE Ref.</a><br />
+<a href="http://suif.stanford.edu/%7Ecsapuntz/blackmagic.html">ATA/ATAPI Errata</a></td>
+<td align="left" valign="top">Programming the PC&#8217;s IDE controller</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://wiki.osdev.org/AHCI">OSDev.org&#8217;s AHCI (native SATA) page</a><br />
+<a href="http://linuxmafia.com/faq/Hardware/sata.html">SATA on Linux</a></td>
+<td align="left" valign="top">Programming the PC&#8217;s SATA controller</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://atschool.eduweb.co.uk/camdean/pupils/amac/vga.htm">VGA graphics Programming</a><br />
+<a href="http://www.monstersoft.com/tutorial1/">High-res high-speed VESA tutorial</a><br />
+<a href="http://gameprogrammer.com/">Game Programming and graphics programming</a><br />
+<a href="http://www.brackeen.com/home/vga/">256-Color VGA Programming in C &#8211; Home</a><br />
+<a href="http://www.hornet.org/">Graphics and sound &#8211; The Hornet Archive</a></td>
+<td align="left" valign="top">Programming the PC&#8217;s video hardware</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.computer-engineering.org/ps2keyboard/">The PS/2 Keyboard Interface</a></td>
+<td align="left" valign="top">Programming the PC keyboard</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.computer-engineering.org/ps2mouse/">PS/2 Mouse Interfacing</a></td>
+<td align="left" valign="top">Programming the PC mouse</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.lvr.com/serport.htm">Serial Links using RS-232 and RS-485</a></td>
+<td align="left" valign="top">Serial port programming information</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="ftp://rtfm.mit.edu/pub/usenet/news.answers/pc-hardware-faq/">/pub/usenet/news.answers/pc-hardware-faq</a></td>
+<td align="left" valign="top">PC hardware Usenet FAQ</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center"><b>Networking<br />
+</b></p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.freesoft.org/CIE/Course/Section3/">The IP Protocol</a></td>
+<td align="left" valign="top">The IP networking protocol (you need to implement this before TCP, UDP, etc.)</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.fefe.de/linuxeth/">Choosing an Ethernet NIC</a></td>
+<td align="left" valign="top">Some Linux-related general info about network cards</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center"><b>Graphics<br />
+</b></p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://en.wikipedia.org/wiki/JPEG">Wikipedia&#8217;s JPEG page</a><br />
+<a href="http://www.impulseadventure.com/photo/jpeg-decoder.html">Calvin Hass&#8217;s JPEG decoding pages</a><br />
+&#8211; <a href="http://www.impulseadventure.com/photo/jpeg-huffman-coding.html">Huffman coding</a><br />
+&#8211; <a href="http://www.impulseadventure.com/photo/jpeg-minimum-coded-unit.html">MCUs</a><br />
+&#8211; <a href="http://www.impulseadventure.com/photo/chroma-subsampling.html">Chroma subsampling</a><br />
+&#8211; <a href="http://www.impulseadventure.com/photo/jpeg-snoop.html">JPEGsnoop</a> (dumps JPEG data)<br />
+&#8211; <a href="http://www.impulseadventure.com/photo/lossless-rotation.html">Lossless rotation</a><br />
+&#8211; <a href="http://www.impulseadventure.com/photo/rotation-partial-mcu.html">Lossless rotation of partial MCUs</a><br />
+<a href="http://www.ddj.com/184409589?pgno=8">Dr. Dobb&#8217;s JPEG-like image compression</a></td>
+<td align="left" valign="top">JPEG image decoding and the JFIF file format</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://en.wikipedia.org/wiki/Bicubic_interpolation">Wikipedia&#8217;s bicubic interpolation page</a><br />
+<a href="http://en.wikipedia.org/wiki/Bilinear_filtering">Wikipedia&#8217;s bilinear filtering page</a></td>
+<td align="left" valign="top">Image resizing</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th colspan="2" align="left" valign="top">
+<p align="center"><b>Miscellaneous<br />
+</b></p>
+</th>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.freesoft.org/CIE/RFC/1321/index.htm">RFC 1321 &#8211; The MD5 Message-Digest Algorithm</a></td>
+<td align="left" valign="top">The MD5 hashing algorithm (for passwords, etc.)</td>
+</tr>
+<tr>
+<td align="left" valign="top"><a href="http://www.microsoft.com/whdc/system/platform/64bit/default.mspx">EFI: 64-bit System Design</a></td>
+<td align="left" valign="top">Documents and links describing EFI firmware, GPT partition tables, etc. from Microsoft</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+	</div><!-- .entry-content -->
+</article><!-- #post-## -->
+		</div><!-- #content -->
+	</div><!-- #primary -->
+</div><!-- #main-content -->
+
+<div id="secondary">
+		<h2 class="site-description">Visual Operating System</h2>
+	
+	
+		<div id="primary-sidebar" class="primary-sidebar widget-area" role="complementary">
+		<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="http://visopsys.org/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form></aside>	</div><!-- #primary-sidebar -->
+	</div><!-- #secondary -->
+
+		</div><!-- #main -->
+
+		<footer id="colophon" class="site-footer" role="contentinfo">
+
+			
+<div id="supplementary">
+	<div id="footer-sidebar" class="footer-sidebar widget-area" role="complementary">
+			</div><!-- #footer-sidebar -->
+</div><!-- #supplementary -->
+
+			<div class="site-info">
+								<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+			</div><!-- .site-info -->
+		</footer><!-- #colophon -->
+	</div><!-- #page -->
+
+	<script type='text/javascript' src='http://visopsys.org/wp-includes/js/imagesloaded.min.js?ver=3.2.0'></script>
+<script type='text/javascript' src='http://visopsys.org/wp-includes/js/masonry.min.js?ver=3.3.2'></script>
+<script type='text/javascript' src='http://visopsys.org/wp-includes/js/jquery/jquery.masonry.min.js?ver=3.1.2b'></script>
+<script type='text/javascript' src='http://visopsys.org/wp-content/themes/twentyfourteen/js/functions.js?ver=20150315'></script>
+<script type='text/javascript' src='http://visopsys.org/wp-includes/js/wp-embed.min.js?ver=4.6.1'></script>
+</body>
+</html>

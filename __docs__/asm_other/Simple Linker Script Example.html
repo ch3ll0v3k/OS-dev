@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Simple Linker Script Example</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Red Hat Enterprise Linux 4"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Linker Scripts"
+HREF="scripts.html"><LINK
+REL="PREVIOUS"
+TITLE="Linker Script Format"
+HREF="script-format.html"><LINK
+REL="NEXT"
+TITLE="Simple Linker Script Commands"
+HREF="simple-commands.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="rhdocs-man.css"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Red Hat Enterprise Linux 4: Using ld, the Gnu Linker</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="script-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Linker Scripts</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="simple-commands.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SIMPLE-EXAMPLE"
+></A
+>4.3. Simple Linker Script Example</H1
+><P
+>Many linker scripts are fairly simple.
+   </P
+><P
+>The simplest possible linker script has just one command:
+<TT
+CLASS="COMMAND"
+>SECTIONS</TT
+>.  You use the <TT
+CLASS="COMMAND"
+>SECTIONS</TT
+> command to describe the
+memory layout of the output file.
+   </P
+><P
+>The <TT
+CLASS="COMMAND"
+>SECTIONS</TT
+> command is a powerful command.  Here we will
+describe a simple use of it.  Let's assume your program consists only of
+code, initialized data, and uninitialized data.  These will be in the
+<TT
+CLASS="COMMAND"
+>.text</TT
+>, <TT
+CLASS="COMMAND"
+>.data</TT
+>, and <TT
+CLASS="COMMAND"
+>.bss</TT
+> sections, respectively.
+Let's assume further that these are the only sections which appear in
+your input files.
+   </P
+><P
+>For this example, let's say that the code should be loaded at address
+0x10000, and that the data should start at address 0x8000000.  Here is a
+linker script which will do that:</P
+><TABLE
+CLASS="SCREEN"
+BGCOLOR="#DCDCDC"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>SECTIONS
+{
+  . = 0x10000;
+  .text : { *(.text) }
+  . = 0x8000000;
+  .data : { *(.data) }
+  .bss : { *(.bss) }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>You write the <TT
+CLASS="COMMAND"
+>SECTIONS</TT
+> command as the keyword <TT
+CLASS="COMMAND"
+>SECTIONS</TT
+>,
+followed by a series of symbol assignments and output section
+descriptions enclosed in curly braces.
+   </P
+><P
+>The first line inside the <TT
+CLASS="COMMAND"
+>SECTIONS</TT
+> command of the above example
+sets the value of the special symbol <TT
+CLASS="COMMAND"
+>.</TT
+>, which is the location
+counter.  If you do not specify the address of an output section in some
+other way (other ways are described later), the address is set from the
+current value of the location counter.  The location counter is then
+incremented by the size of the output section.  At the start of the
+<TT
+CLASS="COMMAND"
+>SECTIONS</TT
+> command, the location counter has the value <TT
+CLASS="COMMAND"
+>0</TT
+>.
+   </P
+><P
+>The second line defines an output section, <TT
+CLASS="COMMAND"
+>.text</TT
+>.  The colon is
+required syntax which may be ignored for now.  Within the curly braces
+after the output section name, you list the names of the input sections
+which should be placed into this output section.  The <TT
+CLASS="COMMAND"
+>*</TT
+> is a
+wildcard which matches any file name.  The expression <TT
+CLASS="COMMAND"
+>*(.text)</TT
+>
+means all <TT
+CLASS="COMMAND"
+>.text</TT
+> input sections in all input files.
+   </P
+><P
+>Since the location counter is <TT
+CLASS="COMMAND"
+>0x10000</TT
+> when the output section
+<TT
+CLASS="COMMAND"
+>.text</TT
+> is defined, the linker will set the address of the
+<TT
+CLASS="COMMAND"
+>.text</TT
+> section in the output file to be <TT
+CLASS="COMMAND"
+>0x10000</TT
+>.
+   </P
+><P
+>The remaining lines define the <TT
+CLASS="COMMAND"
+>.data</TT
+> and <TT
+CLASS="COMMAND"
+>.bss</TT
+> sections in
+the output file.  The linker will place the <TT
+CLASS="COMMAND"
+>.data</TT
+> output section
+at address <TT
+CLASS="COMMAND"
+>0x8000000</TT
+>.  After the linker places the <TT
+CLASS="COMMAND"
+>.data</TT
+>
+output section, the value of the location counter will be
+<TT
+CLASS="COMMAND"
+>0x8000000</TT
+> plus the size of the <TT
+CLASS="COMMAND"
+>.data</TT
+> output section.  The
+effect is that the linker will place the <TT
+CLASS="COMMAND"
+>.bss</TT
+> output section
+immediately after the <TT
+CLASS="COMMAND"
+>.data</TT
+> output section in memory
+   </P
+><P
+>The linker will ensure that each output section has the required
+alignment, by increasing the location counter if necessary.  In this
+example, the specified addresses for the <TT
+CLASS="COMMAND"
+>.text</TT
+> and <TT
+CLASS="COMMAND"
+>.data</TT
+>
+sections will probably satisfy any alignment constraints, but the linker
+may have to create a small gap between the <TT
+CLASS="COMMAND"
+>.data</TT
+> and <TT
+CLASS="COMMAND"
+>.bss</TT
+>
+sections.
+   </P
+><P
+>That's it!  That's a simple and complete linker script.
+   </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="script-format.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="simple-commands.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linker Script Format</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Simple Linker Script Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

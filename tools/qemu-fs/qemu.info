@@ -1,0 +1,15 @@
+You have an iso image and you want to boot from it without restarting the system, simply use qemu virtual machine as below (-m 512 says qemu will be use 512 Mb of RAM from system):
+
+qemu-system-x86_64 -boot d -cdrom image.iso -m 512
+
+It is also possible to use your regular cdrom device too. If the device is /dev/cdrom you can boot a cd in the device like that:
+
+qemu-system-x86_64 -boot d -cdrom /dev/cdrom -m 512
+
+Above examples not use any harddisk, so it is suitable for live cd image case. If you want to install a distribution to a harddisk image file, you need to create harddisk image file first:
+
+qemu-img create mydisk.img 10G
+
+In this example we're created an image of 10 GB. Now we can use this file as harddisk in our qemu boot:
+
+qemu-system-x86_64 -boot d -cdrom image.iso -m 512 -hda mydisk.img

@@ -1,0 +1,1515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - ACPI poweroff</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - ACPI poweroff" href="http://forum.osdev.org/feed.php?f=1&amp;t=16990" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '15';
+	var base_url = './viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php?sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php?sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php?sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Mon Sep 26, 2016 6:42 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered&amp;sid=487a437e7b39707af5c32ca499e15112">View unanswered posts</a> | <a href="./search.php?search_id=active_topics&amp;sid=487a437e7b39707af5c32ca499e15112">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=487a437e7b39707af5c32ca499e15112">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=487a437e7b39707af5c32ca499e15112">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=487a437e7b39707af5c32ca499e15112">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=16990&amp;start=0&amp;sid=487a437e7b39707af5c32ca499e15112">ACPI poweroff</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016&amp;sid=487a437e7b39707af5c32ca499e15112">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67&amp;sid=487a437e7b39707af5c32ca499e15112">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866&amp;sid=487a437e7b39707af5c32ca499e15112">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=487a437e7b39707af5c32ca499e15112">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922&amp;sid=487a437e7b39707af5c32ca499e15112">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600&amp;sid=487a437e7b39707af5c32ca499e15112">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902&amp;sid=487a437e7b39707af5c32ca499e15112">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=487a437e7b39707af5c32ca499e15112">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477&amp;sid=487a437e7b39707af5c32ca499e15112">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891&amp;sid=487a437e7b39707af5c32ca499e15112">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950&amp;sid=487a437e7b39707af5c32ca499e15112">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=487a437e7b39707af5c32ca499e15112">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731&amp;sid=487a437e7b39707af5c32ca499e15112">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155&amp;sid=487a437e7b39707af5c32ca499e15112">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448&amp;sid=487a437e7b39707af5c32ca499e15112">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287&amp;sid=487a437e7b39707af5c32ca499e15112">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781&amp;sid=487a437e7b39707af5c32ca499e15112">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117&amp;sid=487a437e7b39707af5c32ca499e15112">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/button_topic_locked.gif" alt="This topic is locked, you cannot edit posts or make further replies." title="This topic is locked, you cannot edit posts or make further replies." /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>3</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 34 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=15">2</a><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=30">3</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=16990&amp;start=0&amp;sid=487a437e7b39707af5c32ca499e15112&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=16990&amp;view=previous&amp;sid=487a437e7b39707af5c32ca499e15112">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=16990&amp;view=next&amp;sid=487a437e7b39707af5c32ca499e15112">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126715"></a>
+				<b class="postauthor">kaworu</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> ACPI poweroff</div><div style="float: right;"><a href="./viewtopic.php?p=126715&amp;sid=487a437e7b39707af5c32ca499e15112#p126715"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 13, 2008 6:34 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue May 13, 2008 2:55 am<br /><b>Posts:</b> 4<br /><b>Location:</b> Germany
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I have written a &quot;simple&quot; acpi poweroff routine and wanted to share my knowledge since it seems here isn't that much acpi related stuff available.
+<br />Maybe this could be added to the wiki?
+<br />
+<br />###################################
+<br />
+<br />The ACPI shutdown is technically a really simple thing all that is needed is a outw(PM1a_CNT, SLP_TYPa | SLP_EN ); and the computer is powered off.
+<br />The problem lies in the gathering of these values especialy since the SLP_TYPa is in the \_S5 object which is in the DSDT and therefore AML encoded.
+<br />
+<br />Below is a simple &quot;map&quot; of where to find these fields.
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&quot;RSD PTR &quot;<br />&nbsp; ||<br /> RsdtAddress pointer at offset 16<br />&nbsp; ||<br />&nbsp; \/<br />&quot;RSDT&quot;<br />&nbsp; ||<br /> pointer at offset 36 + 4 * n &#40;check the target for the sig &quot;FACP&quot; to get the right n&#41;<br />&nbsp; ||<br />&nbsp; \/<br />&quot;FACP&quot;<br />&nbsp; ||<br />&nbsp; ||=====\<br />&nbsp; ||&nbsp; &nbsp;|| <br />&nbsp; ||&nbsp; &nbsp;PM1a_CNT_BLK; offset: 64&nbsp; &nbsp;&#40;see section 4.7.3.2&#41;<br />&nbsp; ||&nbsp; &nbsp;PM1b_CNT_BLK; offset: 68<br />&nbsp; ||&nbsp; &nbsp;&nbsp; &nbsp;||<br />&nbsp; ||&nbsp; &nbsp;&nbsp; &nbsp;\/<br />&nbsp; ||&nbsp; &nbsp;&nbsp; &nbsp;SLP_TYPx; bit 10-12<br />&nbsp; ||&nbsp; &nbsp;&nbsp; &nbsp;SLP_EN;&nbsp; &nbsp;&nbsp; bit 13<br />&nbsp; ||<br /> DSDT pointer at offset 40<br />&nbsp; ||<br />&nbsp; \/<br />&quot;DSDT&quot;&nbsp; &nbsp;&#40;export the \_S5 object somehow.&#41;<br /></div><br /><br />To export the \_S5 object one would normally use an AML interpreter but thats obviously not an option considering we're building a hobby os. The simple solution is to scan the DSDT manually. The AML language specifies that \_... objects are defined only once which makes it very simple to find the \_S5 object since a simple memcmp() is enough.<br />Once found the SLP_TYPx values are extracted.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent"> bytecode of the \_S5 object<br /> -----------------------------------------<br />&nbsp; &nbsp; &nbsp; &nbsp; | &#40;optional&#41; |&nbsp; &nbsp; |&nbsp; &nbsp; |&nbsp; &nbsp; |<br /> NameOP | \&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | _&nbsp; | S&nbsp; | 5&nbsp; | _<br /> 08&nbsp; &nbsp; &nbsp;| 5A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 5F | 53 | 35 | 5F<br /><br /> -----------------------------------------------------------------------------------------------------------<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &#40; SLP_TYPa&nbsp; &nbsp;&#41; | &#40; SLP_TYPb&nbsp; &nbsp;&#41; | &#40; Reserved&nbsp; &nbsp;&#41; | &#40;Reserved&nbsp; &nbsp; &#41;<br /> PackageOP | PkgLength | NumElements&nbsp; | byteprefix Num | byteprefix Num | byteprefix Num | byteprefix Num<br /> 12&nbsp; &nbsp; &nbsp; &nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 05 | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05<br /><br />----this-structure-was-also-seen----------------------<br /> PackageOP | PkgLength | NumElements |<br /> 12&nbsp; &nbsp; &nbsp; &nbsp; | 06&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 00 00 00 00<br /></div><br /><br />The gatering of the informations is best performed at OS initialization because after that you can reuse the ram and don't need to worry about corrupting it.<br /><br />Now all that remains is outw(PM1a_CNT, SLP_TYPa | SLP_EN ); and your'e gone.<br />If PM1b_CNT is != 0 you need to repeat it with b.<br /><br />If that was a little too abstract here is some code to look at<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">//<br />// here is the slighlty complicated ACPI poweroff code<br />//<br /><br />#include &lt;stddef.h&gt;<br />#include &lt;print.h&gt;<br />#include &lt;string.h&gt;<br />#include &lt;io.h&gt;<br />#include &lt;time.h&gt;<br /><br /><br /><br />dword *SMI_CMD;<br />byte ACPI_ENABLE;<br />byte ACPI_DISABLE;<br />dword *PM1a_CNT;<br />dword *PM1b_CNT;<br />word SLP_TYPa;<br />word SLP_TYPb;<br />word SLP_EN;<br />word SCI_EN;<br />byte PM1_CNT_LEN;<br /><br /><br /><br />struct RSDPtr<br />&#123;<br />&nbsp; &nbsp;byte Signature&#91;8&#93;;<br />&nbsp; &nbsp;byte CheckSum;<br />&nbsp; &nbsp;byte OemID&#91;6&#93;;<br />&nbsp; &nbsp;byte Revision;<br />&nbsp; &nbsp;dword *RsdtAddress;<br />&#125;;<br /><br /><br /><br />struct FACP<br />&#123;<br />&nbsp; &nbsp;byte Signature&#91;4&#93;;<br />&nbsp; &nbsp;dword Length;<br />&nbsp; &nbsp;byte unneded1&#91;40 - 8&#93;;<br />&nbsp; &nbsp;dword *DSDT;<br />&nbsp; &nbsp;byte unneded2&#91;48 - 44&#93;;<br />&nbsp; &nbsp;dword *SMI_CMD;<br />&nbsp; &nbsp;byte ACPI_ENABLE;<br />&nbsp; &nbsp;byte ACPI_DISABLE;<br />&nbsp; &nbsp;byte unneded3&#91;64 - 54&#93;;<br />&nbsp; &nbsp;dword *PM1a_CNT_BLK;<br />&nbsp; &nbsp;dword *PM1b_CNT_BLK;<br />&nbsp; &nbsp;byte unneded4&#91;89 - 72&#93;;<br />&nbsp; &nbsp;byte PM1_CNT_LEN;<br />&#125;;<br /><br /><br /><br />// check if the given address has a valid header<br />unsigned int *acpiCheckRSDPtr&#40;unsigned int *ptr&#41;<br />&#123;<br />&nbsp; &nbsp;char *sig = &quot;RSD PTR &quot;;<br />&nbsp; &nbsp;struct RSDPtr *rsdp = &#40;struct RSDPtr *&#41; ptr;<br />&nbsp; &nbsp;byte *bptr;<br />&nbsp; &nbsp;byte check = 0;<br />&nbsp; &nbsp;int i;<br /><br />&nbsp; &nbsp;if &#40;memcmp&#40;sig, rsdp, 8&#41; == 0&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;// check checksum rsdpd<br />&nbsp; &nbsp;&nbsp; &nbsp;bptr = &#40;byte *&#41; ptr;<br />&nbsp; &nbsp;&nbsp; &nbsp;for &#40;i=0; i&lt;sizeof&#40;struct RSDPtr&#41;; i++&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;check += *bptr;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;bptr++;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// found valid rsdpd&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;if &#40;check == 0&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;/*<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; if &#40;desc-&gt;Revision == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;acpi 1&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;else<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;acpi 2&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;*/<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return &#40;unsigned int *&#41; rsdp-&gt;RsdtAddress;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;return NULL;<br />&#125;<br /><br /><br /><br />// finds the acpi header and returns the address of the rsdt<br />unsigned int *acpiGetRSDPtr&#40;void&#41;<br />&#123;<br />&nbsp; &nbsp;unsigned int *addr;<br />&nbsp; &nbsp;unsigned int *rsdp;<br /><br />&nbsp; &nbsp;// search below the 1mb mark for RSDP signature<br />&nbsp; &nbsp;for &#40;addr = &#40;unsigned int *&#41; 0x000E0000; &#40;int&#41; addr&lt;0x00100000; addr += 0x10/sizeof&#40;addr&#41;&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;rsdp = acpiCheckRSDPtr&#40;addr&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;if &#40;rsdp != NULL&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return rsdp;<br />&nbsp; &nbsp;&#125;<br /><br /><br />&nbsp; &nbsp;// at address 0x40:0x0E is the RM segment of the ebda<br />&nbsp; &nbsp;int ebda = *&#40;&#40;short *&#41; 0x40E&#41;;&nbsp; &nbsp;// get pointer<br />&nbsp; &nbsp;ebda = ebda*0x10 &amp;0x000FFFFF;&nbsp; &nbsp;// transform segment into linear address<br /><br />&nbsp; &nbsp;// search Extended BIOS Data Area for the Root System Description Pointer signature<br />&nbsp; &nbsp;for &#40;addr = &#40;unsigned int *&#41; ebda; &#40;int&#41; addr&lt;ebda+1024; addr+= 0x10/sizeof&#40;addr&#41;&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;rsdp = acpiCheckRSDPtr&#40;addr&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;if &#40;rsdp != NULL&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return rsdp;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;return NULL;<br />&#125;<br /><br /><br /><br />// checks for a given header and validates checksum<br />int acpiCheckHeader&#40;unsigned int *ptr, char *sig&#41;<br />&#123;<br />&nbsp; &nbsp;if &#40;memcmp&#40;ptr, sig, 4&#41; == 0&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;char *checkPtr = &#40;char *&#41; ptr;<br />&nbsp; &nbsp;&nbsp; &nbsp;int len = *&#40;ptr + 1&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;char check = 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;while &#40;0&lt;len--&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;check += *checkPtr;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;checkPtr++;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;if &#40;check == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;return -1;<br />&#125;<br /><br /><br /><br />int acpiEnable&#40;void&#41;<br />&#123;<br />&nbsp; &nbsp;// check if acpi is enabled<br />&nbsp; &nbsp;if &#40; &#40;inw&#40;&#40;unsigned int&#41; PM1a_CNT&#41; &amp;SCI_EN&#41; == 0 &#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;// check if acpi can be enabled<br />&nbsp; &nbsp;&nbsp; &nbsp;if &#40;SMI_CMD != 0 &amp;&amp; ACPI_ENABLE != 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;outb&#40;&#40;unsigned int&#41; SMI_CMD, ACPI_ENABLE&#41;; // send acpi enable command<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// give 3 seconds time to enable acpi<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;int i;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;for &#40;i=0; i&lt;300; i++ &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40; &#40;inw&#40;&#40;unsigned int&#41; PM1a_CNT&#41; &amp;SCI_EN&#41; == 1 &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;sleep&#40;10&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;PM1b_CNT != 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;for &#40;; i&lt;300; i++ &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40; &#40;inw&#40;&#40;unsigned int&#41; PM1b_CNT&#41; &amp;SCI_EN&#41; == 1 &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;sleep&#40;10&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;i&lt;300&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;enabled acpi.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;couldn't enable acpi.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return -1;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;no known way to enable acpi.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return -1;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;//wrstr&#40;&quot;acpi was already enabled.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;&#125;<br />&#125;<br /><br /><br /><br />//<br />// bytecode of the \_S5 object<br />// -----------------------------------------<br />//&nbsp; &nbsp; &nbsp; &nbsp; | &#40;optional&#41; |&nbsp; &nbsp; |&nbsp; &nbsp; |&nbsp; &nbsp; |&nbsp; &nbsp;<br />// NameOP | \&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | _&nbsp; | S&nbsp; | 5&nbsp; | _<br />// 08&nbsp; &nbsp; &nbsp;| 5A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 5F | 53 | 35 | 5F<br />// <br />// -----------------------------------------------------------------------------------------------------------<br />//&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &#40; SLP_TYPa&nbsp; &nbsp;&#41; | &#40; SLP_TYPb&nbsp; &nbsp;&#41; | &#40; Reserved&nbsp; &nbsp;&#41; | &#40;Reserved&nbsp; &nbsp; &#41;<br />// PackageOP | PkgLength | NumElements&nbsp; | byteprefix Num | byteprefix Num | byteprefix Num | byteprefix Num<br />// 12&nbsp; &nbsp; &nbsp; &nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 05 | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05<br />//<br />//----this-structure-was-also-seen----------------------<br />// PackageOP | PkgLength | NumElements | <br />// 12&nbsp; &nbsp; &nbsp; &nbsp; | 06&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 00 00 00 00<br />//<br />// &#40;Pkglength bit 6-7 encode additional PkgLength bytes &#91;shouldn't be the case here&#93;&#41;<br />//<br />int initAcpi&#40;void&#41;<br />&#123;<br />&nbsp; &nbsp;unsigned int *ptr = acpiGetRSDPtr&#40;&#41;;<br /><br />&nbsp; &nbsp;// check if address is correct&nbsp; &#40; if acpi is available on this pc &#41;<br />&nbsp; &nbsp;if &#40;ptr != NULL &amp;&amp; acpiCheckHeader&#40;ptr, &quot;RSDT&quot;&#41; == 0&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;// the RSDT contains an unknown number of pointers to acpi tables<br />&nbsp; &nbsp;&nbsp; &nbsp;int entrys = *&#40;ptr + 1&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;entrys = &#40;entrys-36&#41; /4;<br />&nbsp; &nbsp;&nbsp; &nbsp;ptr += 36/4;&nbsp; &nbsp;// skip header information<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;while &#40;0&lt;entrys--&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// check if the desired table is reached<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;acpiCheckHeader&#40;&#40;unsigned int *&#41; *ptr, &quot;FACP&quot;&#41; == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;entrys = -2;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;struct FACP *facp = &#40;struct FACP *&#41; *ptr;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;acpiCheckHeader&#40;&#40;unsigned int *&#41; facp-&gt;DSDT, &quot;DSDT&quot;&#41; == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// search the \_S5 package in the DSDT<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;char *S5Addr = &#40;char *&#41; facp-&gt;DSDT +36; // skip header<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;int dsdtLength = *&#40;facp-&gt;DSDT+1&#41; -36;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;while &#40;0 &lt; dsdtLength--&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40; memcmp&#40;S5Addr, &quot;_S5_&quot;, 4&#41; == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr++;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// check if \_S5 was found<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;dsdtLength &gt; 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// check for valid AML structure<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40; &#40; *&#40;S5Addr-1&#41; == 0x08 || &#40; *&#40;S5Addr-2&#41; == 0x08 &amp;&amp; *&#40;S5Addr-1&#41; == '\\'&#41; &#41; &amp;&amp; *&#40;S5Addr+4&#41; == 0x12 &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr += 5;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr += &#40;&#40;*S5Addr &amp;0xC0&#41;&gt;&gt;6&#41; +2;&nbsp; &nbsp;// calculate PkgLength size<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;*S5Addr == 0x0A&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr++;&nbsp; &nbsp;// skip byteprefix<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;SLP_TYPa = *&#40;S5Addr&#41;&lt;&lt;10;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr++;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if &#40;*S5Addr == 0x0A&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;S5Addr++;&nbsp; &nbsp;// skip byteprefix<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;SLP_TYPb = *&#40;S5Addr&#41;&lt;&lt;10;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;SMI_CMD = facp-&gt;SMI_CMD;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ACPI_ENABLE = facp-&gt;ACPI_ENABLE;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ACPI_DISABLE = facp-&gt;ACPI_DISABLE;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;PM1a_CNT = facp-&gt;PM1a_CNT_BLK;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;PM1b_CNT = facp-&gt;PM1b_CNT_BLK;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;PM1_CNT_LEN = facp-&gt;PM1_CNT_LEN;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;SLP_EN = 1&lt;&lt;13;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;SCI_EN = 1;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;\\_S5 parse error.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;\\_S5 not present.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;DSDT invalid.\n&quot;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ptr++;<br />&nbsp; &nbsp;&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;no valid FACP present.\n&quot;&#41;;<br />&nbsp; &nbsp;&#125; else &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;wrstr&#40;&quot;no acpi.\n&quot;&#41;;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;return -1;<br />&#125;<br /><br /><br /><br />void acpiPowerOff&#40;void&#41;<br />&#123;<br />&nbsp; &nbsp;// SCI_EN is set to 1 if acpi shutdown is possible<br />&nbsp; &nbsp;if &#40;SCI_EN == 0&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;return;<br /><br />&nbsp; &nbsp;acpiEnable&#40;&#41;;<br /><br />&nbsp; &nbsp;// send the shutdown command<br />&nbsp; &nbsp;outw&#40;&#40;unsigned int&#41; PM1a_CNT, SLP_TYPa | SLP_EN &#41;;<br />&nbsp; &nbsp;if &#40; PM1b_CNT != 0 &#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;outw&#40;&#40;unsigned int&#41; PM1b_CNT, SLP_TYPb | SLP_EN &#41;;<br /><br />&nbsp; &nbsp;wrstr&#40;&quot;acpi poweroff failed.\n&quot;&#41;;<br />&#125;<br /></div><br /><br />For further information read the corresponding sections of the acpi 1.0a specification<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">9.1.7&nbsp; &nbsp;Transitioning from the Working to the Soft Off State<br />7.5.2&nbsp; &nbsp;\_Sx states<br />7.4.1&nbsp; &nbsp;\_S5<br />4.7.2.3&nbsp; &nbsp; Sleeping/Wake Control<br /><br />16.3&nbsp; &nbsp;AML Byte Streeam Byte Values<br />16.2.3&nbsp; &nbsp;Package Length Encoding</div>
+<br />
+<br />#############################################
+<br />
+<br />This works on all my machines bochs and qemu.
+<br />but i noticed that one needn't enable acpi for the pc to power down. Tough i dont know if this is always the case.
+<br />
+<br />If you yust want to play a little.
+<br />  For bochs and qemu it's outw( 0xB004, 0x0 | 0x2000 );</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4750&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p126717"></a>
+				<b class="postauthor">Cognition</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126717&amp;sid=487a437e7b39707af5c32ca499e15112#p126717"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 13, 2008 7:11 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Apr 15, 2008 6:37 pm<br /><b>Posts:</b> 191<br /><b>Location:</b> Gotham, Batmanistan
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Technically I think there's one method you're suppose to execute first as well \_PTS.  There's an optional method \_GTS too, but I think what you're describing should be fine for an emulator.  Method execution would definitely require the use of interpreter as well.  I don't know if a real system would require you todo an SMI-&gt;OS handoff of the resources first as well.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4671&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126727"></a>
+				<b class="postauthor">kaworu</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126727&amp;sid=487a437e7b39707af5c32ca499e15112#p126727"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 13, 2008 10:12 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue May 13, 2008 2:55 am<br /><b>Posts:</b> 4<br /><b>Location:</b> Germany
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">youre right the _PTS should be executed but as far as i could see that only makes a aml local? thing and for \_S4 some pci things. so dosnt realy matter. me thinks
+<br />and actually all of my real hardware even powers down when acpi wasnt even enabled so there seems to be no problem. though maybe there a lot of machines where this dosnt apply</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4750&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p126733"></a>
+				<b class="postauthor">lukem95</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126733&amp;sid=487a437e7b39707af5c32ca499e15112#p126733"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 13, 2008 12:33 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=3861.gif" width="56" height="23" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Fri Aug 03, 2007 6:03 am<br /><b>Posts:</b> 536<br /><b>Location:</b> Cambridge, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">That looks very useful, do you think it could be added to the wiki?</div>
+
+					
+						<span class="postbody"><br />_________________<br />~ Lukem95 [ <a href="http://code.google.com/p/cakeos/" class="postlink">Cake</a> ]<br />Release: <span style="font-weight: bold">0.08b</span><br /><img src="http://img99.imageshack.us/img99/9303/libertycopyks4.png" alt="Image" /></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=3861&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126774"></a>
+				<b class="postauthor">piranha</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126774&amp;sid=487a437e7b39707af5c32ca499e15112#p126774"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 13, 2008 8:17 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=2309_1422469767.jpg" width="79" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 21, 2006 7:42 pm<br /><b>Posts:</b> 1391<br /><b>Location:</b> Unknown. Momentum is pretty certain, however.
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Say, is this supposed to work in QEMU, or is there a flag I need to set in the Qemu command? Or am I just calling the enable function wrong?
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">initAcpi&#40;&#41;;</div> Is all you need, right?
+<br />
+<br />-JL</div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://dbittman.github.io/seaos/index.html" class="postlink">SeaOS</a>: Adding VT-x, networking, and ARM support<br /><span style="font-style: italic">dbittman on IRC, @danielbittman on twitter</span><br /><a href="https://dbittman.github.io" class="postlink">https://dbittman.github.io</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=2309&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p126797"></a>
+				<b class="postauthor">kaworu</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126797&amp;sid=487a437e7b39707af5c32ca499e15112#p126797"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 5:49 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue May 13, 2008 2:55 am<br /><b>Posts:</b> 4<br /><b>Location:</b> Germany
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">No initAcpi();just retrieves everything needed and stores it so that you can use the ram used by acpi its basically a function you want to add into your kernel initialization the actual shutdown is performed by a later call to acpiPowerOff();
+<br />
+<br />And i am okay with it being added to the wiki actually i strove to write it in a fashion which would enable a simple copy and paste. Hope i was able to acomplish it.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4750&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126814"></a>
+				<b class="postauthor">piranha</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126814&amp;sid=487a437e7b39707af5c32ca499e15112#p126814"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 8:35 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=2309_1422469767.jpg" width="79" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 21, 2006 7:42 pm<br /><b>Posts:</b> 1391<br /><b>Location:</b> Unknown. Momentum is pretty certain, however.
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Yeah, I meant just to enable ACPI or start it or whatever, but the Init call doesn't work, it returns 'no acpi'. Is this a problem only in Qemu?
+<br />
+<br />-JL</div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://dbittman.github.io/seaos/index.html" class="postlink">SeaOS</a>: Adding VT-x, networking, and ARM support<br /><span style="font-style: italic">dbittman on IRC, @danielbittman on twitter</span><br /><a href="https://dbittman.github.io" class="postlink">https://dbittman.github.io</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=2309&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p126834"></a>
+				<b class="postauthor">kaworu</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126834&amp;sid=487a437e7b39707af5c32ca499e15112#p126834"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 4:46 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue May 13, 2008 2:55 am<br /><b>Posts:</b> 4<br /><b>Location:</b> Germany
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">You usually get the no acpi message when the RSDT wasnt found which is the case when acpi isnt available tough a disabled a20 gate could also be the cause since the header may lay in an area above 1m
+<br />
+<br />its certainly not a qemu problem as it works in my qemu.
+<br />i have qemu v0.9.1 tough i didnt compile it myself but used the default ubuntu hardy package.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4750&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126837"></a>
+				<b class="postauthor">piranha</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126837&amp;sid=487a437e7b39707af5c32ca499e15112#p126837"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 6:05 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=2309_1422469767.jpg" width="79" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 21, 2006 7:42 pm<br /><b>Posts:</b> 1391<br /><b>Location:</b> Unknown. Momentum is pretty certain, however.
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Well, it doesn't work for me. Maybe it's my memcmp function, thats the only one I didn't have already:
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">int memcmp&#40;char *s1, char *s2, int n&#41;<br />&#123;<br />&nbsp; &nbsp;int i;<br />&nbsp; &nbsp;for&#40;i=0;i&lt;n;i++&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;if&#40;s1&#91;n&#93; != s2&#91;n&#93;&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 1;<br />&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;return 0;<br />&#125;</div>
+<br />Does it need more or is it just completly messed up?
+<br />
+<br />-JL</div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://dbittman.github.io/seaos/index.html" class="postlink">SeaOS</a>: Adding VT-x, networking, and ARM support<br /><span style="font-style: italic">dbittman on IRC, @danielbittman on twitter</span><br /><a href="https://dbittman.github.io" class="postlink">https://dbittman.github.io</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=2309&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p126838"></a>
+				<b class="postauthor">Brynet-Inc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126838&amp;sid=487a437e7b39707af5c32ca499e15112#p126838"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 6:53 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=1899_1329417848.png" width="71" height="47" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 17, 2006 9:29 pm<br /><b>Posts:</b> 2423<br /><b>Location:</b> Canada
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">piranha wrote:</div><div class="quotecontent">Well, it doesn't work for me. Maybe it's my memcmp function, thats the only one I didn't have already:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">int memcmp&#40;char *s1, char *s2, int n&#41;<br />&#123;<br />&nbsp; &nbsp;int i;<br />&nbsp; &nbsp;for&#40;i=0;i&lt;n;i++&#41;<br />&nbsp; &nbsp;&#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;if&#40;s1&#91;n&#93; != s2&#91;n&#93;&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return 1;<br />&nbsp; &nbsp;&#125;<br />&nbsp; &nbsp;return 0;<br />&#125;</div><br />Does it need more or is it just completly messed up?<br /><br />-JL</div>That's not even a standards compliant implementation.. heck, it's not even a working implementation.
+<br />
+<br />Do you even read standards and stress test the functions you write?  <img src="./images/smilies/icon_rolleyes.gif" alt=":roll:" title="Rolling Eyes" /></div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="https://brynet.biz.tm/" class="postlink"><img src="http://i.imgur.com/WPvwEfR.png" alt="Image" /></a><br /><span style="font-size: 65%; line-height: normal">Twitter: <a href="https://twitter.com/canadianbryan" class="postlink">@canadianbryan</a>. Award by smcerm, I stole it. Original was larger.</span><br /><span style="font-size: 75%; line-height: normal"><span style="text-decoration: underline">UNIX&amp;BSD's</span>, your only aspirations, to be imitated! <img src="./images/smilies/icon_cool.gif" alt="8)" title="Cool" /><br /><span style="text-decoration: underline">Windows</span>, are an opening in an otherwise solid and opaque surface through which light and, sometimes, even air can pass through; nothing more.</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1899&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p126839"></a>
+				<b class="postauthor">piranha</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> </div><div style="float: right;"><a href="./viewtopic.php?p=126839&amp;sid=487a437e7b39707af5c32ca499e15112#p126839"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed May 14, 2008 7:20 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=2309_1422469767.jpg" width="79" height="60" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 21, 2006 7:42 pm<br /><b>Posts:</b> 1391<br /><b>Location:</b> Unknown. Momentum is pretty certain, however.
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">That one I wrote quickly because I had about 5 min before I had to leave and I did want to test the ACPI implementation, so I didn't bother spending a while researching it, but I'll do that now.
+<br />
+<br />EDIT: Oops, yeah, that was the problem, sorry about these posts, they were stupid.
+<br />
+<br />-JL <img src="./images/smilies/icon_redface.gif" alt=":oops:" title="Embarassed" /></div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://dbittman.github.io/seaos/index.html" class="postlink">SeaOS</a>: Adding VT-x, networking, and ARM support<br /><span style="font-style: italic">dbittman on IRC, @danielbittman on twitter</span><br /><a href="https://dbittman.github.io" class="postlink">https://dbittman.github.io</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=2309&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p151565"></a>
+				<b class="postauthor">frazzledjazz</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ACPI poweroff</div><div style="float: right;"><a href="./viewtopic.php?p=151565&amp;sid=487a437e7b39707af5c32ca499e15112#p151565"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Mar 08, 2009 4:50 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Mar 03, 2009 3:52 pm<br /><b>Posts:</b> 7
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">can someone check the above code to this please?<br /><br />I have that code above already and need it in 32bits assembler or 32bits pascal for FPC. I THINK I ported it correctly.<br />The assembler cannot be inline, this is a FPC limitation, however I can accept either ATT or intel styles.<br /><br />All examples I otherwise have are 16bit calls.[which wont work with FPC] I have yet to see any real world examples on dropping down to real mode for shutdown.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">//<br /><br />// here is the slighlty complicated ACPI poweroff code<br /><br />//<br /><br /><br />uses<br />&nbsp; &nbsp;x86,strings;<br /><br /><br /><br /><br />type<br /><br /><br /><br /><br /><br />record RSDPtr begin<br /><br />&nbsp; Signature:byte=8;<br /><br />&nbsp; CheckSum:byte;<br /><br />&nbsp; OemID:byte=6;<br /><br />&nbsp; Revision:byte;<br /><br />&nbsp; ^RsdtAddress:dword;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />record FACP begin<br /><br />&nbsp; Signature:byte=4;<br /><br />&nbsp; Length:dword;<br /><br />&nbsp; unneded1:byte=32;<br /><br />&nbsp; ^DSDT:dword;<br /><br />&nbsp; unneded2:byte=4;<br /><br />&nbsp; ^SMI_CMD:dword;<br /><br />&nbsp; ACPI_ENABLE:byte;<br /><br />&nbsp; ACPI_DISABLE:byte;<br /><br />&nbsp; unneded3:byte=10;<br /><br />&nbsp; ^PM1a_CNT_BLK:dword;<br /><br />&nbsp; ^PM1b_CNT_BLK:dword;<br /><br />&nbsp; unneded4:byte=67;<br /><br />&nbsp; PM1_CNT_LEN:byte;<br /><br />end;<br /><br /><br /><br />var<br /><br /><br />^SMI_CMD:dword;<br /><br />ACPI_ENABLE:byte;<br /><br />ACPI_DISABLE:byte;<br /><br />^PM1a_CNT:dword;<br /><br />^PM1b_CNT:dword;<br /><br />SLP_TYPa:word;<br /><br />SLP_TYPb:word;<br /><br />SLP_EN:word;<br /><br />SCI_EN:word;<br /><br />PM1_CNT_LEN:byte;<br /><br /><br /><br />// check if the given address has a valid header<br /><br />function ^acpiCheckRSDPtr(^ptr:integer);<br /><br /><br />&nbsp; ^sig:string;&nbsp; <br />&nbsp; rsdp:rsdPtr;<br /><br />&nbsp; bptr:integer;<br /><br />&nbsp; check:byte;<br /><br />&nbsp; i:integer;<br /><br /><br /><br />begin<br />&nbsp; ^sig:=&quot;RSD PTR&quot;;<br />&nbsp; rsdp := ^ ptr;<br />&nbsp; check:=0;<br /><br />&nbsp; rsdp:=^ptr<br />&nbsp; if (memcmp(sig, rsdp, 8) = 0) then begin <br /><br />&nbsp; &nbsp; // check checksum rsdpd<br /><br />&nbsp; &nbsp; bptr := ptr;<br />&nbsp; &nbsp; i:=0;&nbsp; <br /><br />&nbsp; &nbsp; repeat <br /><br />&nbsp; &nbsp; &nbsp; check += ^bptr; //huh??<br /><br />&nbsp; &nbsp; &nbsp; inc(bptr);<br />&nbsp; &nbsp; &nbsp; inc(i);<br /><br />&nbsp; &nbsp; until sizeof(rsdp);)&nbsp; &gt;i<br /><br /><br /><br />&nbsp; &nbsp; // found valid rsdpd<br /><br />&nbsp; &nbsp; if (check == 0) {<br /><br />&nbsp; &nbsp; &nbsp; /*<br /><br />&nbsp; &nbsp; &nbsp; &nbsp;if (desc-&gt;Revision == 0)<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;wrstr(&quot;acpi 1&quot;);<br /><br />&nbsp; &nbsp; &nbsp; else<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;wrstr(&quot;acpi 2&quot;);<br /><br />&nbsp; &nbsp; &nbsp; */<br /><br />&nbsp; &nbsp; &nbsp; return rsdp-&gt;RsdtAddress;<br /><br />&nbsp; &nbsp; end;<br /><br />&nbsp; end;<br /><br /><br /><br />&nbsp; return NULL;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />// finds the acpi header and returns the address of the rsdt<br /><br />procedure ^acpiGetRSDPtr<br /><br /> <br /><br />&nbsp; &nbsp;^addr:integer;<br /><br />&nbsp; &nbsp;^rsdp:integer;<br /><br />begin<br /><br /><br /><br />&nbsp; // search below the 1mb mark for RSDP signature<br /><br />&nbsp; &nbsp; addr = 0x000E0000;<br />repeat <br />&nbsp; &nbsp; addr += 0x10/sizeof(addr));<br />{is this inc() or dec() im confused...}<br /> <br /><br />&nbsp; &nbsp; rsdp = acpiCheckRSDPtr(addr);<br /><br />&nbsp; &nbsp; if (rsdp != NULL)<br /><br />&nbsp; &nbsp; &nbsp; return rsdp;<br /><br />until addr &gt; 0x00100000;<br /><br /><br /><br /><br /><br />&nbsp; // at address 0x40:0x0E is the RM segment of the ebda<br /><br />&nbsp; int ebda = *((short *) 0x40E);&nbsp; &nbsp;// get pointer<br /><br />&nbsp; ebda = ebda*0x10 &amp;0x000FFFFF;&nbsp; &nbsp;// transform segment into linear address<br /><br /><br /><br />&nbsp; // search Extended BIOS Data Area for the Root System Description Pointer signature<br /><br />&nbsp; for (addr = (unsigned int *) ebda; (int) addr&lt;ebda+1024; addr+= 0x10/sizeof(addr)) {<br /><br />&nbsp; &nbsp; rsdp = acpiCheckRSDPtr(addr);<br /><br />&nbsp; &nbsp; if (rsdp != NULL)<br /><br />&nbsp; &nbsp; &nbsp; return rsdp;<br /><br />&nbsp; }<br /><br /><br /><br />&nbsp; return NULL;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />// checks for a given header and validates checksum<br /><br />procedure acpiCheckHeader(^ptr:integer; ^sig:char); <br /><br />var<br />&nbsp; &nbsp;^checkPtr,len:integer;<br />&nbsp; &nbsp;check:char;<br /><br />begin<br /><br />&nbsp; if (memcmp(ptr, sig, 4) = 0) then begin<br /><br />&nbsp; &nbsp; ^checkPtr =&nbsp; ptr;<br /><br />&nbsp; &nbsp; len = ^(ptr + 1);<br /><br />&nbsp; &nbsp; check = 0;<br /><br />&nbsp; &nbsp; while (len &gt;0) do begin <br /><br />&nbsp; &nbsp; &nbsp; check += ^checkPtr; //huh ??<br /><br />&nbsp; &nbsp; &nbsp; inc(checkPtr);<br /><br />&nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; if (check = 0)<br /><br />&nbsp; &nbsp; &nbsp; return 0;<br /><br />&nbsp; end;<br /><br />&nbsp; return -1;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />procedure acpiEnable; <br /><br />var<br />&nbsp; &nbsp;i:integer;<br /><br />begin<br />&nbsp; // check if acpi is enabled<br /><br />&nbsp; if ((readportw (PM1a_CNT) and SCI_EN) = 0) then begin<br /><br />&nbsp; &nbsp; // check if acpi can be enabled<br /><br />&nbsp; &nbsp; if (SMI_CMD &lt;&gt; 0 &amp; ACPI_ENABLE &lt;&gt; 0) then begin<br /><br />&nbsp; &nbsp; &nbsp; writeportb( SMI_CMD, ACPI_ENABLE); // send acpi enable command&nbsp; --writeportb<br /><br />&nbsp; &nbsp; &nbsp; // give 3 seconds time to enable acpi<br /><br />&nbsp; &nbsp; &nbsp; i:=0;<br /><br />&nbsp; &nbsp; &nbsp; repeat<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; if ((readportw( PM1a_CNT) and SCI_EN) = 1) then<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; delay(3000);&nbsp; //about 3 secs<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;inc(i);<br /><br />&nbsp; &nbsp; &nbsp; until i &gt; 300;<br /><br />&nbsp; &nbsp; &nbsp; if (PM1b_CNT &lt;&gt; 0) then<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;i:=0;<br />&nbsp; &nbsp; &nbsp; repeat<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ((readportw( PM1b_CNT) and SCI_EN) = 1) then&nbsp; //if readportw&nbsp; () and ()=1<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; delay(3000);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; inc(i);<br /><br />&nbsp; &nbsp; &nbsp; until i &gt; 300;<br /><br />&nbsp; &nbsp; &nbsp; if (i&gt;300) then begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; writeln(&quot;enabled acpi.&quot;);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; return 0;<br /><br />&nbsp; &nbsp; &nbsp; end;<br />&nbsp; &nbsp; &nbsp; else begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; writeln(&quot;couldn&quot;t enable acpi.&quot;);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; return -1;<br /><br />&nbsp; &nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; else begin<br /><br />&nbsp; &nbsp; &nbsp; writeln(&quot;no known way to enable acpi.\n&quot;);<br /><br />&nbsp; &nbsp; &nbsp; return -1;<br /><br />&nbsp; &nbsp; end;<br /><br />&nbsp; else begin<br /><br />&nbsp; &nbsp; writeln(&quot;acpi was already enabled.\n&quot;);<br /><br />&nbsp; &nbsp; return 0;<br /><br />&nbsp; end;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />//<br /><br />// bytecode of the \_S5 object<br /><br />// -----------------------------------------<br /><br />//&nbsp; &nbsp; &nbsp; &nbsp; | (optional) |&nbsp; &nbsp; |&nbsp; &nbsp; |&nbsp; &nbsp; |<br /><br />// NameOP | \&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | _&nbsp; | S&nbsp; | 5&nbsp; | _<br /><br />// 08&nbsp; &nbsp; &nbsp;| 5A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 5F | 53 | 35 | 5F<br /><br />//<br /><br />// -----------------------------------------------------------------------------------------------------------<br /><br />//&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | ( SLP_TYPa&nbsp; &nbsp;) | ( SLP_TYPb&nbsp; &nbsp;) | ( Reserved&nbsp; &nbsp;) | (Reserved&nbsp; &nbsp; )<br /><br />// PackageOP | PkgLength | NumElements&nbsp; | byteprefix Num | byteprefix Num | byteprefix Num | byteprefix Num<br /><br />// 12&nbsp; &nbsp; &nbsp; &nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 05 | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05&nbsp; | 0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;05<br /><br />//<br /><br />//----this-structure-was-also-seen----------------------<br /><br />// PackageOP | PkgLength | NumElements |<br /><br />// 12&nbsp; &nbsp; &nbsp; &nbsp; | 06&nbsp; &nbsp; &nbsp; &nbsp; | 04&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 00 00 00 00<br /><br />//<br /><br />// (Pkglength bit 6-7 encode additional PkgLength bytes &#91;shouldn't be the case here&#93;)<br /><br />//<br /><br />procedure initAcpi();<br />var<br />&nbsp; ^ptr,entries,dsdtlength:integer;<br />&nbsp; ^S5Addr,facp:pointer of char;<br />&nbsp; <br /> begin<br /><br />&nbsp; &nbsp;^ptr = acpiGetRSDPtr();<br /><br />&nbsp; &nbsp;<br /><br />&nbsp; // check if address is correct&nbsp; ( if acpi is available on this pc )<br /><br />&nbsp; if (ptr &lt;&gt; NULL &amp; acpiCheckHeader(ptr, &quot;RSDT&quot;) = 0)then begin <br /><br />&nbsp; &nbsp; // the RSDT contains an unknown number of pointers to acpi tables<br /><br />&nbsp; &nbsp; entrys = ^(ptr + 1);<br /><br />&nbsp; &nbsp; entrys = (entrys-36) /4;<br /><br />&nbsp; &nbsp; ptr += 36/4;&nbsp; &nbsp;// skip header information<br /><br /><br /><br />&nbsp; &nbsp; while (entrys&gt;0) do begin<br /><br />&nbsp; &nbsp; &nbsp; // looks like there is a decrement courter weirdly implemented here.<br />&nbsp; &nbsp; &nbsp;// check if the desired table is reached<br /><br />&nbsp; &nbsp; &nbsp; if (acpiCheckHeader( ^ptr, &quot;FACP&quot;) = 0) then begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; entrys = -2;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; ^facp = ^ptr;&nbsp; // i think this is right..<br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; if (acpiCheckHeader(facp-&gt;DSDT, &quot;DSDT&quot;) = 0) then begin <br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // search the \_S5 package in the DSDT<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ^S5Addr = facp-&gt;DSDT +36; // skip header<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dsdtLength= ^(facp-&gt;DSDT+1) -36;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; while (dsdtLength &gt;0) do begin <br /> // again with the dec counter<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (memcmp(S5Addr, &quot;_S5_&quot;, 4) = 0)<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; inc(S5Addr);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // check if \_S5 was found<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dsdtLength &gt; 0) begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // check for valid AML structure<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ((^(S5Addr-1) = 0x08 or {||} (^(S5Addr-2) == 0x08 and ^(S5Addr-1) = '\\')) and ^(S5Addr+4) = 0x12) then begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; S5Addr += 5;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; S5Addr += ((^S5Addr &amp;0xC0)&gt;&gt;6) +2;&nbsp; &nbsp;// calculate PkgLength size&nbsp; &nbsp;shr(6)?<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (^S5Addr = 0x0A)<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; inc(S5Addr);&nbsp; &nbsp;// skip byteprefix<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SLP_TYPa = ^(S5Addr)&lt;&lt;10; // shl (10)??<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; inc (S5Addr);<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (^S5Addr = 0x0A)<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; inc(S5Addr);&nbsp; &nbsp;// skip byteprefix<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SLP_TYPb = ^(S5Addr)&lt;&lt;10; //shl(10);<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SMI_CMD = facp-&gt;SMI_CMD;<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ACPI_ENABLE = facp-&gt;ACPI_ENABLE;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ACPI_DISABLE = facp-&gt;ACPI_DISABLE;<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PM1a_CNT = facp-&gt;PM1a_CNT_BLK;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PM1b_CNT = facp-&gt;PM1b_CNT_BLK;<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PM1_CNT_LEN = facp-&gt;PM1_CNT_LEN;<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SLP_EN = 1&lt;&lt;13;&nbsp; // shl(13) ??<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SCI_EN = 1;<br /><br /><br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return 0;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; writeln(&quot;_S5 parse error.&quot;);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; writeln(&quot;_S5 not present.&quot;);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; end;<br />&nbsp; &nbsp; &nbsp; &nbsp; else begin<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; writeln(&quot;DSDT invalid.&quot;);<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; &nbsp; inc(ptr);<br /><br />&nbsp; &nbsp; end;<br /><br />&nbsp; &nbsp; writeln(&quot;no valid FACP present.&quot;);<br /><br />&nbsp; end;<br />&nbsp; else begin<br /><br />&nbsp; &nbsp; writeln(&quot;no acpi.&quot;);<br /><br />&nbsp; end;<br /><br /><br /><br />&nbsp; return -1;<br /><br />end;<br /><br /><br /><br /><br /><br /><br /><br />procedure acpiPowerOff;<br /><br /> begin<br /><br />&nbsp; // SCI_EN is set to 1 if acpi shutdown is possible<br /><br />&nbsp; if (SCI_EN = 0)<br /><br />&nbsp; &nbsp; return;<br /><br /><br /><br />&nbsp; acpiEnable();<br /><br /><br /><br />&nbsp; // send the shutdown command<br /><br />&nbsp; writeportw(PM1a_CNT, SLP_TYPa | SLP_EN); // what the hell does | (single pipe) mean? there can be only ONE command.<br />//IE: writeport&#91;b,w,l&#93;(port num ,byte&#91;or word&#93;)<br /><br /><br />&nbsp; if (PM1b_CNT &lt;&gt; 0)<br /><br />&nbsp; &nbsp; writeportw( PM1b_CNT, SLP_TYPb | SLP_EN);<br /><br /><br /><br />&nbsp; writeln(&quot;acpi poweroff failed.&quot;);<br /><br />end;<br /><br />end.<br /><br /></div></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=6625&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p151655"></a>
+				<b class="postauthor">jal</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ACPI poweroff</div><div style="float: right;"><a href="./viewtopic.php?p=151655&amp;sid=487a437e7b39707af5c32ca499e15112#p151655"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Mar 09, 2009 4:45 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 31, 2007 9:09 am<br /><b>Posts:</b> 1382
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">frazzledjazz wrote:</div><div class="quotecontent">can someone check the above code to this please?</div><br /><br />I think you've been told before, but we are not here to do your homework. Also, please stop copy/pasting with double linewidth, it's quite annoying!<br /><br /><br />JAL</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4106&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p187855"></a>
+				<b class="postauthor">andymc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ACPI poweroff</div><div style="float: right;"><a href="./viewtopic.php?p=187855&amp;sid=487a437e7b39707af5c32ca499e15112#p187855"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Feb 27, 2011 8:18 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/1.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11451_1296645547.gif" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Feb 01, 2011 6:18 pm<br /><b>Posts:</b> 31<br /><b>Location:</b> London, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Sorry to revive an old thread, but I found this really useful and I have a couple of questions.<br /><br />For my operating system, Visopsys, I was really only interested in implementing ACPI power off for the time being, but I started reading the spec and implementing the basic stuff, gathering the structures, etc., then I hit the namespace stuff and the bytecode stuff and my head just started spinning.  I haven't seen a spec this computer science wanker-ish since I read the USB human interface spec (and I say that as a CompSci guy).  This post really helped distill the essential elements, thanks.<br /><br />I like to give credit when I follow an example like this (normally full name, email address) - can you tell me how I should credit this?<br /><br />Now to the questions:<br /><br />On my laptop system, it successfully powers off to the soft-off state, but when the power button is subsequently pressed, all I see is a small cursor, and it requires a hard reset to boot normally.  It's almost as if the system expects to wake from that state.  Is there something (such as the wakeup vector) that I need to clear, in order to prevent this?  Could this relate to the things Cognition mentioned?<br /><br />Second, on the same laptop system, enabling ACPI as shown seems to interfere with other devices.  It almost looks as if there are unserviced interrupts causing problems with (for example) my ATA driver.  Should I be implementing an interrupt handler to at least acknowledge any ACPI event interrupts?<br /><br />Cheers for any help</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11451&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p187858"></a>
+				<b class="postauthor">Brendan</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ACPI poweroff</div><div style="float: right;"><a href="./viewtopic.php?p=187858&amp;sid=487a437e7b39707af5c32ca499e15112#p187858"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Feb 27, 2011 9:41 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/avatars/gallery/megatokyo/sylvester.gif" width="32" height="32" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Jan 15, 2005 12:00 am<br /><b>Posts:</b> 7452<br /><b>Location:</b> At his keyboard!
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br /><div class="quotetitle">andymc wrote:</div><div class="quotecontent">On my laptop system, it successfully powers off to the soft-off state, but when the power button is subsequently pressed, all I see is a small cursor, and it requires a hard reset to boot normally.  It's almost as if the system expects to wake from that state.  Is there something (such as the wakeup vector) that I need to clear, in order to prevent this?  Could this relate to the things Cognition mentioned?</div><br /><br />Cognition is right, but that's only the beginning. You'd have to decipher the entire ACPI specification to get a full picture of how many different ways kaworu's code can break in lots of different situations. For example, the &quot;\_S5&quot; method alone could call a bunch of different methods elsewhere, and can even do different things depending on the current state, or which OS you told ACPI you are, or whatever; and none of that is taken into account. You need a full AML interpreter. You can't extract a few values and use them directly and hope that will work.<br /><br /><div class="quotetitle">andymc wrote:</div><div class="quotecontent">Second, on the same laptop system, enabling ACPI as shown seems to interfere with other devices.  It almost looks as if there are unserviced interrupts causing problems with (for example) my ATA driver.  Should I be implementing an interrupt handler to at least acknowledge any ACPI event interrupts?</div><br /><br />In &quot;default mode&quot; the firmware takes care of all the power management stuff for you. This is like having a chauffeur drive your car - you get less control over how things are done, but don't need to worry about the details. When you enable ACPI you're effectively telling the firmware that you will take control over all the power management stuff (with the assistance of the AML). This is like telling the chauffeur that you'll drive yourself (with the assistance of a TomTom navigation system or something). When you enable ACPI and don't take control of all the power management stuff then things go wrong. This is like a car rolling down the street with its cruise control on and nobody behind the wheel.<br /><br />When any ACPI events occur, you have to execute the corresponding AML.<br /><br /><br />Cheers,<br /><br />Brendan</div>
+
+					
+						<span class="postbody"><br />_________________<br /><span style="font-style: italic">For all things; perfection is, and will always remain, impossible to achieve in practice. However; by striving for perfection we create things that are as perfect as practically possible. Let the pursuit of perfection be our guide.</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=16990&amp;start=0&amp;sid=487a437e7b39707af5c32ca499e15112"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112"><img src="./styles/subsilver2/imageset/en/button_topic_locked.gif" alt="This topic is locked, you cannot edit posts or make further replies." title="This topic is locked, you cannot edit posts or make further replies." /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>3</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 34 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=15">2</a><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=30">3</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=16990&amp;sid=487a437e7b39707af5c32ca499e15112&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=487a437e7b39707af5c32ca499e15112">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=487a437e7b39707af5c32ca499e15112">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=487a437e7b39707af5c32ca499e15112">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Bing [Bot]</span>, <span style="color: #9E8DA7;" class="username-coloured">Yahoo [Bot]</span> and 4 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=16990&amp;sid=487a437e7b39707af5c32ca499e15112"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php?sid=487a437e7b39707af5c32ca499e15112" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

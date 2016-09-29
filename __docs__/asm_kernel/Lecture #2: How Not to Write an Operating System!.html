@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<title>Lecture #2: How Not to Write an Operating System!</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+</head>
+
+<h1><u>Lecture #2: How Not to Write an Operating System!</u></h1>
+
+<ul>
+<li>We will violate modularity (i.e. assume that it is not important).</li>
+<li>Scenario: A paranoid user who doesn't trust any operating system wants a simple application that counts the number of words in an ASCII text file (with a NULL byte at the end).</li>
+</ul>
+
+<h2>Q & A (Requirement Illicitation)</h2>
+
+<ul>
+<li>Q: What kind of hardware is available?</li>
+<li>A: A x86 computer with 1 GiB RAM (bare computer) and 1 SATA disk drive (500GB) is present.</li>
+<li>Q: What's a word?</li>
+<li>A: Anything that satisfies the regex [A-Za-z]+ (any number of letters A through Z and a through z).</li>
+<li>Q: What is the output format?</li>
+<li>A: <img src="image01.jpg" alt="Monitor"></li>
+<li>Q: What is the input source?</li>
+<li>A: A text file on disk (we pick start location).</li>
+<li>Q: What is the deadline?</li>
+<li>A: In 2 hours (end of class :D ).</li>
+<li>Q: How do you start the program?</li>
+<li>A: When you turn on the power.</li>
+<li>Q: Will the program modify disk?</li>
+<li>A. No. Disk may be set as read-only at the hardware level.</li>
+<li>Q: How might things change?</li>
+<li>A: Some examples are a new disk drive, other programs, or a spell checker that might be added.</li>
+</ul>
+
+<h2>Issues</h2>
+
+<ol>
+<li>bootstrapping</li>
+<li>disk input</li>
+<li>screen output</li>
+</ol>
+
+<h3>Bootstrapping</h3>
+
+<img src="image02.jpg" alt="Memory Setup">
+
+<br>
+Physical memory is divided into two pieces: RAM (random access memory) and ROM (read-only memory). ROM is nonvolatile storage, which means it doesn't disappear when power is turned off. Usually it contains whatever the hardware manufacturer has installed by default. There is also "boot Programming ROM" (boot PROM) which contains the BIOS.
+<br>
+<br>
+The BIOS works as follows:
+<ol>
+<li>It tests the system (e.g. tests the RAM and hardware).</li>
+<li>It looks for devices</li>
+<li>It looks for a readable device containing a Master Boot Record (MBR):
+<br>
+<br>
+<img src="image03.jpg" alt="MBR Layout">
+<br>
+<br>
+The MBR standard form. It contains 3 sections, a machine instruction section, a partition table, and a signature.  The machine instruction for x86 is 446 bytes long.  The partition table is 64 bytes long and has 4 entries.  Each entry has 16 bytes.  A partition table can partition the MBR for linux, windows, apache. Each entry contains the status and type of the partion. (am I bootable? what type?).  Also has the start of where on disk the partition starts and the size of the information. The MBR has a signature, 0x55 0xAA, at the end to denote that it is a MBR.</li>
+<li>It reads MBR into disk RAM and jumps to it. (An interesting note: if the beginning of the machine instruction is the x86 HALT instruction, the computer will never do anything. Try it on your friends today!)</li>
+</ol>
+
+<h3>Disk Properties</h3>
+
+<ul>
+<li>The most common disk rotation speed is 7200 RPM.</li>
+<li>The average seek time is 8 ms.</li>
+<li>The transfer rate of the data going through the head is about 500Mb/s.</li>
+<li>The cost per gigabyte is about $.20/GB compared to RAM's costs per gigabyte is about $30/GB).</li>
+<li>It is a nonvolatile storage medium.</li>
+<li>A sector is a subdivision of a disk.
+<br>
+<img src="image04.jpg" alt="Sector"></li>
+</ul>
+
+<img src="image05.jpg" alt="Disk Controller">
+<br>
+The commands issued for CPU to read the disk:
+<ol>
+<li>Wait for the disk to be ready (CPU reads location 0x1F7).</li>
+<li>Store # of sectors you want to read into location 0x1F2.</li>
+<li>Store sector offset into locations 0x1F3 - 0x1F6. The sector offset is disk location, given by a 32-bit quantity. This allows for referencing up to 2^32 * 2^9 = 2^41 bytes.<li>
+<li>Store READ command into location 0x1F7.</li>
+<li>Wait for disk to be ready.</li>
+<li>Get results as a sector into CPU.</li>
+<li>Store results into RAM.</li>
+</ol>
+
+<h3>Our MBR Program</h3>
+
+The MBR is 446 bytes in size and includes the location of our program.
+<br>
+<br>
+<img src="image06.jpg" alt="MBR Layout">
+<br>
+The BIOS is always copied to location 0x17C00, while the MBR program location is arbitrary.
+<br>
+<br>
+Disk Layout:
+<br>
+<img src="image07.jpg" alt="Disk Layout">
+<br>
+We assume the program is at sector 20,000 and that the program is 20 sectors long.
+<br>
+<br>
+
+<table border="5">
+	<tr>
+		<th>MBR Program Code</th>
+	</tr>
+	<tr>
+		<td><pre>
+int main(void){
+	for (int i = 0; i < 20; i++){
+		read_ide_sector(20000 + i, 0x100000 + i * 512);
+		goto 0x10000;	// NOTE: Not proper C language!
+	}
+}
+
+void read_ide_sector(int s, int a){
+	while((inb(0x1F7) & 0xc0) != 0x40) // inb = inbyte
+		continue;
+
+	outb(0x1F2,1); // Outbyte # of sectors
+	outb(0x1F3, s & 0xff);
+	outb(0x1F4, (s >> 8) & 0xff);
+	outb(0x1F5, (s >> 16) & 0xff);
+	outb(0x1F6, (s >> 24) & 0xff);
+	outb(0x1F7, 0x20); // Read sector
+
+	while((inb(0x1F7) & 0xc0) != 0x40)
+		continue;
+
+	insl(0x1F0,a,128); // Where, data, copy # of 4-bytes units
+}
+</pre></td>
+	</tr>
+	<tr>
+		<th>Main Program Code</th>
+	</tr>
+	<tr>
+		<td><pre>
+int main(void){
+	char buffer[512];
+	int nwords = 0;
+	bool in_word = false;
+
+	for (int s = 500000;; s++){
+		read_ide_sector(s, (int)buf); // Typecasting buf
+
+		for (int j=0; j < 512; j++){
+			if(!buf[j]){
+				write_out[nwords];
+				return;
+			}
+
+		bool this_alpha = isalpha((unsigned char) buf[j]) != 0;
+		nwords += this_alpha & ~in_word; // ~ means invert bits; has the same effect as !, but is generally faster, increment word count
+		in_word = this_alpha; // Now in a word
+		}
+	}
+}
+</pre></td>
+</table>
+
+<h3>Screen Output</h3>
+<img src="image08.jpg" alt="Monitor Layout">
+<br>
+<br>
+The monitor can be thought of as a 25 * 80 * 2 = 4000 byte array, with 2 bytes representation for each "pixel" on the 80 x 25 screen. The high byte contains color info, while the low byte contains the ASCII character to print out.
+<br>
+<br>
+
+<table border="5">
+	<tr>
+		<th>Screen Output Code</th>
+	</tr>
+	<tr>
+		<td><pre>
+write_out(int nwords){
+	unsigned char *screen = 0xB8000 + 20; // 10 chars into screen
+	do{
+		screen[0] = (nwords%10)+'0';
+		screen[1] = 7; // Gray on black
+		screen -=2;
+		nwords /= 10;
+	}while(nwords);
+}
+</pre></td>
+</table>
+
+
+<h2>Performance Improvements</h2>
+
+We could improve on how we read from the disk.
+<br>
+<img src="image09.jpg" alt="Monitor Layout">
+<br>
+Ideally don't use write long command. Instead, we read and write at the same time. The technique for this is called direct memory access (DMA).
+<br>
+<br>
+Normally, this is the timeline for what happens in our program.
+<br>
+<img src="image10.jpg" alt="Timeline">
+<br>
+Normal operation: Send command, wait, then compute
+<br>
+<br>
+We can optimize so that it works as follows:
+<br>
+<br>
+<img src="image11.jpg" alt="Alternate Timeline">
+<br>
+Optimized operation: Send command while waiting and compute while waiting
+
+</html>

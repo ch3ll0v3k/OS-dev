@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">                                     
+<head>
+    <title>OSDev notes 5: SMP and ATA - ethereality</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+        function tnav() {
+            var e = document.getElementById("nav-root");
+            var t = document.getElementById("nav-root-toggle");
+            if(e.style.display != "none") {
+                e.style.display = "none";
+                t.innerHTML = "Show navbar";
+            }
+            else {
+                e.style.display = "";
+                t.innerHTML = "Hide navbar";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root">
+    <div id="header">
+        <h1>
+            ethereality
+        </h1>
+        <h2>OSDev notes 5: SMP and ATA</h2>
+    </div>
+    <div id="navbar">
+        <a href="javascript:void(0)" onclick="javascript:tnav()" id="nav-root-toggle">Hide navbar</a>
+        <div class="naventry" id="nav-root">
+            <span class="selected"><a href="/">ethereality</a>/</span><div class="naventry"><ul><li><a href="/projects">projects</a>/</li><li><a href="/weblog">weblog</a>/</li><li><span class="selected"><a href="/workshops">workshops</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev">osdev</a>/</span><div class="naventry"><ul><li><span class="selected"><a href="/workshops/osdev/notes">notes</a>/</span><div class="naventry"><ul><li><a href="/workshops/osdev/notes/notes-0">OSDev notes 0: OSDev background</a></li><li><a href="/workshops/osdev/notes/notes-1">OSDev notes 1: Intel Architecture</a></li><li><a href="/workshops/osdev/notes/notes-2">OSDev notes 2: Memory management</a></li><li><a href="/workshops/osdev/notes/notes-3">OSDev notes 3: Hardware & Interrupts</a></li><li><a href="/workshops/osdev/notes/notes-4">OSDev notes 4: ACPI tables, Timing, Context Switching</a></li><li><a href="/workshops/osdev/notes/notes-5">OSDev notes 5: SMP and ATA</a></li><li><a href="/workshops/osdev/notes/notes-6">OSDev notes 6: Filesystems and ELF loading</a></li><li><a href="/workshops/osdev/notes/notes-7">OSDev notes 7: Userspace and system calls</a></li></ul></div></li><li><a href="/workshops/osdev/topics">Topics</a></li></ul></div></li><li><a href="/workshops/rtree">R-tree presentation</a></li></ul></div></li></ul></div>
+        </div>
+    </div>
+    <div id="main"><p>Now that we have the ability to get individual threads running and have the
+scheduler swap between them, a logical next step is to branch off into the
+world of multiple concurrent processes. Perhaps not the <em>most</em> logical, but is
+<em>a</em> logical next step.</p>
+<p>This set of notes focuses on how to get SMP (Symmetric Multiprocessing) set up
+and working properly on an x86_64 system. Following that will be a brief
+discussion of ATA. However, to start with, we'll elaborate some more on how to
+schedule processes intelligently.</p>
+<h3 id="scheduling">Scheduling</h3>
+<p>There will be times when you do not want a thread to be scheduled yet; there
+will be some progression condition that you will want to implement. For now,
+we'll use the example of a timed sleep: a thread wants to wait a period of time
+before continuing, say. The way I suggest you implement this is by adding a
+function pointer to your thread meta-information data structure that your
+scheduler can execute to determine if the thread is ready to be scheduled. For
+example, something along these lines:</p>
+<pre><code><span class="keyword">struct</span><span class="normal"> </span><span class="classname">thread_info_t</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">/* other stuff */</span>
+<span class="normal">    </span><span class="type">bool</span><span class="normal"> </span><span class="symbol">(*</span><span class="normal">progression</span><span class="symbol">)(</span><span class="type">void</span><span class="normal"> </span><span class="symbol">*);</span>
+<span class="normal">    </span><span class="type">void</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">progression_param</span><span class="symbol">;</span>
+<span class="cbracket">}</span><span class="symbol">;</span>
+
+<span class="comment">/* ... */</span>
+
+<span class="type">bool</span><span class="normal"> </span><span class="function">can_progress</span><span class="symbol">(</span><span class="keyword">struct</span><span class="normal"> </span><span class="classname">thread_info_t</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">thread</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">// no progression condition?</span>
+<span class="normal">    </span><span class="keyword">if</span><span class="symbol">(!</span><span class="normal">thread</span><span class="symbol">-&gt;</span><span class="normal">progression</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> true</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">return</span><span class="normal"> thread</span><span class="symbol">-&gt;</span><span class="function">progression</span><span class="symbol">(</span><span class="normal">thread</span><span class="symbol">-&gt;</span><span class="normal">progression_param</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>This way, you can set up a timed-delay by making <code>progression_param</code> point to a
+minimum timestamp before execution can continue and setting the function
+pointer <code>progression</code> to a function that simply compares its parameter against
+a global clock.</p>
+<p>We'll revisit the topic of progression functions in a few moments, but it
+should be noted that we also care about a couple of other things; for example,
+we want to not have a single thread scheduled on two processors at once, so I
+suggest adding a flag of some sort into your thread meta-info that specifies if
+the thread is already in use (or a spinlock, but we'll get to that in a
+moment.)</p>
+<h3 id="smp">SMP</h3>
+<p>The idea of SMP is to have multiple processors that are all "first-class
+citizens" --- that is to say, each has equal access to resources present on the
+computer. <sup id="fnref:numa-note"><a class="footnote-ref" href="#fn:numa-note" rel="footnote">1</a></sup> On x86_64, the general idea is that there is a single
+"bootstrap" processor that executes the startup code in the kernel. After
+enough has been initialized, the bootstrap processor (BSP) will then initialize
+the application processors (APs). The APs then join the BSP in having threads
+scheduled for execution.</p>
+<p>So, how does the bootstrap processor tell the APs to "wake up"? The technique
+used on x86_64 is that of inter-process interrupts, or IPIs. This is another
+kind of interrupt to add onto the previous "external/internal" classification;
+we now have interrupts that come from exceptions or the <code><span class="normal"> </span><span class="keyword">int</span></code>
+instruction; interrupts from hardware, and interrupts from other processors.
+In the same way that an external interrupt tells the processor that some
+attention is requested by hardware, an IPI tells the processor that some
+attention is requested by another processor. A particular type of IPI, called a
+"startup IPI" (or SIPI), is what is used by the bootstrap processor to
+initialize the APs present on the system.</p>
+<p>We won't delve too much into the topic of IPIs here, even though they're useful
+in a number of scenarios. For example, consider an implementation of Linux's
+<code><span class="normal"> </span><span class="function">sys_exit_group</span><span class="symbol">()</span></code> system call, which terminates all threads in
+the current thread group. If you have two threads of the thread group running
+on different processors, the processor that handles the system call invocation
+will have to inform its counterpart that execution should stop at that point.</p>
+<p>There are at least three types of IPIs that can be sent, and all are sent via
+the local APIC. To send an IPI, you write to the Interrupt Command Register
+(ICR), 64 bits long. Those with good memories will note that the local APIC has
+registers that are only 32 bits wide, so there will have to be two local APIC
+registers (actually indices <code>0x30</code> and <code>0x31</code>, for reference) for the ICR, and
+so exactly when does the IPI get sent? The answer is that the IPI will be sent
+when the lower of the two registers (<code>0x30</code>) is written to.</p>
+<p>So, onto the format! As with the timer, bits 0:7 contain the interrupt vector
+to deliver on the other end. Bits 8:10 contain the "delivery mode"; use 0 for
+a regular IPI, 5 for an INIT IPI, and 6 for a SIPI. Bit 11 contains the
+"destination mode"; for the moment, set this to zero. Bit 12 contains the
+"pending" bit; if this is set, then there is an IPI send pending already. Bit
+14 should be clear for INIT IPIs, and set for all other IPIs. Bit 15 should be
+clear for INIT IPIs, and is ignored for other types.</p>
+<p>Bits 18:19 contain the "destination shorthand" for the IPI. If the value here
+is zero, then the value in bits 56:63 contain an APIC ID to send the IPI to.
+Otherwise, if the value is 1, the IPI will be sent to the current processor. If
+2, sent to all processors, including the current processor. Finally, if 3, sent
+to all processors except for the current processor.</p>
+<p>So, as an example, to send a regular fixed-vector IPI to a given processor, you
+might write some code like this:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">send_ipi_to</span><span class="symbol">(</span><span class="usertype">uint8_t</span><span class="normal"> apic_id</span><span class="symbol">,</span><span class="normal"> </span><span class="usertype">uint8_t</span><span class="normal"> vector</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">/* ensure no IPI pending */</span>
+<span class="normal">    </span><span class="keyword">while</span><span class="symbol">(</span><span class="function">phy_mem_read32</span><span class="symbol">(</span><span class="number">0xfee00000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x30</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="number">1</span><span class="symbol">&lt;&lt;</span><span class="number">12</span><span class="symbol">))</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="comment">/* delivery target */</span>
+<span class="normal">    </span><span class="function">phy_mem_write32</span><span class="symbol">(</span><span class="number">0xfee00000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x31</span><span class="normal"> </span><span class="symbol">*</span><span class="normal"> </span><span class="number">0x10</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">uint32_t</span><span class="symbol">)</span><span class="normal">apic_id</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&lt;&lt;</span><span class="normal"> </span><span class="number">24</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> control </span><span class="symbol">=</span><span class="normal"> vector</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="comment">/* required to be set for non-INIT IPIs */</span>
+<span class="normal">    control </span><span class="symbol">|=</span><span class="normal"> </span><span class="number">1</span><span class="symbol">&lt;&lt;</span><span class="number">14</span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="comment">/* otherwise, everything's good: IPI mode, fixed delivery vector,</span>
+<span class="comment">        only to the specified APIC, edge-triggered. */</span>
+<span class="normal">    </span><span class="function">phy_mem_write32</span><span class="symbol">(</span><span class="number">0xfee00000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x30</span><span class="normal"> </span><span class="symbol">*</span><span class="normal"> </span><span class="number">0x10</span><span class="symbol">,</span><span class="normal"> control</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>Now, how can we ask the APs to boot themselves? The procedure specified in the
+Intel manuals is complicated (Intel SDM, section 8.4.4.1), but here's a
+simplified version that appears to work on almost all systems (TODO: find ref):</p>
+<ul>
+<li>Send INIT IPI to unbooted AP.</li>
+<li>Wait 10 ms.</li>
+<li>Send SIPI to uninitialized AP.</li>
+<li>Wait 200 μs.</li>
+<li>If the AP has not initialized itself, send a second SIPI.</li>
+</ul>
+<p>The only thing left to discuss is what code the APs will execute when they
+boot. SIPIs are not processed as regular interrupts, as you can probably guess.
+Instead, the vector is used as a page offset into memory to determine what code
+will be executed initially. So, if you place some code at the physical address
+<code>0x4000</code> (as an example) and send a SIPI with vector 4, the AP that receives
+that SIPI will begin executing code from address <code>0x4000</code> in real mode.</p>
+<p>So now you'll want to bring the APs into long mode and register themselves with
+your scheduler as platforms for thread execution. How do we do that? If you've
+studied the multiboot wrapper, you'll know that this isn't exactly simple.
+However, here are the steps that need to happen (likely in assembly):</p>
+<ul>
+<li>Load GDT with 32-bit data/code segments.</li>
+<li>Enter protected mode (bit 0 of <code>cr0</code> register).</li>
+<li>Far jump to set CS to 32-bit code segment, and load 32-bit SS/DS.</li>
+<li>Set up PAE paging.</li>
+<li>Set ninth bit of EFER MSR to enter long mode.</li>
+<li>Set <code>cr3</code> to appropriate PML4 (I suggest reusing the multiboot wrapper PML4).</li>
+<li>Enable paging (bit 31 of <code>cr0</code>).</li>
+<li>Far jump to set CS to 64-bit code segment, and load 64-bit SS/DS.</li>
+<li>Jump into C code.</li>
+</ul>
+<p>One extra problem to deal with, which assumes that each AP is booting from the
+same code: you will need a stack at some point, likely once you get into C
+code. As such, you'll need a region of memory that can act as a stack -- it
+doesn't need to be very large, 256 bytes should be a great plenty -- but this
+stack has to be processor-specific. I suggest you reserve a buffer of memory
+of size 256 bytes * number of processors, and then use an atomic
+compare-and-set instruction to grab a unique region. Something like this
+(assuming <code>counter_address</code> is some addressable memory initialized to zero):</p>
+<pre><code><span class="normal">get_unique_stack_id</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="variable">eax</span><span class="symbol">,</span><span class="normal"> </span><span class="type">dword</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">counter_address</span><span class="symbol">]</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="variable">ebx</span><span class="symbol">,</span><span class="normal"> </span><span class="variable">eax</span>
+<span class="normal">        </span><span class="keyword">inc</span><span class="normal">     </span><span class="variable">eax</span>
+<span class="keyword">lock</span><span class="normal">    </span><span class="keyword">cmpxchg</span><span class="normal"> </span><span class="type">dword</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">counter_address</span><span class="symbol">],</span><span class="normal"> </span><span class="variable">ebx</span>
+<span class="normal">        </span><span class="keyword">jnz</span><span class="normal">     get_unique_stack_id</span>
+
+<span class="normal">        </span><span class="comment">; ebx now contains stack ID</span>
+</code></pre>
+<p>Then, if you've set aside some memory starting at <code>stack_low</code>, you can find
+your stack like so:</p>
+<pre><code><span class="normal">        </span><span class="keyword">mov</span><span class="normal">     </span><span class="variable">esp</span><span class="symbol">,</span><span class="normal"> </span><span class="variable">ebx</span>
+<span class="normal">        </span><span class="keyword">inc</span><span class="normal">     </span><span class="variable">esp</span><span class="normal">             </span><span class="comment">; we want esp to point to _end_ of stack,</span>
+<span class="normal">                                </span><span class="comment">; not start</span>
+
+<span class="normal">        </span><span class="keyword">shl</span><span class="normal">     </span><span class="variable">esp</span><span class="symbol">,</span><span class="normal"> </span><span class="number">8</span><span class="normal">          </span><span class="comment">; 256 byte stack each</span>
+<span class="normal">        </span><span class="keyword">add</span><span class="normal">     </span><span class="variable">esp</span><span class="symbol">,</span><span class="normal"> stack_low</span>
+</code></pre>
+<p>So how can we get this code there in the first place? The way I suggest doing
+it is as follows:</p>
+<ul>
+<li>Write some assembly code at origin <code>0x8000</code> (or something similar).</li>
+<li>Make a flat binary file with your assembler (<code>nasm -f bin</code> will do this, and
+    there's likely a way to do this with <code>gas</code> as well.)</li>
+<li>In your buildsystem, turn the flat binary file into a C-style string and put
+    the result in a header.</li>
+<li>In your SMP boot code, include the header with the string as an argument to
+    <code><span class="normal"> </span><span class="function">memcpy</span><span class="symbol">()</span></code>.</li>
+</ul>
+<p>Clean? No. Pretty? No. Easier than messing with the linker script? Definitely.
+Here's a (very poorly-written) Python script to generate a nice header file:</p>
+<pre><code><span class="comment">#!/usr/bin/env python3</span>
+
+<span class="preproc">import</span><span class="normal"> sys</span>
+
+<span class="normal">prefix </span><span class="symbol">=</span><span class="normal"> sys</span><span class="symbol">.</span><span class="normal">argv</span><span class="symbol">[</span><span class="number">1</span><span class="symbol">]</span>
+<span class="normal">ifname </span><span class="symbol">=</span><span class="normal"> sys</span><span class="symbol">.</span><span class="normal">argv</span><span class="symbol">[</span><span class="number">2</span><span class="symbol">]</span>
+
+<span class="normal">f </span><span class="symbol">=</span><span class="normal"> </span><span class="function">open</span><span class="symbol">(</span><span class="normal">ifname</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"rb"</span><span class="symbol">)</span>
+
+<span class="normal">gen </span><span class="symbol">=</span><span class="normal"> </span><span class="string">""</span>
+<span class="normal">l </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span>
+<span class="keyword">for</span><span class="normal"> s </span><span class="keyword">in</span><span class="normal"> f</span><span class="symbol">:</span>
+<span class="normal">    </span><span class="keyword">for</span><span class="normal"> c </span><span class="keyword">in</span><span class="normal"> s</span><span class="symbol">:</span>
+<span class="normal">        gen </span><span class="symbol">+=</span><span class="normal"> </span><span class="string">"\\x"</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="function">hex</span><span class="symbol">(</span><span class="normal">c</span><span class="symbol">)[</span><span class="number">2</span><span class="symbol">:]</span>
+<span class="normal">        l </span><span class="symbol">+=</span><span class="normal"> </span><span class="number">1</span>
+<span class="keyword">print</span><span class="symbol">(</span><span class="string">"#define "</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> prefix </span><span class="symbol">+</span><span class="normal"> </span><span class="string">" \""</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> gen </span><span class="symbol">+</span><span class="normal"> </span><span class="string">"\""</span><span class="symbol">)</span>
+<span class="keyword">print</span><span class="symbol">(</span><span class="string">"#define "</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> prefix </span><span class="symbol">+</span><span class="normal"> </span><span class="string">"_LEN "</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="function">str</span><span class="symbol">(</span><span class="normal">l</span><span class="symbol">))</span>
+</code></pre>
+<p>Invoke it as <code>./generate.py AP_BOOT ap_boot.bin > ap_boot.h</code> and you'll get an
+appropriate header file. You can also use <code>xxd -i</code> to do the conversion, if you
+prefer to use built-in utilities instead of hacked-together Python scripts.</p>
+<p>Note that you'll probably want to pass in some "arguments" (addresses) to the
+boot code, such as the address of the PML4 and where the stacks are located. I
+suggest reserving some space near the beginning of the code and filling it in
+manually when you copy the contents of the header over, so something like this
+in your C code:</p>
+<pre><code><span class="function">memcpy</span><span class="symbol">(</span><span class="normal">PHY_MAP_BASE </span><span class="symbol">+</span><span class="normal"> </span><span class="number">0x8000</span><span class="symbol">,</span><span class="normal"> AP_BOOT</span><span class="symbol">,</span><span class="normal"> AP_BOOT_LEN</span><span class="symbol">);</span>
+<span class="function">phy_write_32</span><span class="symbol">(</span><span class="number">0x8000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">8</span><span class="symbol">,</span><span class="normal"> pml4_address</span><span class="symbol">);</span>
+<span class="function">phy_write_32</span><span class="symbol">(</span><span class="number">0x8000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">12</span><span class="symbol">,</span><span class="normal"> stacks</span><span class="symbol">);</span>
+</code></pre>
+<p>With your boot assembly starting something like:</p>
+<pre><code><span class="symbol">[</span><span class="normal">bits </span><span class="number">16</span><span class="symbol">]</span>
+<span class="symbol">[</span><span class="keyword">org</span><span class="normal"> </span><span class="number">0x8000</span><span class="symbol">]</span>
+<span class="normal">_entry</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">jmp</span><span class="normal">     ap_boot</span>
+<span class="symbol">[</span><span class="normal">align </span><span class="number">8</span><span class="symbol">]</span>
+<span class="normal">pml</span><span class="number">4</span><span class="normal">_address</span><span class="symbol">:</span><span class="normal"> </span><span class="keyword">dd</span><span class="normal"> </span><span class="number">0</span>
+<span class="normal">stack_low</span><span class="symbol">:</span><span class="normal"> </span><span class="keyword">dd</span><span class="normal"> </span><span class="number">0</span>
+<span class="normal">stack_counter</span><span class="symbol">:</span><span class="normal"> </span><span class="keyword">dd</span><span class="normal"> </span><span class="number">0</span>
+
+<span class="normal">ap_boot</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="comment">; actual boot code here</span>
+</code></pre>
+<p>The last hard part is the GDT. You can either set up a temporary GDT in the
+AP boot code, or you can re-use the GDT from elsewhere. It's your choice; in
+either case, you'll need 64-bit code/data segments in your GDT in addition to 
+32-bit code and data segments. The format for 32-bit code and data segments
+are, respectively: (Intel SDM, figure 5-1)</p>
+<p><img alt="32-bit code segment table entry" class="centre-img" src="static/32bitCodeDTE.png" /></p>
+<p><img alt="32-bit data segment table entry" class="centre-img" src="static/32bitDataDTE.png" /></p>
+<p>The <code>G</code> bit is the granularity bit; if clear, the limit is interpreted as a
+number of bytes. If set, as a number of 4KB pages. For a code segment, many of
+the bits are as before; for a data segment, the same applies. For any bits that
+you don't recognize, set them to zero. Some example encoded descriptors to use
+might be <code>0x00cf98000000ffff</code> for code and <code>0x00cf92000000ffff</code> for data.</p>
+<p>Something else to note is that a 32-bit <code>lgdt</code> requires only a 48-bit argument,
+where the offset is 32 bits and the limit is still 16.</p>
+<h3 id="per-cpu-storage">Per-CPU storage</h3>
+<p>It's often useful to have some sort of "per-CPU" storage; that is to say, a
+data structure whos values are dependent upon the CPU it is accessed from.
+There are two main methods that one can accomplish this with.</p>
+<p>The first is vastly simpler, doesn't involve anything terribly complicated, but
+is slightly limited in its flexibility. The idea is to essentially use the ID
+that one can read from the local APIC as an index into an array of pointers.
+Since the local APIC ID is guaranteed to be both unique and only eight bits
+wide, a table of 256 pointers is sufficient. So then your "get local data
+structure" function would look something like this:</p>
+<pre><code><span class="keyword">struct</span><span class="normal"> </span><span class="classname">cpulocal</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">structures</span><span class="symbol">[</span><span class="number">256</span><span class="symbol">];</span>
+<span class="keyword">struct</span><span class="normal"> </span><span class="classname">cpulocal</span><span class="normal"> </span><span class="symbol">*</span><span class="function">get_structure</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> id_reg </span><span class="symbol">=</span><span class="normal"> </span><span class="function">phy_read_32</span><span class="symbol">(</span><span class="number">0xfee00000</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">2</span><span class="normal"> </span><span class="symbol">*</span><span class="normal"> </span><span class="number">0x10</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="keyword">return</span><span class="normal"> structures</span><span class="symbol">[(</span><span class="normal">id_reg </span><span class="symbol">&gt;&gt;</span><span class="normal"> </span><span class="number">24</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="number">0xff</span><span class="symbol">];</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>This is, however, both slightly wasteful and not very extensible; what happens
+if you ever wanted to support more than 256 processors? Or what about if you
+don't feel like wasting 2048 bytes just for this table? Or happens if you want
+to access such inside the beginning of an interrupt handler to, for example,
+get a pointer for where to store the registers of the thread we're
+context-switching out of --- without using the stack, because you're not sure
+if it's good yet? Or -- even better -- what about if you're not in ring 0 and
+can't access physical memory?</p>
+<p>Segmentation is essentially not present on x86_64, with two minor exceptions:
+the <code>gs</code> and <code>fs</code> selectors can actually have a base offset applied, by means
+of setting appropriate MSRs, <code>FS_BASE</code> and <code>GS_BASE</code>. To illustrate what this
+does, suppose we set <code>GS_BASE</code> to address <code>0x12345600</code>. Then the following
+memory access will access address <code>0x12345678</code>, not <code>0x78</code>:</p>
+<pre><code><span class="keyword">mov</span><span class="normal">     </span><span class="variable">eax</span><span class="symbol">,</span><span class="normal"> </span><span class="type">dword</span><span class="normal"> </span><span class="symbol">[</span><span class="variable">gs</span><span class="symbol">:</span><span class="number">0x78</span><span class="symbol">]</span>
+</code></pre>
+<p>And, since this MSR is CPU-specific, we can have a <code>GS_BASE</code> on a per-CPU basis
+to form a lovely little CPU-local data structure. A nifty trick with <code>gs</code> is
+that there's actually a second base offset available, called <code>KERNEL_GS_BASE</code>.
+Executing a <code>swapgs</code> instruction will swap the two, allowing you to maintain
+separate <code>gs</code> base offsets for kernelspace and userspace.</p>
+<p>Another option is to use the <code>rdtscp</code> instruction, which copies the contents of
+the MSR <code>TSC_AUX</code> into the <code>ecx</code> register. This can be used to get an ID for
+the current processor, assuming the MSRs are set up appropriately beforehand.
+This instruction may not be present on all CPUs, however, so it's probably not
+a good idea to rely on it.</p>
+<h3 id="synchronization">Synchronization</h3>
+<p>Now that we have more than one processor running, it's probably important to
+devote some time to the topic of processor synchronization. There are oft
+resources that are "exclusive" to one processor, i.e. that should only be
+accessed by one processor -- or even one thread -- at a time. For example, the
+I/O APIC; during concurrent access, it's entirely possible for a second
+processor to write to the index register at the wrong time and cause unintended
+behaviour.</p>
+<p>The topic of synchronization on shared-memory systems is a large one, and I
+will refer you to your favourite textbook on the subject for more details.
+<sup id="fnref:shm-textbook"><a class="footnote-ref" href="#fn:shm-textbook" rel="footnote">2</a></sup> For now, I'm going to assume you know what these objects are
+and instead I'll just mention how to actually implement them.</p>
+<h4 id="atomic-memory-operations">Atomic memory operations</h4>
+<p>On x86_64, aligned memory accesses (and unaligned within a cache line) are
+guaranteed to be performed atomically. This is nice, because now we have atomic
+registers that we can use to build up more complicated synchronization
+structures. However, we have more powerful operations than just atomic access;
+we have atomic increment, atomic bit-test/set, atomic addition/subtraction,
+atomic swap, atomic compare-and-set, and even dual atomic compare-and-set (for
+two values adjacent in memory).</p>
+<p>These operations are accessed by prepending a <code><span class="normal"> </span><span class="keyword">lock</span></code> prefix to an
+instruction, such as:</p>
+<pre><code><span class="normal">atomic_compare_and_exchange</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> rsi</span>
+<span class="keyword">lock</span><span class="normal">    </span><span class="keyword">cmpxchg</span><span class="normal"> </span><span class="symbol">[</span><span class="normal">rdi</span><span class="symbol">],</span><span class="normal"> rdx</span>
+<span class="normal">        </span><span class="keyword">xor</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> rax</span>
+<span class="normal">        cmovnz  rax</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="normal">  </span><span class="comment">; 1 on failure</span>
+<span class="normal">        </span><span class="keyword">ret</span>
+</code></pre>
+<p>Here, the prefix turns <code><span class="normal"> </span><span class="keyword">cmpxchg</span></code> into an atomic operation.</p>
+<h4 id="spinlocks">Spinlocks</h4>
+<p>We can use the above to implement a spinlock extremely easily. Suppose we have
+an aligned 8-byte-wide address passed in as a parameter. Then a simple "lock"
+implementation might be:</p>
+<pre><code><span class="normal">spinlock_lock</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span>
+<span class="keyword">lock</span><span class="normal">    </span><span class="keyword">xchg</span><span class="normal">    </span><span class="symbol">[</span><span class="normal">rdi</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">cmp</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span>
+<span class="normal">        </span><span class="keyword">jne</span><span class="normal">     spinlock_lock</span>
+<span class="normal">        </span><span class="keyword">ret</span>
+</code></pre>
+<p>However, there is a particular instruction in x86, <code>pause</code>, that is
+specifically designed for use in spinlock loops. While the above does work,
+this will actually give better performance (time-wise and power-wise, as
+spinlocks mess with branch prediction a little):</p>
+<pre><code><span class="normal">spinlock_lock_improved</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">mov</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span>
+<span class="keyword">lock</span><span class="normal">    </span><span class="keyword">xchg</span><span class="normal">    </span><span class="symbol">[</span><span class="normal">rdi</span><span class="symbol">],</span><span class="normal"> rax</span>
+<span class="normal">        </span><span class="keyword">cmp</span><span class="normal">     rax</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span>
+<span class="normal">        </span><span class="keyword">je</span><span class="normal">      </span><span class="symbol">.</span><span class="normal">spinlock_escape</span>
+<span class="normal">        pause</span>
+<span class="normal">        </span><span class="keyword">jmp</span><span class="normal">     spinlock_lock_improved</span>
+<span class="preproc">.spinlock</span><span class="normal">_escape</span><span class="symbol">:</span>
+<span class="normal">        </span><span class="keyword">ret</span>
+</code></pre>
+<p>Unlocking a spinlock is easy, since all aligned memory accesses are atomic.</p>
+<h4 id="monitors">Monitors</h4>
+<p>Something that I've found isn't mentioned in some books is the concept of a
+shared memory monitor. The concept is very simple: wait for a write to occur to
+a particular region of memory. x86_64 processors support this in the form of
+two instructions: <code>monitor</code> and <code>mwait</code>. If you plan to use these instructions,
+I recommend you read their entries in the Intel SDM Volume 2A. However, the
+general gist of the instructions is as follows: <code>monitor</code> marks a specific
+address (that in <code>rax</code>) as a target that should be waited upon, and <code>mwait</code>
+will pause until a write occurs. Note that <code>monitor</code> should only be used on
+memory mapped with a "write-back" caching type.</p>
+<h3 id="hard-drive-access-ata-pio">Hard drive access: ATA PIO</h3>
+<p>Now, for something a little different: accessing hard drives (and SSDs, since
+they use the same interface). I assume that you know, roughly speaking, how a
+hard drive operates; the magnetic head flying over the platters being used to
+polarize regions to represent binary values, etc etc. What we're concerned
+about is how to actually access the drive.</p>
+<p>Most modern x86_64 computers have SATA controllers onboard; however, accessing
+SATA controllers typically requires using PCI, which we haven't gotten to yet.
+As such, we'll be using the original ATA PIO interface, which is amazingly slow
+in comparison, but extremely simple; it also has the advantage that it has to
+be supported by all drives in order to comply with the ATA specification. It
+should be noted that what follows is a <em>bare minimum</em> for getting ATA working;
+it is not complete and nor does it handle error conditions!</p>
+<p>There are two methods of addressing available: CHS ("Cylinder-Head-Sector"), 
+and LBA ("Logical Block Addressing"). CHS was obsolete even by the standards of
+ten years ago, so today we care about it even less. LBA essentially is what
+you'd expect from storage; a large number of "cells" that can be individually
+read from/written to. There are actually two types of LBA addressing; LBA28 and
+LBA48. The former uses a 28-bit index, and the latter a 48-bit index, as with
+a 28-bit index (and a standard 512-byte block size), hard drives only up to 
+128GB are supported. We'll just talk about LBA28 for the moment, as LBA48 is
+essentially the same but takes longer to talk about.</p>
+<p>Like the other legacy interfaces we've encountered, contacting a hard drive
+using ATA PIO is done via ports. In particular, the ports we're interested are
+for the "master" ATA controller, which start at <code>0x1f0</code> and go through <code>0x1f7</code>.</p>
+<p>The ports have the following meanings:</p>
+<ul>
+<li><code>0x1f0</code> is the "data" port; it's where you read data from and write data to.
+    Note that this port is 16 bits wide, unlike the other ports encountered
+    thus far.</li>
+<li><code>0x1f1</code>, when read, is the "error" port; it contains information about any
+    errors that occur.</li>
+<li><code>0x1f2</code> is the "sector count" port; it contains, essentially, how many
+    sectors to read/write upon performing such an operation.</li>
+<li><code>0x1f3</code> is the sector ID; in CHS mode, it is used to store the low eight bits
+    of the sector to manipulate. In LBA28 mode, stores lowest eight bits of LBA
+    index.</li>
+<li><code>0x1f4</code> contains the cylinder LSB, and <code>0x1f5</code> the cylinder MSB; when using
+    CHS addressing this is the 16-bit cylinder index. In LBA28 mode, they are
+    the second and third bytes of the LBA index.</li>
+<li><code>0x1f6</code> stores which drive to access (master/slave) and the head to access in
+    CHS addressing mode; in LBA28 this still stores which of master/slave to
+    access, and instead of the head index, instead stores the upper 4 bits of
+    the block index.</li>
+<li><code>0x1f7</code> is the command/status register. Writes to this port instruct the ATA
+    controller to begin performing an operation; reads from this port provide
+    status information. When read, some interesting bits are the first bit (the
+    "error" bit), the last bit (the "busy" bit), and bit 3 (the "data request"
+    bit, set when data can be transferred).</li>
+</ul>
+<p>We'll illustrate this with a simple example: the <code>IDENTIFY</code> command, which has
+index <code>0xec</code>:</p>
+<pre><code><span class="type">void</span><span class="normal"> </span><span class="function">send_pio_id</span><span class="symbol">(</span><span class="type">bool</span><span class="normal"> is_master</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> select </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0xa0</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="keyword">if</span><span class="symbol">(</span><span class="normal">is_master</span><span class="symbol">)</span><span class="normal"> select </span><span class="symbol">|=</span><span class="normal"> </span><span class="number">1</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="comment">/* select appropriate master/slave drive */</span>
+<span class="normal">    </span><span class="function">output8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">6</span><span class="symbol">,</span><span class="normal"> select</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">/* clear various registers */</span>
+<span class="normal">    </span><span class="function">output8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">2</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">output8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">3</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">output8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">4</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function">output8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">5</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">/* send IDENTIFY command */</span>
+<span class="normal">    </span><span class="function">outport8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">7</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0xec</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">/* wait until not busy */</span>
+<span class="normal">    </span><span class="keyword">while</span><span class="symbol">(</span><span class="function">inport8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">7</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="number">0x80</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="comment">/* read low/high status bits */</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> low </span><span class="symbol">=</span><span class="normal"> </span><span class="function">inport8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">4</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="usertype">uint8_t</span><span class="normal"> high </span><span class="symbol">=</span><span class="normal"> </span><span class="function">inport8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">5</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="keyword">if</span><span class="symbol">(</span><span class="normal">low </span><span class="symbol">!=</span><span class="normal"> </span><span class="number">0</span><span class="normal"> </span><span class="symbol">||</span><span class="normal"> high </span><span class="symbol">!=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="comment">/* failure, drive isn't an ATA drive or isn't standards-complaint</span>
+<span class="comment">            at least */</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">/* wait until ready */</span>
+<span class="normal">    </span><span class="keyword">while</span><span class="symbol">(</span><span class="function">inport8</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">7</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal"> </span><span class="number">0x8</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">;</span>
+
+<span class="normal">    </span><span class="comment">/* read IDENTIFY information */</span>
+<span class="normal">    </span><span class="usertype">uint16_t</span><span class="normal"> info</span><span class="symbol">[</span><span class="number">256</span><span class="symbol">];</span>
+<span class="normal">    </span><span class="keyword">for</span><span class="symbol">(</span><span class="type">int</span><span class="normal"> i </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">&lt;</span><span class="normal"> </span><span class="number">256</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">++)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        info</span><span class="symbol">[</span><span class="normal">i</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="function">inport16</span><span class="symbol">(</span><span class="number">0x1f0</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="usertype">uint32_t</span><span class="normal"> sectors_count </span><span class="symbol">=</span><span class="normal"> info</span><span class="symbol">[</span><span class="number">60</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">|</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">uint32_t</span><span class="symbol">)</span><span class="normal">info</span><span class="symbol">[</span><span class="number">61</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">&lt;&lt;</span><span class="normal"> </span><span class="number">16</span><span class="symbol">);</span>
+
+<span class="normal">    </span><span class="comment">/* do stuff with the rest of the information */</span>
+<span class="cbracket">}</span>
+</code></pre>
+<p>The command index for <code>READ SECTOR</code> is <code>0x20</code>, and the format for the <code>0x1f6</code>
+register is very simple: set the lowest four bits to bits 24:27 of the LBA28
+index, and set the upper four bits to <code>0xe</code> for a master drive access, <code>0xf</code>
+for a slave drive access. Note that each sector is 512 bytes and should be read
+as 256 consecutive <code><span class="normal"> </span><span class="function">inport16</span><span class="symbol">()</span></code>'s on port <code>0x1f0</code>; and you need to
+wait for the DRQ bit to be set in the status register before beginning the
+sector contents read; after the bit is set, you should read all 256 words (512
+bytes) before executing the next command.</p>
+<p>You can also write sectors via the <code>WRITE SECTOR</code> command (index <code>0x30</code>);
+you'll probably want to do a <code>CACHE FLUSH</code> (index <code>0xe7</code>) after each write or
+so.</p>
+<h3 id="suggested-work">Suggested work</h3>
+<p>I suggest that you try to get the SMP AP processors booted appropriately, and
+hooked into your scheduler. Furthermore, a good spinlock implementation will go
+a long way; you may also want to look into implementing support for mutexes and
+semaphores within your scheduler, to not wake up processes unless the
+mutex/semaphore they're waiting on has actually been unlocked/incremented.</p>
+<p>Furthermore, I suggest that you get an ATA driver up and running, to the point
+that you can tell if a drive exists, how big it is, and read/write arbitrary
+sectors. That will allow us to start talking about filesystems in the next set
+of notes.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:numa-note">
+<p>The alternative (Non-Uniform Memory Access, or NUMA), where
+processors have faster access to local memory, compared to "remote" memory, is
+technically present on some modern Intel systems. However, for the most part
+we'll just discard this, as getting NUMA working properly and set up
+appropriately is rather complicated.&#160;<a class="footnote-backref" href="#fnref:numa-note" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:shm-textbook">
+<p>For one -- not the best out there but certainly not the worst,
+either -- "The Art of Multiprocessor Programming", by Maurice Herlihy and Nir
+Shavit. &#160;<a class="footnote-backref" href="#fnref:shm-textbook" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+    <div id="footer">
+        <p>
+        Unless otherwise specified, all written content is released under a
+        Creative Commons Attribution 3.0 Unported license, and all original
+        source code written by the author is under a 3-clause BSD license. To
+        contact the author, send an email to <code>ethereal</code>,
+        at the canonical domain for this website.
+        </p>
+
+        <p>
+            Page generated at Thu Oct  8 08:15:09 2015 UTC.
+        </p>
+    </div>
+    </div>
+</body>
+</html>

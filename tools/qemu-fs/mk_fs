@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# =====================================================================
+EXT_2_FS="rootfs.ext2"
+MSODS_FS="rootfs.msdos"
+FAT32_FS="rootfs.fat32"
+
+MNT_P="./mnt/"
+
+
+HDD_FORMAT="raw"; # raw: [default] | qcow2: |qcow: | cow: | vmdk: | cloop:
+HDD_SIZE="32M"
+
+# qemu-img create -f $HDD_FORMAT $EXT_2_FS $HDD_SIZE
+# sudo mkfs.ext2  -L "EXT_2_FS" $EXT_2_FS
+
+# qemu-img create -f $HDD_FORMAT $MSODS_FS $HDD_SIZE
+# mkfs.msdos -n "MSDOS_FS" $MSODS_FS
+
+qemu-img create -f $HDD_FORMAT $FAT32_FS $HDD_SIZE
+udo mkdosfs -n vfat_name -s 8 ./rootfs.fat32
+#mkfs.msdos -n "FAT32_FS" $FAT32_FS
+
+# sudo umount /dev/loop*
+
+
+
+
+exit;
+
+echo -e "dcfldd if=../../osdev/os.v3/os.iso of=$EXT_2_FS bs=512k\n"
+dcfldd if=../../osdev/os.v3/os.iso of=$EXT_2_FS bs=512k
+
+echo -e "dcfldd if=../../osdev/os.v3/os.iso of=$MSODS_FS bs=512k\n"
+dcfldd if=../../osdev/os.v3/os.iso of=$MSODS_FS bs=512k
+
+
+exit;
+# =====================================================================
+MNT_PARAMS=" -t ext2 -o loop,rw "
+MNT_PARAMS=" -o loop,rw "
+
+echo -e "----------------------------------------------" 
+echo -e "processing: $MSODS_FS\n"
+
+echo -e "mount $MSODS_FS $MNT_P"
+sudo mount $MNT_PARAMS $MSODS_FS $MNT_P
+echo -e "cp -r .../os/* $MNT_P"
+sudo cp -r /m-sys/prog-proj/OS/edu/osdev/os.v3/os/* $MNT_P
+sync
+echo -e "umount $MNT_P"
+sudo umount $MNT_P
+
+echo -e "----------------------------------------------" 
+echo -e "processing: $EXT_2_FS\n"
+
+echo -e "mount $EXT_2_FS $MNT_P"
+sudo mount $MNT_PARAMS $EXT_2_FS $MNT_P
+echo -e "cp -r .../os/* $MNT_P"
+sudo cp -r /m-sys/prog-proj/OS/edu/osdev/os.v3/os/* $MNT_P
+sync
+echo -e "umount $MNT_P"
+sudo umount $MNT_P
+
+echo -e "\nALL-DONE\n"
+
+# =====================================================================
+# dcfldd if=../../osdev/os.v3/os.iso of=./rootfs.ext2 seek=0 bs=512k
+# qemu -m 256 -hda ./rootfs.ext2 -boot d
+
+# qemu -m 256 -cdrom ../../osdev/os.v3/os.iso -boot d
+
+# qemu -m 256 -kernel ../../osdev/os.v3/bin/kernel.bin
+# qemu -m 256 -kernel ../../osdev/os.v3/bin/kernel.bin -boot d
+
+# qemu -m 256 -hda winxp.img -cdrom winxpsp2.iso -boot d
+# qemu -m 256 -hda winxp.img -cdrom /dev/cdrom -boot d
+
+

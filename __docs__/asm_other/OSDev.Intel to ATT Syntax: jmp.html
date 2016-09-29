@@ -1,0 +1,549 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - Intel to ATT Syntax: jmp</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - Intel to ATT Syntax: jmp" href="http://forum.osdev.org/feed.php?f=1&amp;t=18620" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php?sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php?sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php?sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Tue Sep 27, 2016 10:12 pm<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">View unanswered posts</a> | <a href="./search.php?search_id=active_topics&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=b4b6f6e9ef233959f827486f0f6adb0d">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=18620&amp;start=0&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Intel to ATT Syntax: jmp</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=18620&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 3 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=18620&amp;start=0&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=18620&amp;view=previous&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=18620&amp;view=next&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p143083"></a>
+				<b class="postauthor">rhollencamp</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Intel to ATT Syntax: jmp</div><div style="float: right;"><a href="./viewtopic.php?p=143083&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d#p143083"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Dec 09, 2008 4:15 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Sep 23, 2008 9:38 pm<br /><b>Posts:</b> 3
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I'm trying to convert the following code into a format that GNU as can understand. Here is the source:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&#91;GLOBAL gdt_flush&#93;&nbsp; &nbsp; ; Allows the C code to call gdt_flush().<br /><br />gdt_flush:<br />&nbsp; &nbsp;mov eax, &#91;esp+4&#93;&nbsp; ; Get the pointer to the GDT, passed as a parameter.<br />&nbsp; &nbsp;lgdt &#91;eax&#93;&nbsp; &nbsp; &nbsp; &nbsp; ; Load the new GDT pointer<br /><br />&nbsp; &nbsp;mov ax, 0x10&nbsp; &nbsp; &nbsp; ; 0x10 is the offset in the GDT to our data segment<br />&nbsp; &nbsp;mov ds, ax&nbsp; &nbsp; &nbsp; &nbsp; ; Load all data segment selectors<br />&nbsp; &nbsp;mov es, ax<br />&nbsp; &nbsp;mov fs, ax<br />&nbsp; &nbsp;mov gs, ax<br />&nbsp; &nbsp;mov ss, ax<br />&nbsp; &nbsp;jmp 0x08:.flush&nbsp; &nbsp;; 0x08 is the offset to our code segment: Far jump!<br />.flush:<br />&nbsp; &nbsp;ret<br /></div><br /><br />and here is my code:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">.global gdt_write<br /><br />gdt_write:<br />&nbsp; &nbsp;movl 4(%esp), %eax<br />&nbsp; &nbsp;lgdt (%eax)<br /><br />&nbsp; &nbsp;mov 0x10, %ax<br />&nbsp; &nbsp;mov %ax, %ds<br />&nbsp; &nbsp;mov %ax, %es<br />&nbsp; &nbsp;mov %ax, %fs<br />&nbsp; &nbsp;mov %ax, %gs<br />&nbsp; &nbsp;mov %ax, %ss<br />&nbsp; &nbsp;jmp 0x08:flush<br />flush:<br />&nbsp; &nbsp;ret<br /></div><br /><br />for the life of me, I can't figure out the jmp statement. It gives me a variety of errors depending on what I try, what is shown above gives the error ' Error: junk `:flush' after expression'.<br /><br />Robert Hollencamp</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=5273&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p143085"></a>
+				<b class="postauthor">Combuster</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Intel to ATT Syntax: jmp</div><div style="float: right;"><a href="./viewtopic.php?p=143085&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d#p143085"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Dec 09, 2008 5:04 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=1906_1213867792.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 18, 2006 3:45 am<br /><b>Posts:</b> 9226<br /><b>Location:</b> An der schönen blauen Donau, watching muppets
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">&lt;insert propaganda against AT&amp;T syntax&gt;<br /><br />the opcode is ljmp</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Certainly avoid yourself. He is a newbie and might not realize it. You'll hate his code deeply a few years down the road.&quot; - Sortie<br />[ <a href="http://www.d-rift.nl/combuster/mos3/" class="postlink">My OS</a> ] [ <a href="http://www.d-rift.nl/combuster/vdisk/" class="postlink">VDisk/SFS</a> ]</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p143089"></a>
+				<b class="postauthor">fieldofcows</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: Intel to ATT Syntax: jmp</div><div style="float: right;"><a href="./viewtopic.php?p=143089&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d#p143089"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Dec 09, 2008 5:40 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Dec 09, 2008 5:34 pm<br /><b>Posts:</b> 4
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I think what you want is:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">jmp $0x08, $flush</div><br /><br />Also, you're missing a dollar symbol on the following line:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">mov 0x10, %ax</div><br /><br />should be:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">mov $0x10, %ax</div><br /><br />Roy</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=5637&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=18620&amp;start=0&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=18620&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 3 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=b4b6f6e9ef233959f827486f0f6adb0d">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <a href="./memberlist.php?mode=viewprofile&amp;u=15083&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d">akasei</a>, <span style="color: #9E8DA7;" class="username-coloured">Google [Bot]</span> and 4 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=18620&amp;sid=b4b6f6e9ef233959f827486f0f6adb0d"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php?sid=b4b6f6e9ef233959f827486f0f6adb0d" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

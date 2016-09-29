@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Inline Assembly - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "Inline_Assembly", "wgTitle": "Inline Assembly", "wgCurRevisionId": 19827, "wgArticleId": 1706, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Assembly"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Inline_Assembly action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">Inline Assembly</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><p>The idea behind <b>Inline Assembly</b> is to embed assembler instructions in your C/C++ code, using the asm keyword, when there's no option but to use assembly language.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Syntax"><span class="tocnumber">2</span> <span class="toctext">Syntax</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Assembler_Template"><span class="tocnumber">2.1</span> <span class="toctext">Assembler Template</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Output_Operands"><span class="tocnumber">2.2</span> <span class="toctext">Output Operands</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Input_Operands"><span class="tocnumber">2.3</span> <span class="toctext">Input Operands</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Clobbered_Registers_List"><span class="tocnumber">2.4</span> <span class="toctext">Clobbered Registers List</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Wildcards:_How_you_can_let_the_compiler_choose"><span class="tocnumber">2.5</span> <span class="toctext">Wildcards: How you can let the compiler choose</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Using_C99"><span class="tocnumber">3</span> <span class="toctext">Using C99</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Assigning_Labels"><span class="tocnumber">4</span> <span class="toctext">Assigning Labels</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#asm_goto"><span class="tocnumber">5</span> <span class="toctext">asm goto</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Intel_Syntax"><span class="tocnumber">6</span> <span class="toctext">Intel Syntax</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#See_Also"><span class="tocnumber">7</span> <span class="toctext">See Also</span></a>
+<ul>
+<li class="toclevel-2 tocsection-13"><a href="#Articles"><span class="tocnumber">7.1</span> <span class="toctext">Articles</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Forum_Threads"><span class="tocnumber">7.2</span> <span class="toctext">Forum Threads</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#External"><span class="tocnumber">7.3</span> <span class="toctext">External</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>Sometimes, even though C/C++ is your language of choice, you <b>need</b> to use some asm code in your operating system. Be it because of extreme optimization needs or because the code you're implementing is highly hardware-specific (like, say, outputting data through a port), the result is the same&#160;: there's no way around it. You must use assembly.
+</p><p>One of the options you have is writing an asm function and calling it, however there can be times when even the "call" overhead is too much for you. In that case, what you need is inline assembly, which means inserting arbitrary assembly snippets in the middle of your code, using the asm() "function". The way this function works is compiler-specific, and this article describes the way it works in GCC since it is by far the most used compiler in the OS world.
+</p>
+<h2> <span class="mw-headline" id="Syntax"> Syntax </span></h2>
+<p>This is the syntax for calling asm() in your C/C++ code:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm <span class="br0">&#40;</span> assembler template
+    <span class="sy0">:</span> output operands                   <span class="br0">&#40;</span>optional<span class="br0">&#41;</span>
+    <span class="sy0">:</span> input operands                    <span class="br0">&#40;</span>optional<span class="br0">&#41;</span>
+    <span class="sy0">:</span> clobbered registers list          <span class="br0">&#40;</span>optional<span class="br0">&#41;</span>
+    <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Assembler template is basically GAS-compatible code, except that register names now start with&#160;%% instead of&#160;%. This means that the following code...
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm <span class="br0">&#40;</span><span class="st0">&quot;movl&#160;%%eax,&#160;%%ebx&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>...will move eax's content into ebx. Now, you may wonder why this&#160;%% comes in. This is where an interesting feature of inline assembly comes in&#160;: you can make use of some of your C variables in your assembly code. And since, in order to make implementation of this mechanism simpler, GCC names these variables&#160;%0,&#160;%1, and so on in your assembly code, starting from the first variable mentioned in the input/output operand sections, you're required to use this&#160;%% syntax in order to help GCC making a separation between registers and parameters...
+</p><p>How exactly operands work will be explained in more details in later sections. For now, sufficient is to say that if you write something like that...
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> a<span class="sy0">=</span><span class="nu0">10</span><span class="sy0">,</span> b<span class="sy0">;</span>
+asm <span class="br0">&#40;</span><span class="st0">&quot;movl&#160;%1,&#160;%%eax; 
+      movl&#160;%%eax,&#160;%0;&quot;</span>
+     <span class="sy0">:</span><span class="st0">&quot;=r&quot;</span><span class="br0">&#40;</span>b<span class="br0">&#41;</span>        <span class="coMULTI">/* output */</span>
+     <span class="sy0">:</span><span class="st0">&quot;r&quot;</span><span class="br0">&#40;</span>a<span class="br0">&#41;</span>         <span class="coMULTI">/* input */</span>
+     <span class="sy0">:</span><span class="st0">&quot;%eax&quot;</span>         <span class="coMULTI">/* clobbered register */</span>
+     <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>You've managed to copy the value of "a" in "b" using assembly code, effectively using some C variables in your assembly code. Congratulations&#160;!
+</p><p>The last "clobbered register" section is used in order to tell GCC that your code is using some of the processor's registers, and that it should move any active data from the running program out of this register before executing the asm snippet. In the example above, we move b to eax in the first instruction, effectively erasing its content, so we need to ask GCC to clear this register from unsaved data before operation.
+</p>
+<h3> <span class="mw-headline" id="Assembler_Template"> Assembler Template </span></h3>
+<p>The Assembler Template defines the assembler instructions to inline. The default is to use AT&amp;T syntax here. If you want to use Intel syntax, <tt>-masm=intel</tt> should be specified as a command-line option.
+</p><p>As an example, to halt the CPU, you just have to use the following command:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm<span class="br0">&#40;</span> <span class="st0">&quot;hlt&quot;</span> <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<h3> <span class="mw-headline" id="Output_Operands"> Output Operands </span></h3>
+<p>The Output Operands section is used in order to tell the compiler / assembler how it should handle C variables used to store some output from the ASM code. The Output Operands are a list of pairs, each operand consisting of a string literal, known as "constraint", stating where the C variable should be mapped (registers are generally used for optimal performance), and a C variable to map to (in braces).
+</p><p>In the constraint, 'a' refers to EAX, 'b' to EBX, 'c' to ECX, 'd' to EDX, 'S' to ESI, and 'D' to EDI (read the GCC manual for a full list), assuming that you are coding for the IA32 architecture. An equation sign indicates that your assembly code does not care about the initial value of the mapped variable (which allows some optimization). With all that in mind, it's now pretty clear that the following code sets EAX = 0.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> EAX<span class="sy0">;</span>
+asm<span class="br0">&#40;</span> <span class="st0">&quot;movl $0,&#160;%0&quot;</span>
+   <span class="sy0">:</span> <span class="st0">&quot;=a&quot;</span> <span class="br0">&#40;</span>EAX<span class="br0">&#41;</span>
+    <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Notice that the compiler enumerates the operand starting with&#160;%0, and that you don't have to add a register to the clobbered register list if it's used to store an output operand. GCC is smart enough to figure out what to do all by itself.
+</p><p>Starting with GCC 3.1, you can use more readable labels instead of the error-prone enumeration:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> current_task<span class="sy0">;</span>
+asm<span class="br0">&#40;</span> <span class="st0">&quot;str&#160;%[output]&quot;</span>
+   <span class="sy0">:</span> <span class="br0">&#91;</span>output<span class="br0">&#93;</span> <span class="st0">&quot;=r&quot;</span> <span class="br0">&#40;</span>current_task<span class="br0">&#41;</span>
+    <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>These labels are in a namespace of their own, and will not collide with any C identifiers. The same can be done for input operands, too.
+</p>
+<h3> <span class="mw-headline" id="Input_Operands"> Input Operands </span></h3>
+<p>While the Output Operands are generally used for... well... output, the Input Operands allows to parametrize the ASM code; i.e., passing read-only parameters from C code to ASM block. Again, string literals are used to specify the details.
+</p><p>If you want to move some value to EAX, you can do it the following way (even though it would certainly be pretty useless to do so instead of directly mapping the value to EAX):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> randomness <span class="sy0">=</span> <span class="nu0">4</span><span class="sy0">;</span>
+asm<span class="br0">&#40;</span> <span class="st0">&quot;movl&#160;%0,&#160;%%eax&quot;</span>
+   <span class="sy0">:</span>
+   <span class="sy0">:</span> <span class="st0">&quot;b&quot;</span> <span class="br0">&#40;</span>randomness<span class="br0">&#41;</span>
+   <span class="sy0">:</span> <span class="sy0">%%</span>eax
+    <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Note that GCC will always assume that input operands are read-only (unchanged). The correct thing to do when input operands are written to is to list them as outputs, but without using the equation sign because this time their original value matters. Here is a simple example:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm<span class="br0">&#40;</span><span class="st0">&quot;mov&#160;%%eax,%%ebx&quot;</span><span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;a&quot;</span> <span class="br0">&#40;</span>amount<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span><span class="co1">//useless but it gets the idea</span></pre></div></div>
+<p>Eax will contain "amount" and be moved into ebx.
+</p>
+<h3> <span class="mw-headline" id="Clobbered_Registers_List"> Clobbered Registers List </span></h3>
+<p>It is important to remember one thing: <i>The C/C++ compiler knows nothing about Assembler</i>. For the compiler, the asm statement is opaque, and if you did not specify any output, it might even come to the conclusion that it's a no-op and optimize it away. Some third-party docs indicate that using asm volatile will cause the keyword to not be moved. However, according to the GCC documentation, <i>The volatile keyword indicates that the instruction has important side-effects. GCC will not delete a volatile asm if it is reachable.</i>, which only indicates that it will not be deleted (i.e. whether it may still be moved is an unanswered question). An approach that should work is to use asm (volatile) and put <b>memory</b> in the clobber registers, like so:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">__asm__<span class="br0">&#40;</span><span class="st0">&quot;cli&quot;</span><span class="sy0">:</span> <span class="sy0">:</span> <span class="sy0">:</span><span class="st0">&quot;memory&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Will cause the statement not to be moved, but it may be optimized away.</span>
+__asm__ __volatile__<span class="br0">&#40;</span><span class="st0">&quot;cli&quot;</span><span class="sy0">:</span> <span class="sy0">:</span> <span class="sy0">:</span><span class="st0">&quot;memory&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Will cause the statement not to be moved nor optimized away.</span></pre></div></div>
+<p>Since the compiler uses CPU registers for internal optimization of your C/C++ variables, and doesn't know about ASM opcodes, you have to warn it about any registers that might get clobbered as a side effect, so the compiler can save their contents before making your ASM call.
+</p><p>The Clobbered Registers List is a comma-separated list of register names, as string literals.
+</p>
+<h3> <span class="mw-headline" id="Wildcards:_How_you_can_let_the_compiler_choose"> Wildcards: How you can let the compiler choose </span></h3>
+<p>You don't need to tell the compiler which specific register it should use in each operation, and in general, except you have good reasons to prefer one register specifically, you should better let the compiler decide for you.
+</p><p>Forcing to use EAX over any other register, for instance, may force the compiler to issue code that will save what was previously in eax in some other register or may introduce unwanted dependencies between operations (pipeline optimization broken)
+</p><p>The 'wildcards' constraints allows you to give more freedom to GCC and when it comes to input/output mapping:
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<td> The "g" constraint&#160;: <div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="st0">&quot;movl $0,&#160;%0&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=g&quot;</span> <span class="br0">&#40;</span>x<span class="br0">&#41;</span></pre></div></div>
+</td>
+<td> x can be whatever the compiler prefers: a register, a memory reference. It could even be a literal constant in another context.
+</td></tr>
+<tr>
+<td> The "r" constraint&#160;: <div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="st0">&quot;movl&#160;%%es,&#160;%0&quot;</span> <span class="sy0">:</span> <span class="st0">&quot;=r&quot;</span> <span class="br0">&#40;</span>x<span class="br0">&#41;</span></pre></div></div>
+</td>
+<td> you want x to go through a register. If x wasn't optimized as a register, the compiler will then move it to the place it should be. This means that <code>"movl&#160;%0,&#160;%%es"&#160;:&#160;: "r" (0x38)</code> is enough to load a segment register.
+</td></tr>
+<tr>
+<td> The "N" constraint&#160;: <div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="st0">&quot;outl&#160;%0,&#160;%1&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;a&quot;</span> <span class="br0">&#40;</span><span class="nu12">0xFE</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;N&quot;</span> <span class="br0">&#40;</span><span class="nu12">0x21</span><span class="br0">&#41;</span></pre></div></div>
+</td>
+<td> tells the value '0x21' can be used as a constant in the out or in operation if ranging from 0 to 255
+</td></tr></table>
+<p>There are of course a lot more constraints you can put on the operand selection, machine-dependent or not, which are listed in GCC's manual (see <a rel="nofollow" class="external autonumber" href="http://gcc.gnu.org/onlinedocs/gcc-4.4.4/gcc/Simple-Constraints.html#Simple-Constraints">[1]</a>, <a rel="nofollow" class="external autonumber" href="http://gcc.gnu.org/onlinedocs/gcc-4.4.4/gcc/Modifiers.html#Modifiers">[2]</a>, <a rel="nofollow" class="external autonumber" href="http://gcc.gnu.org/onlinedocs/gcc-4.4.4/gcc/Multi_002dAlternative.html#Multi_002dAlternative">[3]</a>, and <a rel="nofollow" class="external autonumber" href="http://gcc.gnu.org/onlinedocs/gcc-4.4.4/gcc/Machine-Constraints.html#Machine-Constraints">[4]</a>).
+</p>
+<h2> <span class="mw-headline" id="Using_C99"> Using C99 </span></h2>
+<p><tt>asm</tt> is not a keyword when using <tt>gcc -std=c99</tt>. Simply use <tt>gcc -std=gnu99</tt> to use C99 with GNU extensions. Alternatively, you can use <tt>__asm__</tt> as an alternate keyword that works even when the compiler strictly adheres to the standard.
+</p>
+<h2> <span class="mw-headline" id="Assigning_Labels"> Assigning Labels </span></h2>
+<p>It is possible to assign so-called ASM labels to C/C++ keywords. You can do this by using the <tt>asm</tt> command on variable definitions, as seen in this example:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> some_obscure_name asm<span class="br0">&#40;</span><span class="st0">&quot;param&quot;</span><span class="br0">&#41;</span> <span class="sy0">=</span> <span class="nu0">5</span><span class="sy0">;</span> <span class="co1">// &quot;param&quot; will be accessible in inline Assembly.</span>
+&#160;
+<span class="kw4">void</span> foo<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+   asm<span class="br0">&#40;</span><span class="st0">&quot;mov param,&#160;%%eax&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Here's an example of how you can access these variables if you don't explicitly state a name:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">int</span> some_obscure_name <span class="sy0">=</span> <span class="nu0">5</span><span class="sy0">;</span>
+&#160;
+<span class="kw4">void</span> foo<span class="br0">&#40;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+   asm<span class="br0">&#40;</span><span class="st0">&quot;mov some_obscure_name,&#160;%%eax&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Note that you might also be obliged to use <b>_some_obscure_name</b> (with a leading underscore), depending on your linkage options.
+</p>
+<h2> <span class="mw-headline" id="asm_goto"> asm goto </span></h2>
+<p>Before gcc 4.5, jumping across inline assembly blocks is not supported. The compiler has no way of keeping track of what's going on,
+so incorrect code is almost guaranteed to be generated.
+<br />You might have been told that "gotos are evil". If you believe that is so, then asm gotos are your worst nightmare coming true.
+However, they do offer some interesting code optimization options.
+</p><p>asm goto's are not well documented, but their syntax is as follows:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"> asm <span class="kw1">goto</span><span class="br0">&#40;</span> <span class="st0">&quot;jmp&#160;%l[labelname]&quot;</span> <span class="sy0">:</span> <span class="coMULTI">/* no outputs */</span> <span class="sy0">:</span> <span class="coMULTI">/* inputs */</span> <span class="sy0">:</span> <span class="st0">&quot;memory&quot;</span> <span class="coMULTI">/* clobbers */</span> <span class="sy0">:</span> labelname <span class="coMULTI">/* any labels used */</span> <span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>One example where this can be useful, is the CMPXCHG instruction (see <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Compare-and-swap">Compare and Swap</a>), which the Linux kernel source code defines as follows:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="coMULTI">/* TODO: You should use modern GCC atomic instruction builtins instead of this. */</span>
+<span class="co2">#include &lt;stdint.h&gt;</span>
+<span class="co2">#define cmpxchg( ptr, _old, _new ) { \
+  volatile uint32_t *__ptr = (volatile uint32_t *)(ptr);   \
+  uint32_t __ret;                                     \
+  asm volatile( &quot;lock; cmpxchgl&#160;%2,%1&quot;           \
+   &#160;: &quot;=a&quot; (__ret), &quot;+m&quot; (*__ptr)                \
+   &#160;: &quot;r&quot; (_new), &quot;0&quot; (_old)                     \
+   &#160;: &quot;memory&quot;);				 \
+  );                                             \
+  __ret;                                         \
+}</span></pre></div></div>
+<p>In addition to returning the current value in EAX, CMPXCHG sets the zero flag (Z) when successful. Without asm gotos, your code will have to check the returned value; 
+this CMP instruction can be avoided as follows:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="coMULTI">/* TODO: You should use modern GCC atomic instruction builtins instead of this. */</span>
+<span class="co1">// Works for both 32 and 64 bit</span>
+<span class="co2">#include &lt;stdint.h&gt;</span>
+<span class="co2">#define cmpxchg( ptr, _old, _new, fail_label ) { \
+  volatile uint32_t *__ptr = (volatile uint32_t *)(ptr);   \
+  asm goto( &quot;lock; cmpxchg&#160;%1,%0 \t\n&quot;           \
+    &quot;jnz&#160;%l[&quot; #fail_label &quot;] \t\n&quot;               \
+   &#160;: /* empty */                                \
+   &#160;: &quot;m&quot; (*__ptr), &quot;r&quot; (_new), &quot;a&quot; (_old)       \
+   &#160;: &quot;memory&quot;, &quot;cc&quot;                             \
+   &#160;: fail_label );                              \
+}</span></pre></div></div>
+<p>This new macro could then be used as follows:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">struct</span> Item <span class="br0">&#123;</span>
+  <span class="kw4">volatile</span> <span class="kw4">struct</span> Item<span class="sy0">*</span> next<span class="sy0">;</span>
+<span class="br0">&#125;</span><span class="sy0">;</span>
+&#160;
+<span class="kw4">volatile</span> <span class="kw4">struct</span> Item <span class="sy0">*</span>head<span class="sy0">;</span>
+&#160;
+<span class="kw4">void</span> addItem<span class="br0">&#40;</span> <span class="kw4">struct</span> Item <span class="sy0">*</span>i <span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  <span class="kw4">volatile</span> <span class="kw4">struct</span> Item <span class="sy0">*</span>oldHead<span class="sy0">;</span>
+again<span class="sy0">:</span>
+  oldHead <span class="sy0">=</span> head<span class="sy0">;</span>
+  i<span class="sy0">-&gt;</span>next <span class="sy0">=</span> oldHead<span class="sy0">;</span>
+  cmpxchg<span class="br0">&#40;</span> <span class="sy0">&amp;</span>head<span class="sy0">,</span> oldHead<span class="sy0">,</span> i<span class="sy0">,</span> again <span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Intel_Syntax"> Intel Syntax </span></h2>
+<p>You can let GCC use intel syntax by enabling it in inline Assembly, like so:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm<span class="br0">&#40;</span><span class="st0">&quot;.intel_syntax noprefix&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+asm<span class="br0">&#40;</span><span class="st0">&quot;mov eax, ebx&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Similarly, you can switch back to AT&amp;T syntax by using the following snippet:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">asm<span class="br0">&#40;</span><span class="st0">&quot;.att_syntax prefix&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+asm<span class="br0">&#40;</span><span class="st0">&quot;mov&#160;%ebx,&#160;%eax&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>This way you can combine Intel syntax and AT&amp;T syntax inline Assembly. Note that once you trigger one of these syntax types, everything below the command in the source file will be assembled using this syntax, so don't forget to switch back when necessary, or you might get lots of compile errors!
+</p><p>There is also a command-line option <tt>-masm=intel</tt> to globally trigger Intel syntax.
+</p>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<h3> <span class="mw-headline" id="Articles"> Articles </span></h3>
+<ul><li> <a href="/Inline_Assembly/Examples" title="Inline Assembly/Examples">Inline Assembly/Examples</a> - useful and commonly used functions
+</li></ul>
+<h3> <span class="mw-headline" id="Forum_Threads"> Forum Threads </span></h3>
+<ul><li> <a rel="nofollow" class="external text" href="http://forum.osdev.org/viewtopic.php?f=11&amp;t=24168&amp;p=196655&amp;hilit=asm+volatile+moved">asm volatile being moved</a>
+</li></ul>
+<h3> <span class="mw-headline" id="External"> External </span></h3>
+<ul><li> <a rel="nofollow" class="external text" href="http://gcc.gnu.org/onlinedocs/">GCC Manuals</a>
+</li><li> <a rel="nofollow" class="external text" href="http://web.archive.org/web/20041210030000/http://www-106.ibm.com/developerworks/library/l-ia.html">Inline assembly for x86 in Linux (by IBM)</a>
+</li><li> <a rel="nofollow" class="external text" href="http://msdn.microsoft.com/en-us/library/26td21ds(VS.80).aspx">Visual C++ Compiler Intrinsics</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 262/1000000
+Post-expand include size: 162/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1706-0!*!0!!en!*!* and timestamp 20160924133305 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=Inline_Assembly&amp;oldid=19827">http://wiki.osdev.org/index.php?title=Inline_Assembly&amp;oldid=19827</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="/Category:Assembly" title="Category:Assembly">Assembly</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Inline_Assembly" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/Inline_Assembly"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:Inline_Assembly"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/Inline_Assembly" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=Inline_Assembly&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=Inline_Assembly&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/Inline_Assembly" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/Inline_Assembly" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=Inline_Assembly&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=Inline_Assembly&amp;oldid=19827" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 17 September 2016, at 16:39.</li>
+											<li id="footer-info-viewcount">This page has been accessed 140,166 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.061 secs. -->
+	</body>
+</html>

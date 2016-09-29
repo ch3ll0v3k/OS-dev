@@ -1,0 +1,1550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - ATA driver</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - ATA driver" href="http://forum.osdev.org/feed.php?f=1&amp;t=26284" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '15';
+	var base_url = './viewtopic.php?f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php?sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php?sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php?sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Thu Sep 29, 2016 2:25 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">View unanswered posts</a> | <a href="./search.php?search_id=active_topics&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=d0ac03f60d6f276b9ae4efdd9705c208">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=26284&amp;start=0&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">ATA driver</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>2</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 18 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208&amp;start=15">2</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=26284&amp;start=0&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=26284&amp;view=previous&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=26284&amp;view=next&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219394"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219394&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219394"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue Feb 05, 2013 11:18 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi all,<br /><br />I wrote an ATA driver for reading sectors from disk in LBA28 mode.<br /><br />Here it is:<br />ata.c:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#ifndef DISK_H_INCLUDED<br />#include &quot;ata.h&quot;<br />#define DISK_H_INCLUDED<br />#endif<br /><br />BOOL ata_wait_until_not_busy(uint32_t timeout_ms)<br />{<br />&nbsp; &nbsp;uint8_t status = inportb(0x1F7);<br />&nbsp; &nbsp;uint32_t startTick = get_tick_count();<br />&nbsp; &nbsp;while(status &amp; 0x88) //BSY and DRQ must be clear<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;if(get_tick_count() &gt; startTick + timeout_ms)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;&nbsp; &nbsp;status = inportb(0x1F7);<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;return TRUE;<br />}<br /><br />void ata_send_command(unsigned char command)<br />{<br />&nbsp; &nbsp;outportb(0x1F7, command);<br />}<br /><br />void ata_select_drive(uint8_t drive)<br />{<br />&nbsp; &nbsp;uint8_t buf = inportb(0x1F6);<br />&nbsp; &nbsp;if(drive)<br />&nbsp; &nbsp;&nbsp; &nbsp;buf |= 0x10; //set bit 4<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;buf = 0;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;outportb(0x1F6, buf);<br />}<br /><br />void ata_interrupt_enable(BOOL enable)<br />{<br />&nbsp; &nbsp;uint8_t buf = 0;<br />&nbsp; &nbsp;if(enable)<br />&nbsp; &nbsp;&nbsp; &nbsp;buf |= 2;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;outportb(0x3F6, buf);<br />}<br /><br />BOOL ata_read_lba28(uint32_t LBA, uint8_t sectorCount, void* dest)<br />{<br />&nbsp; &nbsp;if(!ata_wait_until_not_busy(1000))<br />&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;outportb(0x1F2, sectorCount); //sector count<br />&nbsp; &nbsp;outportb(0x1F3, LBA &amp; 0xFF); //LBA low byte<br />&nbsp; &nbsp;outportb(0x1F4, (LBA &gt;&gt; 8) &amp; 0xFF); //LBA mid byte<br />&nbsp; &nbsp;outportb(0x1F5, (LBA &gt;&gt; 16) &amp; 0xFF); //LBA high byte<br />&nbsp; &nbsp;outportb(0x1F6, (LBA &gt;&gt; 24) &amp; 0x0F); //bits 24-28 of LBA<br />&nbsp; &nbsp;ata_select_drive(0);<br />&nbsp; &nbsp;ata_interrupt_enable(FALSE);<br />&nbsp; &nbsp;ata_send_command(0x20); //read sectors with retry<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;uint8_t status = 0;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;for(unsigned int i=0;i&lt;4;i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;status = inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;if(!(status &amp; 0x80)) //BSY bit clear<br />&nbsp; &nbsp;&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x8) //DRQ bit set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;goto data_ready;<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;while(1)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;status = inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x80) //BSY set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;continue;<br />&nbsp; &nbsp;&nbsp; &nbsp;else<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x1) //ERR set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x20) //DF set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;<br />data_ready: ;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;uint16_t* p = (uint16_t*)dest;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;for(unsigned int i=0;i&lt;sectorCount;i++)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;for(unsigned int i=0;i&lt;256;i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;*p = inportw(0x1F0);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;p++;<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;inportb(0x1F7);//400ns delay<br />&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;while(1)<br />&nbsp; &nbsp;&nbsp; &nbsp;{<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;status = inportb(0x1F7);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x80) //BSY set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;continue;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;else<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;break;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x1) //ERR set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if(status &amp; 0x20) //DF set<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;return FALSE;<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;return TRUE;<br />}<br /></div><br /><br />ata.h:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#ifndef STDINC_H_INCLUDED<br />#include &quot;stdinc.h&quot;<br />#define STDINC_H_INCLUDED<br />#endif<br /><br />#ifndef TIMER_H_INCLUDED<br />#include &quot;timer.h&quot;<br />#define TIMER_H_INCLUDED<br />#endif<br /><br />BOOL ata_wait_until_not_busy(uint32_t timeout_ms);<br />void ata_send_command(unsigned char command);<br />void ata_select_drive(uint8_t drive);<br />void ata_interrupt_enable(BOOL enable);<br />BOOL ata_read_lba28(uint32_t LBA, uint8_t sectorCount, void* dest);<br /></div><br /><br />If I call the read function like this<br />[code]<br />if(ata_read_lba28(0, 1, (void*)0x00140000))<br />		print_string(&quot;success&quot;);<br />[code]<br />it prints &quot;success&quot;. However if I do a memory dump, the bootsector (what I am reading from the disk) is nowhere to be found.<br /><br />I am new to making drivers, so the code is probably full of errors....<br /><br />I will do more debugging, but there might be a blatent error in my driver, so I thought I might as well post it on here.<br /><br />Also, some people may be offended by that <span style="font-weight: bold">goto</span>, IDGAF.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219398"></a>
+				<b class="postauthor">Kazinsal</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219398&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219398"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 1:18 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=11964_1472661182.gif" width="63" height="52" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Jul 13, 2011 7:38 pm<br /><b>Posts:</b> 451<br /><b>Location:</b> Victoria, Canada
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">BMW wrote:</div><div class="quotecontent">Also, some people may be offended by that goto, IDGAF.</div><br /><br />You should. You're programming in C, not C64 BASIC. In a structured language like C, goto is often unwise and leads to poorly structured code, and sometimes leads to the introduction of nasty, nasty bugs.<br /><br />Perhaps you should read &quot;GOTO Considered Harmful&quot;. Then again, considering your attitude, perhaps you shouldn't bother. You probably won't learn anything from it.</div>
+
+					
+						<span class="postbody"><br />_________________<br /><span style="font-style: italic"><span style="font-weight: bold">Maxim 15:</span> Thrashing is good. It reminds the user that the computer is on.</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11964&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219399"></a>
+				<b class="postauthor">linguofreak</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219399&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219399"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 1:36 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Mar 09, 2011 3:55 am<br /><b>Posts:</b> 248
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">BMW wrote:</div><div class="quotecontent">Also, some people may be offended by that <span style="font-weight: bold">goto</span>, IDGAF.</div><br /><br />While many of us may be offended, that's the least of your worries. The velociraptors are not only offended, but also hungry.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=11562&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219400"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219400&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219400"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 2:06 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I will do more debugging</div>Good choice.<br /><br />I'm not offended by people using &quot;goto&quot;, but I've better things to do than trying to understand badly written code.</div>
+
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">iansjack</a> on Wed Feb 06, 2013 2:54 am, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219401"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219401&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219401"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 2:08 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">Blacklight wrote:</div><div class="quotecontent"><div class="quotetitle">BMW wrote:</div><div class="quotecontent">Also, some people may be offended by that goto, IDGAF.</div><br /><br />You should. You're programming in C, not C64 BASIC. In a structured language like C, goto is often unwise and leads to poorly structured code, and sometimes leads to the introduction of nasty, nasty bugs.<br /><br />Perhaps you should read &quot;GOTO Considered Harmful&quot;. Then again, considering your attitude, perhaps you shouldn't bother. You probably won't learn anything from it.</div><br /><br />I am programming in C, exactly. GOTO IS A C STATEMENT!!!!!! (surprise surprise)<br /><br />And I already told you... IDGAF... lol. I hardly ever use gotos, but in this case I believe it is totally harmless and is an effective solution to a problem.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219402"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219402&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219402"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 2:09 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">iansjack wrote:</div><div class="quotecontent"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I will do more debugging</div>Good choice.<br /><br />I'm not offended people using &quot;goto&quot;, but I've better things to do than trying to understand badly written code.</div><br /><br />Is that code badly written because of the goto? Or just in general?</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219403"></a>
+				<b class="postauthor">Combuster</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219403&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219403"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 2:37 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=1906_1213867792.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 18, 2006 3:45 am<br /><b>Posts:</b> 9226<br /><b>Location:</b> An der schönen blauen Donau, watching muppets
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">It is in general. Magic numbers, include guards outside the header, and no respect for maintaining the existing content of bitfields.</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Certainly avoid yourself. He is a newbie and might not realize it. You'll hate his code deeply a few years down the road.&quot; - Sortie<br />[ <a href="http://www.d-rift.nl/combuster/mos3/" class="postlink">My OS</a> ] [ <a href="http://www.d-rift.nl/combuster/vdisk/" class="postlink">VDisk/SFS</a> ]</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219404"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219404&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219404"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 2:59 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I am programming in C, exactly. GOTO IS A C STATEMENT!!!!!!</div>Here is some valid C-code: <!-- m --><a class="postlink" href="http://www.ioccc.org/2012/blakely/blakely.c">http://www.ioccc.org/2012/blakely/blakely.c</a><!-- m --> . Would you consider it good code? Can you understand what it does?<br /><br />Valid code is not necessarily well written code.<br /><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">Is that code badly written because of the goto?</div>That's enough for me to not want to read any further.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219405"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219405&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219405"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 3:04 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Ok good point iansjack.<br /><br />But we are getting off topic, as always happens with my posts. <img src="./images/smilies/icon_sad.gif" alt=":(" title="Sad" /> <br /><br />Does anyone have anything helpful to say relating to my original question?</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219406"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219406&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219406"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 3:32 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">Does anyone have anything helpful to say relating to my original question?</div>Yes.<br /><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I will do more debugging</div>Good choice.<br /><br />You know that is the answer to your problem. It's really a bit lazy to keep posting code and asking others to debug it for you. You can't keep doing that with every step of your OS. Do you really want to write an OS or are you asking others to do it for you?<br /><br />You acknowledged in your OP that (a) You need to do more debugging, and (b) The use of the &quot;goto&quot; statement is not likely to encourage others to help you. Heed your own advice.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219408"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219408&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219408"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 3:44 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">iansjack wrote:</div><div class="quotecontent"><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">Does anyone have anything helpful to say relating to my original question?</div>Yes.<br /><div class="quotetitle"><b>Quote:</b></div><div class="quotecontent">I will do more debugging</div>Good choice.<br /><br />You know that is the answer to your problem. It's really a bit lazy to keep posting code and asking others to debug it for you. You can't keep doing that with every step of your OS. Do you really want to write an OS or are you asking others to do it for you?<br /><br />You acknowledged in your OP that (a) You need to do more debugging, and (b) The use of the &quot;goto&quot; statement is not likely to encourage others to help you. Heed your own advice.</div><br /><br />Well I have been debugging for the past half hour... its really wierd... I commented out the line that actually writes the data from the port to memory (*p = inport...) THEN IT PAGE FAULTED...??? <img src="./images/smilies/icon_question.gif" alt=":?:" title="Question" /> <br /><br />And I am not asking people to debug it for me, I just posted it in case there were any blatent errors in my code.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219409"></a>
+				<b class="postauthor">iansjack</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219409&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219409"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 3:50 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=12966_1334675440.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Mar 31, 2012 3:07 am<br /><b>Posts:</b> 2301<br /><b>Location:</b> Chichester, UK
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">OK. What could be going wrong? (Obviously something is not correct.) Look at the simple basics first:<br /><br />Are you selecting the correct drive?<br />Are you selecting LBA mode?<br />Are you setting the correct values in the registers for the LBA addresses?<br /><br />Read your code with those in mind and see if it helps. You can check the first two by loking at what value you send to port 0x1F6.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=12966&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219411"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219411&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219411"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 4:12 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">iansjack wrote:</div><div class="quotecontent">OK. What could be going wrong? (Obviously something is not correct.) Look at the simple basics first:<br /><br />Are you selecting the correct drive?<br />Are you selecting LBA mode?<br />Are you setting the correct values in the registers for the LBA addresses?<br /><br />Read your code with those in mind and see if it helps. You can check the first two by loking at what value you send to port 0x1F6.</div><br /><br />Thank you so much, I forgot about setting LBA mode. I was going off some document that said that bit 6 of port 0x1F6 was &quot;reserved&quot; and said it was &quot;always zero&quot;... <!-- m --><a class="postlink" href="http://www.nondot.org/sabre/os/files/Disk/IDE-tech.html">http://www.nondot.org/sabre/os/files/Disk/IDE-tech.html</a><!-- m --><br /><br />Now I get a GPF, but I think I'll be able to sort that out pretty quickly.<br /><br />Once again, thank you so much.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p219412"></a>
+				<b class="postauthor">BMW</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219412&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219412"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 4:31 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=13849_1385424927.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Nov 05, 2012 8:31 pm<br /><b>Posts:</b> 286<br /><b>Location:</b> New Zealand
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Sorted <img src="./images/smilies/icon_biggrin.gif" alt=":D" title="Very Happy" />.<br /><br />Just a random question,<br /><br />On this page: <!-- m --><a class="postlink" href="http://wiki.osdev.org/ATA_PIO_Mode">http://wiki.osdev.org/ATA_PIO_Mode</a><!-- m --> about half way down, under x86 directions for 28bit PIO, it has this for step 2:<br />2. Send a NULL byte to port 0x1F1, if you like (it is ignored and wastes lots of CPU time): outb(0x1F1, 0x00) <br /><br />Errm... some sort of joke?<br /><br />EDIT: ATM I am identity mapping the first 4MB of memory. If I make this memory writable, I get a page fault...?? Can you not execute code on a writable page?<br /><br />EDIT2: Can the kernel write to read only pages by default (WP bit in CR0)?</div>
+
+					
+						<span class="postbody"><br />_________________<br />Currently developing <a href="https://github.com/BrettMW/lithiumos" class="postlink">Lithium OS (LiOS)</a>.<br /><br />Recursive paging saves lives.<br />&quot;I want to change the world, but they won't give me the source code.&quot;</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13849&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p219415"></a>
+				<b class="postauthor">Combuster</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: ATA driver</div><div style="float: right;"><a href="./viewtopic.php?p=219415&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208#p219415"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Feb 06, 2013 5:52 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=1906_1213867792.png" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 18, 2006 3:45 am<br /><b>Posts:</b> 9226<br /><b>Location:</b> An der schönen blauen Donau, watching muppets
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">BMW wrote:</div><div class="quotecontent">Does anyone have anything helpful to say relating to my original question?</div><br /><div class="quotetitle">Eric S Raymond wrote:</div><div class="quotecontent">Most flames are best ignored — after you've checked whether they are really flames, not pointers to the ways in which you have screwed up, and not cleverly ciphered answers to your real question (this happens as well).</div><br />I did point out a bug there...</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Certainly avoid yourself. He is a newbie and might not realize it. You'll hate his code deeply a few years down the road.&quot; - Sortie<br />[ <a href="http://www.d-rift.nl/combuster/mos3/" class="postlink">My OS</a> ] [ <a href="http://www.d-rift.nl/combuster/vdisk/" class="postlink">VDisk/SFS</a> ]</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=1906&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=26284&amp;start=0&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>2</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 18 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208&amp;start=15">2</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php?sid=d0ac03f60d6f276b9ae4efdd9705c208">Board index</a> &#187; <a href="./viewforum.php?f=16&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">Operating System Development</a> &#187; <a href="./viewforum.php?f=1&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Google [Bot]</span> and 12 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=26284&amp;sid=d0ac03f60d6f276b9ae4efdd9705c208"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php?sid=d0ac03f60d6f276b9ae4efdd9705c208" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>
