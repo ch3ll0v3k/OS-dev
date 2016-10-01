@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>qemu-img(1): QEMU disk image utility - Linux man page</title>
+<base href="https://linux.die.net/man/1/qemu-img">
+<link rel="canonical" href="https://linux.die.net/man/1/qemu-img">
+<link rel="stylesheet" type="text/css" href="/style/white.css">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script type="text/javascript">
+<!--
+var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-50820-6']);_gaq.push(['_trackPageview']);
+window.google_analytics_uacct = 'UA-50820-6';
+// -->
+</script>
+</head>
+
+<body>
+<div id=bg>
+<div id=logo>
+<a href="https://www.die.net/"><img
+src="/style/logo.svg" alt="die.net" width=120 height=120
+onerror="this.onerror=null; this.src='/style/logo.png'"></a>
+</div>
+<div id=content>
+
+<!-- google_ad_section_start -->
+<h1>qemu-img(1) - Linux man page</h1>
+
+<h2>Name</h2>
+
+<p>qemu-img - QEMU disk image utility
+<h2>Synopsis</h2>
+
+<p>usage: qemu-img command [command options]
+<h2>Options</h2>
+
+<p>The following commands are supported:
+<dl compact>
+<dt><b>check [-f</b> <i>fmt</i><b>]</b> <i>filename</i>
+<dt><b>create [-f</b> <i>fmt</i><b>] [-o</b> <i>options</i><b>]</b> <i>filename</i> <b>[</b><i>size</i><b>]</b>
+<dt><b>commit [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>]</b> <i>filename</i>
+<dt><b>convert [-c] [-p] [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>] [-O</b> <i>output_fmt</i><b>] [-o</b> <i>options</i><b>] [-S</b>
+<i>sparse_size</i><b>]</b> <i>filename</i> <b>[</b><i>filename2</i> <b>[...]]</b> <i>output_filename</i>
+<dt><b>info [-f</b> <i>fmt</i><b>]</b> <i>filename</i>
+<dt><b>snapshot [-l | -a</b> <i>snapshot</i> <b>| -c</b> <i>snapshot</i> <b>| -d</b> <i>snapshot</i><b>]</b> <i>filename</i>
+<dt><b>rebase [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>] [-p] [-u] -b</b> <i>backing_file</i> <b>[-F</b> <i>backing_fmt</i><b>]</b> <i>filename</i>
+<dt><b>resize</b> <i>filename</i> <b>[+ | -]</b><i>size</i>
+<dt>Command parameters:
+<dt><i>filename</i>
+<dd>
+
+<pre class="code">is a disk image filename</pre>
+<dt><i>fmt</i>
+
+<p>is the disk image format. It is guessed automatically in most cases. See below for a description of the supported disk formats.
+<dt><i>size</i>
+<dd>is the disk image size in bytes. Optional suffixes <tt>"k"</tt> or <tt>"K"</tt> (kilobyte, 1024) <tt>"M"</tt> (megabyte, 1024k) and <tt>"G"</tt> (gigabyte,
+1024M) and T (terabyte, 1024G) are supported. <tt>"b"</tt> is ignored.
+<dt><i>output_filename</i>
+<dd>is the destination disk image filename
+<dt><i>output_fmt</i>
+<dd>
+
+<pre class="code">is the destination format</pre>
+<dt><i>options</i>
+<dd>is a comma separated list of format specific options in a name=value format. Use <tt>"-o ?"</tt> for an overview of the options supported by the used format
+or see the format descriptions below for details.
+<dt><i>-c</i>
+
+<p>indicates that target image must be compressed (qcow format only)
+
+<p><i>-h</i>
+
+<p>with or without a command shows help and lists the supported formats
+
+<p><i>-p</i>
+
+<p>display progress bar (convert and rebase commands only)
+<dt><i>-S size</i>
+<dd>indicates the consecutive number of bytes that must contain only zeros for qemu-img to create a sparse image during conversion. This value is rounded down
+to the nearest 512 bytes. You may use the common size suffixes like <tt>"k"</tt> for kilobytes.
+<dt><i>-t cache</i>
+<dd>specifies the cache mode that should be used with the (destination) file. See the documentation of the emulator's <tt>"-drive cache=..."</tt> option for
+allowed values.
+<dt>Parameters to snapshot subcommand:
+<dt><b>snapshot</b>
+<dd>is the name of the snapshot to create, apply or delete
+<dt><b>-a</b>
+
+<p>applies a snapshot (revert disk to saved state)
+
+<p><b>-c</b>
+
+<p>creates a snapshot
+
+<p><b>-d</b>
+
+<p>deletes a snapshot
+
+<p><b>-l</b>
+
+<p>lists all snapshots in the given image
+<dt>Command description:
+<dt><b>check [-f</b> <i>fmt</i><b>]</b> <i>filename</i>
+<dd>Perform a consistency check on the disk image <i>filename</i>.
+<p>Only the formats <tt>"qcow2"</tt>, <tt>"qed"</tt> and <tt>"vdi"</tt> support consistency checks.
+<dt><b>create [-f</b> <i>fmt</i><b>] [-o</b> <i>options</i><b>]</b> <i>filename</i> <b>[</b><i>size</i><b>]</b>
+<dd>Create the new disk image <i>filename</i> of size <i>size</i> and format <i>fmt</i>. Depending on the file format, you can add one or more <i>options</i>
+that enable additional features of this format.
+<p>If the option <i>backing_file</i> is specified, then the image will record only the differences from <i>backing_file</i>. No size needs to be specified in
+this case. <i>backing_file</i> will never be modified unless you use the <tt>"commit"</tt> monitor command (or qemu-img commit).
+<p>The size can also be specified using the <i>size</i> option with <tt>"-o"</tt>, it doesn't need to be specified separately in this case.
+<dt><b>commit [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>]</b> <i>filename</i>
+<dd>Commit the changes recorded in <i>filename</i> in its base image.
+<dt><b>convert [-c] [-p] [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>] [-O</b> <i>output_fmt</i><b>] [-o</b> <i>options</i><b>] [-S</b>
+<i>sparse_size</i><b>]</b> <i>filename</i> <b>[</b><i>filename2</i> <b>[...]]</b> <i>output_filename</i>
+<dd>Convert the disk image <i>filename</i> to disk image <i>output_filename</i> using format <i>output_fmt</i>. It can be optionally compressed (<tt>"-c"</tt>
+option) or use any format specific options like encryption (<tt>"-o"</tt> option).
+<p>Only the formats <tt>"qcow"</tt> and <tt>"qcow2"</tt> support compression. The compression is read-only. It means that if a compressed sector is rewritten,
+then it is rewritten as uncompressed data.
+<p>Image conversion is also useful to get smaller image when using a growable format such as <tt>"qcow"</tt> or <tt>"cow"</tt>: the empty sectors are detected
+and suppressed from the destination image.
+<p>You can use the <i>backing_file</i> option to force the output image to be created as a copy on write image of the specified base image; the
+<i>backing_file</i> should have the same content as the input's base image, however the path, image format, etc may differ.
+<dt><b>info [-f</b> <i>fmt</i><b>]</b> <i>filename</i>
+<dd>Give information about the disk image <i>filename</i>. Use it in particular to know the size reserved on disk which can be different from the displayed
+size. If <small>VM</small> snapshots are stored in the disk image, they are displayed too.
+<dt><b>snapshot [-l | -a</b> <i>snapshot</i> <b>| -c</b> <i>snapshot</i> <b>| -d</b> <i>snapshot</i> <b>]</b> <i>filename</i>
+<dd>List, apply, create or delete snapshots in image <i>filename</i>.
+<dt><b>rebase [-f</b> <i>fmt</i><b>] [-t</b> <i>cache</i><b>] [-p] [-u] -b</b> <i>backing_file</i> <b>[-F</b> <i>backing_fmt</i><b>]</b> <i>filename</i>
+<dd>Changes the backing file of an image. Only the formats <tt>"qcow2"</tt> and <tt>"qed"</tt> support changing the backing file.
+<p>The backing file is changed to <i>backing_file</i> and (if the image format of <i>filename</i> supports this) the backing file format is changed to
+<i>backing_fmt</i>.
+<p>There are two different modes in which <tt>"rebase"</tt> can operate:
+<dd><b>Safe mode</b>
+<dd>This is the default mode and performs a real rebase operation. The new backing file may differ from the old one and qemu-img rebase will take care of
+keeping the guest-visible content of <i>filename</i> unchanged.
+<p>In order to achieve this, any clusters that differ between <i>backing_file</i> and the old backing file of <i>filename</i> are merged into <i>filename</i>
+before actually changing the backing file.
+<p>Note that the safe mode is an expensive operation, comparable to converting an image. It only works if the old backing file still exists.
+<dd><b>Unsafe mode</b>
+<dd>qemu-img uses the unsafe mode if <tt>"-u"</tt> is specified. In this mode, only the backing file name and format of <i>filename</i> is changed without any
+checks on the file contents. The user must take care of specifying the correct new backing file, or the guest-visible content of the image will be corrupted.
+
+<p>This mode is useful for renaming or moving the backing file to somewhere else. It can be used without an accessible old backing file, i.e. you can use it to
+fix an image whose backing file has already been moved/renamed.
+<dt><b>resize</b> <i>filename</i> <b>[+ | -]</b><i>size</i>
+<dd>Change the disk image as if it had been created with <i>size</i>.
+<p>Before using this command to shrink a disk image, you <small>MUST</small> use file system and partitioning tools inside the <small>VM</small> to reduce
+allocated file systems and partition sizes accordingly. Failure to do so will result in data loss!
+<p>After using this command to grow a disk image, you must use file system and partitioning tools inside the <small>VM</small> to actually begin using the new
+space on the device.
+<dt>Supported image file formats:
+<dt><b>raw</b>
+
+<p>Raw disk image format (default). This format has the advantage of being simple and easily exportable to all other emulators. If your file system supports
+<i>holes</i> (for example in ext2 or ext3 on Linux or <small>NTFS</small> on Windows), then only the written sectors will reserve space. Use <tt>"qemu-img
+info"</tt> to know the real size used by the image or <tt>"ls -ls"</tt> on Unix/Linux.
+<dt><b>host_device</b>
+<dd>Host device format. This format should be used instead of raw when converting to block devices or other devices where "holes" are not supported.
+<dt><b>qcow2</b>
+<dd><small>QEMU</small> image format, the most versatile format. Use it to have smaller images (useful if your filesystem does not supports holes, for example
+on Windows), optional <small>AES</small> encryption, zlib based compression and support of multiple <small>VM</small> snapshots.
+<p>Supported options:
+<dd>"backing_file"
+<dd>File name of a base image (see <b>create</b> subcommand)
+<dd>"backing_fmt"
+<dd>Image format of the base image
+<dd>"encryption"
+<dd>If this option is set to <tt>"on"</tt>, the image is encrypted.
+<p>Encryption uses the <small>AES</small> format which is very secure (128 bit keys). Use a long password (16 characters) to get maximum protection.
+<dd>"cluster_size"
+<dd>Changes the qcow2 cluster size (must be between 512 and 2M). Smaller cluster sizes can improve the image file size whereas larger cluster sizes generally
+provide better performance.
+<dd>"preallocation"
+<dd>Preallocation mode (allowed values: off, metadata, full). An image with preallocated metadata is initially larger but can improve performance when the image
+needs to grow. Full preallocation additionally writes zeros to the whole image in order to preallocate lower layers (e.g. the file system containing the image
+file) as well. Note that full preallocation writes to every byte of the virtual disk, so it can take a long time for large images.
+<dt><b>qcow</b>
+<dd>Old <small>QEMU</small> image format. Left for compatibility.
+<p>Supported options:
+<dd>"backing_file"
+<dd>File name of a base image (see <b>create</b> subcommand)
+<dd>"encryption"
+<dd>If this option is set to <tt>"on"</tt>, the image is encrypted.
+<dt><b>cow</b>
+
+<p>User Mode Linux Copy On Write image format. Used to be the only growable image format in <small>QEMU</small> . It is supported only for compatibility with
+previous versions. It does not work on win32.
+
+<p><b>vdi</b>
+
+<p>VirtualBox 1.1 compatible image format.
+<dt><b>vmdk</b>
+<dd>VMware 3 and 4 compatible image format.
+<p>Supported options:
+<dd>"backing_fmt"
+<dd>Image format of the base image
+<dd>"compat6"
+<dd>Create a <small>VMDK</small> version 6 image (instead of version 4)
+<dt><b>vpc</b>
+
+<p>VirtualPC compatible image format ( <small>VHD</small> ).
+<dt><b>cloop</b>
+<dd>Linux Compressed Loop image, useful only to reuse directly compressed CD-ROM images present for example in the Knoppix CD-ROMs.
+</dl>
+<h2>See Also</h2>
+
+<p>The <small>HTML</small> documentation of <small>QEMU</small> for more precise information and Linux user mode emulator invocation.
+<h2>Author</h2>
+
+<p>Fabrice Bellard
+
+<!-- google_ad_section_end -->
+<h2>Referenced By</h2>
+<b><a href="guestfish" rel="nofollow">guestfish</a></b>(1),
+<b><a href="virt-convert" rel="nofollow">virt-convert</a></b>(1),
+<b><a href="virt-make-fs" rel="nofollow">virt-make-fs</a></b>(1),
+<b><a href="virt-sparsify" rel="nofollow">virt-sparsify</a></b>(1),
+<b><a href="virt-sysprep" rel="nofollow">virt-sysprep</a></b>(1)
+<div id=adbottom>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-5823754184406795"
+     data-ad-slot="8789940313"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+</div>
+<div id=menu>
+<dl>
+<dt>Site Search</dt>
+<dd>
+<form id="cse-search-box-menu" action="https://www.google.com/cse">
+<input name="q" type="text" size="10">
+<input type="hidden" name="sa" value="Search">
+<input type="hidden" name="ie" value="ISO-8859-1">
+<input type="hidden" name="cx" value="partner-pub-5823754184406795:54htp1rtx5u">
+<input type="hidden" name="cof" value="FORID:9">
+</form>
+<script type="text/javascript">
+<!--
+document.forms["cse-search-box-menu"].action = "https://www.die.net/search/";
+// -->
+</script>
+</dd></dl>
+
+
+
+<dl>
+<dt>Library</dt>
+<dd><a href="https://linux.die.net/">linux docs</a></dd>
+<dd><a href="https://linux.die.net/man/">linux man pages</a></dd>
+<dd><a href="https://www.die.net/musings/page_load_time/">page load time</a></dd>
+</dl>
+<dl>
+<dt>Toys</dt>
+<dd><a href="https://www.die.net/earth/">world sunlight</a></dd>
+<dd><a href="https://www.die.net/moon/">moon phase</a></dd>
+<dd><a href="http://trace.die.net/">trace explorer</a></dd>
+</dl>
+
+
+<dl>
+<dt><a href="/man/1/"><img src="/style/back.gif" alt="Back"
+width=20 height=22></a></dt><dd></dd>
+</dl>
+</div></div>
+<script type="text/javascript">
+<!--
+if (top.location != self.location) top.location = self.location;
+if (/[?&][pq]=/.test(document.referrer)) document.write(unescape("%3Cscript src='/style/highlight.js' type='text/javascript'%3E%3C/script%3E"));
+function googleTranslateElementInit() {new google.translate.TranslateElement({pageLanguage: 'en', floatPosition: google.translate.TranslateElement.FloatPosition.TOP_RIGHT, gaTrack: true, gaId: 'UA-50820-6'});}
+if (!/^en/i.test(window.navigator.userLanguage||window.navigator.language)) document.write(unescape("%3Cscript src='//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit' type='text/javascript'%3E%3C/script%3E"));
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+// -->
+</script>
+</body>
+</html>

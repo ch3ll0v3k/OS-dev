@@ -1,0 +1,1532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - IDE Tutorial</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - IDE Tutorial" href="http://forum.osdev.org/feed.php?f=1&amp;t=21151" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '15';
+	var base_url = './viewtopic.php?f=1&amp;t=21151';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Fri Sep 30, 2016 10:20 pm<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered">View unanswered posts</a> | <a href="./search.php?search_id=active_topics">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=21151&amp;start=0">IDE Tutorial</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=21151"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>3</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 40 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=21151&amp;start=15">2</a><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=21151&amp;start=30">3</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=21151&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?f=1&amp;t=21151&amp;start=0&amp;view=print" title="Print view">Print view</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=21151&amp;view=previous">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=21151&amp;view=next">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167761"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167761#p167761"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 7:41 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hello All! I'm coming today with a tutorial about IDE and how does it work, the tutorial is written on my own from scratch. any questions, comments or notes, i'm ready to hear from you.<br /><br />before starting, notice that every thing here is being executed in Protected Mode, in a segment which is kernel-mode segment.<br /><br />ok, lets start; but we should first Express what is an IDE. the IDE which we are talking about here is a keyword refers to Integrated Drive Electronics, Not that IDE which refers to (Integrated Development Environment).<br />The IDE is a part of the chipset which come with motherboard, we can cosider it as a device wich can be detected on PCI Bus. This Device manages IDE Drives which can be Hard-Disk Drives, Optical-Disk Drives [Like CD-ROMs, DVD-ROMs, Blue-Ray Drives]. IDE can allow even 4 drives to be connected to.<br />the drive may be:<br />   1. Parallel AT-Attachment [PATA]: Like PATA HDDs<br />   2. Parallel AT-Attachment Packet-Interface [PATAPI]: Like PATAPI ODDs.<br />   3. Serial ATA [SATA]: Like SATA HDDs.<br />   4. Serial ATAPI [SATAPI]: Like SATAPI ODDs.<br />We can ignore Tape Drives and ZIP Drives as they are obseleted.<br />The Way of accessing ATA Drives is one, means that the way of accessing PATA HDDs is the same of SATA HDDs. also the way of accessing PATAPI ODDs is the same of SATAPI ODDs.<br />for that, for IDE Device Driver, it is not required to know if a drive is Parallel or Serial, but it is important to know if it is ATA or ATAPI.<br /><br /><span style="font-weight: bold">IDE Interface:</span><br />If you open your case and look at the mother board, we will see a port or two like this:<br /><img src="http://www.pchardware.co.uk/siteimages/ide-motherboard-connectors.jpg" alt="Image" /><br />the white and green ports are IDE Ports, each port of them is called channel. so there is:<br />- Primary IDE Channel.<br />- Secondary IDE Channel.<br />These Ports allows only Parallel Drives to be connected to, means that it supports only PATA/PATAPI Drives.<br />Each Port can has a PATA cable connected to, it is like this:<br /><img src="http://educations.newegg.com/category/22/buy/image06.jpg" alt="Image" /><br />Each PATA Cable can be connected with one master drive, or two drives [Master and Slave].<br />So we can have:<br />- Primary Master Drive.<br />- Primary Slave Drive.<br />- Secondary Master Drive.<br />- Secondary Slave Drive.<br />Each Drive May be: PATA or PATAPI.<br />But What about Serial IDE?<br />Almost many of modern motherboards have a Serial IDE which allows SATA and SATAPI Drives to be connected to.<br />Serial IDE Ports are 4:<br /><img src="http://www.hardwarezone.com.au/img/data/articles/2007/2387/p6ngm_sata.jpg" alt="Image" /><br />Each Port is conducted with a Serial Cable:<br /><img src="http://members.lotterypost.com/todd/images/blog/Sata_Cable.gif" alt="Image" /><br />So from the picture we can understand that only one drive can be connected to Serial IDE Port.<br />So each two ports make a channel, and also Serial IDE has:<br /> - Primary Master Drive [Port1, or Port 2], also called [SATA1] in BIOS Setup Utility.<br /> - Primary Slave Drive [Port 1 or Port 2], also called [SATA2] in BIOS Setup Utility.<br /> - Secondary Master Drive [Port 3 or Port 4], also called [SATA3] in BIOS Setup Utility.<br /> - Secondary Slave Drive [Port 3 or Port 4], also called [SATA4] in BIOS Setup Utility.<br /><br />Please if you wanna support only the Parallel IDE, skip the part of [Detecting an IDE].<br /><br /><span style="font-weight: bold">Detecting an IDE:</span><br />Each IDE appears as a device [in PCI World, it is called a function] on PCI Bus. If you don't know about PCI, please refer to <a href="http://wiki.osdev.org/PCI" class="postlink">http://wiki.osdev.org/PCI</a>.<br />When you find a device on PCI, you can determine whether it is an IDE Device or not, this is determined according to <span style="font-weight: bold">Class Code</span> and <span style="font-weight: bold">Subclass code</span>.<br />If Class code is: 0x01 [Mass Storage Controller] and Subclass Code is: 0x01 [IDE], so this device is an IDE Device.<br />We know all that each PCI Device has 6 BARs, ok, only 5 BARs are used by IDE Device:<br /><span style="font-weight: bold">BAR0:</span> Base Address of Primary Channel I/O Ports, if it is 0x0 or 0x1, this means [0x1F0].<br /><span style="font-weight: bold">BAR1:</span> Base Address of Priamry Channel Control Ports, if it is 0x0 or 0x1, this means [0x3F4].<br /><span style="font-weight: bold">BAR2:</span> Base Address of Secondary Channel I/O Ports, if it is 0x0 or 0x1, this means [0x170].<br /><span style="font-weight: bold">BAR3:</span> Base Address of Secondary Channel Control Ports,  if it is 0x0 or 0x1, this means [0x374].<br /><span style="font-weight: bold">BAR4:</span> Bus Master IDE, this I/O Address refers to the base of I/O range consists of 16 ports, each 8 ports controls DMA on a channel.<br /><br />IRQs are really a problem for IDEs, because the IDE uses IRQs 14 and 15, if it is a Parallel IDE.<br />If it is a Serial IDE, it uses another IRQ and only one IRQ, but how does we know the IRQs used by IDE? In Quafios it is quite easy:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">outl((1&lt;&lt;31) | (bus&lt;&lt;16) | (device&lt;&lt;11) | (func&lt;&lt;8) | 8, 0xCF8); // Send the parameters.<br />if ((class = inl(0xCFC)&gt;&gt;16) != 0xFFFF) { // If there is exactly a device<br />&nbsp; &nbsp;// Check if this device need an IRQ assignment:<br />&nbsp; &nbsp;outl((1&lt;&lt;31) | (bus&lt;&lt;16) | (device&lt;&lt;11) | (func&lt;&lt;8) | 0x3C, 0xCF8);<br />&nbsp; &nbsp;outb(0xFE, 0xCFC); // Change the IRQ field to 0xFE<br />&nbsp; &nbsp;outl((1&lt;&lt;31) | (bus&lt;&lt;16) | (device&lt;&lt;11) | (func&lt;&lt;8) | 0x3C, 0xCF8); // Read the IRQ Field Again.<br />&nbsp; &nbsp;if ((inl(0xCFC) &amp; 0xFF)==0xFE) {<br />&nbsp; &nbsp;&nbsp; &nbsp;// This Device needs IRQ assignment.<br />&nbsp; &nbsp;} else {<br />&nbsp; &nbsp;&nbsp; &nbsp;// The Device doesn't use IRQs, check if this is an Parallel IDE:<br />&nbsp; &nbsp;&nbsp; &nbsp;if (class == 0x01 &amp;&amp; subclass == 0x01 &amp;&amp; (ProgIF == 0x8A || ProgIF == 0x80)) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// This is a Parallel IDE Controller which use IRQ 14 and IRQ 15.<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;}<br />}<br /></div><br /><br />By this way, you can make a structure with PCI Devices, each device has IRQ0 and IRQ1, the both should have an initial value of 0xFF [No IRQ]. if we detect a PCI Device, if the Device needs an IRQ, we can change IRQ0. if the device on PCI doesn't need, but it is a Parallel IDE, we can edit IRQ0 to 14 and IRQ1 to 15.<br /><br />When an IRQ is invoked, ISR should read the IRQ number from PIC, then it searches for the device which has this IRQ [in IRQ0 or IRQ1], and if the device is found, call the device driver to inform it that an IRQ is invoked.<br /><br /><span style="font-weight: bold">Detecting IDE Drives</span><br />In Quafios, when an IDE Device is found, Quafios reserves a space in memory and copies Generic IDE Device Driver to this space, And then calls the device driver with a function number of 1. function number 1 is initialization, which is:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_initialize(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned int BAR3,<br />unsigned int BAR4) {<br /></div><br /><br />If you wanna support only the parallel IDE, you can put this command in kernel:<br />	ide_initialize(0x1F0, 0x3F4, 0x170, 0x374, 0x000);<br />We can assume that BAR4 is 0x0 because we are not going to use it yet.<br />We will return to ide_initialize function which searches for drives connected to the IDE, before we are going into this function, we should write some functions which will help us a lot.<br />First We should write some Definitions:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define &nbsp; &nbsp;ATA_SR_BSY&nbsp; &nbsp;&nbsp; &nbsp;0x80<br />#define &nbsp; &nbsp;ATA_SR_DRDY&nbsp; &nbsp;&nbsp; &nbsp;0x40<br />#define &nbsp; &nbsp;ATA_SR_DF&nbsp; &nbsp;&nbsp; &nbsp;0x20<br />#define &nbsp; &nbsp;ATA_SR_DSC&nbsp; &nbsp;&nbsp; &nbsp;0x10<br />#define &nbsp; &nbsp;ATA_SR_DRQ&nbsp; &nbsp;&nbsp; &nbsp;0x08<br />#define &nbsp; &nbsp;ATA_SR_CORR&nbsp; &nbsp;&nbsp; &nbsp;0x04<br />#define &nbsp; &nbsp;ATA_SR_IDX&nbsp; &nbsp;&nbsp; &nbsp;0x02<br />#define &nbsp; &nbsp;ATA_SR_ERR&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /></div><br /><br />There is a port is called Command/Status Port, when it is read, you read the status of channel, the above bit maskes express these states.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define &nbsp; &nbsp;ATA_ER_BBK&nbsp; &nbsp;&nbsp; &nbsp;0x80<br />#define &nbsp; &nbsp;ATA_ER_UNC&nbsp; &nbsp;&nbsp; &nbsp;0x40<br />#define &nbsp; &nbsp;ATA_ER_MC&nbsp; &nbsp;&nbsp; &nbsp;0x20<br />#define &nbsp; &nbsp;ATA_ER_IDNF&nbsp; &nbsp;&nbsp; &nbsp;0x10<br />#define &nbsp; &nbsp;ATA_ER_MCR&nbsp; &nbsp;&nbsp; &nbsp;0x08<br />#define &nbsp; &nbsp;ATA_ER_ABRT&nbsp; &nbsp;&nbsp; &nbsp;0x04<br />#define &nbsp; &nbsp;ATA_ER_TK0NF&nbsp; &nbsp;0x02<br />#define &nbsp; &nbsp;ATA_ER_AMNF&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /></div><br /><br />There is a port is called Features/Error Port, if it is read, you are reading the errors of the last operation, the bit maskes above express these errors.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">// ATA-Commands:<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_READ_PIO&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0x20<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_READ_PIO_EXT&nbsp; &nbsp;&nbsp; &nbsp;0x24<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_READ_DMA&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0xC8<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_READ_DMA_EXT&nbsp; &nbsp;&nbsp; &nbsp;0x25<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_WRITE_PIO&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0x30<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_WRITE_PIO_EXT&nbsp; &nbsp;&nbsp; &nbsp;0x34<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_WRITE_DMA&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0xCA<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_WRITE_DMA_EXT&nbsp; &nbsp;&nbsp; &nbsp;0x35<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_CACHE_FLUSH&nbsp; &nbsp;&nbsp; &nbsp;0xE7<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_CACHE_FLUSH_EXT&nbsp; &nbsp;0xEA<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_PACKET&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0xA0<br />#define &nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_IDENTIFY_PACKET&nbsp; &nbsp;&nbsp; &nbsp;0xA1<br />#define &nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_IDENTIFY&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0xEC<br /></div><br /><br />When you write to Command/Status Port, You are executing a command, which can be one of the commands above.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define&nbsp; &nbsp;&nbsp; &nbsp;ATAPI_CMD_READ&nbsp; &nbsp;&nbsp; &nbsp;0xA8<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATAPI_CMD_EJECT&nbsp; &nbsp;&nbsp; &nbsp;0x1B<br /></div><br /><br />The Command above are for ATAPI Devices which will be understanded soon.<br /><br />The Commands ATA_CMD_IDENTIFY_PACKET, and ATA_CMD_IDENTIFY, returns a buffer of 512 byte, the buffer is called Identification space, the following definitions are used to read information from the identification space.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define &nbsp; &nbsp;ATA_IDENT_DEVICETYPE&nbsp; &nbsp;0<br />#define &nbsp; &nbsp;ATA_IDENT_CYLINDERS&nbsp; &nbsp;2<br />#define &nbsp; &nbsp;ATA_IDENT_HEADS&nbsp; &nbsp;&nbsp; &nbsp;6<br />#define &nbsp; &nbsp;ATA_IDENT_SECTORS&nbsp; &nbsp;&nbsp; &nbsp;12<br />#define &nbsp; &nbsp;ATA_IDENT_SERIAL&nbsp; &nbsp;20<br />#define &nbsp; &nbsp;ATA_IDENT_MODEL&nbsp; &nbsp;&nbsp; &nbsp;54<br />#define &nbsp; &nbsp;ATA_IDENT_CAPABILITIES&nbsp; &nbsp;98<br />#define &nbsp; &nbsp;ATA_IDENT_FIELDVALID&nbsp; &nbsp;106<br />#define &nbsp; &nbsp;ATA_IDENT_MAX_LBA&nbsp; &nbsp;120<br />#define&nbsp; &nbsp;ATA_IDENT_COMMANDSETS&nbsp; &nbsp;164<br />#define &nbsp; &nbsp;ATA_IDENT_MAX_LBA_EXT&nbsp; &nbsp;200<br /></div><br /><br />When you select a drive, you should specify if it is the master drive or the slave one:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_MASTER&nbsp; &nbsp;&nbsp; &nbsp;0x00<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_SLAVE&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /></div><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define&nbsp; &nbsp;&nbsp; &nbsp;IDE_ATA&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;0x00<br />#define&nbsp; &nbsp;&nbsp; &nbsp;IDE_ATAPI&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /></div><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">// ATA-ATAPI Task-File:<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_DATA&nbsp; &nbsp;&nbsp; &nbsp;0x00<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_ERROR&nbsp; &nbsp;&nbsp; &nbsp;0x01<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_FEATURES&nbsp; &nbsp;0x01<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_SECCOUNT0&nbsp; &nbsp;0x02<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA0&nbsp; &nbsp;&nbsp; &nbsp;0x03<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA1&nbsp; &nbsp;&nbsp; &nbsp;0x04<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA2&nbsp; &nbsp;&nbsp; &nbsp;0x05<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_HDDEVSEL&nbsp; &nbsp;0x06<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_COMMAND&nbsp; &nbsp;&nbsp; &nbsp;0x07<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_STATUS&nbsp; &nbsp;&nbsp; &nbsp;0x07<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_SECCOUNT1&nbsp; &nbsp;0x08<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA3&nbsp; &nbsp;&nbsp; &nbsp;0x09<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA4&nbsp; &nbsp;&nbsp; &nbsp;0x0A<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_LBA5&nbsp; &nbsp;&nbsp; &nbsp;0x0B<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_CONTROL&nbsp; &nbsp;&nbsp; &nbsp;0x0C<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_ALTSTATUS&nbsp; &nbsp;0x0C<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_REG_DEVADDRESS&nbsp; &nbsp;0x0D<br /></div><br /><br />Task File is a range of ports [8 ports] which are used by primary channel [BAR0] or Secondary Channel [BAR2].<br /><br />BAR0 + 0 is first port.<br />BAR0 + 1 is second port.<br />BAR0 + 3 is the third ... etc ...<br /><br />if BAR0 is 0x1F0:<br />the Data Port of the Primary Channel is 0x1F0.<br />the Features/Error Port of the Priamry Channel is 0x1F1.<br />etc ...<br />the same with the secondary channel.<br /><br />There is a port which is called &quot;ALTSTATUS/CONTROL PORT&quot;, when is read, you read alternate status, when this port is written to, you are controlling a channel.<br /><br />For the Primary Channel, ALTSTATUS/CONTROL Port is BAR1 + 2.<br />For the Secondary Channel, ALTSTATUS/CONTROL Port is BAR3 + 2.<br /><br />We can know say that Each Channel has 13 Register, for a primary channel:<br /><br />Data Register: BAR0[0];  // Read and Write<br />Error Register: BAR0[1]; // Read Only<br />Features Register: BAR0[1]; // Write Only<br />SECCOUNT0: BAR0[2]; // Read and Write<br />LBA0: BAR0[3];  // Read and Write<br />LBA1: BAR0[4];  // Read and Write<br />LBA2: BAR0[5];  // Read and Write<br />HDDEVSEL: BAR0[6]; // Read and Write, this port is used to select a drive in the channel.<br />Command Register: BAR0[7]; // Write Only.<br />Status Register: BAR0[7]; // Read Only.<br />Alternate Status Register: BAR1[2]; // Read Only.<br />Control Register: BAR1[2]; // Write Only.<br />DEVADDRESS: BAR1[2]; // I don't know what is the benefit from this register.<br /><br />The map above is the same with the secondary channel, but it is using BAR2 and BAR3 instead of BAR0 and BAR1.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">// Channels:<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_PRIMARY&nbsp; &nbsp;&nbsp; &nbsp;0x00<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_SECONDARY&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /><br />// Directions:<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_READ&nbsp; &nbsp;&nbsp; &nbsp;0x00<br />#define&nbsp; &nbsp;&nbsp; &nbsp;ATA_WRITE&nbsp; &nbsp;&nbsp; &nbsp;0x01<br /></div><br /><br />We have had defined all definitions needed by the driver, now lets move to an important part, we said that<br />BAR0 is the Base of I/O Ports used by Primary Channel.<br />BAR1 is the Base of I/O Ports which control Primary Channel. <br />BAR2 is the Base of I/O Ports used by Secondary Channel.<br />BAR3 is the Base of I/O Ports which control Secondary Channel. <br />BAR4 is the Base of 8 I/O Ports controls Primary Channel's Bus Master IDE [BMIDE].<br />BAR4 + 8 is the Base of 8 I/O Ports controls Secondary Channel's Bus Master IDE [BMIDE].<br /><br />So we can make this global structure:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">struct channel {<br />&nbsp; &nbsp;unsigned short base;&nbsp; // I/O Base.<br />&nbsp; &nbsp;unsigned short ctrl;&nbsp; // Control Base<br />&nbsp; &nbsp;unsigned short bmide; // Bus Master IDE<br />&nbsp; &nbsp;unsigned char&nbsp; nIEN;&nbsp; // nIEN (No Interrupt);<br />} channels&#91;2&#93;;<br /></div><br /><br />We also need a buffer to read the identification space in it, we need a variable that indicates if an irq is invoked or not, and finally we need an array of 6 words [12 bytes] for ATAPI Drives:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_buf&#91;2048&#93; = {0};<br />unsigned static char ide_irq_invoked = 0;<br />unsigned static char atapi_packet&#91;12&#93; = {0xA8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};<br /></div><br /><br />We said the the IDE can contain up to 4 drives:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">struct ide_device {<br />&nbsp; &nbsp;unsigned char&nbsp; reserved;&nbsp; &nbsp; // 0 (Empty) or 1 (This Drive really exists).<br />&nbsp; &nbsp;unsigned char&nbsp; channel;&nbsp; &nbsp; &nbsp;// 0 (Primary Channel) or 1 (Secondary Channel).<br />&nbsp; &nbsp;unsigned char&nbsp; drive;&nbsp; &nbsp; &nbsp; &nbsp;// 0 (Master Drive) or 1 (Slave Drive).<br />&nbsp; &nbsp;unsigned short type;&nbsp; &nbsp; &nbsp; &nbsp; // 0: ATA, 1:ATAPI.<br />&nbsp; &nbsp;unsigned short sign;&nbsp; &nbsp;&nbsp; &nbsp; // Drive Signature<br />&nbsp; &nbsp;unsigned short capabilities;// Features.<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;commandsets; // Command Sets Supported.<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;size;&nbsp; &nbsp;&nbsp; &nbsp; // Size in Sectors.<br />&nbsp; &nbsp;unsigned char&nbsp; model&#91;41&#93;;&nbsp; &nbsp;// Model in string.<br />} ide_devices&#91;4&#93;;<br /></div><br /><br />When we read a register in a channel, like STATUS Register, it is easy to execute:<br /> ide_read(channel, ATA_REG_STATUS);<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_read(unsigned char channel, unsigned char reg) {<br />&nbsp; &nbsp;unsigned char result;<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, 0x80 | channels&#91;channel&#93;.nIEN);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &lt; 0x08) result = inb(channels&#91;channel&#93;.base&nbsp; + reg - 0x00);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0C) result = inb(channels&#91;channel&#93;.base&nbsp; + reg - 0x06);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0E) result = inb(channels&#91;channel&#93;.ctrl&nbsp; + reg - 0x0A);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x16) result = inb(channels&#91;channel&#93;.bmide + reg - 0x0E);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN);<br />&nbsp; &nbsp;return result;<br />}<br /></div><br /><br />And Also there is a function for writing to registers:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_write(unsigned char channel, unsigned char reg, unsigned char data) {<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, 0x80 | channels&#91;channel&#93;.nIEN);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &lt; 0x08) outb(data, channels&#91;channel&#93;.base&nbsp; + reg - 0x00);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0C) outb(data, channels&#91;channel&#93;.base&nbsp; + reg - 0x06);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0E) outb(data, channels&#91;channel&#93;.ctrl&nbsp; + reg - 0x0A);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x16) outb(data, channels&#91;channel&#93;.bmide + reg - 0x0E);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN);<br />}<br /></div><br /><br />If We want to read the identification space, we should read Data Register as Double Word for 128 times. the first read is the first dword, the second read is the second dword, and so on. we can read the 128 dwords and copy them to our buffer.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_read_buffer(unsigned char channel, unsigned char reg, unsigned int buffer, unsigned int quads) {<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, 0x80 | channels&#91;channel&#93;.nIEN);<br />&nbsp; &nbsp;asm(&quot;pushw %es; movw %ds, %ax; movw %ax, %es&quot;);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &lt; 0x08) insl(channels&#91;channel&#93;.base&nbsp; + reg - 0x00, buffer, quads);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0C) insl(channels&#91;channel&#93;.base&nbsp; + reg - 0x06, buffer, quads);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x0E) insl(channels&#91;channel&#93;.ctrl&nbsp; + reg - 0x0A, buffer, quads);<br />&nbsp; &nbsp;else if&nbsp; &nbsp;(reg &lt; 0x16) insl(channels&#91;channel&#93;.bmide + reg - 0x0E, buffer, quads);<br />&nbsp; &nbsp;asm(&quot;popw %es;&quot;);<br />&nbsp; &nbsp;if&nbsp; &nbsp;(reg &gt; 0x07 &amp;&amp; reg &lt; 0x0C) ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN);<br />}<br /></div><br /><br />When we send a command, we should wait for 400 nanosecond, then we should read Status Port, if Busy Bit is on, so we should read status port again, until Busy Bit is 0, in this case, we can read the results of the command. this operation is called &quot;Polling&quot;, we can use IRQs instead of polling, and IRQs are suitable for <br />Multi-Tasking Environments, but i think Polling is much faster than IRQs.<br /><br />After Many Commands, if DF is set [Device Fault Bit], so there is a failure, and if DRQ is not set, so there is an error. if ERR bit is set, so there is an error which is described in Error Port.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_polling(unsigned char channel, unsigned int advanced_check) {<br /><br />&nbsp; &nbsp;// (I) Delay 400 nanosecond for BSY to be set:<br />&nbsp; &nbsp;// -------------------------------------------------<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br /><br />&nbsp; &nbsp;// (II) Wait for BSY to be cleared:<br />&nbsp; &nbsp;// -------------------------------------------------<br />&nbsp; &nbsp;while (ide_read(channel, ATA_REG_STATUS) &amp; ATA_SR_BSY); // Wait for BSY to be zero.<br /><br />&nbsp; &nbsp;if (advanced_check) {<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char state = ide_read(channel, ATA_REG_STATUS); // Read Status Register.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (III) Check For Errors:<br />&nbsp; &nbsp;&nbsp; &nbsp;// -------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;if (state &amp; ATA_SR_ERR) return 2; // Error.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (IV) Check If Device fault:<br />&nbsp; &nbsp;&nbsp; &nbsp;// -------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;if (state &amp; ATA_SR_DF ) return 1; // Device Fault.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (V) Check DRQ:<br />&nbsp; &nbsp;&nbsp; &nbsp;// -------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;// BSY = 0; DF = 0; ERR = 0 so we should check for DRQ now.<br />&nbsp; &nbsp;&nbsp; &nbsp;if (!(state &amp; ATA_SR_DRQ)) return 3; // DRQ should be set<br /><br />&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;return 0; // No Error.<br /><br />}<br /></div><br /><br />if there is an error, we have a functions which print errors on screen:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_print_error(unsigned int drive, unsigned char err) {<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;if (err == 0) return err;<br /><br />&nbsp; &nbsp;printk(&quot; IDE:&quot;);<br />&nbsp; &nbsp;if (err == 1) {printk(&quot;- Device Fault\n&nbsp; &nbsp; &nbsp;&quot;); err = 19;}<br />&nbsp; &nbsp;else if (err == 2) {<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char st = ide_read(ide_devices&#91;drive&#93;.channel, ATA_REG_ERROR);<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_AMNF)&nbsp; &nbsp;{printk(&quot;- No Address Mark Found\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;err = 7;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_TK0NF)&nbsp; &nbsp;{printk(&quot;- No Media or Media Error\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;err = 3;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_ABRT)&nbsp; &nbsp;{printk(&quot;- Command Aborted\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;&nbsp; &nbsp;err = 20;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_MCR)&nbsp; &nbsp;{printk(&quot;- No Media or Media Error\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;err = 3;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_IDNF)&nbsp; &nbsp;{printk(&quot;- ID mark not Found\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;&nbsp; &nbsp;err = 21;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_MC)&nbsp; &nbsp;{printk(&quot;- No Media or Media Error\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;err = 3;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_UNC)&nbsp; &nbsp;{printk(&quot;- Uncorrectable Data Error\n&nbsp; &nbsp; &nbsp;&quot;);&nbsp; &nbsp;err = 22;}<br />&nbsp; &nbsp;&nbsp; &nbsp;if (st &amp; ATA_ER_BBK)&nbsp; &nbsp;{printk(&quot;- Bad Sectors\n&nbsp; &nbsp; &nbsp;&quot;); &nbsp; &nbsp;&nbsp; &nbsp;err = 13;}<br />&nbsp; &nbsp;} else&nbsp; if (err == 3)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{printk(&quot;- Reads Nothing\n&nbsp; &nbsp; &nbsp;&quot;); err = 23;}<br />&nbsp; &nbsp;&nbsp; else&nbsp; if (err == 4)&nbsp; {printk(&quot;- Write Protected\n&nbsp; &nbsp; &nbsp;&quot;); err = 8;}<br />&nbsp; &nbsp;printk(&quot;- &#91;%s %s&#93; %s\n&quot;, <br />&nbsp; &nbsp;&nbsp; &nbsp;(const char *&#91;&#93;){&quot;Primary&quot;,&quot;Secondary&quot;}&#91;ide_devices&#91;drive&#93;.channel&#93;,<br />&nbsp; &nbsp;&nbsp; &nbsp;(const char *&#91;&#93;){&quot;Master&quot;, &quot;Slave&quot;}&#91;ide_devices&#91;drive&#93;.drive&#93;,<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;drive&#93;.model);<br /><br />&nbsp; &nbsp;return err;<br />}<br /></div><br /><br />Now lets return to the initialization function:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_initialize(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned int BAR3,<br />unsigned int BAR4) {<br /><br />&nbsp; &nbsp;int j, k, count = 0;<br /><br />&nbsp; &nbsp;// 1- Detect I/O Ports which interface IDE Controller:<br />&nbsp; &nbsp;channels&#91;ATA_PRIMARY&nbsp; &#93;.base&nbsp; = (BAR0 &amp;= 0xFFFFFFFC) + 0x1F0*(!BAR0);<br />&nbsp; &nbsp;channels&#91;ATA_PRIMARY&nbsp; &#93;.ctrl&nbsp; = (BAR1 &amp;= 0xFFFFFFFC) + 0x3F4*(!BAR1);<br />&nbsp; &nbsp;channels&#91;ATA_SECONDARY&#93;.base&nbsp; = (BAR2 &amp;= 0xFFFFFFFC) + 0x170*(!BAR2);<br />&nbsp; &nbsp;channels&#91;ATA_SECONDARY&#93;.ctrl&nbsp; = (BAR3 &amp;= 0xFFFFFFFC) + 0x374*(!BAR3);<br />&nbsp; &nbsp;channels&#91;ATA_PRIMARY&nbsp; &#93;.bmide = (BAR4 &amp;= 0xFFFFFFFC) + 0; // Bus Master IDE<br />&nbsp; &nbsp;channels&#91;ATA_SECONDARY&#93;.bmide = (BAR4 &amp;= 0xFFFFFFFC) + 8; // Bus Master IDE<br /></div><br /><br />Then We Should Disable IRQs in the both channels [This is temporary]:<br />This happens by setting bit 1 [nIEN] in Control Port:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// 2- Disable IRQs:<br />&nbsp; &nbsp;ide_write(ATA_PRIMARY&nbsp; , ATA_REG_CONTROL, 2);<br />&nbsp; &nbsp;ide_write(ATA_SECONDARY, ATA_REG_CONTROL, 2);<br /></div><br /><br />Now we need to check for drives connected to each channel, we will select the master drive of each channel, and send the command ATA_IDENTIFY (Which is supported by ATA Drives). if error, there is values returned in registers determines the type of Drive, if no drive, there will be strange values.<br />Notice that bit4 in HDDEVSEL, if set to 1, we are selecting the slave drive, if set to 0, we are selecting the master drive.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// 3- Detect ATA-ATAPI Devices:<br />&nbsp; &nbsp;for (i = 0; i &lt; 2; i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;for (j = 0; j &lt; 2; j++) {<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;unsigned char err = 0, type = IDE_ATA, status;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.reserved&nbsp; &nbsp;= 0; // Assuming that no drive here.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (I) Select Drive:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_write(i, ATA_REG_HDDEVSEL, 0xA0 | (j&lt;&lt;4)); // Select Drive.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;sleep(1); // Wait 1ms for drive select to work.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (II) Send ATA Identify Command:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_write(i, ATA_REG_COMMAND, ATA_CMD_IDENTIFY);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;sleep(1); // This function should be implemented in your OS. which waits for 1 ms. it is based on System Timer Device Driver. <br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (III) Polling:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (!(ide_read(i, ATA_REG_STATUS))) continue; // If Status = 0, No Device.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;while(1) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;status = ide_read(i, ATA_REG_STATUS);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if ( (status &amp; ATA_SR_ERR)) {err = 1; break;} // If Err, Device is not ATA.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (!(status &amp; ATA_SR_BSY) &amp;&amp; (status &amp; ATA_SR_DRQ)) break; // Everything is right.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (IV) Probe for ATAPI Devices:<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (err) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;unsigned char cl = ide_read(i,ATA_REG_LBA1);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;unsigned char ch = ide_read(i,ATA_REG_LBA2);<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if&nbsp; &nbsp;(cl == 0x14 &amp;&amp; ch ==0xEB) type = IDE_ATAPI;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;else if&nbsp; &nbsp;(cl == 0x69 &amp;&amp; ch ==0x96) type = IDE_ATAPI;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;else continue; // Unknown Type (And always not be a device).<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_write(i, ATA_REG_COMMAND, ATA_CMD_IDENTIFY_PACKET);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;sleep(1);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (V) Read Identification Space of the Device:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_read_buffer(i, ATA_REG_DATA, (unsigned int) ide_buf, 128);<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (VI) Read Device Parameters:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.reserved&nbsp; &nbsp;= 1;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.type&nbsp; &nbsp;&nbsp; &nbsp;= type;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.channel&nbsp; &nbsp;= i;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.drive&nbsp; &nbsp;= j;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.sign&nbsp; &nbsp;&nbsp; &nbsp;= ((unsigned short *) (ide_buf + ATA_IDENT_DEVICETYPE&nbsp; &nbsp;))&#91;0&#93;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.capabilities = ((unsigned short *) (ide_buf + ATA_IDENT_CAPABILITIES&nbsp; &nbsp;))&#91;0&#93;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.commandsets&nbsp; = ((unsigned int&nbsp; &nbsp;*) (ide_buf + ATA_IDENT_COMMANDSETS&nbsp; &nbsp;))&#91;0&#93;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (VII) Get Size:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (ide_devices&#91;count&#93;.commandsets &amp; (1&lt;&lt;26)){<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Device uses 48-Bit Addressing:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.size&nbsp; &nbsp;= ((unsigned int&nbsp; &nbsp;*) (ide_buf + ATA_IDENT_MAX_LBA_EXT&nbsp; &nbsp;))&#91;0&#93;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Note that Quafios is 32-Bit Operating System, So last 2 Words are ignored.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;} else {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Device uses CHS or 28-bit Addressing:<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.size&nbsp; &nbsp;= ((unsigned int&nbsp; &nbsp;*) (ide_buf + ATA_IDENT_MAX_LBA&nbsp; &nbsp;))&#91;0&#93;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// (VIII) String indicates model of device (like Western Digital HDD and SONY DVD-RW...):<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;for(k = ATA_IDENT_MODEL; k &lt; (ATA_IDENT_MODEL+40); k+=2) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.model&#91;k - ATA_IDENT_MODEL&#93; = ide_buf&#91;k+1&#93;;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.model&#91;(k+1) - ATA_IDENT_MODEL&#93; = ide_buf&#91;k&#93;;}<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;count&#93;.model&#91;40&#93; = 0; // Terminate String.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;count++;<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;// 4- Print Summary:<br />&nbsp; &nbsp;for (i = 0; i &lt; 4; i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;if (ide_devices&#91;i&#93;.reserved == 1) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;printk(&quot; Found %s Drive %dGB - %s\n&quot;,<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;(const char *&#91;&#93;){&quot;ATA&quot;, &quot;ATAPI&quot;}&#91;ide_devices&#91;i&#93;.type&#93;,&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;/* Type */<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;i&#93;.size/1024/1024/2,&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;/* Size */<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_devices&#91;i&#93;.model);<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />}<br /></div><br /><br /><span style="font-weight: bold">Read/Write From ATA Drive:</span><br /><br />Now we are moving to a bit more advanced part, it is to read and write from/to an ATA Drive.<br />There is 3 ways of addressing a sector:<br />CHS (Cylinder-Head-Sector): an old way of addressing sectors in ATA drives, I think all ATA-Drives should support this way of addressing.<br />LBA28: Accessing a sector by its LBA Address. but the address should be 28-bit long. i think all ATA-Drives should support this way of addressing<br />the problem of LBA28 Addressing is that it allows only to access 128GB from the ATA-Disk, so if ATA-Disk is more than 128GB, it should support LBA48 Feature Set.<br />LBA48: Accessing a sector by its LBA Address. but the address should be 48-bit long. as we use integers in GCC, so our maximum address in this tutorial is 32-bit long, which allows accessing an ATA-Drive up to 2TB.<br /><br />So We can conclude an algorithm to determine which type of Addressing we are going to use:<br />If (Drive doesn't Support LBA)<br />    // Use CHS.<br />else (if the LBA Sector Address &gt; 0x0FFFFFFF)<br />    // The Sector We are going to read is above 128GB Boundary, Use LBA48.<br />else // Use LBA28.<br /><br />Reading the buffer may be done by polling or DMA.<br />PIO: After sending the command [Read or Write Sectors], we read Data Port [as words], or write to Data Port [as words]. this is the same way of reading identification space.<br />DMA: After sending the command, you should wait for an IRQ, while you are waiting, Buffer is written directly to memory automatically.<br /><br />We are going to use PIO in our tutorial as it isn't going to be complix, and i want to be far from IRQs as they are very slower than Polling after PIO.<br /><br />We can conclude also this table:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;/* ATA/ATAPI Read/Write Modes:<br />&nbsp; &nbsp; * ++++++++++++++++++++++++++++++++<br />&nbsp; &nbsp; *&nbsp; Addressing Modes:<br />&nbsp; &nbsp; *&nbsp; ================<br />&nbsp; &nbsp; *&nbsp; &nbsp;- LBA28 Mode.&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;(+)<br />&nbsp; &nbsp; *&nbsp; &nbsp;- LBA48 Mode.&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;(+)<br />&nbsp; &nbsp; *&nbsp; &nbsp;- CHS.&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;(+)<br />&nbsp; &nbsp; *&nbsp; Reading Modes:<br />&nbsp; &nbsp; *&nbsp; ================<br />&nbsp; &nbsp; *&nbsp; &nbsp;- PIO Modes (0 : 6) &nbsp; &nbsp;&nbsp; &nbsp;(+) // Slower than DMA, but not a problem.<br />&nbsp; &nbsp; *&nbsp; &nbsp;- Single Word DMA Modes (0, 1, 2).<br />&nbsp; &nbsp; *&nbsp; &nbsp;- Double Word DMA Modes (0, 1, 2).<br />&nbsp; &nbsp; *&nbsp; &nbsp;- Ultra DMA Modes (0 : 6).<br />&nbsp; &nbsp; *&nbsp; Polling Modes:<br />&nbsp; &nbsp; *&nbsp; ================<br />&nbsp; &nbsp; *&nbsp; &nbsp;- IRQs<br />&nbsp; &nbsp; *&nbsp; &nbsp;- Polling Status&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;(+) // Suitable for Singletasking&nbsp; &nbsp;<br />&nbsp; &nbsp; */<br /></div><br /><br />there is something needed to be expressed here, I have told before that Task-File is like that:<br />Register 0: [Word] Data Register. [Readable &amp; Writable].<br />Register 1: [Byte] Error Register. [Readable].<br />Register 1: [Byte] Features Register. [Writable].<br />Register 2: [Byte] SECCOUNT0 Register. [Readable &amp; Writable].<br />Register 3: [Byte] LBA0 Register. [Readable &amp; Writable].<br />Register 4: [Byte] LBA1 Register. [Readable &amp; Writable].<br />Register 5: [Byte] LBA2 Register. [Readable &amp; Writable].<br />Register 6: [Byte] HDDEVSEL Register. [Readable &amp; Writable].<br />Register 7: [Byte] Command Register. [Writable].<br />Register 7: [Byte] Status Register. [Readable].<br /><br />So each one of Registers from 2 to 5 should be 8-bits long. but really each one of them is 16-bit long.<br /><br />Register 2: [Bits 0-7] SECCOUNT0, [Bits 8-15] SECOUNT1<br />Register 3: [Bits 0-7] LBA0, [Bits 8-15] LBA3<br />Register 4: [Bits 0-7] LBA1, [Bits 8-15] LBA4<br />Register 5: [Bits 0-7] LBA2, [Bits 8-15] LBA5<br /><br />the word [(SECCOUNT1&lt;&lt;8) | SECCOUNT0] expresses number of sectors which can be read when you access by LBA48.<br />when you access in CHS or LBA28, SECCOUNT0 only expresses number of sectors.<br /><br />LBA0 is Bits[0-7] of LBA Address when you read in LBA28 or LBA48, it can be sector number of CHS.<br />LBA1 is Bits[8-15] of LBA Address when you read in LBA28 or LBA48, it can be low 8 bits of cylinder number of CHS.<br />LBA2 is Bits[16-23] of LBA Address when you read in LBA28 or LBA48, it can be high 8 bits of cylinder number of CHS.<br />LBA3 is Bits[24-31] of LBA Address when you read in LBA48.<br />LBA4 is Bits[32-39] of LBA Address when you read in LBA48.<br />LBA5 is Bits[40-47] of LBA Address when you read in LBA48.<br /><br />notice that according to that, LBA0,1,2 registers [8-bits + 8-bits + 8-bits] are 24-bit long, which is not enough for LBA28, so the higher 4-bits can be written to the lower 4-bits of HDDEVSEL Register.<br /><br />Also notice that if we set bit 6 of this register, we are going to use LBA, if not, we are going to use CHS.<br />notice that there is a mode which is called extended CHS, but i don't wanna be exposed to that.<br /><br /><br />Lets go into the code:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_ata_access(&nbsp; &nbsp;unsigned char direction, unsigned char drive, unsigned int lba, unsigned char numsects, unsigned short selector, unsigned int edi) {<br /></div><br /><br />This Function reads/writes sectors from ATA-Drive. if (direction = 0) so we are reading, else we are writing.<br /><span style="font-weight: bold">drive</span>, is drive number which can be from 0 to 3.<br /><span style="font-weight: bold">lba</span>, is the LBA Address which allows us to access disks up to 2TB.<br /><span style="font-weight: bold">numsects</span>, number of sectors to be read, it is a char, as reading more than 256 sector immediately may cause the OS to hang. notice that if numsects = 0, controller will know that we want 256 sectors.<br /><span style="font-weight: bold">selector</span>, segment selector to read from, or write to.<br /><span style="font-weight: bold">edi</span>,  offset in the segment.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;unsigned char lba_mode /* 0: CHS, 1:LBA28, 2: LBA48 */, dma /* 0: No DMA, 1: DMA */, cmd;<br />&nbsp; &nbsp;unsigned char lba_io&#91;6&#93;;<br />&nbsp; &nbsp;unsigned int&nbsp; channel&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.channel; // Read the Channel.<br />&nbsp; &nbsp;unsigned int&nbsp; slavebit&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.drive; // Read the Drive &#91;Master/Slave&#93;<br />&nbsp; &nbsp;unsigned int&nbsp; bus&nbsp; &nbsp;&nbsp; &nbsp;= channels&#91;channel&#93;.base; // The Bus Base, like &#91;0x1F0&#93; which is also data port.<br />&nbsp; &nbsp;unsigned int&nbsp; words&nbsp; &nbsp;&nbsp; &nbsp;= 256; // Approximatly all ATA-Drives has sector-size of 512-byte.<br />&nbsp; &nbsp;unsigned short cyl, i; unsigned char head, sect, err;<br /></div><br /><br />We don't need IRQs, so we should disable it to disallow problems to happen, we said before that bit 1 of Control Register (Which is called nIEN bit), if it is set, so no IRQs will be invoked from this channel, either from Master Drive or from Slave Drive.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN = (ide_irq_invoked = 0x0) + 0x02);<br /></div><br /><br />Now lets set the parameters:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (I) Select one from LBA28, LBA48 or CHS;<br />&nbsp; &nbsp;if (lba &gt;= 0x10000000) { // Sure Drive should support LBA in this case, or you are giving a wrong LBA.<br />&nbsp; &nbsp;&nbsp; &nbsp;// LBA48:<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_mode&nbsp; = 2;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;0&#93; = (lba &amp; 0x000000FF)&gt;&gt; 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;1&#93; = (lba &amp; 0x0000FF00)&gt;&gt; 8;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;2&#93; = (lba &amp; 0x00FF0000)&gt;&gt;16;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;3&#93; = (lba &amp; 0xFF000000)&gt;&gt;24;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;4&#93; = 0; // We said that we lba is integer, so 32-bit are enough to access 2TB.<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;5&#93; = 0; // We said that we lba is integer, so 32-bit are enough to access 2TB.<br />&nbsp; &nbsp;&nbsp; &nbsp;head&nbsp; &nbsp; &nbsp; = 0; // Lower 4-bits of HDDEVSEL are not used here.<br />&nbsp; &nbsp;} else if (ide_devices&#91;drive&#93;.capabilities &amp; 0x200)&nbsp; { // Drive supports LBA?<br />&nbsp; &nbsp;&nbsp; &nbsp;// LBA28:<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_mode&nbsp; = 1;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;0&#93; = (lba &amp; 0x00000FF)&gt;&gt; 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;1&#93; = (lba &amp; 0x000FF00)&gt;&gt; 8;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;2&#93; = (lba &amp; 0x0FF0000)&gt;&gt;16;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;3&#93; = 0; // These Registers are not used here.<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;4&#93; = 0; // These Registers are not used here.<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;5&#93; = 0; // These Registers are not used here.<br />&nbsp; &nbsp;&nbsp; &nbsp;head&nbsp; &nbsp; &nbsp; = (lba &amp; 0xF000000)&gt;&gt;24;<br />&nbsp; &nbsp;} else {<br />&nbsp; &nbsp;&nbsp; &nbsp;// CHS:<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_mode&nbsp; = 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;sect&nbsp; &nbsp; &nbsp; = (lba % 63) + 1;<br />&nbsp; &nbsp;&nbsp; &nbsp;cyl&nbsp; &nbsp; &nbsp; &nbsp;= (lba + 1&nbsp; - sect)/(16*63);<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;0&#93; = sect;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;1&#93; = (cyl&gt;&gt;0) &amp; 0xFF;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;2&#93; = (cyl&gt;&gt;8) &amp; 0xFF;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;3&#93; = 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;4&#93; = 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;lba_io&#91;5&#93; = 0;<br />&nbsp; &nbsp;&nbsp; &nbsp;head&nbsp; &nbsp; &nbsp; = (lba + 1&nbsp; - sect)%(16*63)/(63); // Head number is written to HDDEVSEL lower 4-bits.<br />&nbsp; &nbsp;}<br /></div><br /><br />Now we are going to choose the way of reading the buffer [PIO or DMA]:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (II) See if Drive Supports DMA or not;<br />&nbsp; &nbsp;dma = 0; // Supports or doesn't, we don't support !!!<br /></div><br /><br />Lets Poll the status port if the channel is busy:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (III) Wait if the drive is busy;<br />&nbsp; &nbsp;while (ide_read(channel, ATA_REG_STATUS) &amp; ATA_SR_BSY); // Wait if Busy.<br /></div><br /><br />HDDDEVSEL Register now looks like this:<br /><br />Bits 0-3: Head Number for CHS.<br />Bit 4: Slave Bit. (0: Selecting Master Drive, 1: Selecting Slave Drive).<br />Bit 5: Obselete and isn't used, but should be set.<br />Bit 6: LBA (0: CHS, 1: LBA).<br />Bit 7: Obselete and isn't used, but should be set.<br /><br />Lets write all these information to the register, while the obselete bits are set (0xA0):<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (IV) Select Drive from the controller;<br />&nbsp; &nbsp;if (lba_mode == 0) ide_write(channel, ATA_REG_HDDEVSEL, 0xA0 | (slavebit&lt;&lt;4) | head);&nbsp; &nbsp;// Select Drive CHS.<br />&nbsp; &nbsp;else&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_HDDEVSEL, 0xE0 | (slavebit&lt;&lt;4) | head);&nbsp; &nbsp;// Select Drive LBA.<br /></div><br /><br />Let's write the parameters to registers:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (V) Write Parameters;<br />&nbsp; &nbsp;if (lba_mode == 2) {<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_SECCOUNT1,&nbsp; &nbsp;0);<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA3,&nbsp; &nbsp;lba_io&#91;3&#93;);<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA4,&nbsp; &nbsp;lba_io&#91;4&#93;);<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA5,&nbsp; &nbsp;lba_io&#91;5&#93;);<br />&nbsp; &nbsp;}<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_SECCOUNT0,&nbsp; &nbsp;numsects);<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA0,&nbsp; &nbsp;lba_io&#91;0&#93;);<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA1,&nbsp; &nbsp;lba_io&#91;1&#93;);<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA2,&nbsp; &nbsp;lba_io&#91;2&#93;);<br /></div><br /><br />By this way, if you are using LBA48 and want to write to LBA0 Register [Register 3 in Task-File], and want to write to LBA3 Register [Register 3 also in Task-File], you should write LBA3 to Register 3, then write LBA0 to Register 3. ide_write function makes it quite simple, refer to the function and you will full-understand the code.<br /><br />Now, we have a great set of commands described in ATA/ATAPI-8 Specification, we should choose the suitable command to execute:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (VI) Select the command and send it;<br />&nbsp; &nbsp;// Routine that is followed:<br />&nbsp; &nbsp;// If ( DMA &amp; LBA48)&nbsp; &nbsp;DO_DMA_EXT;<br />&nbsp; &nbsp;// If ( DMA &amp; LBA28)&nbsp; &nbsp;DO_DMA_LBA;<br />&nbsp; &nbsp;// If ( DMA &amp; LBA28)&nbsp; &nbsp;DO_DMA_CHS;<br />&nbsp; &nbsp;// If (!DMA &amp; LBA48)&nbsp; &nbsp;DO_PIO_EXT;<br />&nbsp; &nbsp;// If (!DMA &amp; LBA28)&nbsp; &nbsp;DO_PIO_LBA;<br />&nbsp; &nbsp;// If (!DMA &amp; !LBA#)&nbsp; &nbsp;DO_PIO_CHS;<br /></div><br /><br />There isn't a command for Doing in CHS with DMA.<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;if (lba_mode == 0 &amp;&amp; dma == 0 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_PIO;<br />&nbsp; &nbsp;if (lba_mode == 1 &amp;&amp; dma == 0 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_PIO;&nbsp; &nbsp;<br />&nbsp; &nbsp;if (lba_mode == 2 &amp;&amp; dma == 0 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_PIO_EXT;&nbsp; &nbsp;<br />&nbsp; &nbsp;if (lba_mode == 0 &amp;&amp; dma == 1 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_DMA;<br />&nbsp; &nbsp;if (lba_mode == 1 &amp;&amp; dma == 1 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_DMA;<br />&nbsp; &nbsp;if (lba_mode == 2 &amp;&amp; dma == 1 &amp;&amp; direction == 0) cmd = ATA_CMD_READ_DMA_EXT;<br />&nbsp; &nbsp;if (lba_mode == 0 &amp;&amp; dma == 0 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_PIO;<br />&nbsp; &nbsp;if (lba_mode == 1 &amp;&amp; dma == 0 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_PIO;<br />&nbsp; &nbsp;if (lba_mode == 2 &amp;&amp; dma == 0 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_PIO_EXT;<br />&nbsp; &nbsp;if (lba_mode == 0 &amp;&amp; dma == 1 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_DMA;<br />&nbsp; &nbsp;if (lba_mode == 1 &amp;&amp; dma == 1 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_DMA;<br />&nbsp; &nbsp;if (lba_mode == 2 &amp;&amp; dma == 1 &amp;&amp; direction == 1) cmd = ATA_CMD_WRITE_DMA_EXT;<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_COMMAND, cmd);&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Send the Command.<br /></div><br /><br />This Command &quot;ATA_CMD_READ_PIO&quot; is right for rading in LBA28 or CHS, and controller refers to bit 6 of HDDEVSEL Register to know the mode of reading (LBA or CHS).<br /><br />After sending the command, we should poll, then we read/write a sector then we should poll, then we read/write a sector, until we read/write all sectors needed, if an error is happened, we the function will return a specific error code.<br /><br />notice that after writing, we should execute the CACHE FLUSH Command, and we should poll after it, but without checking for errors.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;if (dma)<br />&nbsp; &nbsp;&nbsp; &nbsp;if (direction == 0);<br />&nbsp; &nbsp;&nbsp; &nbsp;// DMA Read.<br />&nbsp; &nbsp;&nbsp; &nbsp;else; // DMA Write.<br />&nbsp; &nbsp;else<br />&nbsp; &nbsp;&nbsp; &nbsp;if (direction == 0)<br />&nbsp; &nbsp;&nbsp; &nbsp;// PIO Read.<br />&nbsp; &nbsp;&nbsp; &nbsp;for (i = 0; i &lt; numsects; i++) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (err = ide_polling(channel, 1)) return err; // Polling, then set error and exit if there is.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;pushw %es&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;mov %%ax, %%es&quot;::&quot;a&quot;(selector));<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;rep insw&quot;::&quot;c&quot;(words), &quot;d&quot;(bus), &quot;D&quot;(edi)); // Receive Data.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;popw %es&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;edi += (words*2);<br />&nbsp; &nbsp;&nbsp; &nbsp;} else {<br />&nbsp; &nbsp;&nbsp; &nbsp;// PIO Write.<br />&nbsp; &nbsp;&nbsp; &nbsp;for (i = 0; i &lt; numsects; i++) {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_polling(channel, 0); // Polling.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;pushw %ds&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;mov %%ax, %%ds&quot;::&quot;a&quot;(selector));<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;rep outsw&quot;::&quot;c&quot;(words), &quot;d&quot;(bus), &quot;S&quot;(edi)); // Send Data <br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;popw %ds&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;edi += (words*2);<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_COMMAND, (char &#91;&#93;) {&nbsp; &nbsp;ATA_CMD_CACHE_FLUSH,<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_CACHE_FLUSH,<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ATA_CMD_CACHE_FLUSH_EXT}&#91;lba_mode&#93;);<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_polling(channel, 0); // Polling.<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br /><br />&nbsp; &nbsp;return 0; // Easy, ... Isn't it?<br />}<br /></div><br /><br /><span style="font-weight: bold">Read From ATAPI Drive:</span><br /><br />Let's move to a part which is quite easier, it is to read from ATAPI Drive, i will not make the function write to ATAPI Drive, because the write Operation is very complix and it should done by third-party tools (like Nero in Windows, and Brasero in Linux).<br /><br />ATAPI Drive is different from ATA Drives, as it doesn't use ATA Commands, but it use the SCSI-Command-Set. Parameters are sent into a Packet, so it is Called: ATA-Packet Interface [ATAPI].<br /><br />Notice also that ATAPI drives should always use IRQs, you can't disable them, so we should create a function which waits for an IRQ to be caused:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_wait_irq() {<br />&nbsp; &nbsp;while (!ide_irq_invoked);<br />&nbsp; &nbsp;ide_irq_invoked = 0;<br />}<br /></div><br /><br />when an IRQ happens, the following function should be executed by ISR:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_irq() {<br />&nbsp; &nbsp;ide_irq_invoked = 1;<br />}<br /></div><br /><br />by this way,  ide_wait_irq() will go into a while loop, which waits for the variable ide_irq_invoked to be set, then it reclears it.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">unsigned char ide_atapi_read(unsigned char drive, unsigned int lba, unsigned char numsects, <br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; unsigned short selector, unsigned int edi) {<br /></div><br /><br /><span style="font-weight: bold">drive,</span> is the drive number, which is from 0 to 3.<br /><span style="font-weight: bold">lba</span>, the lba address.<br /><span style="font-weight: bold">numsects</span>, number of sectors, it should always be 1, and if you wanna read more than one sector, re-execute this fucntion with updated LBA address.<br /><span style="font-weight: bold">selector,</span> Segment Selector.<br /><span style="font-weight: bold">edi,</span> offset in the selector.<br /><br />let's read the parameters of the drive:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;unsigned int&nbsp; &nbsp;channel&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.channel;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;slavebit&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.drive;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;bus&nbsp; &nbsp;&nbsp; &nbsp;= channels&#91;channel&#93;.base;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;words&nbsp; &nbsp;&nbsp; &nbsp;= 2048 / 2; // Sector Size in Words, Almost All ATAPI Drives has a sector size of 2048 bytes.<br />&nbsp; &nbsp;unsigned char&nbsp; err; int i;<br /></div><br /><br />we need IRQs:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// Enable IRQs:<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN = ide_irq_invoked = 0x0);<br /></div><br /><br />Let's setup the SCSI Packet, Which is 6-Words long [12-Bytes]:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (I): Setup SCSI Packet:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;atapi_packet&#91; 0&#93; = ATAPI_CMD_READ;<br />&nbsp; &nbsp;atapi_packet&#91; 1&#93; = 0x0;<br />&nbsp; &nbsp;atapi_packet&#91; 2&#93; = (lba&gt;&gt;24) &amp; 0xFF;<br />&nbsp; &nbsp;atapi_packet&#91; 3&#93; = (lba&gt;&gt;16) &amp; 0xFF;<br />&nbsp; &nbsp;atapi_packet&#91; 4&#93; = (lba&gt;&gt; 8) &amp; 0xFF;<br />&nbsp; &nbsp;atapi_packet&#91; 5&#93; = (lba&gt;&gt; 0) &amp; 0xFF;<br />&nbsp; &nbsp;atapi_packet&#91; 6&#93; = 0x0;<br />&nbsp; &nbsp;atapi_packet&#91; 7&#93; = 0x0;<br />&nbsp; &nbsp;atapi_packet&#91; 8&#93; = 0x0;<br />&nbsp; &nbsp;atapi_packet&#91; 9&#93; = numsects;<br />&nbsp; &nbsp;atapi_packet&#91;10&#93; = 0x0;<br />&nbsp; &nbsp;atapi_packet&#91;11&#93; = 0x0;<br /></div><br /><br />Now we should select the drive:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (II): Select the Drive:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_HDDEVSEL, slavebit&lt;&lt;4);<br /></div><br /><br />400 nanosecond after this select is a good idea:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (III): Delay 400 nanosecond for select to complete:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br /></div><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (IV): Inform the Controller that we use PIO mode:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_FEATURES, 0);&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// PIO mode.<br /></div><br /><br />Controller wants to know what do we think of the size of buffer!, we will allow him to know that:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (V): Tell the Controller the size of buffer:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA1, (words * 2) &amp; 0xFF);&nbsp; &nbsp;// Lower Byte of Sector Size.<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_LBA2, (words * 2)&gt;&gt;8);&nbsp; &nbsp;// Upper Byte of Sector Size.<br /></div><br /><br />Now we want to send the packet, we should first send the command &quot;Packet&quot;:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (VI): Send the Packet Command:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_write(channel, ATA_REG_COMMAND, ATA_CMD_PACKET);&nbsp; &nbsp;&nbsp; &nbsp;// Send the Command.<br /></div><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (VII): Waiting for the driver to finish or invoke an error:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;if (err = ide_polling(channel, 1)) return err;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Polling and return if error.<br /></div><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (VIII): Sending the packet data:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;asm(&quot;rep&nbsp; &nbsp;outsw&quot;::&quot;c&quot;(6), &quot;d&quot;(bus), &quot;S&quot;(atapi_packet));&nbsp; &nbsp;// Send Packet Data<br /></div><br /><br />here we cannot Poll, we should wait for an IRQ, then read the sectors. these two operations should be repeated as the number of sectors, but we are said before that numsects should be 1. But I have put a for loop, i don't know why.<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (IX): Recieving Data:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;for (i = 0; i &lt; numsects; i++) {<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_wait_irq();&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Wait for an IRQ.<br />&nbsp; &nbsp;&nbsp; &nbsp;if (err = ide_polling(channel, 1)) return err;&nbsp; &nbsp;&nbsp; &nbsp;// Polling and return if error.<br />&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;pushw %es&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;mov %%ax, %%es&quot;::&quot;a&quot;(selector));<br />&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;rep insw&quot;::&quot;c&quot;(words), &quot;d&quot;(bus), &quot;D&quot;(edi));// Receive Data.<br />&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;popw %es&quot;);<br />&nbsp; &nbsp;&nbsp; &nbsp;edi += (words*2);<br />&nbsp; &nbsp;}<br /></div><br /><br />Now we should wait for an IRQ and Poll for Busy and DRQ bits to be clear:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;// (X): Waiting for an IRQ:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;ide_wait_irq();<br /><br />&nbsp; &nbsp;// (XI): Waiting for BSY &amp; DRQ to clear:<br />&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;while (ide_read(channel, ATA_REG_STATUS) &amp; (ATA_SR_BSY | ATA_SR_DRQ));<br /><br />&nbsp; &nbsp;return 0; // Easy, ... Isn't it?<br />}<br /></div><br /><br /><span style="font-weight: bold">Standard Function For Reading from ATA/ATAPI Drive:</span><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_read_sectors(unsigned char drive, unsigned char numsects, unsigned int lba, unsigned short es, unsigned int edi) {<br /><br />&nbsp; &nbsp;// 1: Check if the drive presents:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;if (drive &gt; 3 || ide_devices&#91;drive&#93;.reserved == 0) package&#91;0&#93; = 0x1;&nbsp; &nbsp;&nbsp; &nbsp;// Drive Not Found!<br /><br />&nbsp; &nbsp;// 2: Check if inputs are valid:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;else if (((lba + numsects) &gt; ide_devices&#91;drive&#93;.size) &amp;&amp; (ide_devices&#91;drive&#93;.type == IDE_ATA))<br />&nbsp; &nbsp;&nbsp; &nbsp;package&#91;0&#93; = 0x2;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Seeking to invalid position.<br /><br />&nbsp; &nbsp;// 3: Read in PIO Mode through Polling &amp; IRQs:<br />&nbsp; &nbsp;// ============================================<br />&nbsp; &nbsp;else {<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char err;<br />&nbsp; &nbsp;&nbsp; &nbsp;if (ide_devices&#91;drive&#93;.type == IDE_ATA)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;err = ide_ata_access(ATA_READ, drive, lba, numsects, es, edi);<br />&nbsp; &nbsp;&nbsp; &nbsp;else if (ide_devices&#91;drive&#93;.type == IDE_ATAPI)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;for (i = 0; i &lt; numsects; i++)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;err = ide_atapi_read(drive, lba + i, 1, es, edi + (i*2048));<br />&nbsp; &nbsp;&nbsp; &nbsp;package&#91;0&#93; = ide_print_error(drive, err);<br />&nbsp; &nbsp;}<br />}<br />// package&#91;0&#93; is an entry of array, this entry specifies the Error Code, you can replace that.<br /></div><br /><br /><span style="font-weight: bold">Standard Function to write to ATA Drive:</span><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_write_sectors(unsigned char drive, unsigned char numsects, unsigned int lba, unsigned short es, unsigned int edi) {<br /><br />&nbsp; &nbsp;// 1: Check if the drive presents:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;if (drive &gt; 3 || ide_devices&#91;drive&#93;.reserved == 0) package&#91;0&#93; = 0x1;&nbsp; &nbsp;&nbsp; &nbsp;// Drive Not Found!<br />&nbsp; &nbsp;// 2: Check if inputs are valid:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;else if (((lba + numsects) &gt; ide_devices&#91;drive&#93;.size) &amp;&amp; (ide_devices&#91;drive&#93;.type == IDE_ATA))<br />&nbsp; &nbsp;&nbsp; &nbsp;package&#91;0&#93; = 0x2;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Seeking to invalid position.<br />&nbsp; &nbsp;// 3: Read in PIO Mode through Polling &amp; IRQs:<br />&nbsp; &nbsp;// ============================================<br />&nbsp; &nbsp;else {<br />&nbsp; &nbsp;&nbsp; &nbsp;unsigned char err;<br />&nbsp; &nbsp;&nbsp; &nbsp;if (ide_devices&#91;drive&#93;.type == IDE_ATA)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;err = ide_ata_access(ATA_WRITE, drive, lba, numsects, es, edi);<br />&nbsp; &nbsp;&nbsp; &nbsp;else if (ide_devices&#91;drive&#93;.type == IDE_ATAPI)<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;err = 4; // Write-Protected.<br />&nbsp; &nbsp;&nbsp; &nbsp;package&#91;0&#93; = ide_print_error(drive, err);<br />&nbsp; &nbsp;}<br />}<br /></div><br /><br /><span style="font-weight: bold">Standard Function to eject ATAPI Drive:</span><br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ide_atapi_eject(unsigned char drive) {<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;channel&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.channel;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;slavebit&nbsp; &nbsp;&nbsp; &nbsp;= ide_devices&#91;drive&#93;.drive;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;bus&nbsp; &nbsp;&nbsp; &nbsp;= channels&#91;channel&#93;.base;<br />&nbsp; &nbsp;unsigned int&nbsp; &nbsp;words&nbsp; &nbsp;&nbsp; &nbsp;= 2048 / 2;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Sector Size in Words.<br />&nbsp; &nbsp;unsigned char&nbsp; err = 0;<br />&nbsp; &nbsp;ide_irq_invoked = 0;<br /><br />&nbsp; &nbsp;// 1: Check if the drive presents:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;if (drive &gt; 3 || ide_devices&#91;drive&#93;.reserved == 0) package&#91;0&#93; = 0x1;&nbsp; &nbsp;&nbsp; &nbsp;// Drive Not Found!<br />&nbsp; &nbsp;// 2: Check if drive isn't ATAPI:<br />&nbsp; &nbsp;// ==================================<br />&nbsp; &nbsp;else if (ide_devices&#91;drive&#93;.type == IDE_ATA) package&#91;0&#93; = 20;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Command Aborted.<br />&nbsp; &nbsp;// 3: Eject ATAPI Driver:<br />&nbsp; &nbsp;// ============================================<br />&nbsp; &nbsp;else {<br />&nbsp; &nbsp;&nbsp; &nbsp;// Enable IRQs:<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_CONTROL, channels&#91;channel&#93;.nIEN = ide_irq_invoked = 0x0);<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (I): Setup SCSI Packet:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 0&#93; = ATAPI_CMD_EJECT;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 1&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 2&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 3&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 4&#93; = 0x02;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 5&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 6&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 7&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 8&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91; 9&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91;10&#93; = 0x00;<br />&nbsp; &nbsp;&nbsp; &nbsp;atapi_packet&#91;11&#93; = 0x00;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (II): Select the Drive:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_HDDEVSEL, slavebit&lt;&lt;4);<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (III): Delay 400 nanosecond for select to complete:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_read(channel, ATA_REG_ALTSTATUS); // Reading Alternate Status Port wastes 100ns.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (IV): Send the Packet Command:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;ide_write(channel, ATA_REG_COMMAND, ATA_CMD_PACKET);&nbsp; &nbsp;&nbsp; &nbsp;// Send the Command.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (V): Waiting for the driver to finish or invoke an error:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;if (err = ide_polling(channel, 1));&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Polling and stop if error.<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;// (VI): Sending the packet data:<br />&nbsp; &nbsp;&nbsp; &nbsp;// ------------------------------------------------------------------<br />&nbsp; &nbsp;&nbsp; &nbsp;else {<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;asm(&quot;rep&nbsp; &nbsp;outsw&quot;::&quot;c&quot;(6), &quot;d&quot;(bus), &quot;S&quot;(atapi_packet));// Send Packet Data<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ide_wait_irq();&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Wait for an IRQ.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;err = ide_polling(channel, 1);&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// Polling and get error code.<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;if (err == 3) err = 0; // DRQ is not needed here.<br />&nbsp; &nbsp;&nbsp; &nbsp;}<br />&nbsp; &nbsp;&nbsp; &nbsp;package&#91;0&#93; = ide_print_error(drive, err); // Return;<br /><br />&nbsp; &nbsp;}<br />}<br /></div><br /><br />Now you can have your ODD is ejected:<br /><img src="http://www.sennir.co.uk/images/pundit/P9140022_edited-1.jpg" alt="Image" /><br /><br />I hope the tutorial to be easy for you and to be understanded, any one wants to write an IDE Drive, he can use the code in the tutorial.<br />Any comments, questions, or any thing, i'm ready to hear from you.<br />and thanx for anyone interested in reading the tutorial.</div>
+
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=10195">iocoder</a> on Sun Nov 08, 2009 8:38 am, edited 3 times in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167762"></a>
+				<b class="postauthor">f2</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167762#p167762"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 8:09 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=9817_1472421638.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Mon Jun 15, 2009 10:01 am<br /><b>Posts:</b> 294<br /><b>Location:</b> France
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Very interesting tutorial. But it could be in the Wiki.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Working on f2/OS...</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=9817"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167763"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167763#p167763"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 8:12 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanx a lot tommy, for your reply.<br />but i'm waiting for replies and comments, as they will correct any thing wrong or unclear in the article.</div>
+
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=10195">iocoder</a> on Thu Nov 05, 2009 12:49 pm, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167764"></a>
+				<b class="postauthor">Andr3w</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167764#p167764"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 8:14 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/avatars/gallery/abstract/ava09.gif" width="50" height="50" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Jun 09, 2009 4:09 am<br /><b>Posts:</b> 76<br /><b>Location:</b> Somewhere
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br />thanks for this great tutorial.<br /><br />What about placing it in the Wiki?<br /><br /><span style="font-weight: bold">UPDATE:</span> sorry, haven't noticed previous posts 'cause they weren't posted at the time I started writing my post <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /><br /><br /> <img src="./images/smilies/icon_arrow.gif" alt=":arrow:" title="Arrow" />  Andrew</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=9794"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167765"></a>
+				<b class="postauthor">Love4Boobies</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167765#p167765"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 9:15 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=4533_1319210785.jpg" width="80" height="67" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Fri Mar 07, 2008 5:36 pm<br /><b>Posts:</b> 1929<br /><b>Location:</b> Bucharest, Romania
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">qandrew wrote:</div><div class="quotecontent"><span style="font-weight: bold">UPDATE:</span> sorry, haven't noticed previous posts 'cause they weren't posted at the time I started writing my post <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /></div><br /><br />phpBB warns you if someone else posts before you do <img src="./images/smilies/icon_wink.gif" alt=":wink:" title="Wink" /><br /><br />@OP: Good job but it looks like an article rather than a tutorial. Finish it, use proper sentences and punctuation and it'll be ready for the wiki <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /><br /><br />PS: OSDev'ers could care less about cables and connectors.</div>
+
+					
+						<span class="postbody"><br />_________________<br />&quot;Computers in the future may weigh no more than 1.5 tons.&quot;, Popular Mechanics (1949)<br />[ <a href="http://www.projectudi.org/" class="postlink">Project UDI</a> ]</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4533"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167766"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167766#p167766"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 9:28 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanx all for your posts and updates!<br /><br /><div class="quotetitle">Love4Boobies wrote:</div><div class="quotecontent">@OP: Good job but it looks like an article rather than a tutorial. Finish it, use proper sentences and punctuation and it'll be ready for the wiki <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /></div><br />Now i have finished the tutorial, but i need comments and replies.<br /><br /><div class="quotetitle">Love4Boobies wrote:</div><div class="quotecontent">PS: OSDev'ers could care less about cables and connectors<br /></div><br />You are right, even me, i don't care about that, but i wanted to put any information i know about IDE.</div>
+
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=10195">iocoder</a> on Thu Nov 05, 2009 12:50 pm, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167770"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167770#p167770"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 11:43 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><span style="font-weight: bold">I have finished Writing the tutorial, the tutorial is now complete and ready to be read from start to end, I'm waiting for your replies.</span></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167771"></a>
+				<b class="postauthor">jal</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167771#p167771"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 1:24 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 31, 2007 9:09 am<br /><b>Posts:</b> 1382
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Well, you say that it doesn't matter whether the IDE is connected parallel or serial. I've no intimate knowledge of the subject, but I've always understood that it <span style="font-style: italic">does</span> matter, at least if you want to use advanced commands. And I'd really want some tutorial about the use of DMA, as PIO sucks.<br /><br /><br />JAL</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4106"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167773"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167773#p167773"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Nov 05, 2009 1:45 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">jal wrote:</div><div class="quotecontent">Well, you say that it doesn't matter whether the IDE is connected  <img src="./images/smilies/icon_razz.gif" alt=":P" title="Razz" />  parallel or serial. I've no intimate knowledge of the subject, but I've always understood that it <span style="font-style: italic">does</span> matter, at least if you want to use advanced commands</div><br /><br />Yes it matters, as the speed of Serial Drives is greater than Parallel.<br />In the tutorial, i meant that the way that you send the commands to a Parallel Drive, is the same way of sending the commands to a serial one. if you are going to use advanced features of Serial-ATA Feature-Set, here you are required to know whether this drive is Parallel or Serial. Also if you refer to the standard of &quot;ATA-ATAPI-8 Specification&quot;, you will find no-difference in commands between Parallel and Serial Drives.<br /><br /><div class="quotetitle">jal wrote:</div><div class="quotecontent">And I'd really want some tutorial about the use of DMA, as PIO sucks.<br /></div><br /><br />It is really hard to find a tutorial or an article about the use of DMA in ATA, but really if i'm able to write such a tutorial, i'll upload it immediatly, believe me.<br /><br />also this page is about ATA DMA:  <a href="http://wiki.osdev.org/ATA/ATAPI_using_DMA" class="postlink">http://wiki.osdev.org/ATA/ATAPI_using_DMA</a><br />notice also that the main reason of this topic, is to help people who doesn't know much about IDE Programming, so if i started using DMA This would be very hard for them.<br /><br /><br />Thanx a lot.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167795"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167795#p167795"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 2:04 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">Tommy wrote:</div><div class="quotecontent">Very interesting tutorial. But it could be in the Wiki.</div><br /><div class="quotetitle">qandrew wrote:</div><div class="quotecontent">What about placing it in the Wiki?</div><br /><div class="quotetitle">Love4Boobies wrote:</div><div class="quotecontent">@OP: Good job but it looks like an article rather than a tutorial. Finish it, use proper sentences and punctuation and it'll be ready for the wiki</div><br />Could I know how do i place that in the wiki????</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167797"></a>
+				<b class="postauthor">jal</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167797#p167797"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 10:21 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Wed Oct 31, 2007 9:09 am<br /><b>Posts:</b> 1382
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">mostafazizo wrote:</div><div class="quotecontent">Could I know how do i place that in the wiki????</div><br /><br />On your userpage, you must sign in for the wiki group (user control panel -&gt; edit memberships -&gt; wiki -&gt; join selected -&gt; submit). Then login to the wiki using your username / password of the forum. I'm not sure whether there's a delay between signing on and being able to login. After login, you can edit away!<br /><br /><br />JAL</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=4106"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167798"></a>
+				<b class="postauthor">earlz</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167798#p167798"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 12:18 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Jul 07, 2005 11:00 pm<br /><b>Posts:</b> 1544
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I haven't read all of the tutorial, but what I have read is very good.. a few typos here and there but thats understandable (I has an IDE cable).. <br /><br />It's things like this that make me want to go back into my old AlloyOS and start doing some hacking.. lol</div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://lastyearswishes.com" class="postlink">My new NEW blag</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167800"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167800#p167800"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 1:04 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">jal wrote:</div><div class="quotecontent">On your userpage, you must sign in for the wiki group (user control panel -&gt; edit memberships -&gt; wiki -&gt; join selected -&gt; submit). Then login to the wiki using your username / password of the forum.</div><br /><br />Thanx a lot jal, i have managed to log in the wiki, and i have added the link under &quot;Threads&quot; Section:<br /><a href="http://wiki.osdev.org/ATA_PIO_Mode#Threads" class="postlink">http://wiki.osdev.org/ATA_PIO_Mode#Threads</a><br /><br /><div class="quotetitle">jal wrote:</div><div class="quotecontent">I'm not sure whether there's a delay between signing on and being able to login. After login, you can edit away!</div><br /><br />no delay yet.<br /><br /><div class="quotetitle">earlz wrote:</div><div class="quotecontent">a few typos here and there</div><br /><br />i think these typos because of my poor english! hahaha lol...<br />I shall revise that more than one time.<br /><br />Regards,<br />Mostafa</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p167801"></a>
+				<b class="postauthor">earlz</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167801#p167801"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 1:08 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Jul 07, 2005 11:00 pm<br /><b>Posts:</b> 1544
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">mostafazizo wrote:</div><div class="quotecontent"><div class="quotetitle">earlz wrote:</div><div class="quotecontent">a few typos here and there</div><br /><br />i think these typos because of my poor english! hahaha lol...<br />I shall revise that more than one time.<br /><br />Regards,<br />Mostafa</div><br /><br />Well if you put this article on the wiki(not just a link to this thread) then it will be able to be corrected by everyone so that you don't have to worry about it so much..</div>
+
+					
+						<span class="postbody"><br />_________________<br /><a href="http://lastyearswishes.com" class="postlink">My new NEW blag</a></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p167802"></a>
+				<b class="postauthor">iocoder</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: IDE Tutorial</div><div style="float: right;"><a href="./viewtopic.php?p=167802#p167802"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat Nov 07, 2009 1:11 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=10195_1451751466.jpg" width="80" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Oct 18, 2009 5:47 pm<br /><b>Posts:</b> 173<br /><b>Location:</b> Alexandria, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">earlz wrote:</div><div class="quotecontent">Well if you put this article on the wiki(not just a link to this thread) then it will be able to be corrected by everyone so that you don't have to worry about it so much.</div><br /><br />So you mean to create a topic with this subject in the wiki? i'm really ready for that, what do you think the title should be and which category is suitable?</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=10195"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;">&nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=21151&amp;start=0"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=21151"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>3</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 40 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"><b><a href="#" onclick="jumpto(); return false;" title="Click to jump to page…">Go to page</a> <strong>1</strong><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=21151&amp;start=15">2</a><span class="page-sep">, </span><a href="./viewtopic.php?f=1&amp;t=21151&amp;start=30">3</a> &nbsp;<a href="./viewtopic.php?f=1&amp;t=21151&amp;start=15">Next</a></b></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours </p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Google [Bot]</span> and 9 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=21151"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

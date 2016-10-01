@@ -1,0 +1,221 @@
+<html>
+<head>
+<title>CSE 451 Spring 2009:  Project 3 (full)</title>
+  <LINK REL="stylesheet" HREF="/home/cse.css" TYPE="text/css">
+ <style>
+  @import url("../../style.css");
+ </style>
+</head>
+<body>
+<h2>Project 3 full - File System Implementation</h2>
+<p>
+<b>Out:</b> Friday, May 29th<br>
+<b>Due:</b> Friday, June 5th, at 11:59pm.  The submission is entirely electronic.
+
+<h3>Overview</h3>
+<blockquote>
+The starting point for this assignment is a simplified file system,
+<tt>cse451fs</tt>, 
+the design of which imposes strict limits on both the number of files that can 
+be stored and the maximum size of any one file.  In particular, no matter 
+how big a disk you might have, this file system can hold only about 8,000 
+distinct files, no file can be larger than 10KB, and file names cannot be 
+longer than 30 characters.&nbsp; These restrictions result from the choice of 
+on-disk data structures used to find files and the data blocks of a given
+file, that is, the superblock, inode, and directory entry representations.
+<p>
+Here are the major steps involved in this part of the assignment:
+<ol>
+<li>
+Make sure that you, individually, understand the mechanical aspects of the 
+"development environment" you'll be working in.
+These include how to build the file system code,
+how to format and mount the partition we're devoting to your file system,
+and how to run and test.
+A description of these mechanical aspects can be found 
+<a href="mechanics.html">here</a>.&nbsp;&nbsp;
+<p>
+<li>
+Improve each of the three limitations cited above:
+<br>
+<ul>
+<li>Increase the maximum size of files (10 points).
+<li>Allow for longer file names (10 points).
+<li>Extra credit: allow for more files (5 points).
+</ul>
+
+Design how you want to implement these file system modifications on
+disk: how you will represent your directories on disk, how file data
+is indexed, etc.  There can still be a limit on any of these
+properties, but <i>your improvement needs to be more than simply
+altering a program constant.</i> For full credit, you must support a
+maximum file size of at least 256KB, which can be achieved with a
+single-indirect strategy as discussed in lecture.
+
+<p>
+
+If you encounter any inexplicable behavior while testing your file
+system, keep in mind that it might be caused by a limitation of the
+testing program and not your file system.  For example, <tt>ls</tt>
+only supports 256 character file names, so if you create a longer name
+with your file system, ls will <i>not</i> show it properly.  In
+general, a good sanity check is to make sure your tests work on
+regular file systems (e.g., on the parts of the VMWare machine's file system
+that is not running your file system, or on <tt>forkbomb</tt>)
+before running them on your cse451fs.
+<p></p>
+
+<!--If you still have time left over, you may do 
+additional improvements for up to 10% extra
+credit on this project.  Some ideas:
+<ul>
+<li>Make the max file size arbitrarily large
+<li>Make the file system more efficient in terms of space or
+CPU.
+</ul>
+-->
+<p>
+<li>
+Alter the skeleton code to implement your file system.  There are two major
+components to this.
+One is that the user level program <tt>mk451fs</tt> must be changed to 
+initialize the raw disk device with a valid, empty file system using your new 
+on-disk data structures.  The other is to change the file system source
+itself.
+</li>
+</blockquote>
+
+<h3>Details</h3>
+<ul>
+<li>
+While real file systems are very concerned with performance, in your
+implementation you can largely ignore it.  That is, do <b>not</b>
+spend a great deal of effort to produce a faster implementation.
+(For one thing, because we're running on virtual machines on top of
+Windows, it's unlikely you'd be able to measure much
+difference.)
+<li>
+A description of the skeleton version of the <tt>cse451fs</tt> file system is
+<a href="skeletonImplementation.htm">here</a>.
+<li>
+A description of the <tt>ext2</tt> file system and <tt>vfs</tt> (Virtual File 
+System) is <a href="http://www.cs.washington.edu/education/courses/cse451/TLKCopy/fs/filesystem.html">
+here</a>.
+Note that <tt>vfs</tt>, in particular, is fluid, and the current
+implementation may have evolved beyond this documentation.
+<li>
+Potentially more up-to-date documentation is distributed with the 
+linux source.  For <tt>vfs</tt>, have a look at
+<tt>linux.../Documentation/filesystems/vfs.txt</tt>.
+<li>
+A description of how dynamically loaded modules are handled in Linux is <a href="http://www.cs.washington.edu/education/courses/cse451/TLKCopy/modules/modules.html">
+here</a>.
+</li>
+</ul>
+<h3>Hints/Starting Points</h3>
+<blockquote>
+<li>
+Large Files:
+<ul>
+<li>
+An important function for creating and accessing the blocks of a file (that you 
+will almost certainly need to modify) is <tt>get_block()</tt> in <tt>super.c</tt>.
+<li>
+Look at <tt>cse451_truncate()</tt> in <tt>file.c</tt> in order to handle file 
+truncations (e.g., deleting a file uses this).&nbsp; You don't need to worry 
+about this until you are sure that you can create and access your files.</li>
+</ul>
+<li>
+Long File Names:
+<ul>
+<li>
+All the functions that you will need to modify for your kernel module are in <tt>dir.c</tt>.
+<li>
+Start with <tt>cse451_add_entry()</tt> and <tt>cse451_readdir()</tt> to create 
+and read directory entries with long file names.&nbsp; If listing with <tt>ls</tt>
+doesn't appear correct, check how the directory structure looks on disk (using <tt>hexdump</tt>
+or <tt>xxd</tt>).</li>
+</ul>
+<li>
+General:
+<ul>
+<li>
+If you modify any of the data structures in <tt>cse451fs.h</tt>, you will 
+probably need to modify <tt>mk451fs</tt> accordingly.
+<li>
+As well as formating (initializing) a <tt>cse451fs</tt> partition,
+<tt>mk451fs</tt> can be used to dump readable forms of the raw data on
+the disk, as a debugging aid.  Try <tt>./mk451fs --help</tt> for more
+information.  (Note that because <tt>vfs</tt> performs delayed
+write-backs of dirty blocks, and <tt>mk451fs</tt> is going around the
+file system (directly accessing the hardware device), there can be
+periods of up to a few seconds when you might see un-updated blocks
+using the <tt>mk451fs</tt> dump facilities.)
+<li>
+You <b>might</b> find the following UNIX utilities useful in your testing:
+<tt>dd, df, du, diff, head/tail, hexdump</tt>.
+</ul>
+</li>
+</blockquote>
+
+<h3>Writeup</h3>
+<blockquote>
+<p>Please turn in a file called <tt>writeup.txt</tt> or <tt>writeup.htm</tt> that addresses the following:</p>
+<ol>
+<li>
+Describe the design for your file system modifications.&nbsp;  Include enough details so that we 
+can understand your code based on this description.  This part might also
+include a discussion of other approaches you considered but rejected.
+<li>
+What concurrency-related issues does a file system have to deal with? 
+You probably didn't deal with any of it directly when implementing your 
+extentions, but what did you notice when looking at the rest of the code?
+<li>
+What methodology did you follow in order to test your file system (for 
+functionality)?
+<li>
+Does your implementation work? If not, what parts work and what parts don't? 
+How would you fix it if you had more time?
+<li>
+What do you like best about your design?&nbsp; What do you like least about 
+it?&nbsp; How would you improve your design?</li>
+<!--
+<li>If you did any extra credit, describe what you did. Make sure to describe how 
+you implemented it, and how it solves the problem you set out to fix.
+--></ol>
+<p>Aim to fit this report into about 2 pages.
+The file you submit should be in some easy-to-read format, e.g.,
+plain (ASCII) text or HTML or pdf.
+It should 
+contain the names of all the people who worked on the project 
+as well as your group name.
+<p>
+Your writeup will be turned in <b>electronically</b>.
+</blockquote>
+
+<h3>Turnin</h3>
+<blockquote>
+You will be turning in 4 files: 
+<ul>
+<li>A tar.gz file containing all of your modified sources
+<li>Your compiled <tt>mk451fs</tt> program
+<li>Your compiled fs module, <tt>cse451fs.ko</tt>
+<li>A single write-up file, <tt>writeup</tt>
+</ul>
+<p>You <i>must</i> compile your <tt>mk451fs</tt> and <tt>cse451fs.ko</tt> 
+files on forkbomb. Do not use a different machine or compiler for this.
+
+<p>To create the source archive file, do a <tt>"/cse451/projects/makedist"</tt> from your top level project directory.
+
+<p>Use the <tt>turnin(1L)</tt> program under project name <tt>project3</tt>.
+Note: <tt>turnin</tt> will not work on forkbomb, 
+so you'll need to use <tt>attu</tt>.
+
+</p>
+<p>
+<tt>turnin -c cse451 -v -p project3 roxana-project3</tt> <br><br>
+where roxana-project3 is the directory containing all the files for the project.
+</blockquote>
+
+</body>
+</html>

@@ -1,0 +1,965 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+  "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" version="XHTML+RDFa 1.0" dir="ltr"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:fb="http://www.facebook.com/2008/fbml"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:sioc="http://rdfs.org/sioc/ns#"
+  xmlns:sioct="http://rdfs.org/sioc/types#"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="canonical" href="http://www.slashroot.in/inode-and-its-structure-linux" />
+<link rel="shortcut icon" href="http://www.slashroot.in/sites/default/files/slashroot%20favicon.png" type="image/png" />
+<link rel="shortlink" href="http://www.slashroot.in/inode-and-its-structure-linux" />
+<meta property="fb:app_id" content="" />
+<meta property="og:title" content="inode and its structure in linux" />
+<meta property="og:site_name" content="slashroot.in" />
+<meta name="description" content="Inode tutorial in linux: An in depth analysis of inode in linux with its contents and difference between inode of a file and directory. How is a file size addressed in linux in the inode." />
+  <title>inode and its structure in linux</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1, user-scalable=no" />
+    
+  <link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_GqCqCmGspWzZsDVTgkFoFb2eEt4xaByq4GFNcVi8QG4.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_mAy-MSmdUkGqjOtk4lVczXme8cr-j2Yy5coQdz504BQ.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_NtOTtvlH6zw9Yg-M_J5fFIAf9T4r8pDC3_cCtJ6b-lU.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_D4_dhkptfvS2XFXMJfn9kSEuor4G48I4Pk0asSFumIE.css" media="screen,projection" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_4xPHSxvWnvZQhS4mEWNK1GC06U9SZeIPVejrE3w03fU.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_Kxvv5Q7rNS4nxRPMdYDXB0mH_sLr9g5ZycKCQcfx6FE.css" media="print" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_20s53WOBYii2UTLLOUMTP9PoVd-DY0uBcZpL5DQYbew.css" media="(min-width: 479px)" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_BvmFv7gSj-xAh36hR8wdAQFoTAgNs71JXhfMvI77-BA.css" media="(min-width: 767px)" />
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_YqEuZ-snY_FFwfRqXAPPfCv3CwxMjooCEJ-O5sQ0bDw.css" media="all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)" />
+
+<!--[if lt IE 9]>
+<link type="text/css" rel="stylesheet" href="http://www.slashroot.in/sites/default/files/css/css_P6BG7Svq1lae_rnilrSh69hXLIm18N_8e-jeOYpGlzo.css" media="all" />
+<![endif]-->
+  <script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_UWQINlriydSoeSiGQxToOUdv493zEa7dpsXC1OtYlZU.js"></script>
+<script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_Bt48dCbG2qxHdrcn99bLRnxO8fSsUdDZRHLTIphG4SU.js"></script>
+<script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_E0m0AhQda-Y7Pno3axfFASCjCk1sBU0NKh9doX_gG7w.js"></script>
+<script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_eNP4G1Oe7MyZHt_mZAP_IIGUr_IjcjXQ9KpW9wJbxkw.js"></script>
+<script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_ZvRUJXMTQ0AK-_cMufEUZsAL6kRQwjunywFDe6SEIAk.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"news_center","theme_token":"-zm0mS0Q8taW8ZfTt0bnmgaGCT3xym4tXTYJrXBV-x8","js":{"sites\/all\/modules\/syntaxhighlighter\/syntaxhighlighter.min.js":1,"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/ui\/jquery.ui.core.min.js":1,"misc\/ui\/jquery.ui.widget.min.js":1,"modules\/syntaxhighlighter_insert\/syntaxhighlighter_insert.utils.js":1,"modules\/syntaxhighlighter_insert\/syntaxhighlighter_insert.js":1,"misc\/ui\/jquery.ui.button.min.js":1,"misc\/ui\/jquery.ui.mouse.min.js":1,"misc\/ui\/jquery.ui.draggable.min.js":1,"misc\/ui\/jquery.ui.position.min.js":1,"misc\/ui\/jquery.ui.resizable.min.js":1,"misc\/ui\/jquery.ui.dialog.min.js":1,"sites\/all\/modules\/views\/js\/jquery.ui.dialog.patch.js":1,"misc\/jquery.cookie.js":1,"misc\/jquery.form.js":1,"misc\/form.js":1,"misc\/ajax.js":1,"sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shCore.js":1,"sites\/all\/libraries\/syntaxhighlighter_3.0.83\/scripts\/shAutoloader.js":1,"sites\/default\/files\/syntaxhighlighter.autoloader.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/colorbox\/styles\/stockholmsyndrome\/colorbox_style.js":1,"modules\/jquerymenu\/jquerymenu.js":1,"misc\/progress.js":1,"sites\/all\/modules\/fivestar\/js\/fivestar.ajax.js":1,"sites\/all\/modules\/fivestar\/js\/fivestar.js":1,"misc\/textarea.js":1,"modules\/filter\/filter.js":1,"modules\/mollom\/mollom.js":1,"sites\/all\/themes\/news_center\/js\/news_center.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.button.css":1,"misc\/ui\/jquery.ui.resizable.css":1,"misc\/ui\/jquery.ui.dialog.css":1,"modules\/comment\/comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/mollom\/mollom.css":1,"modules\/node\/node.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/youtube\/css\/youtube.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"modules\/codefilter\/codefilter.css":1,"sites\/all\/modules\/colorbox\/styles\/stockholmsyndrome\/colorbox_style.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"modules\/geshifilter\/geshifilter.css":1,"modules\/jquerymenu\/jquerymenu.css":1,"sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shCore.css":1,"sites\/all\/libraries\/syntaxhighlighter_3.0.83\/styles\/shThemeMDUltra.css":1,"modules\/syntaxhighlighter_insert\/syntaxhighlighter_insert_wysiwyg\/syntaxhighlighter_insert_wysiwyg.css":1,"sites\/all\/modules\/fivestar\/widgets\/outline\/outline.css":1,"sites\/all\/modules\/widgets\/widgets.css":1,"sites\/all\/modules\/fivestar\/css\/fivestar.css":1,"modules\/filter\/filter.css":1,"sites\/all\/themes\/news_center\/css\/blueprint\/screen.css":1,"sites\/all\/themes\/news_center\/css\/wireframes.css":1,"sites\/all\/themes\/news_center\/css\/layout-fixed.css":1,"sites\/all\/themes\/news_center\/css\/page-backgrounds.css":1,"sites\/all\/themes\/news_center\/css\/tabs.css":1,"sites\/all\/themes\/news_center\/css\/pages.css":1,"sites\/all\/themes\/news_center\/css\/blocks.css":1,"sites\/all\/themes\/news_center\/css\/navigation.css":1,"sites\/all\/themes\/news_center\/css\/views-styles.css":1,"sites\/all\/themes\/news_center\/css\/nodes.css":1,"sites\/all\/themes\/news_center\/css\/comments.css":1,"sites\/all\/themes\/news_center\/css\/forms.css":1,"sites\/all\/themes\/news_center\/css\/fields.css":1,"sites\/all\/themes\/news_center\/css\/mobile-portrait-layout.css":1,"sites\/all\/themes\/news_center\/css\/news_center.css":1,"sites\/all\/themes\/news_center\/css\/blueprint\/print.css":1,"sites\/all\/themes\/news_center\/css\/mobile-landscape-layout.css":1,"sites\/all\/themes\/news_center\/css\/tablet-layout.css":1,"sites\/all\/themes\/news_center\/css\/screen-layout.css":1,"sites\/all\/themes\/news_center\/css\/blueprint\/ie.css":1,"sites\/all\/themes\/news_center\/css\/ie-mobile-landscape-layout.css":1,"sites\/all\/themes\/news_center\/css\/ie-tablet-layout.css":1,"sites\/all\/themes\/news_center\/css\/ie-screen-layout.css":1}},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"jquerymenu":{"hover":0,"animate":0,"edit_link":0,"click_to_expand":0},"syntaxhighlighter":{"useAutoloader":true},"syntaxhighlighter_insert_wysiwyg":{"current_form":"form-f8s1ArpvDpeKrVLOU2IRw0J3Ekkb4SWg3lDuCPZbMtA"},"urlIsAjaxTrusted":{"\/linux-iptables-firewall-tutorial-getting-started-basics":true,"\/system\/ajax":true,"\/inode-and-its-structure-linux":true,"\/comment\/reply\/110":true},"ajax":{"edit-vote--2":{"callback":"fivestar_ajax_submit","event":"change","url":"\/system\/ajax","submit":{"_triggering_element_name":"vote"}}},"wysiwyg":{"triggers":{"edit-comment-body-und-0-format--2":{"field":"edit-comment-body-und-0-value","formatplain_text":{"editor":"none","status":1,"toggle":1,"resizable":1}}}}});
+//--><!]]>
+</script>
+</head>
+<body class="html not-front not-logged-in one-sidebar sidebar-second page-node page-node- page-node-110 node-type-article section-inode-and-its-structure-linux" >
+  <div id="skip-link">
+    <a href="#main-menu" class="element-invisible element-focusable">Jump to Navigation</a>
+  </div>
+    
+<div id="page-wrapper" class="container" ><div id="page">
+		
+		  
+	
+  <div id="header"><div class="section clearfix">
+
+          <a href="/" title="Home" rel="home" id="logo"><img src="http://www.slashroot.in/sites/all/themes/news_center/logo.png" alt="Home" /></a>
+	  <a href="/" title="Home" rel="home" id="mobile-logo"><img src="/sites/all/themes/news_center/logo_mobile.png" alt="Home" /></a>
+    
+    	
+	  <div class="region region-top-area">
+    <div id="block-multiblock-1" class="block block-multiblock first last odd">
+
+      
+  <div class="content">
+    <form action="/linux-iptables-firewall-tutorial-getting-started-basics" method="post" id="search-block-form--2" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--4">Search </label>
+ <input title="Enter the terms you wish to search for." type="text" id="edit-search-block-form--4" name="search_block_form" value="" size="15" maxlength="128" class="form-text" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions--3"><input type="submit" id="edit-submit--3" name="op" value="Search" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-Dfj-Zjr6F2XA7_doTBX46Y2g6pNFczqE-_y8Fa1e0Rg" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+    
+
+      <div class="region region-header">
+    <div id="block-menu-menu-news-categories" class="block block-menu first last odd">
+
+      
+  <div class="content">
+    <ul class="menu"><li class="first leaf"><a href="/" title="">Home Page</a></li>
+<li class="leaf"><a href="http://slashroot.in/about-us" title="About Us">About Us</a></li>
+<li class="leaf"><a href="/contact" title="Leave a message for us">Contact Us</a></li>
+<li class="leaf"><a href="http://slashroot.in/archive" title="A Place to Find all our blog posts">Archive</a></li>
+<li class="leaf active-trail"><a href="/taxonomy/term/2" title="Archives" class="active-trail">Archives</a></li>
+<li class="leaf"><a href="/security-notes" title="Security Notes">Security Notes</a></li>
+<li class="leaf"><a href="/technical-news" title="Technical News">Technical News</a></li>
+<li class="last leaf"><a href="/networking" title="Networking">Networking</a></li>
+</ul>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+
+  </div></div><!-- /.section, /#header -->
+
+  <div id="main-wrapper"><div id="main" class="clearfix">
+
+    <div id="content" class="column"><div class="section">
+            <div class="breadcrumb"><h2 class="element-invisible">You are here</h2><a href="/">Home</a> › <a href="/taxonomy/term/2">Archives</a> › inode and its structure in linux › </div>	  
+	  	  
+      <a id="main-content"></a>
+                    <h1 class="title" id="page-title">inode and its structure in linux</h1>
+                                    	  	  	          <div class="region region-content">
+    <div id="block-block-23" class="block block-block first odd">
+
+      
+  <div class="content">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Top Leader Board -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-9991091909130716"
+     data-ad-slot="6332646983"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>  </div>
+
+</div><!-- /.block -->
+<div id="block-widgets-s-addthis-share" class="block block-widgets even">
+
+      
+  <div class="content">
+    <div id="widgets-element-addthis-share" class="widgets widgets-set widgets-set-horizontal widgets-style-horizontal"><div id="widgets-element-socialmedia_addthis-tweet" class="widgets widgets-element widgets-element-horizontal widgets-style-horizontal"><a class="addthis_button_tweet" tw:count="vertical" tw:via="MMThemes.com"></a></div><div id="widgets-element-socialmedia_addthis-facebook-like" class="widgets widgets-element widgets-element-horizontal widgets-style-horizontal"><a class="addthis_button_facebook_like" fb:like:layout="box_count" ></a></div><div id="widgets-element-socialmedia_addthis-google-plusone" class="widgets widgets-element widgets-element-horizontal widgets-style-horizontal"><a class="addthis_button_google_plusone" g:plusone:size="tall"></a></div><div id="widgets-element-socialmedia_addthis-addthis-counter" class="widgets widgets-element widgets-element-horizontal widgets-style-horizontal"><a class="addthis_counter"></a></div><div class="widgets-clear"></div></div><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username="></script>  </div>
+
+</div><!-- /.block -->
+<div id="block-system-main" class="block block-system last odd">
+
+      
+  <div class="content">
+    <div id="node-110" class="node node-article node-promoted view-mode-full clearfix" about="/inode-and-its-structure-linux" typeof="sioc:Item foaf:Document">
+
+   
+    <div class="user-picture">
+    <img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/thumbnail/public/pictures/picture-181-1382180258.png?itok=jqwX8EBB" alt="Sarath Pillai&#039;s picture" title="Sarath Pillai&#039;s picture" />  </div>
+  
+      <span property="dc:title" content="inode and its structure in linux" class="rdf-meta element-hidden"></span><span property="sioc:num_replies" content="14" datatype="xsd:integer" class="rdf-meta element-hidden"></span>
+  
+      <div class="submitted">
+      <span property="dc:date dc:created" content="2012-12-01T10:19:27+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" about="/users/sarath-pillai" typeof="sioc:UserAccount" property="foaf:name" datatype="">Sarath Pillai</span> on Sat, 12/01/2012 - 10:19</span>    </div>
+  
+  <div class="content">
+    <div class="field field-name-field-image field-type-image field-label-hidden"><div class="field-items"><div class="field-item even" rel="og:image rdfs:seeAlso" resource="http://www.slashroot.in/sites/default/files/styles/article_image_full_node/public/field/image/linux%20inode.jpg?itok=UaylZxbJ"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/article_image_full_node/public/field/image/linux%20inode.jpg?itok=UaylZxbJ" width="231" height="224" alt="Linux inode tutorial" /></div></div></div><div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p><span style="font-size:16px;">Let me begin this tutorial by a famous UNIX statement which emphasizes the main underlying working model of Linux operating system. The statement is that "<span style="color: rgb(255, 140, 0);"><strong>Everything Is a File</strong></span>".</span></p><p><span style="font-size:16px;">If you are one of that person who spends a lot time with Linux or any NIX system, then you might have already understood that statement. Each and everything in Linux is accessed by a file. To make that much more clear, even block devices like Hard disks,and CD/DVD's are nothing other than a file(yeah but a special file..but a file).</span></p><p><span style="font-size:16px;">Now if we start digging a bit deeper into files, we will come to know that, to the operating system(Linux) files inside a file system(be it ext2,ext3 or ext4) are not really accessed by their name. Names are helpful to humans but, the file system recognizes a file not by its name but by a number. That number through which the operating system reaches the location and other attributes of that file is called as an inode number. Now don't worry <img alt="smiley" src="http://slashroot.in/sites/all/libraries/ckeditor/plugins/smiley/images/regular_smile.gif" title="smiley" height="20" width="20">, this tutorial is all about Inodes and its structure.</span></p><h1>&nbsp;</h1><h1><span style="color:#ff8c00;">What is an INODE in Linux?</span></h1><p>&nbsp;</p><p><span style="font-size:16px;">I must say that its a data structure that keeps track of all the information about a file. </span></p><blockquote><p><span style="color:#ff0000;"><span style="font-size: 16px;">You store your information in a file, and the operating system stores the information about a file in an inode(sometimes called as an inode number).</span></span></p></blockquote><p><span style="font-size:16px;">Information about files(data) are sometimes called metadata.</span> <span style="font-size:16px;">So you can even say it in another way, "An inode is metadata of the data."</span></p><p><span style="font-size:16px;">Whenever a user or a program needs access to a file, the operating system first searches for the exact and unique inode (inode number), in a table called as an inode table. In fact the program or the user who needs access to a file, reaches the file with the help of the inode number found from the inode table.</span></p><p><span style="font-size:16px;">To reach a particular file with its "name" needs an inode number corresponding to that file. But to reach an inode number you dont require the file name. Infact with the inode number you can get the data.</span></p><p>&nbsp;</p><h1><span style="color:#ff8c00;">How does the structure of an inode look like?</span></h1><p>&nbsp;</p><p><span style="font-size:16px;">This is the most important part to understand in terms of an inode. Here we will be discussing the contents of an inode. </span></p><h2><u><strong><span style="font-size:20px;">Inode Structure of a Directory:</span></strong></u></h2><p><img alt="" src="/sites/default/files/inode%20structure%20of%20a%20directory.png" height="461" width="562"></p><p><span style="font-size:16px;">Inode structure of a directory just consists of Name to Inode mapping of files and directories in that directory.</span></p><p><span style="font-size:16px;">So here in the above shown diagram you can see the first two entries of (.) and (..) dot dot. You might have seen them whenever you list the contents of a directory.(most of the times they are hidden. You will have to use -a option with "ls" command to see them)</span>.</p><p><span style="font-size:16px;">And people who are more into Linux or any NIX system, knows that the command "cd ." will change the directory to the current directory itself(which means it does nothing..because you are already in that directory.). </span></p><p><span style="font-size:16px;">And the command "cd .." will take you to the previous directory or call it the parent directory of the current directory. Now why that happens?</span></p><p><span style="font-size:16px;">Lets understand why this happens with an example. Imagine am in the directory /var/log on my system.</span></p><p>&nbsp;</p><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 log]# ls -ia
+3633723 .                3633786 faillog     3634889 rpmpkgs.3
+3633697 ..               3634727 gdm         3634893 rpmpkgs.4
+3634833 acpid            3633883 httpd       3633813 samba</span></pre>
+</div><p><span style="font-size:16px;">Now lets note down inode numbers of .(dot) and ..(dot dot).</span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">.(dot) = 3633723</span></span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">..(dot dot) = 3633697</span></span></p><p><span style="font-size:16px;">Now lets do the directory listing of /var/ directory and see the inodes there.</span></p><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 var]# ls -ia
+3633697 .        3634275 cvs    3633698 lib    3633733 nis       3633737 spool
+      2 ..       3633724 db     3633729 local  3633734 opt       3633700 tmp
+3633844 account  3633725 empty  3633730 lock   3633735 preserve  3634278 tux
+3633701 cache    3633726 games  3633723 log    3633838 racoon    3633884 www
+3634135 crash    3634624 gdm    3633732 mail   3633736 run       3633740 yp</span></pre>
+</div><p><span style="font-size:16px;">Now lets note down the inode numbers of log directory and .(dot) from the directory listing of /var</span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">.(dot) = 3633697</span></span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">log = 3633723</span></span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">So you can clearly note that inode of .(dot) inside /var/log directory is equal to inode of log directory. And inode of ..(dot dot ) inside /var/log/ is equal to inode of .(dot) inside /var/ directory.</span></span></p><p><div id="block-block-24--2" class="block block-block even">
+
+      
+  <div class="content">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Large Rectangle Inline -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9991091909130716"
+     data-ad-slot="6059250985"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>  </div>
+
+</div><!-- /.block -->
+<p><span style="color:#ff0000;"><span style="font-size: 16px;">.(dot) always means the current directory just because its inode is same as the directory's inode. And ..(dot dot) means parent directory inode because its inode is same as the previous(parent) directory.</span></span></p><h1>&nbsp;</h1><h1><span style="color:#ff8c00;">Inode Structure of a File</span></h1><p>&nbsp;</p><p><span style="font-size:16px;">Now lets see how the structure of an inode of a file look like. </span></p><p><img alt="" src="/sites/default/files/inode%20structure%20of%20a%20file.png" height="369" width="167"></p><p><u><strong><span style="font-size:16px;">Mode: </span></strong></u></p><p><span style="font-size:16px;">This keeps information about two things, one is the permission information, the other is the type of inode, for example an inode can be of a file, directory or a block device etc.</span></p><p><u><span style="font-size:16px;"><strong>Owner Info:</strong></span></u> <span style="font-size:16px;">Access details like owner of the file, group of the file etc.</span></p><p><u><span style="font-size:16px;"><strong>Size:&nbsp; </strong></span></u><span style="font-size:16px;">This location store the size of the file in terms of bytes.</span></p><p><u><strong><span style="font-size:16px;">Time Stamps:&nbsp; </span></strong></u><span style="font-size:16px;">it stores the inode creation time, modification time, etc.</span></p><p><span style="font-size:16px;">Now comes the important thing to understand about how a file is saved in a partition with the help of an inode.</span></p><p><u><strong><span style="font-size:16px;">Block Size:</span></strong></u> <span style="font-size:16px;">Whenever a partition is formatted with a file system.It normally gets formatted with a default block size. Now block size is the size of chunks in which data<br>will be spread. So if the block size is 4K, then for a file of 15K it will take 4 blocks(because 4K*4 16), and technically speaking you waste 1 K.</span><br>&nbsp;</p><h2><span style="color:#ffa500;">Direct Block Pointers:</span></h2><p><span style="font-size:16px;">In an ext2 file system an inode consists of only 15 block pointers. The first 12 block pointers are called as Direct Block pointers. Which means that these pointers point to the address of the blocks containing the data of the file. 12 Block pointers can point to 12 data blocks. So in total the Direct Block pointers can address only 48K(12 * 4K) of data. Which means if the file is only of 48K or below in size, then inode itself can address all the blocks<br>containing the data of the file.</span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">Now What if the file size is above 48K?</span></span></p><h2><span style="color:#ffa500;">Indirect Block Pointers:</span></h2><p><span style="font-size:16px;">whenever the size of the data goes above 48k(by considering the block size as 4k), the 13th pointer in the inode will point to the very next block after the data(adjacent block after 48k of data)</span>, <span style="font-size:16px;">which inturn will point to the next block address where data is to be copied.</span></p><p><span style="font-size:16px;">Now as we have took our block size as 4K, the indirect block pointer, can point to 1024 blocks containing data(by taking the size of a block pointer as 4bytes, one 4K block can point to 1024 blocks because 4 bytes * 1024 = 4K).</span></p><p><span style="font-size:16px;">which means an indirect block pointer can address, upto 4MB of data(4bytes of block pointer in 4K block, can point and address 1024 number of 4K blocks which makes the data size of 4M)</span></p><h2><span style="color:#ff8c00;">Double indirect Block Pointers:</span></h2><p><span style="font-size:16px;">Now if the size of the file is above 4MB + 48K then the inode will start using Double Indirect Block Pointers, to address data blocks. Double Indirect Block pointer in an inode will point to the block that comes just after 4M + 48K data, which intern will point to the blocks where the data is stored. </span></p><p><span style="font-size:16px;">Double Indirect block pointer also is inside a 4K block as every blocks are 4K, Now block pointers are 4 bytes&nbsp; in size, as mentioned previously, so Double indirect block pointer can address 1024 Indirect Block pointers(which means 1024 * 4M =4G). So with the help of a double indirect Block Pointer the size of the data can go upto 4G.</span></p><h2><span style="color:#ff8c00;">Triple Indirect Block Pointers:</span></h2><p><span style="font-size:16px;">Now this triple Indirect Block Pointers can address upto 4G * 1024 = 4TB, of file size. The fifteenth block pointer in the inode will point to the block just after the 4G of data, which intern will point to 1024 Double Indirect Block Pointers.</span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">So after the 12 direct block pointers, 13th block pointer in inode is for Indirect block pointers, and 14th block pointer is for double indirect block pointers, and 15th block pointer is for triple indirect block pointers.</span></span></p><p><span style="color:#ff0000;"><span style="font-size: 16px;">Now this is the main reason why there are limits to the full size of a single file that you can have in a file system.</span></span></p><p>&nbsp;</p><p><span style="color:#ff0000;"><span style="font-size: 16px;">Now an interesting fact to understand is that the total no of inodes are created at the time of creating a file system. Which means there is an upper limit in the number of inodes you can have in a file system. Now after that limit has reached you will not be able to create any more files on the file system, even if you have space left on the partition.</span></span></p><h2><span style="color:#ff8c00;">How to check Inode Utilization?</span></h2><p><span style="font-size:16px;">Inode utilization can be checked by using the beow command in linux.</span></p><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 ~]# df -i
+Filesystem            Inodes   IUsed   IFree IUse% Mounted on
+/dev/sda1            10246368  124075 10122293    2% /
+tmpfs                  64431       1   64430    1% /dev/shm</span></pre>
+</div><p>&nbsp;</p><p><span style="font-size:16px;">As you can clearly see from the above output that the max number of inodes that can be created on /dev/sda1 is 10246368.</span></p><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 ~]# tune2fs -l /dev/sda1
+tune2fs 1.39 (29-May-2006)
+Filesystem volume name:   /1
+Last mounted on:          &lt;not available&gt;
+Filesystem UUID:          86898399-4550-4b08-8196-7444ea953c96
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery sparse_super large_file
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              10246368
+Block count:              10239421
+Reserved block count:     511971</span></pre>
+</div><h2>&nbsp;</h2><h2>&nbsp;</h2><h2>&nbsp;</h2><h2><span style="color:#ff8c00;">How to find a file using inode?</span></h2><div><span style="font-size:16px;">You can find a file using its inode and do actions on it, like list the file name of the inode, delete the file using its inode etc.</span></div><div>&nbsp;</div><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 log]# find /var/ -inum 3634906 -exec ls -l {} \;
+-rw------- 1 root root 1272 Dec  2 10:13 /var/log/maillog.1
+[root@slashroot1 log]#</span></pre>
+</div><div>&nbsp;</div><div><span style="font-size:16px;">You can find and delete a file using its inode using the below command.</span></div><div>&nbsp;</div><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 log]# find /var/ -inum 3634906 -exec rm -f {} \;
+[root@slashroot1 log]#</span></pre>
+</div><div>&nbsp;</div><h2><span style="color:#ff8c00;">How to change directory using an inode?</span></h2><p><span style="font-size:16px;">You can change to a directory using its inode number as shown below.</span></p><div class="geshifilter">
+<pre class="text geshifilter-text" style="font-family:monospace;"><span style="font-size:16px;">[root@slashroot1 log]# cd $(find -inum 3633883)
+[root@slashroot1 httpd]#</span></pre>
+</div><div>&nbsp;</div><div><span style="font-size:16px;">you can see that i have changed the directory to httpd by using its inode number.</span></div><div>&nbsp;</div><div><span style="font-size:16px;">I will posting a couple of another posts, regarding hardlinks in inode, how to deal with inode limit, <a href="http://slashroot.in/how-does-file-deletion-work-linux">What happens to the inode when a file gets deleted in ext2 and ext3 filesystem</a> etc.</span></div><div>&nbsp;</div><div><span style="font-size:16px;">Hope this introductory guide in understanding inode was helpful..</span></div></div></div></div><div class="field field-name-field-rate field-type-fivestar field-label-inline clearfix"><div class="field-label">Rate this article:&nbsp;</div><div class="field-items"><div class="field-item even"><form class="fivestar-widget" action="/inode-and-its-structure-linux" method="post" id="fivestar-custom-widget" accept-charset="UTF-8"><div><div  class="clearfix fivestar-average-text fivestar-average-stars fivestar-form-item fivestar-default"><div class="form-item form-type-fivestar form-item-vote">
+ <div class="form-item form-type-select form-item-vote">
+ <select id="edit-vote--2" name="vote" class="form-select"><option value="-">Select rating</option><option value="20">Give it 1/5</option><option value="40">Give it 2/5</option><option value="60">Give it 3/5</option><option value="80">Give it 4/5</option><option value="100">Give it 5/5</option></select>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>4.3</span></span> <span class="total-votes">(<span>56</span> votes)</span></div></div>
+</div>
+
+</div>
+</div><input class="fivestar-submit form-submit" type="submit" id="edit-fivestar-submit" name="op" value="Rate" /><input type="hidden" name="form_build_id" value="form-woXs7PNYkhsOLS5nwulC1L4Xwj1LZjoP7uDXmIY9uRY" />
+<input type="hidden" name="form_id" value="fivestar_custom_widget" />
+</div></form></div></div></div><div class="fb-social-comments-plugin">
+  <fb:comments  numposts="10" width="550" colorscheme="light" migrated="0" href="http://www.slashroot.in/inode-and-its-structure-linux"></fb:comments>
+</div>
+
+  </div>
+
+   
+  
+    <ul class="links inline"><li class="comment-add first last active"><a href="/inode-and-its-structure-linux#comment-form" title="Share your thoughts and opinions related to this posting." class="active">Add new comment</a></li>
+</ul>
+	<div id="comments" class="comment-wrapper">
+          <h2 class="title">Comments</h2>
+      
+  <a id="comment-151"></a>
+<div class="comment comment-by-anonymous first odd clearfix" about="/comment/151#comment-151" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/151#comment-151" class="permalink" rel="bookmark">Thanks for such an great</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/151#comment-151" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2013-10-17T23:50:33+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Nilanjan</span> on Thu, 10/17/2013 - 23:50</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Thanks for such an great article..</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/151">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-486"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/486#comment-486" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/486#comment-486" class="permalink" rel="bookmark">Good explanation :) ..</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/486#comment-486" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2013-11-20T23:30:45+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Akash</span> on Wed, 11/20/2013 - 23:30</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Good explanation :) ..<br />
+Thank you</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/486">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-774"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/774#comment-774" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/774#comment-774" class="permalink" rel="bookmark">Good explanation with simple understandable language</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/774#comment-774" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2014-07-03T16:44:39+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Paresh</span> on Thu, 07/03/2014 - 16:44</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Thanks for this nice article.</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/774">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-825"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/825#comment-825" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/825#comment-825" class="permalink" rel="bookmark">Good Job</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/825#comment-825" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2014-08-05T20:07:59+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Jose</span> on Tue, 08/05/2014 - 20:07</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Good Job Bro.. seriously very informative ...</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/825">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-961"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/961#comment-961" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/961#comment-961" class="permalink" rel="bookmark">Excellent article</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/961#comment-961" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2014-11-06T17:46:25+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Maya</span> on Thu, 11/06/2014 - 17:46</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Thank you</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/961">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-1012"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/1012#comment-1012" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1012#comment-1012" class="permalink" rel="bookmark">Keep Going..!!</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1012#comment-1012" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-01-10T12:11:19+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Vignesh</span> on Sat, 01/10/2015 - 12:11</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Nice One..!! Thanks easy to understand..!! :)</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1012">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-1052"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/1052#comment-1052" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1052#comment-1052" class="permalink" rel="bookmark">Is inode number is unique or not</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1052#comment-1052" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-02-20T12:56:36+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Yeswanth Reddy</span> on Fri, 02/20/2015 - 12:56</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Hi,</p>
+<p>Could you please clarify below, I have created a test file under /var and I have searched the file using -inum through find. Amazing, I got two files with same Inode number. Anyone comment please.</p>
+<p>[<a href="mailto:root@rhel">root@rhel</a>-prod var]# ls -i test<br />
+2660 test</p>
+<p>[<a href="mailto:root@rhel">root@rhel</a>-prod ~]# find / -inum 2660 -exec ls -l {} \;<br />
+-rw-r--r-- 1 root root 0 Feb 20 07:45 /var/test<br />
+--w------- 1 root root 4096 Feb 20 07:28 /sys/bus/usb/drivers/usb/bind</p>
+<p>[<a href="mailto:root@rhel">root@rhel</a>-prod var]# stat test<br />
+  File: `test&#039;<br />
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file<br />
+Device: 805h/2053d      Inode: 2660        Links: 1<br />
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)<br />
+Access: 2015-02-20 07:45:31.726997893 -0500<br />
+Modify: 2015-02-20 07:45:31.726997893 -0500<br />
+Change: 2015-02-20 07:45:31.726997893 -0500</p>
+<p>[<a href="mailto:root@rhel">root@rhel</a>-prod var]# stat /sys/bus/usb/drivers/usb/bind<br />
+  File: `/sys/bus/usb/drivers/usb/bind&#039;<br />
+  Size: 4096            Blocks: 0          IO Block: 4096   regular file<br />
+Device: 0h/0d   Inode: 2660        Links: 1<br />
+Access: (0200/--w-------)  Uid: (    0/    root)   Gid: (    0/    root)<br />
+Access: 2015-02-20 07:28:47.838998860 -0500<br />
+Modify: 2015-02-20 07:28:47.838998860 -0500<br />
+Change: 2015-02-20 07:28:47.838998860 -0500<br />
+[<a href="mailto:root@rhel">root@rhel</a>-prod var]#</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1052">reply</a></li>
+</ul></div><!-- /.comment -->
+
+<div class="indented"><a id="comment-1061"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/1061#comment-1061" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1061#comment-1061" class="permalink" rel="bookmark">Device: 805h/2053d</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1061#comment-1061" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-03-09T19:20:44+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Anonymous</span> on Mon, 03/09/2015 - 19:20</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><span rel="sioc:reply_of" resource="/comment/1052#comment-1052" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Device: 805h/2053d<br />
+Device: 0h/0d</p>
+<p>Two files can have the same inode number if they are stored on different devices.</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1061">reply</a></li>
+</ul></div><!-- /.comment -->
+</div><a id="comment-1127"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/1127#comment-1127" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1127#comment-1127" class="permalink" rel="bookmark">Nice</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1127#comment-1127" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-07-01T11:07:58+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">nix baba</span> on Wed, 07/01/2015 - 11:07</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Nice</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1127">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-1209"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/1209#comment-1209" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1209#comment-1209" class="permalink" rel="bookmark">Inode</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1209#comment-1209" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-10-15T15:54:12+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Dipti</span> on Thu, 10/15/2015 - 15:54</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Really nice information!!!!!</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1209">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-1254"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/1254#comment-1254" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1254#comment-1254" class="permalink" rel="bookmark">Very Helpful Post!</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1254#comment-1254" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2015-12-03T01:02:44+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">Mr.Devops</span> on Thu, 12/03/2015 - 01:02</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Very well explained!</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1254">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-1292"></a>
+<div class="comment comment-by-anonymous even clearfix" about="/comment/1292#comment-1292" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/1292#comment-1292" class="permalink" rel="bookmark">good explanation . thanks for</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/1292#comment-1292" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2016-01-08T15:58:33+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">prasad</span> on Fri, 01/08/2016 - 15:58</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>good explanation . thanks for posting.</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/1292">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-2318"></a>
+<div class="comment comment-by-anonymous odd clearfix" about="/comment/2318#comment-2318" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/2318#comment-2318" class="permalink" rel="bookmark">Concept made clear in a</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/2318#comment-2318" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2016-07-13T18:30:03+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">mathivanan</span> on Wed, 07/13/2016 - 18:30</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>Concept made clear in a single attempt. Very useful article for slow learners.</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/2318">reply</a></li>
+</ul></div><!-- /.comment -->
+<a id="comment-2361"></a>
+<div class="comment comment-by-anonymous last even clearfix" about="/comment/2361#comment-2361" typeof="sioc:Post sioct:Comment">
+  
+        <h3 property="dc:title" datatype="" class="comment-title">
+      <a href="/comment/2361#comment-2361" class="permalink" rel="bookmark">thanks</a>          </h3>
+    
+  
+  <div class="submitted">
+    <a href="/comment/2361#comment-2361" class="permalink" rel="bookmark">Permalink</a>    <span property="dc:date dc:created" content="2016-09-02T16:25:45+05:30" datatype="xsd:dateTime" rel="sioc:has_creator">Submitted by <span class="username" xml:lang="" typeof="sioc:UserAccount" property="foaf:name" datatype="">jeeva</span> on Fri, 09/02/2016 - 16:25</span>  </div>
+
+  <div class="content">
+    <span rel="sioc:reply_of" resource="/inode-and-its-structure-linux" class="rdf-meta element-hidden"></span><div class="field field-name-comment-body field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>good explanation.short and sweet.</p>
+</div></div></div>      </div>
+
+  <ul class="links inline"><li class="comment-reply first last"><a href="/comment/reply/110/2361">reply</a></li>
+</ul></div><!-- /.comment -->
+
+      <h2 class="title comment-form">Add new comment</h2>
+    <form class="comment-form" action="/comment/reply/110" method="post" id="comment-form" accept-charset="UTF-8"><div><div class="form-item form-type-textfield form-item-name">
+  <label for="edit-name">Your name </label>
+ <input type="text" id="edit-name" name="name" value="" size="30" maxlength="60" class="form-text" />
+</div>
+<div class="form-item form-type-textfield form-item-subject">
+  <label for="edit-subject">Subject </label>
+ <input type="text" id="edit-subject" name="subject" value="" size="60" maxlength="64" class="form-text" />
+</div>
+<div class="field-type-text-long field-name-comment-body field-widget-text-textarea form-wrapper" id="edit-comment-body"><div id="comment-body-add-more-wrapper"><div class="text-format-wrapper"><div class="form-item form-type-textarea form-item-comment-body-und-0-value">
+  <label for="edit-comment-body-und-0-value">Comment <span class="form-required" title="This field is required.">*</span></label>
+ <div class="form-textarea-wrapper resizable"><textarea class="text-full form-textarea required" id="edit-comment-body-und-0-value" name="comment_body[und][0][value]" cols="60" rows="5"></textarea></div>
+</div>
+<fieldset class="filter-wrapper form-wrapper" id="edit-comment-body-und-0-format"><div class="fieldset-wrapper"><input id="edit-comment-body-und-0-format--2" class="wysiwyg" type="hidden" name="comment_body[und][0][format]" value="plain_text" />
+<div class="filter-help form-wrapper" id="edit-comment-body-und-0-format-help"><p><a href="/filter/tips" target="_blank">More information about text formats</a></p></div><div class="filter-guidelines form-wrapper" id="edit-comment-body-und-0-format-guidelines"><div class="filter-guidelines-item filter-guidelines-plain_text"><h3>Plain text</h3><ul class="tips"><li>No HTML tags allowed.</li><li>Web page addresses and e-mail addresses turn into links automatically.</li><li>Lines and paragraphs break automatically.</li></ul></div></div></div></fieldset>
+</div>
+</div></div><input type="hidden" name="form_build_id" value="form-anSKmEItWBXmERz3vlhQe-GGfC83VNSK4xeSW1ExVnk" />
+<input type="hidden" name="form_id" value="comment_node_article_form" />
+<input class="mollom-content-id" type="hidden" name="mollom[contentId]" value="" />
+<input class="mollom-captcha-id" type="hidden" name="mollom[captchaId]" value="160930f9c853486ce9" />
+<div class="form-item form-type-textfield form-item-mollom-captcha">
+  <label for="edit-mollom-captcha">Word verification <span class="form-required" title="This field is required.">*</span></label>
+ <span class="field-prefix"><span class="mollom-captcha-content mollom-image-captcha"><img typeof="foaf:Image" src="http://rest-production.mollom.com:80/v1/captcha/160930f9c853486ce9.png" alt="Type the characters you see in this picture." /></span> (<a href="#" class="mollom-switch-captcha mollom-audio-captcha">verify using audio</a>)</span> <input autocomplete="off" type="text" id="edit-mollom-captcha" name="mollom[captcha]" value="" size="10" maxlength="128" class="form-text required" />
+<div class="description">Type the characters you see in the picture above; if you can't read them, submit the form and a new image will be generated. Not case sensitive.</div>
+</div>
+<div style="display: none;"><div class="form-item form-type-textfield form-item-mollom-homepage">
+ <input autocomplete="off" type="text" id="edit-mollom-homepage" name="mollom[homepage]" value="" size="60" maxlength="128" class="form-text" />
+</div>
+</div><div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Save" class="form-submit" /><input type="submit" id="edit-preview" name="op" value="Preview" class="form-submit" /></div></div></form>  </div>
+  
+    
+ 
+  
+  
+</div><!-- /.node -->
+  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+          </div></div><!-- /.section, /#content -->   
+
+    
+      <div class="region region-sidebar-second column sidebar"><div class="section">
+    <div id="block-search-form" class="block block-search first odd">
+
+      
+  <div class="content">
+    <form action="/inode-and-its-structure-linux" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--2">Search </label>
+ <input title="Enter the terms you wish to search for." type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" class="form-text" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions--2"><input type="submit" id="edit-submit--2" name="op" value="Search" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-f8s1ArpvDpeKrVLOU2IRw0J3Ekkb4SWg3lDuCPZbMtA" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>  </div>
+
+</div><!-- /.block -->
+<div id="block-block-7" class="block block-block even">
+
+        <h2 class="block-title">Subscribe Our Mailing List</h2>
+    
+  <div class="content">
+    <!-- Begin MailChimp Signup Form --><p>&nbsp;</p><p>
+<link href="http://cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:200px;}
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. *</style>
+</p><div id="mc_embed_signup"><form action="http://slashroot.us6.list-manage1.com/subscribe/post?u=88e3ce698b0977ee88b863cb5&amp;id=c769e3a85c" class="validate" id="mc-embedded-subscribe-form" method="post" name="mc-embedded-subscribe-form" novalidate="" target="_blank"><div class="indicates-required"><span class="asterisk">*</span> indicates required</div><div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span> </label> <input class="required email" id="mce-EMAIL" name="EMAIL" value="" type="email"></div><div class="mc-field-group"><label for="mce-FNAME">First Name </label> <input id="mce-FNAME" name="FNAME" value="" type="text"></div><div class="mc-field-group"><label for="mce-MMERGE3">Last Name </label> <input id="mce-MMERGE3" name="MMERGE3" value="" type="text"></div><div class="clear" id="mce-responses"><div class="response" id="mce-error-response" style="display:none">&nbsp;</div><div class="response" id="mce-success-response" style="display:none">&nbsp;</div></div><div class="clear"><input class="button" id="mc-embedded-subscribe" name="subscribe" value="Subscribe" type="submit"></div></form></div><!--End mc_embed_signup-->  </div>
+
+</div><!-- /.block -->
+<div id="block-views-most-popular-today-block" class="block block-views odd">
+
+        <h2 class="block-title">Today's Most Popular</h2>
+    
+  <div class="content">
+    <div class="view view-most-popular-today view-id-most_popular_today view-display-id-block view-dom-id-3d059a58f54a0cf5e1baa5a24a3ab784">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/iperf-how-test-network-speedperformancebandwidth"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/speed%20test.jpg?itok=IeBuDSvj" width="36" height="36" alt="Internet Speed Test in Linux" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/iperf-how-test-network-speedperformancebandwidth">IPERF: How to test network Speed,Performance,Bandwidth</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/iperf-how-test-network-speedperformancebandwidth#comments#comments">12 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/SAN%20vs%20NAS.png?itok=1PXAlQiI" width="36" height="36" alt="SAN vs NAS" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage">SAN vs NAS - Difference between a Storage Area Network and Network Attached Storage</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage#comments#comments">44 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/curl-command-tutorial-linux-example-usage"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/curl%20command%20in%20linux%20usage%20and%20examples.png?itok=JeiMFJir" width="36" height="36" alt="Curl Command Examples and usage" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/curl-command-tutorial-linux-example-usage">CURL command Tutorial in Linux with Example Usage</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/curl-command-tutorial-linux-example-usage#comments#comments">15 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-4 views-row-even views-row-last">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/ssh-port-forwarding-linux-configuration-and-examples"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/SSH%20Port%20Fowarding.png?itok=d9zFaUoZ" width="36" height="36" alt="SSH Port Forwarding" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/ssh-port-forwarding-linux-configuration-and-examples">SSH Port Forwarding in Linux: Configuration and Examples</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/security-notes" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Security Notes</a> - <a href="http://www.slashroot.in/ssh-port-forwarding-linux-configuration-and-examples#comments#comments">2 comment(s)</a></div>  </div>  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div>  </div>
+
+</div><!-- /.block -->
+<div id="block-block-21" class="block block-block even">
+
+      
+  <div class="content">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Wide Skyscrapper -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:160px;height:600px"
+     data-ad-client="ca-pub-9991091909130716"
+     data-ad-slot="9757228581"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>  </div>
+
+</div><!-- /.block -->
+<div id="block-views-most-commented-block" class="block block-views odd">
+
+        <h2 class="block-title">Most Commented </h2>
+    
+  <div class="content">
+    <div class="view view-most-commented view-id-most_commented view-display-id-block view-dom-id-976efdf69b72831c73a7eefb4b876408">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/how-does-traceroute-work-and-examples-using-traceroute-command"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/traceroute%20working.png?itok=SbEom6wW" width="36" height="36" alt="How does traceroute work" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/how-does-traceroute-work-and-examples-using-traceroute-command">How Does Traceroute Work and Example&#039;s of using traceroute command</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/networking" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Networking</a> - <a href="http://www.slashroot.in/how-does-traceroute-work-and-examples-using-traceroute-command#comments#comments">63 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/SAN%20vs%20NAS.png?itok=1PXAlQiI" width="36" height="36" alt="SAN vs NAS" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage">SAN vs NAS - Difference between a Storage Area Network and Network Attached Storage</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/san-vs-nas-difference-between-storage-area-network-and-network-attached-storage#comments#comments">44 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/difference-between-iterative-and-recursive-dns-query"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/iterative%20vs%20recursive%20dns.png?itok=yI-mK_O1" width="36" height="36" alt="iterative vs recursive dns" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/difference-between-iterative-and-recursive-dns-query">difference between iterative and recursive dns query</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/difference-between-iterative-and-recursive-dns-query#comments#comments">36 comment(s)</a></div>  </div>  </div>
+  <div class="views-row views-row-4 views-row-even views-row-last">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/linux-booting-process-step-step-tutorial-understanding-linux-boot-sequence"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/booting%20process.jpg?itok=BJvQl6kD" width="36" height="36" alt="System Booting Process" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/linux-booting-process-step-step-tutorial-understanding-linux-boot-sequence">Linux Booting Process:  A step by step tutorial for understanding Linux boot sequence</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <a href="http://www.slashroot.in/linux-booting-process-step-step-tutorial-understanding-linux-boot-sequence#comments#comments">34 comment(s)</a></div>  </div>  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div>  </div>
+
+</div><!-- /.block -->
+<div id="block-views-top-rated-articles-block" class="block block-views even">
+
+        <h2 class="block-title">Top Rated Articles </h2>
+    
+  <div class="content">
+    <div class="view view-top-rated-articles view-id-top_rated_articles view-display-id-block view-dom-id-85bde3b8715c9e8450eb3792de4ca4ca">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/how-configure-software-raid10-linux"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/software%20raid10.png?itok=XYZ9z4vo" width="36" height="36" alt="" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/how-configure-software-raid10-linux">How to configure software raid10 in Linux</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>10</span> votes)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/modify-your-swap-space-configuring-your-linux-machine-use-lvm-swap-space-0"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/swap%20over%20lvm.png?itok=q6k5y2h7" width="36" height="36" alt="" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/modify-your-swap-space-configuring-your-linux-machine-use-lvm-swap-space-0">Modify your swap space by configuring your Linux machine to use LVM as Swap Space.</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>7</span> votes)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/nmap-linux-examples"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/nmap%20command%20in%20linux.png?itok=b73abTJ9" width="36" height="36" alt="namp in linux" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/nmap-linux-examples">NMAP in Linux Examples</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>1</span> vote)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-4 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/find-command-usage-and-examples-linux"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/find%20command%20in%20linux.jpg?itok=tukOfiit" width="36" height="36" alt="find command in linux" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/find-command-usage-and-examples-linux">Find Command Usage and Examples in linux</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>2</span> votes)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-5 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/dockerfile-tutorial-building-docker-images-for-containers"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/Dockerfile%20to%20build%20images_0.PNG?itok=EgLr2rVI" width="36" height="36" alt="Dockerfile instructions for image" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/dockerfile-tutorial-building-docker-images-for-containers">Dockerfile Tutorial - Building Docker Images for Containers</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>8</span> votes)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-6 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/backup-and-restore-router-configuration-file-using-tftp-server-packet-tracer-cisco-ccna"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/router%20config%20backup.jpg?itok=dVEzzr6R" width="36" height="36" alt="" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/backup-and-restore-router-configuration-file-using-tftp-server-packet-tracer-cisco-ccna">Backup and Restore router configuration file using TFTP server with Packet Tracer -Cisco CCNA</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>12</span> votes)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-7 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/how-to-install-and-configure-git"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/git%20version%20control%20install%20and%20configuration.jpg?itok=_PsKAOIJ" width="36" height="36" alt="installing and configuring git" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/how-to-install-and-configure-git">how to install and configure git</a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>1</span> vote)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+  <div class="views-row views-row-8 views-row-even views-row-last">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/website-vulnerability-scanner"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/website%20security%20scanning.png?itok=ODFIc4QT" width="36" height="36" alt="Website vulnerability Scanning" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/website-vulnerability-scanner">website vulnerability scanner </a></h4>  </div>  
+  <div class="views-field views-field-field-rate">        <div class="field-content"><div class="clearfix fivestar-average-stars fivestar-average-text"><div class="fivestar-static-form-item"><div class="form-item form-type-item">
+ <div class="fivestar-outline"><div class="fivestar-widget-static fivestar-widget-static-vote fivestar-widget-static-5 clearfix"><div class="star star-1 star-odd star-first"><span class="on">5</span></div><div class="star star-2 star-even"><span class="on"></span></div><div class="star star-3 star-odd"><span class="on"></span></div><div class="star star-4 star-even"><span class="on"></span></div><div class="star star-5 star-odd star-last"><span class="on"></span></div></div></div>
+<div class="description"><div class="fivestar-summary fivestar-summary-average-count"><span class="average-rating">Average: <span>5</span></span> <span class="total-votes">(<span>1</span> vote)</span></div></div>
+</div>
+</div></div></div>  </div>  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div>  </div>
+
+</div><!-- /.block -->
+<div id="block-block-4" class="block block-block last odd">
+
+      
+  <div class="content">
+    <a href="#page" class="back-to-top">Jump back to navigation</a>  </div>
+
+</div><!-- /.block -->
+  </div></div><!-- /.section, /.region -->
+
+  </div></div><!-- /#main, /#main-wrapper -->
+  
+  <div id="footer">
+  
+      <div class="region region-footer">
+    <div id="block-block-12" class="block block-block first last odd">
+
+      
+  <div class="content">
+    <script src="//my.hellobar.com/92f1c1faeb6861c8503ee9229411fd5e243861b5.js" type="text/javascript" charset="utf-8" async="async"></script>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+  
+      <div class="region region-footer-first-column">
+    <div id="block-block-3" class="block block-block first last odd">
+
+        <h2 class="block-title">Get in touch with The Authors</h2>
+    
+  <div class="content">
+    <p><img alt="Sarath Pillai" longdesc="" src="http://www.slashroot.in/images/sarath.png" style="float: left; width: 106px; height: 110px;" title="Sarath Pillai"><strong>Sarath Pillai</strong></p><p>Ph: +917303074400</p><p>Email: <a href="mailto:sarath@slashroot.in">sarath@slashroot.in</a></p><p>&nbsp;</p><p>&nbsp;</p><p><strong><img alt="" src="/images/satish.png" style="width: 100px; height: 104px; float: left;">Satish Tiwary</strong></p><p>Ph: +919509452488</p><p>Email: <a href="mailto:satish@slashroot.in">satish@slashroot.in</a></p>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+	
+	  <div class="region region-footer-second-column">
+    <div id="block-block-2" class="block block-block first odd">
+
+        <h2 class="block-title">Follow Us</h2>
+    
+  <div class="content">
+    <div class="rss"><a href="rss.xml">Subscribe to our RSS Feed</a></div><div class="twitter"><a href="https://twitter.com/slashrootin">Follow us on Twitter</a></div><div class="fb"><a href="http://www.facebook.com/pages/Slashrootin-A-technical-Blog/101642306662299">Be a fan on Facebook</a></div>  </div>
+
+</div><!-- /.block -->
+<div id="block-block-6" class="block block-block last even">
+
+        <h2 class="block-title">Our News Letter</h2>
+    
+  <div class="content">
+    <!-- Begin MailChimp Signup Form -->
+<div id="mc_embed_signup">
+<form action="http://slashroot.us6.list-manage1.com/subscribe/post?u=88e3ce698b0977ee88b863cb5&amp;id=c769e3a85c" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+	
+<div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+</label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>	<div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+</form>
+</div>
+
+<!--End mc_embed_signup-->  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+	
+	  <div class="region region-footer-third-column">
+    <div id="block-views-recent-posts-block" class="block block-views first last odd">
+
+        <h2 class="block-title">Recent Posts</h2>
+    
+  <div class="content">
+    <div class="view view-recent-posts view-id-recent_posts view-display-id-block view-dom-id-4d64cee139b9c8190eb63bd704c2da38">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/disown-command-linux-explained-example-usage"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/Disown%20Command%20in%20Linux.png?itok=cIOqhGu0" width="36" height="36" alt="Disown Command Examples" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/disown-command-linux-explained-example-usage">disown command in Linux explained with Example usage</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <em class="placeholder">4 weeks 12 hours</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/variables-linux-shell-scripts-explained-examples"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/Everything%20About%20Variables%20in%20Bash%20Shell.png?itok=x_UTNnP_" width="36" height="36" alt="Bash Shell Variables" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/variables-linux-shell-scripts-explained-examples">Variables in Linux Shell Scripts: Explained With Examples</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <em class="placeholder">1 month 1 week</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/different-methods-executing-bash-shell-script-and-their-differences"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/Different%20Methods%20of%20Executing%20A%20Shell%20Script.png?itok=-YVjkrs-" width="36" height="36" alt="Executing a Shell Script in Linux" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/different-methods-executing-bash-shell-script-and-their-differences">Different Methods of Executing A Bash Shell Script And Their Differences</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <em class="placeholder">1 month 2 weeks</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-4 views-row-even views-row-last">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/linux-shell-scripting-tutorial-basics"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/linux%20shell%20scripting.png?itok=ygl4BcUB" width="36" height="36" alt="Linux Shell Scripting" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/linux-shell-scripting-tutorial-basics">Linux Shell Scripting Tutorial: The Basics</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - <em class="placeholder">1 month 4 weeks</em> ago</div>  </div>  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+	
+	  <div class="region region-footer-fourth-column">
+    <div id="block-views-last-viewed-block" class="block block-views first last odd">
+
+        <h2 class="block-title">Last Viewed</h2>
+    
+  <div class="content">
+    <div class="view view-last-viewed view-id-last_viewed view-display-id-block view-dom-id-1463990ab9ea234860336c11883bba5b">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/find-command-usage-and-examples-linux"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/find%20command%20in%20linux.jpg?itok=tukOfiit" width="36" height="36" alt="find command in linux" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/find-command-usage-and-examples-linux">Find Command Usage and Examples in linux</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - last view <em class="placeholder">7 sec</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/httphypertext-transfer-protocol-request-and-response"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/http%20protocol%20request%20and%20response.jpg?itok=W-S1WgYI" width="36" height="36" alt="http request and response explained" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/httphypertext-transfer-protocol-request-and-response">HTTP(Hypertext Transfer Protocol) Request and Response</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - last view <em class="placeholder">32 sec</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/curl-command-tutorial-linux-example-usage"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/curl%20command%20in%20linux%20usage%20and%20examples.png?itok=JeiMFJir" width="36" height="36" alt="Curl Command Examples and usage" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/curl-command-tutorial-linux-example-usage">CURL command Tutorial in Linux with Example Usage</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/taxonomy/term/2" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Archives</a> - last view <em class="placeholder">33 sec</em> ago</div>  </div>  </div>
+  <div class="views-row views-row-4 views-row-even views-row-last">
+      
+  <div class="views-field views-field-edit-node">        <span class="field-content"></span>  </div>  
+  <div class="views-field views-field-field-image">        <div class="field-content"><a href="/what-anycast-and-how-it-works"><img typeof="foaf:Image" src="http://www.slashroot.in/sites/default/files/styles/articles_categories_home_block_minis_sidebar/public/field/image/Anycasting%20Explained.png?itok=4QtkFjrp" width="36" height="36" alt="Anycast and its working" /></a></div>  </div>  
+  <div class="views-field views-field-title">        <h4 class="field-content"><a href="/what-anycast-and-how-it-works">What is Anycast and How it works</a></h4>  </div>  
+  <div class="views-field views-field-body">        <div class="field-content"><a href="/networking" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Networking</a> - last view <em class="placeholder">46 sec</em> ago</div>  </div>  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+	
+	<div class="clear"></div>
+	
+	  <div class="region region-footer-closure">
+    <div id="block-block-1" class="block block-block first last odd">
+
+      
+  <div class="content">
+    <p><strong>Copyright © Slashroot.in.All rights reserved.<a href="/privacy-policy">Privacy Policy</a>|<a href="/toc">Terms Of Service</a>|<a href="/sitemap.xml">Sitemap</a></strong></p><div style="display: none;"><a href="http://www.agaporn.com" title="porno izle">Porno izle</a></div>
+<div style="display: none;"><a href="http://www.pornoyayin.com/category/anal-pornolar" title="anal porno">anal porno</a>  </div>
+
+</div><!-- /.block -->
+  </div><!-- /.region -->
+	
+  </div>
+
+</div></div><!-- /#page, /#page-wrapper -->
+
+    <div class="region region-page-bottom">
+    <div id="fb-root"></div><script type="text/javascript">
+     window.fbAsyncInit = function() {
+       FB.init({
+         appId: "",
+         status: true,
+         cookie: true,
+         xfbml: true,
+         oauth : true,
+         channelUrl: "http:\/\/www.slashroot.in\/fb_social\/channel"
+         });
+
+         
+     };
+     (function() {
+       var e = document.createElement('script');
+       e.async = true;
+       e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+       document.getElementById('fb-root').appendChild(e);
+     }());
+  </script>  </div><!-- /.region -->
+<script type="text/javascript" src="http://www.slashroot.in/sites/default/files/js/js_Rk5YIkK6m2gKTGH-GrMu0pM_PlMKXnI0ktQUgXw1XgA.js"></script>
+</body>
+</html>

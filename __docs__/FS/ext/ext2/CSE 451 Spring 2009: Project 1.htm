@@ -1,0 +1,435 @@
+<html>
+<head>
+  <title>CSE 451 Spring 2009: Project 1</title>
+</head>
+<body bgcolor="#ffffff">
+<h2>Project 1 - The Shell and System Calls</h2>
+
+<p>
+<b>Out:</b>       Monday, April 13, 2009<br>
+<b>Due:</b>       Friday, April 24, 2009, 11:59pm (electronic submission)<br>
+<b>Write-up:</b>  Friday, April 24, 2009, 11:59pm (electronic submission)
+
+<h3>Assignment Goals</h3>
+This is your first <i>OS</i> project. Your goals are:
+<ul>
+  <li> To understand the relationship between OS command interpreters
+       (shells), system calls, and the kernel.
+       <br>
+
+  <li> To become familiar with the tools and skills needed to
+       understand, modify, compile, install, and debug the Linux
+       kernel.
+       <br>
+
+  <li> To design and implement an extremely simple shell and system call.
+</ul>
+
+
+
+<h3>Background</h3>
+
+<blockquote>
+As we'll discuss in class, the OS <b>command interpreter</b> is the
+program that people interact with in order to launch and control
+programs.  On UNIX systems, the command interpreter is usually called
+the <i>shell</i>: it is a user-level program that gives people a
+command-line interface to launching, suspending, and killing other
+programs.  <tt>sh, ksh, csh, tcsh, bash, ...</tt> are all examples
+of UNIX shells.  (It might be useful to look at the manual pages
+of these shells, for example, type: &quot;<tt>man csh</tt>&quot;.)
+
+<P>
+Every shell is structured as the following loop:
+<ol>
+   <li> print out a prompt
+   <li> read a line of input from the user
+   <li> parse the line into the program name, and an array of
+        parameters
+   <li> use the <tt>fork()</tt> system call to spawn a new child process
+   <ul>
+        <li> the child process then uses the <tt>exec()</tt> system call to
+             launch the specified program
+        <li> the parent process (the shell) uses the <tt>wait()</tt>
+             system call to wait for the child to terminate
+   </ul>
+   <li> once the child (i.e. the launched program) finishes, the
+        shell repeats the loop by jumping to 1.
+</ol>
+
+Although most of the commands people type on the prompt are the
+name of other UNIX programs (such as <tt>ls</tt> or <tt>more</tt>),
+shells recognize some special commands (called internal commands)
+which are not program names.  For example, the <tt>exit</tt> command
+terminates the shell, and the <tt>cd</tt> command changes the current
+working directory.  Shells directly make system calls to execute these
+commands, instead of forking a child process to handle them.
+<p>
+
+This assignment consists of two main parts.  In the first, you will design
+and implement an extremely simple shell that knows how to launch new
+programs, and also recognizes three internal commands (exit, cd, and
+execcounts), which we will describe below.  The first two internal
+commands will work by calling existing system calls (<tt>exit</tt> and
+<tt>chdir</tt>); the third internal command will work by calling a new
+system call that you will design and implement.
+
+So, in the second part of this assignment, you will design and
+implement the <tt>execcounts</tt> system call.  This will involve
+making changes to the Linux kernel source code.  The semantics of the <tt>execcounts</tt>
+system call, and some hints on how to go about
+implementing it are also described below.
+</blockquote>
+
+<h3>The Assignment</h3>
+
+<table border=0 hspace=4 cellspacing=2 width="100%" celpadding=3>
+<tr bgcolor="#e0e0e8"><td width="100%"><nobr>
+<font face="tahoma,arial,helvetica"><b>
+Part 1: Build a new shell
+</b></font></nobr></td></tr></table>
+
+<blockquote>
+
+Write a shell program in C which has the following features: 
+
+<ul>
+
+  <li> It should recognize two internal commands, <tt>exit</tt> and
+       <tt>cd</tt>. <tt>exit</tt> terminates the shell, i.e., the shell calls
+       the <tt>exit()</tt> system call or returns from main. cd uses
+       the <tt>chdir</tt> system call to change to the new directory.<br>
+
+  <li> If the command line is not an <tt>exit</tt>  or
+       <tt>cd,</tt> it should assume that it is of the form<br>
+    &nbsp;&nbsp;&nbsp; &lt;executable name&gt; &lt;arg0&gt; &lt;arg1&gt; ....
+    &lt;argN&gt;<br>
+    Your shell invokes the executable, passing it the command line.<br>
+<br>
+Assume that the full path names, like /bin/ls, are given.  Also, try to use
+the same prompt as in the following:<br>
+    <br>
+<tt>
+<b>CSE451Shell</b>% <u>/bin/date</u><br>
+Sun Dec 7 07:53:00 PST 1941<br>
+<b>CSE451Shell</b>% <u>/bin/cat /etc/motd /etc/shells</u><br>
+Pine, MH, and emacs RMAIL are the supported mailers on the<br>
+instructional systems.<br>
+<i>[and on and on...]<br>
+</i>
+/bin/sh<br>
+/bin/bash<br>
+<i>[and on and on...]<br>
+</i>
+</tt>
+
+<br>
+Note: The words in <b>bold</b> are output by the shell and the words
+<u>underlined</u> are typed in by the user.<br>
+    <br>
+Please take a look at the manual
+pages of <tt>execv</tt>, <tt>fork</tt> and <tt>wait</tt>.<br>
+<br>
+
+To allow users to pass arguments to programs you will have to parse
+the input line into words separated by whitespace (spaces and '\t' tab
+characters) and place these words into an array of strings. You might
+try using <tt>strtok()</tt> for this (<tt>man strtok</tt> for a very
+good example of how to solve exactly this problem with
+<tt>strtok</tt>).
+<br>
+
+Then you'll need to pass the name of the command as well as the entire
+list of tokenized strings to one of the other variants of exec, such
+as <tt>execvp()</tt>. These tokenized strings will then end up as the
+<tt>argv[]</tt> argument to the <tt>main()</tt> function of the new
+program executed by the child process. Try <tt>man execv</tt> or <tt>man
+execvp</tt> for more details.
+</ul>
+</blockquote>
+
+
+<table border=0 hspace=4 cellspacing=2 width="100%" celpadding=3>
+<tr bgcolor="#e0e0e8"><td width="100%"><nobr>
+<font face="tahoma,arial,helvetica"><b>
+Part 2: Add a new system call
+</b></font></nobr></td></tr></table>
+
+
+<blockquote>
+  <p>There are four system calls in Linux related to creating new
+  processes:&nbsp;<tt>fork</tt>, <tt>vfork</tt>, <tt>execve</tt>, and <tt>clone</tt>.&nbsp;
+  (The man pages will describe for you the differences among them.)&nbsp; Instrument the
+  kernel so that we can write a user-level program that will print counts of the
+  number of times each of these four system calls has been invoked (by any
+  process on the system);&nbsp;
+  that is, I want to write a garden-variety C program that prints out the
+  total number of invocations of each of these four system calls (by any process
+  on the system).</p>
+  <p align="left">To do this requires three things:</p>
+  <ol>
+    <li>
+      <p align="left">Modify the kernel<font face="Bookman Old Style"> </font>to
+      keep track of this information.</li>
+    <li>
+      <p align="left">Design and implement a new system call that will get this
+      data back to the user application.</li>
+    <li>
+      <p align="left">Write the user application.</li>
+  </ol>
+  <p align="left">We'd also like to be able to reset these statistics
+  periodically. So we need a way to clear the request information we've tracked
+  so far. This requires either parameterizing the above system call to add a
+  clear option, or adding another system call.
+  </p>
+  <p align="left">
+  There are several different ways to approach this problem. It is
+  your job to analyze them from an engineering point-of-view,
+  determine the trade-offs, and defend the implementation you
+  select.
+  </p>
+  <p align="left"><b>Warning 1: </b>Remember that the Linux kernel
+  should be allowed to access any memory location, while the calling
+  application should be prevented from causing the kernel to
+  unwittingly read/write addresses other than those in its own
+  address space.  <a href="mmlinux.html">Details about this are
+  here.</a>
+  </p>
+  <p align="left"><b>Warning 2 (Hint!):</b> Remember that it's inconceivable that this
+  problem (warning 1) has never before been confronted in the existing
+  kernel.</p>
+  <p align="left"><b>Warning 3:</b> Remember that the kernel must never, ever
+  trust the application to know what it's talking about when it makes
+  a request, particularly with respect to parameters passed in from
+  the application to the kernel.</p>
+  <p align="left"><b>Warning 4: </b>Remember that you must be sure not
+  to create security holes in the kernel with your code.</p>
+  <p align="left"><b>Warning 5: </b>Remember that the kernel should
+  not leak memory.</p>
+
+<h3 align="left">SOME HINTS <font style="color: red;">(Read Carefully)</font></h3>
+  <p align="left">You should be using the C language whenever possible when you
+  alter or add to the Linux kernel.  To add a system call to Linux, you'll need to make a small change to one particular .S file, but all other changes should be to .c/.h files, and perhaps Makefiles.</p>
+  <p align="left">You can't just make system calls directly from C. Instead, 
+  you need to use the syscall function and pass it the number of your
+  new system call. This code fragment show you how to do that: </p>
+  <blockquote>
+    <p align="left"><font color="#0000FF">/*&nbsp;<br>
+    * Set the features included by the linux libc to have the BSD
+    extensions&nbsp;<br>
+    */<br>
+    <br>
+    #ifndef _BSD_SOURCE&nbsp;<br>
+    #define _BSD_SOURCE 1&nbsp;<br>
+    #endif&nbsp;<br>
+    <br>
+    #define _NR_execcounts <i>someNumber</i><br>
+    <br>
+    #include &lt;unistd.h&gt;<br>
+    ...<br>
+    &nbsp;&nbsp;&nbsp; </font><font face="Book Antiqua" color="#0000FF">int ret =
+      syscall(__NR_execcounts,
+      ...);</font></p>
+  </blockquote>
+  <p align="left">&nbsp;</p>
+
+<h3 align="left">Recommended Procedure</h3>
+  <p align="left">I suggest you wade, rather than dive, into this.&nbsp; In
+  particular, here's a suggested set of incremental steps:</p>
+    <ol>
+      <!--<li>
+        <p align="left">Don't change any Linux code.&nbsp; Figure out how to do
+        a make of a new boot image, what file to move where so that you can boot the image you just
+        created, how to tell the loader (LILO) that your image exists, and then
+        how to boot your image.</li>-->
+		<li>If you've never compiled the kernel, go back through the <a href="../projinfo.html">lab
+          information</a> page or see the <a href="http://www.faqs.org/docs/Linux-HOWTO/Kernel-HOWTO.html">Linux Kernel HOWTO</a>.  
+          It should not take longer than an hour
+		and it will ensure that you are up to speed with VMware.</li>
+      <!--<li>
+        <p align="left">Now put a &quot;printk()&quot; somewhere in the code,
+        and figure out how to find its output.&nbsp; (Hints: /var/log and
+        &quot;man dmesg&quot;).</li>-->
+      <li>
+        <p align="left">Now implement a parameterless system call, whose body is
+        just a printk() call.&nbsp; Write a user-level routine that invokes
+        it.&nbsp; Check to make sure it was invoked.</li>
+      <li>
+        <p align="left">Now write the full implementation.<br>
+      </li>
+    </ol>
+</blockquote>
+
+<table border=0 hspace=4 cellspacing=2 width="100%" celpadding=3>
+<tr bgcolor="#e0e0e8"><td width="100%"><nobr>
+<font face="tahoma,arial,helvetica"><b>
+Part 3: Integrate the system call into the shell
+</b></font></nobr></td></tr></table>
+
+
+<blockquote>
+<br>
+Now that you have a working shell and an implementation of your new
+system call, it's time to integrate them; this should be very
+simple.  Add a new internal command to your shell, called <tt>execcounts</tt>.   The
+<tt>execcounts</tt> command should
+invoke the system call that you build in Part 2, and print
+out:
+<blockquote>
+  <ul>
+    <li>the number of invocations of each of the four &quot;process
+      creation&quot; Linux system calls that have occurred since the last
+      invocation of <tt>execcounts.</tt></li>
+    <li>the fraction of all such calls that each of the four types represents.</li>
+  </ul>
+</blockquote>
+
+<b>Hint</b>: it's possible that only a subset of the four system calls will be used during any given interval of time.<p>
+
+<b>Hint 2</b>:  just because a user-level program you write invokes the "fork" procedure declared in unistd.h, it doesn't necessarily mean that the fork <i>system call</i> is invoked on the linux kernel as a result.  The fork procedure declared in unistd.h is likely implemented in a library (called libc or glibc) that is linked into your user-level program when you compile it.  The library's implementation of fork might make use of the fork system call, or it might make use of some other system call, such as clone.
+  
+</blockquote>
+
+<p>&nbsp;</p>
+
+<table border=0 hspace=4 cellspacing=2 width="100%" celpadding=3>
+<tr bgcolor="#e0e0e8"><td width="100%"><nobr>
+<font face="tahoma,arial,helvetica"><b>
+Part 4: Some additional questions
+</b></font></nobr></td></tr></table>
+
+
+<p>Answer these additional questions and include them with your write-up:<br>
+&nbsp;<br>
+1) What is &quot;<font face="Courier New">asmlinkage</font>&quot; as it occurs
+in the Linux kernel source, what does it do (give a short description)?<br>
+&nbsp;<br>
+2) <font face="Courier New">goto</font>s are generally considered bad
+programming style, but these are used frequently in the Linux kernel, why could
+this be?&nbsp; This is a thinking question, so justification is more important
+than your answer.<br>
+&nbsp;<br>
+3) What is the difference between the "clone" and "fork" system calls?<br>
+&nbsp;<br>
+4) How could you extend your shell to support multiple simultaneous processes
+(foreground and background...)?<br>
+&nbsp;<br>
+5) How long does your new system call take (time it using gettimeofday and give an approximate answer)?&nbsp;
+Explain your timing methodology.<br>
+<br>
+</p>
+
+<table border=0 hspace=4 cellspacing=2 width="100%" celpadding=3>
+<tr bgcolor="#e0e0e8"><td width="100%"><nobr>
+<font face="tahoma,arial,helvetica"><b>
+What to Turn In
+</b></font></nobr></td></tr></table>
+
+<blockquote>
+You should turn in the following:
+
+<ol>
+  <li> The C source code of your shell.<p>
+
+  <li> The source code of the files you changed in the kernel.<p>
+
+  <li> The names of all of the Linux kernel source files that
+       you modified, and a written description of what you did to them and why
+       you needed to do it (i.e. why was it necessary to
+       modify this particular file).<p>
+
+  <li> Documentation for the new system call (i.e., a miniature man
+       page for the system call itself, not for the shell command).
+	   A text file is fine.<p>
+
+  <li> The complete source code of the routine that implements
+       the new system call in the kernel (i.e., just the new
+       code you wrote, not the source code that was already
+       in the kernel that got control to your new routine).<p>
+
+  <li> A transcript showing you using your new shell to invoke
+       the /bin/date program, the /bin/cat program, and
+       the <tt>exit</tt> and
+       <tt>cd</tt>  commands supported by your shell.&nbsp; (<tt>/usr/bin/script</tt> might come in
+       handy to generate this printout.&nbsp; As always, do
+       <tt>man script</tt> to find out how to use the command.)<p>
+
+  <li> To attempt to achieve some sort of uniformity in results for the new
+    system call, hand in the results obtained from the following:<br>
+<ul>
+<li> Invoke your shell
+<li> Use your shell to reset the system call counts to zero
+<li> Run the following command exactly as given:<br>
+    <tt>/usr/bin/find /etc -type f -exec touch t ;</tt><br>
+ Note: to try that command in most "real" shells, use the
+    following:<br>
+   <tt>/usr/bin/find /etc -type f -exec touch ~/t \;</tt>
+    </li>
+<li> Invoke <tt>execcounts</tt> and report these results<p>
+
+</ul><p>
+  <li>A brief write-up (up to 2 pages) with the answers to the following
+  	questions.
+	<ol><li>Describe how you found the information needed to complete this
+		project.  Did it have the information
+		you needed?  Did you consult with any humans?  If so, what did you
+		try first and who did you consult with?</li>
+
+		<li>Explain the calling sequence that makes your system call work.
+		First, a user program calls &lt;.....&gt;.  Then, &lt;.....&gt;
+		calls &lt;.....&gt;.  ... and so on.  You can explain this using
+		either text or a rough (less than 15 minutes) diagram.</li>
+
+		<li>Why do you think the designers of Linux implemented system calls
+		the way they did?  What were they trying to achieve?  What were they
+		trying to avoid?</li>
+
+		<li>Give (in 1 paragraph) an alternative idea for implementing
+		system calls.  State one way your idea would be better or worse
+		than the way it is currently done.</li>
+		</ol>
+		<br>
+		Turn in your write-up electronically in a separate file
+		along with your code (preferred format of the file is text or pdf,
+		but you can also submit doc).</font></p>
+
+</ol>
+
+<p>
+Do not underestimate the importance of the write-up. Your
+project grade depends significantly on how well you understood what
+you were doing, and the write-up is the best way for you to
+demonstrate that understanding.
+</p>
+<p>
+The grade on the project will be calculated as follows: <br>
+<ul>
+<li> Shell: 20 points </li>
+<li> System call: 20 points </li>
+<li> Write-up: 20 points </li> 
+</ul>
+</p>
+
+<p>
+Submission instructions: We will be using the
+<tt>turnin(1L)</tt> program.
+
+<ol>
+   <li>Get all of your files onto one of the general-purpose
+   instructional Linux machines (attu). 
+   <tt>scp(1)</tt> may be useful.
+   </li>
+
+   <li>Run <tt>turnin -c cse451 -p project1 [DIRECTORY]
+   </tt>
+
+</ol>
+   See <a href=turnin.txt">the instructions</a> for more information. Only one 
+   member of each group needs to turnin, but make sure it is clear who is in
+   your group in your writeup.
+</blockquote>
+
+
+
+</body>
+</html>

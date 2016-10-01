@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>Ext2 - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "Ext2", "wgTitle": "Ext2", "wgCurRevisionId": 18570, "wgArticleId": 1509, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Filesystems"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Ext2 action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">Ext2</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><table style="font-size:95%; line-height:1.5em; padding:0.25em; float:right; margin: 0 0 8px 15px; clear: right; border:1px solid #aaaaaa; background:#eee; text-align:center; width:200px;&#160;;"><tr><th style="background:#ffce7b; padding:0.3em; font-size:1.1em;"><a href="/File_Systems" title="File Systems">Filesystems</a></th></tr><tr><th>Virtual FileSystems</th></tr><tr><td><div>
+<p><a href="/VFS" title="VFS">VFS</a><br />
+</p>
+</div></td></tr><tr><th>Disk filesystems</th></tr><tr><td><div>
+<p><a href="/FAT" title="FAT">FAT</a> <a href="/FAT12" title="FAT12" class="mw-redirect">12</a>/<a href="/FAT16" title="FAT16" class="mw-redirect">16</a>/<a href="/FAT32" title="FAT32" class="mw-redirect">32</a>, <a href="/VFAT" title="VFAT" class="mw-redirect">VFAT</a><br />
+<strong class="selflink">Ext 2</strong>/<a href="/Ext3" title="Ext3">3</a>/<a href="/Ext4" title="Ext4">4</a><br />
+<a href="/LEAN" title="LEAN">LEAN</a><br />
+<a href="/HPFS" title="HPFS">HPFS</a><br />
+<a href="/NTFS" title="NTFS">NTFS</a><br />
+<a href="/HFS" title="HFS">HFS</a><br />
+<a href="/HFS%2B" title="HFS+">HFS+</a><br />
+<a href="/MFS" title="MFS">MFS</a><br />
+<a href="/ReiserFS" title="ReiserFS">ReiserFS</a><br />
+<a href="/FFS_(Amiga)" title="FFS (Amiga)">FFS (Amiga)</a><br />
+<a href="/FFS_(BSD)" title="FFS (BSD)" class="mw-redirect">FFS (BSD)</a>/<a href="/UFS" title="UFS">UFS</a><br />
+<a href="/BeFS" title="BeFS">BeFS</a><br />
+<a href="/BFS" title="BFS">BFS</a><br />
+<a href="/XFS" title="XFS">XFS</a><br />
+<a href="/SFS" title="SFS">SFS</a><br />
+<a href="/ZFS" title="ZFS">ZFS</a><br />
+</p>
+</div></td></tr><tr><th>CD/DVD filesystems</th></tr><tr><td><div>
+<p><a href="/ISO_9660" title="ISO 9660">ISO 9660</a><br />
+<a href="/Joliet" title="Joliet">Joliet</a><br />
+<a href="/UDF" title="UDF">UDF</a><br />
+</p>
+</div></td></tr><tr><th><a href="/Category:Network_Filesystems" title="Category:Network Filesystems">Network filesystems</a></th></tr><tr><td><div>
+<p><a href="/NFS" title="NFS">NFS</a><br />
+<a href="/RFS" title="RFS">RFS</a><br />
+<a href="/AFS" title="AFS">AFS</a><br />
+</p>
+</div></td></tr><tr><th>Flash filesystems</th></tr><tr><td><div>
+<p><a href="/JFFS2" title="JFFS2">JFFS2</a><br />
+<a href="/YAFFS" title="YAFFS">YAFFS</a><br />
+</p>
+</div></td></tr></table>
+<p>The <b>Second Extended Filesystem</b> (<b>ext2fs</b>) is a rewrite of the original <i>Extended Filesystem</i> and as such, is also based around the concept of "inodes."  Ext2 served as the de facto filesystem of Linux for nearly a decade from the early 1990s to the early 2000s when it was superseded by the journaling file systems <a href="/Ext3" title="Ext3">ext3</a> and <a href="/ReiserFS" title="ReiserFS">ReiserFS</a>. It has native support for UNIX ownership / access rights, symbolic- and hard-links, and other properties that are common among UNIX-like operating systems. Organizationally, it divides disk space up into groups called "block groups." Having these groups results in distribution of data across the disk which helps to minimize head movement as well as the impact of fragmentation. Further, some (if not all) groups are required to contain backups of important data that can be used to rebuild the file system in the event of disaster.
+</p><p><i>Note: Most of the information here is based off of work done by Dave Poirier on the ext2-doc project (see the <a href="#Links">links section</a>) which is graciously released under the <a rel="nofollow" class="external text" href="http://www.fsf.org/licenses/fdl.html">GNU Free Documentation License</a>.  Be sure to buy him a beer the next time you see him.</i>
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Basic_Concepts"><span class="tocnumber">1</span> <span class="toctext">Basic Concepts</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#What_is_a_Block.3F"><span class="tocnumber">1.1</span> <span class="toctext">What is a Block?</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#What_is_a_Block_Group.3F"><span class="tocnumber">1.2</span> <span class="toctext">What is a Block Group?</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#What_is_an_Inode.3F"><span class="tocnumber">1.3</span> <span class="toctext">What is an Inode?</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Superblock"><span class="tocnumber">2</span> <span class="toctext">Superblock</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="#Locating_the_Superblock"><span class="tocnumber">2.1</span> <span class="toctext">Locating the Superblock</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Determining_the_Number_of_Block_Groups"><span class="tocnumber">2.2</span> <span class="toctext">Determining the Number of Block Groups</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Base_Superblock_Fields"><span class="tocnumber">2.3</span> <span class="toctext">Base Superblock Fields</span></a>
+<ul>
+<li class="toclevel-3 tocsection-9"><a href="#File_System_States"><span class="tocnumber">2.3.1</span> <span class="toctext">File System States</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="#Error_Handling_Methods"><span class="tocnumber">2.3.2</span> <span class="toctext">Error Handling Methods</span></a></li>
+<li class="toclevel-3 tocsection-11"><a href="#Creator_Operating_System_IDs"><span class="tocnumber">2.3.3</span> <span class="toctext">Creator Operating System IDs</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-12"><a href="#Extended_Superblock_Fields"><span class="tocnumber">2.4</span> <span class="toctext">Extended Superblock Fields</span></a>
+<ul>
+<li class="toclevel-3 tocsection-13"><a href="#Optional_Feature_Flags"><span class="tocnumber">2.4.1</span> <span class="toctext">Optional Feature Flags</span></a></li>
+<li class="toclevel-3 tocsection-14"><a href="#Required_Feature_Flags"><span class="tocnumber">2.4.2</span> <span class="toctext">Required Feature Flags</span></a></li>
+<li class="toclevel-3 tocsection-15"><a href="#Read-Only_Feature_Flags"><span class="tocnumber">2.4.3</span> <span class="toctext">Read-Only Feature Flags</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-16"><a href="#Block_Group_Descriptor_Table"><span class="tocnumber">3</span> <span class="toctext">Block Group Descriptor Table</span></a>
+<ul>
+<li class="toclevel-2 tocsection-17"><a href="#Locating_the_Block_Group_Descriptor_Table"><span class="tocnumber">3.1</span> <span class="toctext">Locating the Block Group Descriptor Table</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Block_Group_Descriptor"><span class="tocnumber">3.2</span> <span class="toctext">Block Group Descriptor</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-19"><a href="#Inodes"><span class="tocnumber">4</span> <span class="toctext">Inodes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-20"><a href="#Determining_which_Block_Group_contains_an_Inode"><span class="tocnumber">4.1</span> <span class="toctext">Determining which Block Group contains an Inode</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#Finding_an_inode_inside_of_a_Block_Group"><span class="tocnumber">4.2</span> <span class="toctext">Finding an inode inside of a Block Group</span></a></li>
+<li class="toclevel-2 tocsection-22"><a href="#Reading_the_contents_of_an_inode"><span class="tocnumber">4.3</span> <span class="toctext">Reading the contents of an inode</span></a></li>
+<li class="toclevel-2 tocsection-23"><a href="#Inode_Data_Structure"><span class="tocnumber">4.4</span> <span class="toctext">Inode Data Structure</span></a>
+<ul>
+<li class="toclevel-3 tocsection-24"><a href="#Inode_Type_and_Permissions"><span class="tocnumber">4.4.1</span> <span class="toctext">Inode Type and Permissions</span></a></li>
+<li class="toclevel-3 tocsection-25"><a href="#Inode_Flags"><span class="tocnumber">4.4.2</span> <span class="toctext">Inode Flags</span></a></li>
+<li class="toclevel-3 tocsection-26"><a href="#OS_Specific_Value_1"><span class="tocnumber">4.4.3</span> <span class="toctext">OS Specific Value 1</span></a></li>
+<li class="toclevel-3 tocsection-27"><a href="#OS_Specific_Value_2"><span class="tocnumber">4.4.4</span> <span class="toctext">OS Specific Value 2</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-28"><a href="#Directories"><span class="tocnumber">4.5</span> <span class="toctext">Directories</span></a></li>
+<li class="toclevel-2 tocsection-29"><a href="#Directory_Entry"><span class="tocnumber">4.6</span> <span class="toctext">Directory Entry</span></a>
+<ul>
+<li class="toclevel-3 tocsection-30"><a href="#Directory_Entry_Type_Indicators"><span class="tocnumber">4.6.1</span> <span class="toctext">Directory Entry Type Indicators</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-31"><a href="#Quick_Summaries"><span class="tocnumber">5</span> <span class="toctext">Quick Summaries</span></a>
+<ul>
+<li class="toclevel-2 tocsection-32"><a href="#How_To_Read_An_Inode"><span class="tocnumber">5.1</span> <span class="toctext">How To Read An Inode</span></a></li>
+<li class="toclevel-2 tocsection-33"><a href="#How_To_Read_the_Root_Directory"><span class="tocnumber">5.2</span> <span class="toctext">How To Read the Root Directory</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-34"><a href="#See_Also"><span class="tocnumber">6</span> <span class="toctext">See Also</span></a>
+<ul>
+<li class="toclevel-2 tocsection-35"><a href="#External_Links"><span class="tocnumber">6.1</span> <span class="toctext">External Links</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Basic_Concepts"> Basic Concepts </span></h2>
+<p><b>Important Note: All values are little-endian unless otherwise specified</b>
+</p>
+<h3> <span class="mw-headline" id="What_is_a_Block.3F"> What is a Block? </span></h3>
+<p>The Ext2 file system divides up disk space into logical blocks of contiguous space. The size of blocks need not be the same size as the sector size of the disk the file system resides on.  The size of blocks can be determined by reading the field starting at byte 24 in the <a href="#Superblock">Superblock</a>.
+</p>
+<h3> <span class="mw-headline" id="What_is_a_Block_Group.3F"> What is a Block Group? </span></h3>
+<p>Blocks, along with inodes, are divvied up into "block groups." These are nothing more than contiguous groups of blocks.
+</p><p>Each block group reserves a few of its blocks for special purposes such as:
+</p>
+<ul><li> A bitmap of free/allocated blocks within the group
+</li><li> A bitmap of allocated inodes within the group
+</li><li> A table of inode structures that belong to the group
+</li><li> Depending upon the revision of Ext2 used, some or all block groups may also contain a backup copy of the <a href="#Superblock">Superblock</a> and the <a href="#Block_Group_Descriptor_Table">Block Group Descriptor Table</a>.
+</li></ul>
+<h3> <span class="mw-headline" id="What_is_an_Inode.3F"> What is an Inode? </span></h3>
+<p>An inode is a structure on the disk that represents a file, directory, symbolic link, etc. Inodes do not contain the data of the file / directory / etc. that they represent. Instead, they link to the blocks that actually contain the data.  This lets the inodes themselves have a well-defined size which lets them be placed in easily indexed arrays.  Each block group has an array of inodes it is responsible for, and conversely every inode within a file system belongs to one of such tables (and one of such block groups).
+</p>
+<h2> <span class="mw-headline" id="Superblock"> Superblock </span></h2>
+<p>The first step in implementing an Ext2 driver is to find, extract, and parse the superblock.  The Superblock contains all information about the layout of the file system and possibly contains other important information like what optional features were used to create the file system.  Once you have finished with the Superblock, the next step is to look at the <a href="#Block_Group_Descriptor_Table">Block Group Descriptor Table</a>
+</p>
+<h3> <span class="mw-headline" id="Locating_the_Superblock"> Locating the Superblock </span></h3>
+<p>The Superblock is always located at byte 1024 from the beginning of the volume and is exactly 1024 bytes in length. For example, if the disk uses 512 byte sectors, the Superblock will begin at LBA 2 and will occupy all of sector 2 and 3.
+</p>
+<h3> <span class="mw-headline" id="Determining_the_Number_of_Block_Groups"> Determining the Number of Block Groups </span></h3>
+<p>From the Superblock, extract the size of each block, the total number of inodes, the total number of blocks, the number of blocks per block group, and the number of inodes in each block group. From this information we can infer the number of block groups there are by:
+</p>
+<ul><li> Rounding up the total number of blocks divided by the number of blocks per block group
+</li><li> Rounding up the total number of inodes divided by the number of inodes per block group
+</li><li> Both (and check them against each other)
+</li></ul>
+<h3> <span class="mw-headline" id="Base_Superblock_Fields"> Base Superblock Fields </span></h3>
+<p>These fields are present in all versions of Ext2
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> 3 </td>
+<td> 4 </td>
+<td> Total number of inodes in file system
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> 7 </td>
+<td> 4 </td>
+<td> Total number of blocks in file system
+</td></tr>
+<tr>
+<td> 8 </td>
+<td> 11 </td>
+<td> 4 </td>
+<td> Number of blocks reserved for superuser (see offset 80)
+</td></tr>
+<tr>
+<td> 12 </td>
+<td> 15 </td>
+<td> 4 </td>
+<td> Total number of unallocated blocks
+</td></tr>
+<tr>
+<td> 16 </td>
+<td> 19 </td>
+<td> 4 </td>
+<td> Total number of unallocated inodes
+</td></tr>
+<tr>
+<td> 20 </td>
+<td> 23 </td>
+<td> 4 </td>
+<td> Block number of the block containing the superblock
+</td></tr>
+<tr>
+<td> 24 </td>
+<td> 27 </td>
+<td> 4 </td>
+<td> <i>log</i><sub>2</sub> (block size) - 10. (In other words, the number to shift 1,024 to the left by to obtain the block size)
+</td></tr>
+<tr>
+<td> 28 </td>
+<td> 31 </td>
+<td> 4 </td>
+<td> <i>log</i><sub>2</sub> (fragment size) - 10. (In other words, the number to shift 1,024 to the left by to obtain the fragment size)
+</td></tr>
+<tr>
+<td> 32 </td>
+<td> 35 </td>
+<td> 4 </td>
+<td> Number of blocks in each block group
+</td></tr>
+<tr>
+<td> 36 </td>
+<td> 39 </td>
+<td> 4 </td>
+<td> Number of fragments in each block group
+</td></tr>
+<tr>
+<td> 40 </td>
+<td> 43 </td>
+<td> 4 </td>
+<td> Number of inodes in each block group
+</td></tr>
+<tr>
+<td> 44 </td>
+<td> 47 </td>
+<td> 4 </td>
+<td> Last mount time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 48 </td>
+<td> 51 </td>
+<td> 4 </td>
+<td> Last written time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 52 </td>
+<td> 53 </td>
+<td> 2 </td>
+<td> Number of times the volume has been mounted since its last consistency check (<a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Fsck">fsck</a>)
+</td></tr>
+<tr>
+<td> 54 </td>
+<td> 55 </td>
+<td> 2 </td>
+<td> Number of mounts allowed before a consistency check (<a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Fsck">fsck</a>) must be done
+</td></tr>
+<tr>
+<td> 56 </td>
+<td> 57 </td>
+<td> 2 </td>
+<td> Ext2 signature (0xef53), used to help confirm the presence of Ext2 on a volume
+</td></tr>
+<tr>
+<td> 58 </td>
+<td> 59 </td>
+<td> 2 </td>
+<td> File system state (<a href="#File_System_States">see below</a>)
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 61 </td>
+<td> 2 </td>
+<td> What to do when an error is detected (<a href="#Error_Handling_Methods">see below</a>)
+</td></tr>
+<tr>
+<td> 62 </td>
+<td> 63 </td>
+<td> 2 </td>
+<td> Minor portion of version (combine with Major portion below to construct full version field)
+</td></tr>
+<tr>
+<td> 64 </td>
+<td> 67 </td>
+<td> 4 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a> of last consistency check (<a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Fsck">fsck</a>)
+</td></tr>
+<tr>
+<td> 68 </td>
+<td> 71 </td>
+<td> 4 </td>
+<td> Interval (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>) between forced consistency checks (<a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Fsck">fsck</a>)
+</td></tr>
+<tr>
+<td> 72 </td>
+<td> 75 </td>
+<td> 4 </td>
+<td> Operating system ID from which the filesystem on this volume was created (<a href="#Creator_Operating_System_IDs">see below</a>)
+</td></tr>
+<tr>
+<td> 76 </td>
+<td> 79 </td>
+<td> 4 </td>
+<td> Major portion of version (combine with Minor portion above to construct full version field)
+</td></tr>
+<tr>
+<td> 80 </td>
+<td> 81 </td>
+<td> 2 </td>
+<td> User ID that can use reserved blocks
+</td></tr>
+<tr>
+<td> 82 </td>
+<td> 83 </td>
+<td> 2 </td>
+<td> Group ID that can use reserved blocks
+</td></tr></table>
+<h4> <span class="mw-headline" id="File_System_States"> File System States </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Value
+</th>
+<th> State Description
+</th></tr>
+<tr>
+<td> 1 </td>
+<td> File system is clean
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> File system has errors
+</td></tr></table>
+<h4> <span class="mw-headline" id="Error_Handling_Methods"> Error Handling Methods </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Value
+</th>
+<th> Action to Take
+</th></tr>
+<tr>
+<td> 1 </td>
+<td> Ignore the error (continue on)
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> Remount file system as read-only
+</td></tr>
+<tr>
+<td> 3 </td>
+<td> Kernel panic
+</td></tr></table>
+<h4> <span class="mw-headline" id="Creator_Operating_System_IDs"> Creator Operating System IDs </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Value
+</th>
+<th> Operating System
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> <a rel="nofollow" class="external text" href="http://kernel.org/">Linux</a>
+</td></tr>
+<tr>
+<td> 1 </td>
+<td> <a rel="nofollow" class="external text" href="http://www.gnu.org/software/hurd/hurd.html">GNU HURD</a>
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> MASIX (an operating system developed by Rémy Card, one of the developers of ext2)
+</td></tr>
+<tr>
+<td> 3 </td>
+<td> <a rel="nofollow" class="external text" href="http://www.freebsd.org/">FreeBSD</a>
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> Other "Lites" (BSD4.4-Lite derivatives such as <a rel="nofollow" class="external text" href="http://www.netbsd.org/">NetBSD</a>, <a rel="nofollow" class="external text" href="http://www.openbsd.org/">OpenBSD</a>, <a rel="nofollow" class="external text" href="http://www.opensource.apple.com/source/xnu/">XNU/Darwin</a>, etc.)
+</td></tr></table>
+<h3> <span class="mw-headline" id="Extended_Superblock_Fields"> Extended Superblock Fields </span></h3>
+<p>These fields are only present if Major version (specified in the base superblock fields), is greater than or equal to 1.
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 84 </td>
+<td> 87 </td>
+<td> 4 </td>
+<td> First non-reserved inode in file system. (In versions &lt; 1.0, this is fixed as 11)
+</td></tr>
+<tr>
+<td> 88 </td>
+<td> 89 </td>
+<td> 2 </td>
+<td> Size of each inode structure in bytes. (In versions &lt; 1.0, this is fixed as 128)
+</td></tr>
+<tr>
+<td> 90 </td>
+<td> 91 </td>
+<td> 2 </td>
+<td> Block group that this superblock is part of (if backup copy)
+</td></tr>
+<tr>
+<td> 92 </td>
+<td> 95 </td>
+<td> 4 </td>
+<td> Optional features present (features that are not required to read or write, but usually result in a performance increase. <a href="#Optional_Feature_Flags">see below</a>)
+</td></tr>
+<tr>
+<td> 96 </td>
+<td> 99 </td>
+<td> 4 </td>
+<td> Required features present (features that are required to be supported to read or write. <a href="#Required_Feature_Flags">see below</a>)
+</td></tr>
+<tr>
+<td> 100 </td>
+<td> 103 </td>
+<td> 4 </td>
+<td> Features that if not supported, the volume must be mounted read-only <a href="#Read-Only_Feature_Flags">see below</a>)
+</td></tr>
+<tr>
+<td> 104 </td>
+<td> 119 </td>
+<td> 16 </td>
+<td> File system ID (what is output by blkid)
+</td></tr>
+<tr>
+<td> 120 </td>
+<td> 135 </td>
+<td> 16 </td>
+<td> Volume name (C-style string: characters terminated by a 0 byte)
+</td></tr>
+<tr>
+<td> 136 </td>
+<td> 199 </td>
+<td> 64 </td>
+<td> Path volume was last mounted to (C-style string: characters terminated by a 0 byte)
+</td></tr>
+<tr>
+<td> 200 </td>
+<td> 203 </td>
+<td> 4 </td>
+<td> Compression algorithms used (see Required features above)
+</td></tr>
+<tr>
+<td> 204 </td>
+<td> 204 </td>
+<td> 1 </td>
+<td> Number of blocks to preallocate for files
+</td></tr>
+<tr>
+<td> 205 </td>
+<td> 205 </td>
+<td> 1 </td>
+<td> Number of blocks to preallocate for directories
+</td></tr>
+<tr>
+<td> 206 </td>
+<td> 207 </td>
+<td> 2 </td>
+<td> (Unused)
+</td></tr>
+<tr>
+<td> 208 </td>
+<td> 223 </td>
+<td> 16 </td>
+<td> Journal ID (same style as the File system ID above)
+</td></tr>
+<tr>
+<td> 224 </td>
+<td> 227 </td>
+<td> 4 </td>
+<td> Journal inode
+</td></tr>
+<tr>
+<td> 228 </td>
+<td> 231 </td>
+<td> 4 </td>
+<td> Journal device
+</td></tr>
+<tr>
+<td> 232 </td>
+<td> 235 </td>
+<td> 4 </td>
+<td> Head of orphan inode list
+</td></tr>
+<tr>
+<td> 236 </td>
+<td> 1023 </td>
+<td> X </td>
+<td> (Unused)
+</td></tr></table>
+<h4> <span class="mw-headline" id="Optional_Feature_Flags"> Optional Feature Flags </span></h4>
+<p>These are optional features for an implementation to support, but offer performance or reliability gains to implementations that do support them.
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<th> Flag Value
+</th>
+<th> Description
+</th></tr>
+<tr>
+<td> 0x0001 </td>
+<td> Preallocate some number of (contiguous?) blocks (see byte 205 in the superblock) to a directory when creating a new one (to reduce fragmentation?)
+</td></tr>
+<tr>
+<td> 0x0002 </td>
+<td> AFS server inodes exist
+</td></tr>
+<tr>
+<td> 0x0004 </td>
+<td> File system has a journal (Ext3)
+</td></tr>
+<tr>
+<td> 0x0008 </td>
+<td> Inodes have extended attributes
+</td></tr>
+<tr>
+<td> 0x0010 </td>
+<td> File system can resize itself for larger partitions
+</td></tr>
+<tr>
+<td> 0x0020 </td>
+<td> Directories use hash index
+</td></tr></table>
+<h4> <span class="mw-headline" id="Required_Feature_Flags"> Required Feature Flags </span></h4>
+<p>These features if present on a file system are required to be supported by an implementation in order to correctly read from or write to the file system.
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<th> Flag Value
+</th>
+<th> Description
+</th></tr>
+<tr>
+<td> 0x0001 </td>
+<td> Compression is used
+</td></tr>
+<tr>
+<td> 0x0002 </td>
+<td> Directory entries contain a type field
+</td></tr>
+<tr>
+<td> 0x0004 </td>
+<td> File system needs to replay its journal
+</td></tr>
+<tr>
+<td> 0x0008 </td>
+<td> File system uses a journal device
+</td></tr></table>
+<h4> <span class="mw-headline" id="Read-Only_Feature_Flags"> Read-Only Feature Flags </span></h4>
+<p>These features, if present on a file system, are required in order for an implementation to write to the file system, but are not required to read from the file system.
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<th> Flag Value
+</th>
+<th> Description
+</th></tr>
+<tr>
+<td> 0x0001 </td>
+<td> Sparse superblocks and group descriptor tables
+</td></tr>
+<tr>
+<td> 0x0002 </td>
+<td> File system uses a 64-bit file size
+</td></tr>
+<tr>
+<td> 0x0004 </td>
+<td> Directory contents are stored in the form of a <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Binary_tree">Binary Tree</a>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Block_Group_Descriptor_Table"> Block Group Descriptor Table </span></h2>
+<p>The Block Group Descriptor Table contains a descriptor for each block group within the file system. The number of block groups within the file system, and correspondingly, the number of entries in the Block Group Descriptor Table, is described <a href="#Determining_the_Number_of_Block_Groups">above</a>.  Each descriptor contains information regarding where important data structures for that group are located.
+</p>
+<h3> <span class="mw-headline" id="Locating_the_Block_Group_Descriptor_Table"> Locating the Block Group Descriptor Table </span></h3>
+<p>The table is located in the block immediately following the Superblock. So if the block size (determined from a field in the superblock) is 1024 bytes per block, the Block Group Descriptor Table will begin at block 2.  For any other block size, it will begin at block 1.  Remember that blocks are numbered starting at 0, and that block numbers don't usually correspond to physical block addresses.
+</p>
+<h3> <span class="mw-headline" id="Block_Group_Descriptor"> Block Group Descriptor </span></h3>
+<p>A Block Group Descriptor contains information regarding where important data structures for that block group are located.
+</p>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> 3 </td>
+<td> 4 </td>
+<td> Block address of block usage bitmap
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> 7 </td>
+<td> 4 </td>
+<td> Block address of inode usage bitmap
+</td></tr>
+<tr>
+<td> 8 </td>
+<td> 11 </td>
+<td> 4 </td>
+<td> Starting block address of inode table
+</td></tr>
+<tr>
+<td> 12 </td>
+<td> 13 </td>
+<td> 2 </td>
+<td> Number of unallocated blocks in group
+</td></tr>
+<tr>
+<td> 14 </td>
+<td> 15 </td>
+<td> 2 </td>
+<td> Number of unallocated inodes in group
+</td></tr>
+<tr>
+<td> 16 </td>
+<td> 17 </td>
+<td> 2 </td>
+<td> Number of directories in group
+</td></tr>
+<tr>
+<td> 18 </td>
+<td> 31 </td>
+<td> X </td>
+<td> (Unused)
+</td></tr></table>
+<h2> <span class="mw-headline" id="Inodes"> Inodes </span></h2>
+<p>Like blocks, each inode has a numerical address. It is extremely important to note that unlike block addresses, <b>inode addresses start at 1</b>.
+</p><p>With Ext2 versions prior to Major version 1, inodes 1 to 10 are reserved and should be in an allocated state. Starting with version 1, the first non-reserved inode is indicated via a field in the Superblock.  Of the reserved inodes, number 2 subjectively has the most significance as it is used for the root directory.
+</p><p>Inodes have a fixed size of either 128 for version 0 Ext2 file systems, or as dictated by the field in the Superblock for version 1 file systems.  All inodes reside in inode tables that belong to block groups.  Therefore, looking up an inode is simply a matter of determining which block group it belongs to and indexing that block group's inode table.
+</p>
+<h3> <span class="mw-headline" id="Determining_which_Block_Group_contains_an_Inode"> Determining which Block Group contains an Inode </span></h3>
+<p>From an inode address (remember that they start at 1), we can determine which group the inode is in, by using the formula:
+</p>
+<pre>  block group = (inode – 1) / INODES_PER_GROUP
+</pre>
+<p>where INODES_PER_GROUP is a field in the Superblock
+</p>
+<h3> <span class="mw-headline" id="Finding_an_inode_inside_of_a_Block_Group"> Finding an inode inside of a Block Group </span></h3>
+<p>Once we know which group an inode resides in, we can look up the actual inode by first retrieving that block group's inode table's starting address (see <a href="#Block_Group_Descriptor">Block Group Descriptor</a> above).  The index of our inode in this block group's inode table can be determined by using the formula:
+</p>
+<pre>  index = (inode – 1)&#160;% INODES_PER_GROUP
+</pre>
+<p>where&#160;% denotes the <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Modulo_operation">Modulo operation</a> and INODES_PER_GROUP is a field in the Superblock (the same field which was used to determine which block group the inode belongs to).
+</p><p>Next, we have to determine which block contains our inode.  This is achieved from:
+</p>
+<pre>  containing block = (index * INODE_SIZE) / BLOCK_SIZE
+</pre>
+<p>where INODE_SIZE is either fixed at 128 if VERSION &lt; 1 or defined by a field in the Superblock if VERSION &gt;= 1.0, and BLOCK_SIZE is defined by a field in the Superblock.
+</p><p>Finally, mask and shift as necessary to extract only the inode data from the containing block.
+</p>
+<h3> <span class="mw-headline" id="Reading_the_contents_of_an_inode"> Reading the contents of an inode </span></h3>
+<p>Each inode contains 12 direct pointers, one singly indirect pointer, one doubly indirect block pointer, and one triply indirect pointer.  The direct space "overflows" into the singly indirect space, which overflows into the doubly indirect space, which overflows into the triply indirect space.
+</p><p><b>Direct Block Pointers</b>: There are 12 direct block pointers.  If valid, the value is non-zero.  Each pointer is the block address of a block containing data for this inode.
+</p><p><b>Singly Indirect Block Pointer</b>: If a file needs more than 12 blocks, a separate block is allocated to store the block addresses of the remaining data blocks needed to store its contents. This separate block is called an indirect block because it adds an extra step (a level of indirection) between an inode and its data. The block addresses stored in the block are all 32-bit, and the capacity of stored addresses in this block is a function of the block size. The address of this indirect block is stored in the inode in the "Singly Indirect Block Pointer" field.
+</p><p><b>Doubly Indirect Block Pointer</b>: If a file has more blocks than can fit in the 12 direct pointers and the indirect block, a double indirect block is used. A double indirect block is an extension of the indirect block described above only now we have two intermediate blocks between the inode and data blocks. The inode structure has a "Doubly Indirect Block Pointer" field that points to this block if necessary.
+</p><p><b>Triply Indirect Block Pointer</b>: Lastly, if a file needs still more space, it can use a triple indirect block. Again, this is an extension of the double indirect block.  So, a triple indirect block contains addresses of double indirect blocks, which contain addresses of single indirect blocks, which contain address of data blocks. The inode structure has a "Triply Indirect Block Pointer" field that points to this block if present.
+</p><p><a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/File:Ext2-inode.gif">This image from Wikipedia</a> illustrates what is described above pretty well
+</p>
+<h3> <span class="mw-headline" id="Inode_Data_Structure"> Inode Data Structure </span></h3>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> 1 </td>
+<td> 2 </td>
+<td> Type and Permissions (<a href="#Inode_Type_and_Permissions">see below</a>)
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> 3 </td>
+<td> 2 </td>
+<td> User ID
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> 7 </td>
+<td> 4 </td>
+<td> Lower 32 bits of size in bytes
+</td></tr>
+<tr>
+<td> 8 </td>
+<td> 11 </td>
+<td> 4 </td>
+<td> Last Access Time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 12 </td>
+<td> 15 </td>
+<td> 4 </td>
+<td> Creation Time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 16 </td>
+<td> 19 </td>
+<td> 4 </td>
+<td> Last Modification time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 20 </td>
+<td> 23 </td>
+<td> 4 </td>
+<td> Deletion time (in <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unix_time">POSIX time</a>)
+</td></tr>
+<tr>
+<td> 24 </td>
+<td> 25 </td>
+<td> 2 </td>
+<td> Group ID
+</td></tr>
+<tr>
+<td> 26 </td>
+<td> 27 </td>
+<td> 2 </td>
+<td> Count of hard links (directory entries) to this inode. When this reaches 0, the data blocks are marked as unallocated.
+</td></tr>
+<tr>
+<td> 28 </td>
+<td> 31 </td>
+<td> 4 </td>
+<td> Count of disk sectors (not Ext2 blocks) in use by this inode, not counting the actual inode structure nor directory entries linking to the inode.
+</td></tr>
+<tr>
+<td> 32 </td>
+<td> 35 </td>
+<td> 4 </td>
+<td> Flags (<a href="#Inode_Flags">see below</a>)
+</td></tr>
+<tr>
+<td> 36 </td>
+<td> 39 </td>
+<td> 4 </td>
+<td> <a href="#OS_Specific_Value_1">Operating System Specific value #1</a>
+</td></tr>
+<tr>
+<td> 40 </td>
+<td> 43 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 0
+</td></tr>
+<tr>
+<td> 44 </td>
+<td> 47 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 1
+</td></tr>
+<tr>
+<td> 48 </td>
+<td> 51 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 2
+</td></tr>
+<tr>
+<td> 52 </td>
+<td> 55 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 3
+</td></tr>
+<tr>
+<td> 56 </td>
+<td> 59 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 4
+</td></tr>
+<tr>
+<td> 60 </td>
+<td> 63 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 5
+</td></tr>
+<tr>
+<td> 64 </td>
+<td> 67 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 6
+</td></tr>
+<tr>
+<td> 68 </td>
+<td> 71 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 7
+</td></tr>
+<tr>
+<td> 72 </td>
+<td> 75 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 8
+</td></tr>
+<tr>
+<td> 76 </td>
+<td> 79 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 9
+</td></tr>
+<tr>
+<td> 80 </td>
+<td> 83 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 10
+</td></tr>
+<tr>
+<td> 84 </td>
+<td> 87 </td>
+<td> 4 </td>
+<td> Direct Block Pointer 11
+</td></tr>
+<tr>
+<td> 88 </td>
+<td> 91 </td>
+<td> 4 </td>
+<td> Singly Indirect Block Pointer (Points to a block that is a list of block pointers to data)
+</td></tr>
+<tr>
+<td> 92 </td>
+<td> 95 </td>
+<td> 4 </td>
+<td> Doubly Indirect Block Pointer (Points to a block that is a list of block pointers to Singly Indirect Blocks)
+</td></tr>
+<tr>
+<td> 96 </td>
+<td> 99 </td>
+<td> 4 </td>
+<td> Triply Indirect Block Pointer (Points to a block that is a list of block pointers to Doubly Indirect Blocks)
+</td></tr>
+<tr>
+<td> 100 </td>
+<td> 103 </td>
+<td> 4 </td>
+<td> Generation number (Primarily used for NFS)
+</td></tr>
+<tr>
+<td> 104 </td>
+<td> 107 </td>
+<td> 4 </td>
+<td> In Ext2 version 0, this field is reserved. In version &gt;= 1, Extended attribute block (File ACL).
+</td></tr>
+<tr>
+<td> 108 </td>
+<td> 111 </td>
+<td> 4 </td>
+<td> In Ext2 version 0, this field is reserved. In version &gt;= 1, Upper 32 bits of file size (if feature bit set) if it's a file, Directory ACL if it's a directory
+</td></tr>
+<tr>
+<td> 112 </td>
+<td> 115 </td>
+<td> 4 </td>
+<td> Block address of fragment
+</td></tr>
+<tr>
+<td> 116 </td>
+<td> 127 </td>
+<td> 12 </td>
+<td> <a href="#OS_Specific_Value_2">Operating System Specific Value #2</a>
+</td></tr></table>
+<h4> <span class="mw-headline" id="Inode_Type_and_Permissions"> Inode Type and Permissions </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<caption>The type indicator occupies the top hex digit (bits 15 to 12) of this 16-bit field
+</caption>
+<tr>
+<th> Type value
+<p>in hex
+</p>
+</th>
+<th> Type Description
+</th></tr>
+<tr>
+<td> 0x1000 </td>
+<td> FIFO
+</td></tr>
+<tr>
+<td> 0x2000 </td>
+<td> Character device
+</td></tr>
+<tr>
+<td> 0x4000 </td>
+<td> Directory
+</td></tr>
+<tr>
+<td> 0x6000 </td>
+<td> Block device
+</td></tr>
+<tr>
+<td> 0x8000 </td>
+<td> Regular file
+</td></tr>
+<tr>
+<td> 0xA000 </td>
+<td> Symbolic link
+</td></tr>
+<tr>
+<td> 0xC000 </td>
+<td> Unix socket
+</td></tr></table>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<caption>Permissions occupy the bottom 12 bits of this 16-bit field
+</caption>
+<tr>
+<th> Permission
+<p>value in hex
+</p>
+</th>
+<th> Permission
+<p>value in octal
+</p>
+</th>
+<th> Permission Description
+</th></tr>
+<tr>
+<td> 0x001 </td>
+<td> 00001 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Other—execute permission</a>
+</td></tr>
+<tr>
+<td> 0x002 </td>
+<td> 00002 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Other—write permission</a>
+</td></tr>
+<tr>
+<td> 0x004 </td>
+<td> 00004 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Other—read permission</a>
+</td></tr>
+<tr>
+<td> 0x008 </td>
+<td> 00010 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Group—execute permission</a>
+</td></tr>
+<tr>
+<td> 0x010 </td>
+<td> 00020 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Group—write permission</a>
+</td></tr>
+<tr>
+<td> 0x020 </td>
+<td> 00040 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">Group—read permission</a>
+</td></tr>
+<tr>
+<td> 0x040 </td>
+<td> 00100 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">User—execute permission</a>
+</td></tr>
+<tr>
+<td> 0x080 </td>
+<td> 00200 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">User—write permission</a>
+</td></tr>
+<tr>
+<td> 0x100 </td>
+<td> 00400 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Filesystem_permissions#Traditional_Unix_permissions">User—read permission</a>
+</td></tr>
+<tr>
+<td> 0x200 </td>
+<td> 01000 </td>
+<td> <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Sticky_bit">Sticky Bit</a>
+</td></tr>
+<tr>
+<td> 0x400 </td>
+<td> 02000 </td>
+<td> Set group ID
+</td></tr>
+<tr>
+<td> 0x800 </td>
+<td> 04000 </td>
+<td> Set user ID
+</td></tr></table>
+<h4> <span class="mw-headline" id="Inode_Flags"> Inode Flags </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<th> Flag Value
+</th>
+<th> Description
+</th></tr>
+<tr>
+<td> 0x00000001 </td>
+<td> Secure deletion (not used)
+</td></tr>
+<tr>
+<td> 0x00000002 </td>
+<td> Keep a copy of data when deleted (not used)
+</td></tr>
+<tr>
+<td> 0x00000004 </td>
+<td> File compression (not used)
+</td></tr>
+<tr>
+<td> 0x00000008 </td>
+<td> Synchronous updates—new data is written immediately to disk
+</td></tr>
+<tr>
+<td> 0x00000010 </td>
+<td> Immutable file (content cannot be changed)
+</td></tr>
+<tr>
+<td> 0x00000020 </td>
+<td> Append only
+</td></tr>
+<tr>
+<td> 0x00000040 </td>
+<td> File is not included in 'dump' command
+</td></tr>
+<tr>
+<td> 0x00000080 </td>
+<td> Last accessed time should not updated
+</td></tr>
+<tr>
+<td> ... </td>
+<td> (Reserved)
+</td></tr>
+<tr>
+<td> 0x00010000 </td>
+<td> Hash indexed directory
+</td></tr>
+<tr>
+<td> 0x00020000 </td>
+<td> AFS directory
+</td></tr>
+<tr>
+<td> 0x00040000 </td>
+<td> Journal file data
+</td></tr></table>
+<h4> <span class="mw-headline" id="OS_Specific_Value_1"> OS Specific Value 1 </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Operating
+<p>System
+</p>
+</th>
+<th> How they use this field
+</th></tr>
+<tr>
+<td> Linux </td>
+<td> (reserved)
+</td></tr>
+<tr>
+<td> HURD </td>
+<td> "translator"?
+</td></tr>
+<tr>
+<td> MASIX </td>
+<td> (reserved)
+</td></tr></table>
+<h4> <span class="mw-headline" id="OS_Specific_Value_2"> OS Specific Value 2 </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Operating
+<p>System
+</p>
+</th>
+<th> How they use this field
+</th></tr>
+<tr>
+<td> Linux </td>
+<td>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 116 </td>
+<td> 116 </td>
+<td> 1 </td>
+<td> Fragment number
+</td></tr>
+<tr>
+<td> 117 </td>
+<td> 117 </td>
+<td> 1 </td>
+<td> Fragment size
+</td></tr>
+<tr>
+<td> 118 </td>
+<td> 119 </td>
+<td> 2 </td>
+<td> (reserved)
+</td></tr>
+<tr>
+<td> 120 </td>
+<td> 121 </td>
+<td> 2 </td>
+<td> High 16 bits of 32-bit User ID
+</td></tr>
+<tr>
+<td> 122 </td>
+<td> 123 </td>
+<td> 2 </td>
+<td> High 16 bits of 32-bit Group ID
+</td></tr>
+<tr>
+<td> 124 </td>
+<td> 127 </td>
+<td> 4 </td>
+<td> (reserved)
+</td></tr></table>
+</td></tr>
+<tr>
+<td> HURD </td>
+<td>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 116 </td>
+<td> 116 </td>
+<td> 1 </td>
+<td> Fragment number
+</td></tr>
+<tr>
+<td> 117 </td>
+<td> 117 </td>
+<td> 1 </td>
+<td> Fragment size
+</td></tr>
+<tr>
+<td> 118 </td>
+<td> 119 </td>
+<td> 2 </td>
+<td> High 16 bits of 32-bit "Type and Permissions" field
+</td></tr>
+<tr>
+<td> 120 </td>
+<td> 121 </td>
+<td> 2 </td>
+<td> High 16 bits of 32-bit User ID
+</td></tr>
+<tr>
+<td> 122 </td>
+<td> 123 </td>
+<td> 2 </td>
+<td> High 16 bits of 32-bit Group ID
+</td></tr>
+<tr>
+<td> 124 </td>
+<td> 127 </td>
+<td> 4 </td>
+<td> User ID of author (if == 0xFFFFFFFF, the normal User ID will be used)
+</td></tr></table>
+</td></tr>
+<tr>
+<td> MASIX </td>
+<td>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 116 </td>
+<td> 116 </td>
+<td> 1 </td>
+<td> Fragment number
+</td></tr>
+<tr>
+<td> 117 </td>
+<td> 117 </td>
+<td> 1 </td>
+<td> Fragment size
+</td></tr>
+<tr>
+<td> 118 </td>
+<td> 127 </td>
+<td> X </td>
+<td> (reserved)
+</td></tr></table>
+</td></tr></table>
+<h3> <span class="mw-headline" id="Directories"> Directories </span></h3>
+<p>Directories are inodes which contain some number of "entries" as their contents.  These entries are nothing more than a name/inode pair.  For instance the inode corresponding to the root directory might have an entry with the name of "etc" and an inode value of 50. A directory inode stores these entries in a linked-list fashion in its contents blocks.
+</p><p>The root directory is Inode 2.
+</p><p>The total size of a directory entry may be longer then the length of the name would imply (The name may not span to the end of the record), and records have to be aligned to 4-byte boundaries. Directory entries are also not allowed to span multiple blocks on the file-system, so there may be empty space in-between directory entries. Empty space is however not allowed in-between directory entries, so any possible empty space will be used as part of the preceding record by increasing its record length to include the empty space. Empty space may also be equivalently marked by a separate directory entry with an inode number of zero, indicating that directory entry should be skipped.
+</p>
+<h3> <span class="mw-headline" id="Directory_Entry"> Directory Entry </span></h3>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+<tr>
+<th> Starting
+<p>Byte
+</p>
+</th>
+<th> Ending
+<p>Byte
+</p>
+</th>
+<th> Size
+<p>in Bytes
+</p>
+</th>
+<th> Field Description
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> 3 </td>
+<td> 4 </td>
+<td> Inode
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> 5 </td>
+<td> 2 </td>
+<td> Total size of this entry (Including all subfields)
+</td></tr>
+<tr>
+<td> 6 </td>
+<td> 6 </td>
+<td> 1 </td>
+<td> Name Length least-significant 8 bits
+</td></tr>
+<tr>
+<td> 7 </td>
+<td> 7 </td>
+<td> 1 </td>
+<td> <a href="#Directory_Entry_Type_Indicators">Type indicator</a> (only if the feature bit for "directory entries have file type byte" is set, else this is the most-significant 8 bits of the Name Length)
+</td></tr>
+<tr>
+<td> 8 </td>
+<td> 8+N-1 </td>
+<td> N </td>
+<td> Name characters
+</td></tr></table>
+<p><br />
+</p>
+<h4> <span class="mw-headline" id="Directory_Entry_Type_Indicators"> Directory Entry Type Indicators </span></h4>
+<table border="2" cellpadding="4" cellspacing="0" style="margin-top:1em; margin-bottom:1em; background:#f9f9f9; border:1px #aaa solid; border-collapse:collapse; &#123;&#123;&#123;1}}}">
+
+<tr>
+<th> Value
+</th>
+<th> Type Description
+</th></tr>
+<tr>
+<td> 0 </td>
+<td> Unknown type
+</td></tr>
+<tr>
+<td> 1 </td>
+<td> Regular file
+</td></tr>
+<tr>
+<td> 2 </td>
+<td> Directory
+</td></tr>
+<tr>
+<td> 3 </td>
+<td> Character device
+</td></tr>
+<tr>
+<td> 4 </td>
+<td> Block device
+</td></tr>
+<tr>
+<td> 5 </td>
+<td> FIFO
+</td></tr>
+<tr>
+<td> 6 </td>
+<td> Socket
+</td></tr>
+<tr>
+<td> 7 </td>
+<td> Symbolic link (soft link)
+</td></tr></table>
+<h2> <span class="mw-headline" id="Quick_Summaries"> Quick Summaries </span></h2>
+<h3> <span class="mw-headline" id="How_To_Read_An_Inode"> How To Read An Inode </span></h3>
+<ol><li> Read the Superblock to find the size of each block, the number of blocks per group, number Inodes per group, and the starting block of the first group (Block Group Descriptor Table).
+</li><li> Determine which block group the inode belongs to.
+</li><li> Read the Block Group Descriptor corresponding to the Block Group which contains the inode to be looked up.
+</li><li> From the Block Group Descriptor, extract the location of the block group's inode table.
+</li><li> Determine the index of the inode in the inode table.
+</li><li> Index the inode table (taking into account non-standard inode size).
+</li></ol>
+<p>Directory entry information and file contents are located within the data blocks that the Inode points to.
+</p>
+<h3> <span class="mw-headline" id="How_To_Read_the_Root_Directory"> How To Read the Root Directory </span></h3>
+<p>The root directory's inode is defined to always be 2. Read/parse the contents of inode 2.
+</p>
+<h2> <span class="mw-headline" id="See_Also">See Also</span></h2>
+<h3> <span class="mw-headline" id="External_Links">External Links</span></h3>
+<ul><li> <a rel="nofollow" class="external text" href="http://www.nongnu.org/ext2-doc/">ext2-doc project: Second Extended File System</a> - implementation-oriented documentation, describes internal structure in human language.
+</li><li> <a rel="nofollow" class="external text" href="http://web.mit.edu/tytso/www/linux/ext2intro.html">Design and Implementation of the Second Extended Filesystem</a> (overview)
+</li><li> <a rel="nofollow" class="external text" href="http://ext2.sourceforge.net/2005-ols/paper-html/">State of the Art: Where we are with the Ext3 filesystem</a> - Paper by Mingming Cao, Theodore Y. Ts'o, Badari Pulavarty, and Suparna Bhattacharya describing extended features for ext2
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 604/1000000
+Post-expand include size: 6394/2097152 bytes
+Template argument size: 2315/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1509-0!*!0!!en!*!* and timestamp 20160929190149 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=Ext2&amp;oldid=18570">http://wiki.osdev.org/index.php?title=Ext2&amp;oldid=18570</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="/Category:Filesystems" title="Category:Filesystems">Filesystems</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Ext2" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/Ext2"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:Ext2"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/Ext2" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=Ext2&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=Ext2&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/Ext2" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/Ext2" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=Ext2&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=Ext2&amp;oldid=18570" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 17 November 2015, at 15:07.</li>
+											<li id="footer-info-viewcount">This page has been accessed 91,957 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.059 secs. -->
+	</body>
+</html>

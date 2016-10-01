@@ -11,14 +11,60 @@ MNT_P="./mnt/"
 HDD_FORMAT="raw"; # raw: [default] | qcow2: |qcow: | cow: | vmdk: | cloop:
 HDD_SIZE="32M"
 
-# qemu-img create -f $HDD_FORMAT $EXT_2_FS $HDD_SIZE
-# sudo mkfs.ext2  -L "EXT_2_FS" $EXT_2_FS
+qemu-img create -f $HDD_FORMAT $EXT_2_FS $HDD_SIZE
+sudo mkfs.ext2  -L "root-fs" $EXT_2_FS
+
+
+
+# ------------------------------------------------------------
+# ./mk_fs >>>
+# Formatting 'rootfs.ext2', fmt=raw size=33554432
+
+# [sudo] password for ch3ll0v3k:
+# mke2fs 1.42.5 (29-Jul-2012)
+# rootfs.ext2 is not a block special device.
+# Proceed anyway? (y,n) y
+# Discarding device blocks: done
+# Filesystem label=root-fs
+# OS type: Linux
+# Block size=1024 (log=0)
+# Fragment size=1024 (log=0)
+# Stride=0 blocks, Stripe width=0 blocks
+# 8192 inodes, 32768 blocks
+# 1638 blocks (5.00%) reserved for the super user
+# First data block=1
+# Maximum filesystem blocks=33554432
+# 4 block groups
+# 8192 blocks per group, 8192 fragments per group
+# 2048 inodes per group
+# Superblock backups stored on blocks: 
+#     8193, 24577
+
+
+# ------------------------------------------------------------
+# sudo fdisk -l ./rootfs.ext2 
+
+# Disk ./rootfs.ext2: 33 MB, 33554432 bytes
+# 255 heads, 63 sectors/track, 4 cylinders, total 65536 sectors
+# Units = sectors of 1 * 512 = 512 bytes
+# Sector size (logical/physical): 512 bytes / 512 bytes
+# I/O size (minimum/optimal): 512 bytes / 512 bytes
+# Disk identifier: 0x00000000
+
+# Disk ./rootfs.ext2 doesn't contain a valid partition table
+
+# ------------------------------------------------------------
+
+
+
+exit;
+
 
 # qemu-img create -f $HDD_FORMAT $MSODS_FS $HDD_SIZE
 # mkfs.msdos -n "MSDOS_FS" $MSODS_FS
 
-qemu-img create -f $HDD_FORMAT $FAT32_FS $HDD_SIZE
-udo mkdosfs -n vfat_name -s 8 ./rootfs.fat32
+#qemu-img create -f $HDD_FORMAT $FAT32_FS $HDD_SIZE
+#sudo mkdosfs -n vfat_name -s 8 ./rootfs.fat32
 #mkfs.msdos -n "FAT32_FS" $FAT32_FS
 
 # sudo umount /dev/loop*
