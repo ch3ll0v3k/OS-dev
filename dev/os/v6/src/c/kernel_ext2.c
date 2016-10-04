@@ -114,14 +114,21 @@ void kernel_init_ext2_fs_support() {
 
     // printf(" sizeof(hd_drive_id) [%d]\n", sizeof(hd_drive_id) );
 
-    // hddetect();
+    hddetect();
+    usleep(700);
     // printf(" sizeof(ext2_inode_t) [%d]\n", sizeof(ext2_inode_t) ); // 128
     // return;
 
-
-
-
     /* */
+    if ( ext2_superblock_info() ) {
+        if ( ext2_descriptor_table_info() ) {
+
+            usleep(700);
+            if ( ext2_inode_info(2) ) ext2_directory();
+
+        }
+    }
+    /*
     if ( ext2_superblock_info() ) {
         if ( ext2_descriptor_table_info() ) {
             uint32_t i = 1;
@@ -137,7 +144,7 @@ void kernel_init_ext2_fs_support() {
 
         }
     }
-    /**/
+    */
 
 
     /*

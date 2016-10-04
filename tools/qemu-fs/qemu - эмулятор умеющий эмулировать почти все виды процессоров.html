@@ -1,0 +1,1425 @@
+<!-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             ОСТАВЬ НАДЕЖДУ, ВСЯК СЮДА ВХОДЯЩИЙ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
+<HTML>
+<HEAD>	
+<TITLE>qemu - эмулятор умеющий эмулировать почти все виды процессоров</TITLE>
+	<link rel="alternate" type="application/rss+xml" title="Новости сайта www.lissyara.su" href="http://www.lissyara.su/scripts/rss.php">
+	<META NAME="keywords" CONTENT="FreeBSD, настройка exim, эмулятор qemu, эмулятор умеющий эмулировать почти все виды процессоров Причём это не псевдоэмуляция, типа VmWare, а самая что ни на есть настоящая. Имеет модуль ядра для ускорения работы.">
+	<META NAME="description" CONTENT="qemu - эмулятор умеющий эмулировать почти все виды процессоров. Причём это не псевдоэмуляция, типа VmWare, а самая что ни на есть настоящая. Имеет модуль ядра для ускорения работы.">
+	<META http-equiv="Content-Type" content="text/html;charset=windows-1251">
+	<META name="author" content="&copy; не указан">
+	<META name="copyright" content="не указан">
+	<META HTTP-EQUIV="imagetoolbar" CONTENT="NO">
+	<BASE href="http://www.lissyara.su/">
+	<!-- скрипт для кнопочек в комментах -->
+	<script language="JavaScript" src="scripts/bbcode_script.js"></script>
+
+	<!-- начало таблиц стилей для страницы -->
+	<link rel=stylesheet type=text/css href="/scripts/style.css">
+	<!-- скрипт подсветки главного меню -->
+	<SCRIPT language="JavaScript">
+	function mhHover(tbl, idx, cls)
+	{
+		var t, d;
+		if (document.getElementById)
+			t = document.getElementById(tbl);
+		else
+			t = document.all(tbl);
+		if (t == null) return;
+		if (t.getElementsByTagName)
+			d = t.getElementsByTagName("TD");
+		else
+			d = t.all.tags("TD");
+		if (d == null) return;
+		if (d.length <= idx) return;
+		d[idx].className = cls;
+	}
+	</SCRIPT>
+
+</HEAD>
+<BODY style="margin: 0 0 0 0; padding: 0 0 0 0; BACKGROUND-COLOR: #f1f1f1; BORDER-RIGHT: #707680 1px solid; MARGIN: 0px; BORDER-LEFT: #707680 1px solid; ">
+<a name="top"></a>
+<!-- old width = 100%, position - left -->
+<CENTER>
+<TABLE border="0" cellspacing="0" cellpadding="0" width="950">
+<TBODY>
+	<TR>
+		<TD vAlign="center" align="center" height="26" colspan="5" background="images/gradient1.jpg" style="background-repeat: no-repeat; background-position: left center; font: Lucida Console; font-size: 12px; border-left: 1px solid #707680; border-right: 1px solid #707680; ">
+		<!-- шапка сайта началась -->
+			<CODE>Мы &mdash; долго запрягаем, быстро ездим, и сильно тормозим.</CODE>
+		<!-- шапка сайта закончилась -->
+		</TD>
+	</TR>
+	<TR>
+		<TD vAlign="top" align="left" colspan="5" background="images/gradient2.jpg" style="background-repeat: no-repeat; background-position: right center; font-size: 12px;">
+<!-- меню сайта началось -->
+			<TABLE height="19" cellSpacing="0" cellPadding="2" width="100%" border="0">
+  			<TBODY>
+				<TR>
+					<TD style="border: 1px solid #707680;">
+						<DIV id="viLocalToolbar">
+							<TABLE height="19" cellSpacing="0" cellPadding="0" width="100%" border="0">
+							<TBODY>
+								<TR>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 0, 'lt1')" onmouseout="mhHover('viLocalToolbar', 0, 'lt0')" noWrap>
+										<A href="http://www.lissyara.su/">Главная</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 2, 'lt1')" onmouseout="mhHover('viLocalToolbar', 2, 'lt0')" noWrap>
+										<A href="http://forum.lissyara.su">Форум</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 4, 'lt1')" onmouseout="mhHover('viLocalToolbar', 4, 'lt0')" noWrap>
+										<A href="/articles/">Статьи</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 6, 'lt1')" onmouseout="mhHover('viLocalToolbar', 6, 'lt0')" noWrap>
+										<A href="/doc/">Документация</A>
+									</TD>
+				<!--					<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 8, 'lt1')" onmouseout="mhHover('viLocalToolbar', 8, 'lt0')" noWrap>
+										<A href="/?id=1020">Downloads</A>
+									</TD> -->
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 8, 'lt1')" onmouseout="mhHover('viLocalToolbar', 8, 'lt0')" noWrap>
+										<A href="/search/">search</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+<!--
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 10, 'lt1')" onmouseout="mhHover('viLocalToolbar', 10, 'lt0')" noWrap>
+										<A href="/rss/">RSS</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+-->
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 12, 'lt1')" onmouseout="mhHover('viLocalToolbar', 12, 'lt0')" noWrap>
+										<A href="http://wiki.lissyara.su/">WIKI</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 14, 'lt1')" onmouseout="mhHover('viLocalToolbar', 14, 'lt0')" noWrap>
+										<a href="http://www.host-food.ru/" onclick="window.location.href='http://www.host-food.ru/p/2248/'; return false;">hosting</A>
+									</TD>
+									<TD>
+										<p style="PADDING-RIGHT: 1px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; FONT: 70% Verdana; COLOR: #707680; PADDING-TOP: 0px">|</p>
+									</TD>
+									<TD class="lt0" onmouseover="mhHover('viLocalToolbar', 16, 'lt1')" onmouseout="mhHover('viLocalToolbar', 16, 'lt0')" noWrap>
+										<A href="/doc/man/qemu/?commented=1&print=1">Версия для печати</A>
+									</TD>
+									<TD width="100%">
+									</TD>
+								</TR>
+							</TBODY>
+							</TABLE>
+						</DIV>
+					</TD>
+				</TR>
+			</TBODY>
+			</TABLE>
+<!-- меню сайта закончилось -->
+		</TD>
+	</TR>
+	<TR>
+		<TD vAlign="top" width="170" align="left" style="PADDING-LEFT: 3px; BACKGROUND: #f1f1f1; BORDER-RIGHT: #707680 1px solid; border-left: 1px solid #707680; font-size: 12px;">
+			<!-- Меню раздела началось -->
+			<br>
+			
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1052')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="В этом разделе размещены те RFC которые мне попались, и показались интересными. Собраны исключительно RFC на русском языке - к сожалению, таких немного. Однако - продолжаю искать :)" href="/?id=1052">RFC</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1067')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="Страничка прораммирования. То, что показалось интересным о языках программирования, да и просто то, что пригодилось из этой области." href="/?id=1067">Программирование</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1357')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="Документация касающаяся FreeBSD" href="/?id=1357">FreeBSD</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.curr.level3.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD height="20" align="left" class="current" onmouseover="this.style.cursor='hand';" onclick="window.location.href('/?id=1358')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="Русские man`ы" href="/?id=1358">man</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.curr.level3.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1457')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на vsftpd" href="/?id=1457">vsftpd</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.curr.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="current" onmouseover="this.style.cursor='hand';" onclick="window.location.href('/?id=1458')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="qemu - эмулятор умеющий эмулировать почти все виды процессоров. Причём это не псевдоэмуляция, типа VmWare, а самая что ни на есть настоящая. Имеет модуль ядра для ускорения работы." href="/?id=1458">qemu</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.curr.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1481')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на dump" href="/?id=1481">dump</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1482')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на restore" href="/?id=1482">restore</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1492')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на awk" href="/?id=1492">awk</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1496')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на sed" href="/?id=1496">sed</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1501')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="перевод мана на tar" href="/?id=1501">tar</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD width="20" style="font-size: 12px">&nbsp;</TD>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1376')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="В данном разделе собраны переводы документации каким-либо боком касающиеся безопасности. Умнее назвать не придумал, поэтому - так." href="/?id=1376">security</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level4.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+<TABLE border="0" cellspacing="1" cellpadding="0" width="100%" id="left_menu">
+<TBODY>
+	<TR>
+		<TD height="20" align="left" class="hilightoff" onmouseover="className='hilighton'; this.style.cursor='hand';" onmouseout="className='hilightoff';" onclick="window.location.href('/?id=1998')"><CODE style="font-size: 9pt;"><A class="left-menu-link" title="Specification of the Exim Mail Transfer Agent" href="/?id=1998">EXIM</a></CODE></TD>
+	</TR>
+</TBODY>
+</TABLE>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/left.menu.inactive.level3.tpl' -->
+
+			<!-- Меню раздела закончилось -->
+<br><!-- Нет оплаченной рекламы в данный период --><br>
+			<!-- рисунок по ширине колонки - чтоб не сжималась браузерами -->
+			<img width="170" height="1" src="images/blank.gif">
+		</TD>
+		<TD width="10">
+			<!-- рисунок по ширине колонки - чтоб не сжималась браузерами -->
+			<img width="10" height="1" src="images/blank.gif">
+		</TD>
+		<TD vAlign="top" width="610" style="font-size: 12px">
+			<!-- Меню навигации началось -->
+			<CODE style="font-size: 8pt;"> <A class="text_link" href="/?id=1000" title="Титульная страница сайта www.lissyara.su">www.lissyara.su</A></CODE>
+<CODE style="font-size: 8pt;">&mdash;&gt; <A class="text_link" href="/?id=1004" title="страница где курят маны :)">документация</A></CODE>
+<CODE style="font-size: 8pt;"><CODE style="font-size: 8pt;">&mdash;&gt; <A class="text_link" href="/?id=1358" title="Русские man`ы">man</A></CODE>
+&mdash;&gt; <A class="link_drkbl" href="/?id=1458" title="qemu - эмулятор умеющий эмулировать почти все виды процессоров. Причём это не псевдоэмуляция, типа VmWare, а самая что ни на есть настоящая. Имеет модуль ядра для ускорения работы.">qemu</A></CODE>
+
+
+			<!-- for site parsing
+			www.lissyara.su --- документация --- man --- qemu
+			-->
+			<br>
+			<!-- Меню навигации закончилось -->
+<!-- линк на редактирование для автора -->
+			<br><H4 align="center"><CODE>qemu</CODE></H4>
+			<!-- google search -->
+
+			<!-- end google search -->
+			<!-- автор страницы под заголовком -->
+			
+			<!-- Текст страницы начался -->
+			<p align="justify"><br><CODE>  <b>Использование</b>: qemu [options] [disk_image]<br />
+<br />
+<b>Описание</b>:<br />
+ &nbsp; &nbsp;QEMU - эмулятор системы PC, моделирующий следующие внешние устройства:<br />
+</CODE><li class="main"><CODE>Узел i440FX моста PCI и мост PIIX3 PCI к ISA<br />
+</CODE><li class="main"><CODE>Карту Cirrus CLGD 5446 PCI VGA, или поддельную карту VGA с расширением Bochs VESA (железный уровень, включающий все нестандартные режимы)<br />
+</CODE><li class="main"><CODE>Мышь и клавитуру PS/2<br />
+</CODE><li class="main"><CODE>Два интерфейса PCI IDE с поддержкой жёстких дисков и CD-ROM<br />
+</CODE><li class="main"><CODE>Флоппи диск<br />
+</CODE><li class="main"><CODE>Сетевой адаптер NE2000 PCI<br />
+</CODE><li class="main"><CODE>Последовательные порты<br />
+</CODE><li class="main"><CODE>Звуковую карту Creative SoundBlaster 16<br />
+</CODE><li class="main"><CODE>Звуковую карту ENSONIQ AudioPCI ES1370<br />
+</CODE><li class="main"><CODE>Adlib(OPL2) - микросхема совместимая с Yamaha YM3812<br />
+</CODE><li class="main"><CODE>Контроллер PCI UHCI USB и виртуальный USB хаб<br />
+ &nbsp; &nbsp;SMP поддерживает до 255 процессоров.<br />
+ &nbsp; &nbsp;Отметтьте, что adlib доступен лишь когда QEMU сконфигурирован с -enable-adlib.<br />
+ &nbsp; &nbsp;QEMU использует BIOS PC от проекта Bochs, и Plex86/Bochs LGPL VGA BIOS.<br />
+ &nbsp; &nbsp;QEMU использует эмуляцию YM3812 от Tatsuyuki Satoh.<br />
+<br />
+<b>Опции</b>:<br />
+ &nbsp; &nbsp;<u>disk_image</u> - сырой образ жёсткого диска для нулевого жёсткого диска IDE.<br />
+ &nbsp; &nbsp;Общие опции:<br />
+</CODE><li class="main"><CODE><b>-M machine</b> - Выбор эмулируемой машины (&quot;-M ?&quot; для списка (в текущей версии, не выводит - прим. lissyara))<br />
+</CODE><li class="main"><CODE><b>-fda file</b><br />
+</CODE><li class="main"><CODE><b>-fda file</b> - Использовать <u>файл</u> как образ гибкого диска 0/1. Вы можете использовать привод гибких дисков на машине, указав как имя файла - <u>/dev/fd0</u>.<br />
+</CODE><li class="main"><CODE><b>-hda file</b><br />
+</CODE><li class="main"><CODE><b>-hdb file[/b</b><br />
+</CODE><li class="main"><CODE><b>-hdc file[/b</b><br />
+</CODE><li class="main"><CODE><b>-hdd file[/b</b> - Использовать <u>файл</u> как образ жёсткого диска 0, 1, 2 или 3.<br />
+</CODE><li class="main"><CODE><b>-cdrom file</b> - Использовать <u>файл</u> как образ CD-ROM (вы не можете использовать <b>-hdc</b> и <b>-cdrom</b> одновременно). Вы можете использовать CD-ROM на машине, используя как имя файла <u>/dev/cdrom</u>.<br />
+</CODE><li class="main"><CODE><b>-boot [a|c|d|n]</b> - Загружаться с floppy (a), жёсткого диска (c), CD-ROM (d), или Etherboot (n). По умолчанию - загрузка с жёсткого диска.<br />
+</CODE><li class="main"><CODE><b>-snapshot</b> - Записывать во временные файлы, вместо образов жёстких дисков. В этом случае, используемый вами образ сырого жёсткого диска не записывается. Однако, вы можете вызвать принудительную запись, путём нажатия <b>C-a s</b>.<br />
+</CODE><li class="main"><CODE><b>-no-fd-bootchk</b> - Отключить проверку загрузочной записи гибких дисков в Bochs BIOS. Это может быть необходимо для загрузки со старых гибких дисков.<br />
+</CODE><li class="main"><CODE><b>-m megs</b> - Установить виртуальный размер RAM в <u>megs</u> мегабайт. По умолчанию &mdash; 128Mb.<br />
+</CODE><li class="main"><CODE><b>-smp n</b> - Моделировать SMP систему с <u>n</u> CPU. На целевом PC поддерживатся вплоть до 255 CPU.<br />
+</CODE><li class="main"><CODE><b>-nographic</b> - Обычно, QEMU использует SDL для показа вывода VGA. С этой опцией, вы можете полностью отключить графический вывод, таким образом, QEMU - просто приложение командной строки. Эмулируемый последовательный порт - перенаправляется в консоль. Поэтому, вы всё ещё можете использовать QEMU для отлаки ядра Linux с последовательной консолью. (Незаслуженно обижены остальные дистрибутивы горазо более правильных и прямых ОСей - FreeBSD, например - прим. lissyara)<br />
+</CODE><li class="main"><CODE><b>-vnc display</b> - Обычно, QEMU использует SDL для показа вывода VGA. С этой опцией, вы можете иметь слушающий QEMU на дисплее VNC <u>display</u>, и перенаправлять дисплей VGA через сессию VNC. Это очень полезно для включения устройств usb tablet, при использовании этой опции (опция <b>-usbdevice tablet</b>). Когда используется дисплей VNC, вы можете использовать опцию <b>-k</b>, для задания раскладки клавиатуры, если вы не используете en-us.<br />
+ &nbsp; &nbsp;<u>display</u> может быть в форме <u>interface:d</u>, в случае чего, соединения будут разрешены лишь от <u>interface</u> на <u>d</u>. Опционально, <u>interface</u> может быть опущена. <u>display</u>, также, может быть в форме <u>unix:path</u>, где <u>path</u> - расположение сокета, для приёма подключений.<br />
+</CODE><li class="main"><CODE><b>-k language</b> - Использовать раскладку клавиатуры <u>language</u> (например, &quot;fr&quot; для French). Эта опция нужна лишь там, где не безопасно брать сырые коды клавиш PC (например, на Макинтошах, с некоторыми серверами X11, или с дисплеем VNC). Обычно, вам не нужно использовать её на хостах PC/Linux or PC/Windows.<br />
+ &nbsp; &nbsp;Доступные раскладки:<br />
+</CODE>
+		<TABLE border="0" cellpadding="0" cellspacing="0" bgcolor="#707680" width="100%" id="main_table">
+		<TBODY>
+			<TR>
+				<TD>
+					<TABLE border="0" width="100%" cellspacing="1" cellpadding="2" style="font : 11px verdana;">
+					<TBODY>
+						<TR bgcolor="#B9CCDF" >
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+					<TD align="left">
+						<b><CENTER>-</CENTER></b>
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1" class=hilightoff_body onmouseover="className='hilighton';" onmouseout="className='hilightoff_body';">
+					<TD align="left">
+						ar
+					</TD>
+					<TD align="left">
+						de-ch
+					</TD>
+					<TD align="left">
+						es
+					</TD>
+					<TD align="left">
+						fo
+					</TD>
+					<TD align="left">
+						fr-ca
+					</TD>
+					<TD align="left">
+						hu
+					</TD>
+					<TD align="left">
+						ja
+					</TD>
+					<TD align="left">
+						mk
+					</TD>
+					<TD align="left">
+						no
+					</TD>
+					<TD align="left">
+						pt-br
+					</TD>
+					<TD align="left">
+						sv
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1" class=hilightoff onmouseover="className='hilighton';" onmouseout="className='hilightoff';">
+					<TD align="left">
+						da
+					</TD>
+					<TD align="left">
+						en-gb
+					</TD>
+					<TD align="left">
+						et
+					</TD>
+					<TD align="left">
+						fr
+					</TD>
+					<TD align="left">
+						fr-ch
+					</TD>
+					<TD align="left">
+						is
+					</TD>
+					<TD align="left">
+						lt
+					</TD>
+					<TD align="left">
+						nl
+					</TD>
+					<TD align="left">
+						pl
+					</TD>
+					<TD align="left">
+						ru
+					</TD>
+					<TD align="left">
+						th
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1" class=hilightoff_body onmouseover="className='hilighton';" onmouseout="className='hilightoff_body';">
+					<TD align="left">
+						de
+					</TD>
+					<TD align="left">
+						en-us
+					</TD>
+					<TD align="left">
+						fi
+					</TD>
+					<TD align="left">
+						fr-be
+					</TD>
+					<TD align="left">
+						hr
+					</TD>
+					<TD align="left">
+						it
+					</TD>
+					<TD align="left">
+						lv
+					</TD>
+					<TD align="left">
+						nl-be
+					</TD>
+					<TD align="left">
+						pt
+					</TD>
+					<TD align="left">
+						sl
+					</TD>
+					<TD align="left">
+						tr
+					</TD>
+				</TR>
+
+					</TBODY>
+					</TABLE>
+				</TD>
+			</TR>
+		</TBODY>
+		</TABLE><p align="justify"><CODE> &nbsp; &nbsp;По умолчанию - &quot;en-us&quot;.<br />
+</CODE><li class="main"><CODE><b>-audio-help</b> - Позволяет показать помощь подсистемы аудио: список драйверов, настраиваемые параметры.<br />
+</CODE><li class="main"><CODE><b>-soundhw card1,card2,... or -soundhw all</b> - Включение звука и выбор аудио оборудования. Используйте ? для вывода всего доступного аудио оборудования.<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE>qemu -soundhw sb16,adlib hda
+qemu -soundhw es1370 hda
+qemu -soundhw <font color="teal">all</font> hda
+qemu -soundhw ?
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE></CODE><li class="main"><CODE><b>-localtime</b> - Установка часов реального времени в локальное время (по умолчанию - время UTC). Эта опция необходима для установки корректного времени в MS-DOS или Windows.<br />
+</CODE><li class="main"><CODE><b>-full-screen</b> - Запуститься в полноэкранном режиме.<br />
+</CODE><li class="main"><CODE><b>-pidfile file</b> - Сохранить PID процесса QEMU в <u>file</u>. Это полезно, если вы запускаете QEMU из скрипта.<br />
+</CODE><li class="main"><CODE><b>-daemonize</b> - &quot;Демонизировать&quot; процесс QEMU после инициализации. QEMU не будет отключаться от стандартного IO пока он готов принимать соединения на любых его устройствах. Эта опция - полезна для запуска QEMU внешними программами, без необходимости преодолевать условия запуска. (не совсем понял фразу - прим. lissyara)<br />
+</CODE><li class="main"><CODE><b>-win2k-hack</b> - Используйте её при инсталляции Windows 2000 для избежания ошибки заполнения диска. После инсталляции Windows 2000, эта опция больше не нужна (она замедляет передачу по IDE).<br />
+</CODE><li class="main"><CODE><b>-option-rom file</b> - Загрузить содержимое файла как опциональную ROM. Эта опция полезна для загрузки вещщей, типа EtherBoot.<br />
+<br />
+ &nbsp; &nbsp;Опции USB:<br />
+</CODE><li class="main"><CODE><b>-usb</b> - Включить драйвер USB (по умолчанию).<br />
+</CODE><li class="main"><CODE><b>-usbdevice devname</b> - Добавить USB устройство <u>devname</u>.<br />
+<br />
+ &nbsp; &nbsp;Сетевые опции:<br />
+</CODE><li class="main"><CODE><b>-net nic[,vlan=n][,macaddr=addr][,model=type]</b> - Создать новую сетевую карту, и подключить её к VLAN`y <u>n</u> (по умолчанию, <u>n</u> = 0). На целевом PC, в настоящее время, NIC - NE2000. Опционально, может быть изменён MAC-адрес. Если опции <b>-net</b> не задано, содаётся одна сетевая карта. QEMU может эмулировать несколько различных моделей сетевых плат. Допустимые значения для <u>type</u> - &quot;ne2k_pci&quot;, &quot;ne2k_isa&quot;, &quot;rtl8139&quot;, &quot;smc91c111&quot; и &quot;lance&quot;. Не все устройства поддерживаются на всех целях.<br />
+</CODE><li class="main"><CODE><b>-net user[,vlan=n][,hostname=name]</b> - Использовать сетевой стек пользовательского режима, не требующий прав администратора для запуска. Для задания имени клиентского хоста, сообщаемого встроенному DHCP-серверу, может использоваться <b>hostname</b>=<b>name</b>.<br />
+</CODE><li class="main"><CODE><b>-net tap[,vlan=n][,fd=h][,ifname=name][,script=file]</b> - Подключить сетевой интерфейс TAP, хоста, к VLAN`y <u>n</u>, и использовать, для его конфигурирования, скрипт <u>file</u>. По умолчанию, сетевой скрипт - <u>/etc/qemu-ifup</u>. Используйте <b>script</b>=<b>no</b> для откючения выполнения скрипта. Если <u>name</u> не задано, ОС предоставит его автоматически. Для обработки уже окрытого хостом TAP-интерфейса, может использоваться <b>fd</b>=<b>h</b>. Например:<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE>qemu linux.img -net nic -net tap
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE> &nbsp; &nbsp;Более сложный пример (две сетевые карты, каждай подключенная к устройству TAP)<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE>qemu linux.img -net nic,vlan=<b><font color="darkblue">0</font></b> -net tap,vlan=<b><font color="darkblue">0</font></b>,ifname=tap0 \
+	-net nic,vlan=<b><font color="darkblue">1</font></b> -net tap,vlan=<b><font color="darkblue">1</font></b>,ifname=tap1
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE></CODE><li class="main"><CODE><b>-net socket[,vlan=n][,fd=h][,listen=[host]:port][,connect=host:port]</b><br />
+ &nbsp; &nbsp;Подключение VLAN`a <u>n</u> к удалённому VLAN`y, в другой виртуальной машине GEMU, используя соединение через сокет TCP. Если задана <b>listen</b>, QEMU ожидает входящие соединения на <u>port</u> (<u>host</u> - опциональна). <b>connect</b> - используется для подключения к иному экземпляру QEMU, используя опцию <b>listen</b>. <b>fd</b>=<b>h</b> - определяет уже открытый сокет TCP.<br />
+ &nbsp; &nbsp;Пример:<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><font color="red"># Запуск первого экземпляра QEMU</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">56</font></b> \
+	-net socket,listen=:<b><font color="darkblue">1234</font></b>
+<font color="red"># подключение VLAN 0 этого экземпляра, к VLAN 0</font>
+<font color="red"># первого экземпляра</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">57</font></b> \
+	-net socket,connect=<b><font color="darkblue">127</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">1</font></b>:<b><font color="darkblue">1234</font></b>
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE></CODE><li class="main"><CODE><b>-net socket[,vlan=n][,fd=h][,mcast=maddr:port]</b> - Создание VLAN`a <u>n</u>, общего с другой виртуальной машиной QEMU, используя мультикастовый сокет UDP, эффективно делающего шину для каждой QEMU, с тем же самым мультикастовым адресом <u>maddr</u> и <u>port</u>. ПРИМЕЧАНИЕ:<br />
+1. Различные QEMU могут быть запущены на различных хостах, и иметь общую шину (предполагается корректная мультикастовая установка для этих хостов).<br />
+2. Мультикастовая поддержка - совместима с пользовательским режимом linux (аргумент <b>eth</b><u>N</u>=<b>mcast</b>), смотрите <a href="http://user-mode-linux.sf.net" target="_blank" title="Ссылка на другой сайт, откроется в новом окне" class="text_link">http://user-mode-linux.sf.net</a>.<br />
+3. Используйте <b>fd</b>=<b>h</b>, для задания уже открытых мультикастовых UDP сокетов.<br />
+ &nbsp; &nbsp;Пример:<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><font color="red"># запуск первого экземпляра QEMU</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">56</font></b> \
+	-net socket,mcast=<b><font color="darkblue">230</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">1</font></b>:<b><font color="darkblue">1234</font></b>
+<font color="red"># запуск другого экземпляра QEMU на той же самой &quot;шине&quot;</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">57</font></b> \
+	-net socket,mcast=<b><font color="darkblue">230</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">1</font></b>:<b><font color="darkblue">1234</font></b>
+<font color="red"># запуск ещё одного иного экземпляра QEMU на той же самой &quot;шине&quot;</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">58</font></b> \
+	-net socket,mcast=<b><font color="darkblue">230</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">1</font></b>:<b><font color="darkblue">1234</font></b>
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE> &nbsp; &nbsp;Пример (совместимость с пользовательским режимом linux`a)<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><font color="red"># запуск экземпляра QEMU (отметтьте - адрес mcast выбран</font>
+<font color="red"># по умолчанию, пользовательским режимом linux`a)</font>
+qemu linux.img -net nic,macaddr=<b><font color="darkblue">52</font></b>:<b><font color="darkblue">54</font></b>:<b><font color="darkblue">00</font></b>:<b><font color="darkblue">12</font></b>:<b><font color="darkblue">34</font></b>:<b><font color="darkblue">56</font></b> \
+	-net socket,mcast=<b><font color="darkblue">239</font></b>.<b><font color="darkblue">192</font></b>.<b><font color="darkblue">168</font></b>.<b><font color="darkblue">1</font></b>:<b><font color="darkblue">1102</font></b>
+<font color="red"># запуск пользовательского режима linux`a</font>
+/path/to/linux ubd0=/path/to/root_fs eth0=mcast
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE></CODE><li class="main"><CODE><b>-net none</b> - EУказывает,что сетевые устройства не должны конфигурироваться. Она используется для перезадания дефолтовой конфигурации (<b>-net nic</b> <b>-net user</b>), которая активируется, если не предоставлена опция <b>-net</b>.<br />
+</CODE><li class="main"><CODE><b>-tftp prefix</b> - Когда используется пользовательский режим сетевого стека, активирует встроенный TFTP-сервер, Все имена файлов, начинающиеся с <u>prefix</u>, могут быть скачаны с хоста на гостя, используя клиент TFTP. Клиент TFTP, на госте, должен быть сконфигурирован в бинарном режиме (используя команду &quot;bin&quot;, TFTP клиента UNIX). IP адрес хоста на госте, обычно, - 10.0.2.2.<br />
+</CODE><li class="main"><CODE><b>-smb dir</b> - Когда используется пользовательский режим сетевого стека, активируется встроенный SMB сервер, таким образом, ОС`ы Windows могут иметь прозрачный доступ к файлам хоста в <u>dir</u>.<br />
+ &nbsp; &nbsp;В гостевой ОС Windows, строка:<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><b><font color="darkblue">10</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">2</font></b>.<b><font color="darkblue">4</font></b> smbserver
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE>должна быть добавлена в файл <font color="green">C:\WINDOWS\LMHOSTS</font> (для windows 9x/Me) или <font color="green">C:\WINNT\SYSTEM32\DRIVERS\ETC\LMHOSTS</font> (Windows NT/2000).<br />
+ &nbsp; &nbsp;Тогда <u>dir</u> должна быть доступна в <font color="green">\\smbserver\qemu</font>.<br />
+ &nbsp; &nbsp;Отметтьте, что сервер SAMBA должен быть инсталлирован на главной машине, в <font color="green">/usr/sbin/smbd</font>. QEMU был успешно протестирован с <font color="red">smbd</font> версии 2.2.7a из the Red Hat 9 и версии 3.0.10-1.fc3 из Fedora Core 3.<br />
+</CODE><li class="main"><CODE><b>-redir [tcp|udp]:host-port:[guest-host]:guest-port</b> - Когда используется сетевой стек пользовательского режима, перенаправление входящего TCP или UDP оединения к порту хоста <u>host-port</u> на гостевой <u>guest-host</u> гостевого порта <u>guest-port</u>. Если не задан <u>guest-host</u>, его значение - 10.0.2.15 (дефолтовый адрес данный встроенным DHCP-сервером).<br />
+ &nbsp; &nbsp;Например, для редиректа соединения X11 хоста от экрана 1 к гостевому экрану 0, используйте следующее:<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><font color="red"># на хосте</font>
+qemu -redir <font color="orange">tcp</font>:<b><font color="darkblue">6001</font></b>::<b><font color="darkblue">6000</font></b> [...]
+<font color="red"># этот xterm хоста был бы открыт в гостевом сервере X11</font>
+xterm -display :<b><font color="darkblue">1</font></b>
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE> &nbsp; &nbsp;Редирект соединения telnet от <br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE><font color="red"># на хосте</font>
+qemu -redir <font color="orange">tcp</font>:<b><font color="darkblue">5555</font></b>::<b><font color="darkblue">23</font></b> [...]
+<font color="orange">telnet</font> <font color="teal">localhost</font> <b><font color="darkblue">5555</font></b>
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE> &nbsp; &nbsp;Тогда, когда вы используете на хосте &quot;telnet localhost 5555&quot;, вы подключаетесь к гостевому серверу telnet.<br />
+ &nbsp; &nbsp;Специфичное для загрузки linux: Rjulf используются эти опции, вы можете использовать данное linux ядро без инсталляции его в образе диска. Это может быть полезным для лёгкого тестирования различных ядер.<br />
+</CODE><li class="main"><CODE><b> -kernel bzImage</b> - Использовать <u>bzImage</u> как образ ядра.<br />
+</CODE><li class="main"><CODE><b>-append cmdline</b> Использовать <u>cmdline</u> как командную строку ядра.<br />
+</CODE><li class="main"><CODE><b>-initrd file</b> использовать <u>file</u> как начальный диск в памяти.<br />
+ &nbsp; &nbsp;Отладочные/Экспертные опции:<br />
+</CODE><li class="main"><CODE><b>-serial dev</b> - Перенаправить вертуальный последовательный порт к хостовому символьному устройству <u>dev</u>. Дефолтовое устройство - &quot;vc&quot; в графическом режиме, и &quot;stdio&quot; в неграфическом режиме.<br />
+ &nbsp; &nbsp;Эта опция может использоваться несколько раз, для симуляции вплоть до четырёх последовательных портов.<br />
+ &nbsp; &nbsp;Используйте &quot;-serial none&quot;, для отключения всех последовательных портов.<br />
+ &nbsp; &nbsp;Доступные символьные устройства - таковы:<br />
+&quot;vc&quot; - виртуальная конмоль.<br />
+&quot;pty&quot; - [только linux] - псевдо TTY (новые PTY - выделяются автоматически).<br />
+&quot;none&quot; - нет выделенного устройства.<br />
+&quot;null&quot; - пустое устройство.<br />
+&quot;/dev/XXX&quot; - [только linux] - использовать tty хоста, т.е. <u>/dev/ttyS0</u>. Параметры последовательного порта хоста устанавливаются по параметрам эмулируемого.<br />
+&quot;/dev/parportN&quot; - [только linux, только параллельный порт] - использовать параллельный порт <u>N</u> хоста. В настоящее время, vj;tn использоваться лишь параллельный порт SPP.<br />
+&quot;file:filename&quot; - записывать вывод в файл. Символы не могут читаться.<br />
+&quot;stdio&quot; - [только UNIX] - стандартный ввод/вывод.<br />
+&quot;pipe:filename&quot; - именованная труба <u>filename</u>.<br />
+&quot;COMn&quot; - [только Windows] - использовать последовательный порт <u>n</u> хоста.<br />
+&quot;udp:[remote_host]:remote_port[@[src_ip]:src_port]&quot; - это реализайия сетевой консоли UDP. Когда <u>remote_host</u> или <u>src_ip</u> не определены, они, по умолчанию, - 0.0.0.0. Когда не используется заданный <u>src_port</u>, автоматически выбирается случайный порт.<br />
+ &nbsp; &nbsp;Если вы лишь хотите простую консоль только для чтения, вы можете использовать &quot;netcat&quot; или &quot;nc&quot;, пуётм запуска qemu c: &quot;-serial udp::4555&quot; и nc как: &quot;nc -u -l -p 4555&quot;. В любой момент времени qemu что-то пишет в порт, таким образом это будет показано в сессии сетевой консоли.<br />
+ &nbsp; &nbsp;Если вы планируете посылать символы назад через сетевую консоль, или вы хотите остановить и запустить qemu несколько раз, вы должны сделать, чтобы qemu использовал тот же исходный порт каждый раз, используя что-то вроде &quot;-serial udp::4555@4556&quot; для qemu. Иной подход - использовать пропатченную версию netcat, которая может слушать TCP порт и посылать и принимать символы по udp. Если у вас есть патченная версия netcat, которая активирует удалённое эхо telnet, и передачу единичного символа, тогда вы можете использовать следующие опции, для повышения перенаправления netcat к разрешённому порту telnet 5555, для доступа к порту qemu.<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE>&quot;Qemu <font color="orange">Options</font>:&quot;
+-serial <font color="orange">udp</font>::4555@4556
+&quot;netcat <font color="orange">options</font>:&quot;
+-u -P <b><font color="darkblue">4555</font></b> -L <b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">0</font></b>:<b><font color="darkblue">4556</font></b> -t -p <b><font color="darkblue">5555</font></b> -I -T
+&quot;<font color="orange">telnet</font> <font color="orange">options</font>:&quot;
+<font color="teal">localhost</font> <b><font color="darkblue">5555</font></b>
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE>&quot;tcp:[host]:port[,server][,nowait][,nodelay]&quot; - сетевая консоль TCP имеет два режима работы. Она может посылать последовательный ввод/вывод в определённое местоположение, или ожидать соединения от определённого места. По умолчанию, сетевая консоль TCP посылается к <u>host</u> на <u>port</u>. Если вы используете опцию QEMU <u>server</u>, заставляющую ожидать сокет клиентского приложения, соединения к порту до продолжения, кроме случая когда задана опция &quot;nowait&quot;. Опция &quot;nodelay&quot; отключает алгоритм буферизации Nagle. Если опущен <u>host</u>, предполагается 0.0.0.0. В это время принимаются лишь TCP соединения. Вы можете использовать соединение &quot;telnet&quot;, для соответствующего символьного устройства.<br />
+</CODE><TABLE BORDER="0" BGCOLOR="#FFFAED" WIDTH="100%" CELLPADDING="5" CELLSPACING="0" 
+		STYLE="border-top:1px solid #000000; border-bottom:1px solid #000000; border-right:1px 
+		solid #000000; border-left:1px solid #000000; margin-top:5px; font: 12px Tahoma;">
+
+		<TR>
+<TD>
+<PRE STYLE="font: Arial; margin:1px"><CODE>&quot;Пример посылки консоли <font color="orange">tcp</font> к <b><font color="darkblue">192</font></b>.<b><font color="darkblue">168</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">2</font></b> порт <b><font color="darkblue">4444</font></b>&quot;
+	-serial <font color="orange">tcp</font>:<b><font color="darkblue">192</font></b>.<b><font color="darkblue">168</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">2</font></b>:<b><font color="darkblue">4444</font></b>
+&quot;Пример прослушивания и ожидания на порту <b><font color="darkblue">4444</font></b>, для соединения&quot;
+	-serial <font color="orange">tcp</font>::<b><font color="darkblue">4444</font></b>,server
+&quot;Пример не ожидания и прослушивания на <font color="orange">ip</font> <b><font color="darkblue">192</font></b>.<b><font color="darkblue">168</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">100</font></b> порт <b><font color="darkblue">4444</font></b>&quot;
+	-serial <font color="orange">tcp</font>:<b><font color="darkblue">192</font></b>.<b><font color="darkblue">168</font></b>.<b><font color="darkblue">0</font></b>.<b><font color="darkblue">100</font></b>:<b><font color="darkblue">4444</font></b>,server,nowait
+</CODE></PRE></TD></TR></TABLE><p align="justify"><CODE>&quot;telnet:host:port[,server][,nowait][,nodelay]&quot; - Вместо сырого tcp сокета используется соединение по протоколу telnet. Опция работает также, как если вы задаёте &quot;-serial tcp&quot;. Отличие - что порт выступает как сервер или клиент, используя опции переговоров telnet. Это, также, позволяет вам посылать последовательность MAGIC_SYSRQ, если вы используете поддержку посылки прерывающей последовательности telnet. Обычно, в UNIX клиенте telnet, вы делаете это при помощи Control-], и, затем, вводите &quot;send break&quot;, сопровождаемое нажатием клавиши Enter.<br />
+&quot;unix:path[,server][,nowait]&quot; - доменный сокет UNIX использвуется место сокета tcp. Опция работает также как если вы задаёте &quot;-serial tcp&quot;, за тем исключением, что для соединения используется доменный сокет UNIX <u>path</u>.<br />
+</CODE><li class="main"><CODE><b>-parallel dev</b> - перенаправить виртуальный параллельный порт к устройству хоста <u>dev</u> (то же самое устройство, что и последовательный порт). На хостах linux, <u>/dev/parportN</u> может быть использована для использования устройства подключенного на соответтсвующий параллельный порт хоста.<br />
+ &nbsp; &nbsp;Эта опция может быть использована несколько раз для моделирования до трёх параллельных портов.<br />
+ &nbsp; &nbsp;Используйте &quot;-parallel none&quot; для отключения всех паралллельных портов.<br />
+</CODE><li class="main"><CODE><b>-monitor dev</b> - перенаправить монитор к устройству хоста <u>dev</u> (то же самое устройство, что и последовательный порт). Устройство по умолчанию - &quot;vc&quot; в графическом режиме, и &quot;stdio&quot; в неграфическом.<br />
+</CODE><li class="main"><CODE><b>-s</b> - ожидать gdb соединения на порт 1234.<br />
+</CODE><li class="main"><CODE><b>-p port</b> - изменить порт соединения gdb. <u>port</u> может быть одим из десятичных номеров, для задания порта TCP, или устройством хоста (то же самое устройство, что и последовательный порт).<br />
+</CODE><li class="main"><CODE><b>-S</b> - не запускать CPU при запуске (вы можете ввести 'c' в мониторе).<br />
+</CODE><li class="main"><CODE><b>-d</b> - вывести лог в <font color="green">/tmp/qemu.log</font>.<br />
+</CODE><li class="main"><CODE><b>-hdachs c,h,s,[,t]</b> - принудительная физическая геометрия жёсткого диска 0 (1 &lt;= c &lt;= 16383, 1 &lt;= h &lt;= 16, 1 &lt;= s &lt;= 63) и опционально принудительный режим трансляции BIOS (t=none, lba или auto). Обычно, QEMU может предполагать все эти параметры. Эта опция полезна для страых образов дисков MS-DOS.<br />
+</CODE><li class="main"><CODE><b>-L path</b> - установить диреткорию для BIOS, VGA BIOS и раскладки клавиатуры.<br />
+</CODE><li class="main"><CODE><b>-std-vga</b> - моделировать стандартную карту VGA с расширением Bochs VBE (по умолчанию - Cirrus Logic GD5446 PCI VGA). Если ваша гостевая OC поддерживает расширение VESA 2.0 VBE (например, Windows XP), и вы хотите использовать режим высокого разрешения (&gt;= 1280x1024x16), вы должны использовать эту опцию.<br />
+</CODE><li class="main"><CODE><b>-no-acpi</b> - отключить поддержку ACPI (Advanced Configuration and Power Interface). Используёте её, если ваша гостевая ОС жалуется на проблемы с ACPI (только для целевых машин PC).<br />
+</CODE><li class="main"><CODE><b>-no-reboot</b> - выход, вместо перезагрузки.<br />
+</CODE><li class="main"><CODE><b>-loadvm file</b> - запускаться с сохранённым состоянием (&quot;loadvm&quot; - в монитор).<br />
+</CODE><li class="main"><CODE><b>-semihosting</b> - включить полу-хостовый интерфейс &quot;Angel&quot; (только для целевых машин ARM). JОтметтьте.что это позволяет гостям прямой доступ к файловой системе хоста, таким образом, должен использоваться лишь для доверенных гостевых ОС.<br />
+<br />
+ &nbsp; &nbsp;В течение графической эмуляции, вы можете использовать следующие клавиши:<br />
+<font color="orange">Ctrl-Alt-f</font> - переключиться в полноэкранный режим.<br />
+<font color="orange">Ctrl-Alt-n</font> - переключиться на виртуальную консоль 'n'. Стандартный маппинг консолей таков:<br />
+1. Целевой системный дисплей.<br />
+2. Монитор.<br />
+3. Последовательный порт.<br />
+<font color="orange">Ctrl-Alt</font> - переключение захвата мыши и клавиатуры.<br />
+ &nbsp; &nbsp;В виртуальной консоли вы можете использовать <font color="orange">Ctrl-Up</font>, <font color="orange">Ctrl-Down</font>, <font color="orange">Ctrl-PageUp</font> и <font color="orange">Ctrl-PageDown</font> для передвижения в обратную регистрацию.<br />
+ &nbsp; &nbsp;В процессе эмуляции, если вы используете опцию <b>-nographic</b>, используйте <b>Ctrl-a h</b> для терминальных команд:<br />
+<font color="orange">Ctrl-a h</font> - распечатать эту справку.<br />
+<font color="orange">Ctrl-a x</font> - выйти из эмулятора<br />
+<font color="orange">Ctrl-a s</font> - сохранить дисковые данные обратно в файл (если -snapshot).<br />
+<font color="orange">Ctrl-a b</font> - послать прерывание (магическое sysrq - в linux).<br />
+<font color="orange">Ctrl-a c</font> - переключиться между консолью и монитором.<br />
+<font color="orange">Ctrl-a Ctrl-a</font> - послать <font color="orange">Ctrl-a</font>.<br />
+ &nbsp; &nbsp;Следующие опции специфичные для эмуляйии PowerPC:<br />
+<font color="orange">-g WxH[xDEPTH]</font> - установить начальный графический режим VGA. По умолчанию - 800x600x15.<br />
+ &nbsp; &nbsp;Следующие опции специфичны для эмуляции Sparc:<br />
+<font color="orange">-g WxH</font> - Установить начальный графический режим TCX. ПО умолчанию - 1024x768.<br />
+<br />
+Автор: Fabrice Bellard<br />
+<br />
+<br />
+=============<br />
+translated by <a href="http://www.lissyara.su/?id=1024" title="Ссылка внутри сайта, откроется в этом же окне" class="text_link">lissyara</a></CODE></p><br><br>
+			<!-- нет линка на обсуждение -->
+			<!-- Текст страницы закончился -->
+<!-- линк на редактирование для автора -->
+			<!-- автор текста начался -->
+			<a name="voting"></a>
+			<TABLE width="100%"  border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td valign="top">
+						
+					</td>
+					<td align="right" valign="top">
+						
+					</td>
+				</tr>
+			</TABLE>
+
+			<!-- автор кончился :) -->
+<!-- Нет оплаченной рекламы в данный период -->
+			
+			<!-- Комментарии пользователей начались -->
+					<br><br>
+			<!-- Комментарии пользователей закончились -->
+
+			<!-- рисунок по ширине колонки - чтоб не сжималась браузерами -->
+			<img width="610" height="1" src="images/blank.gif">
+		</TD>
+		<TD width="10">
+			<!-- рисунок по ширине колонки - чтоб не сжималась браузерами -->
+			<img width="10" height="1" src="images/blank.gif">
+		</TD>
+		<TD vAlign="top" width="170" style="PADDING: 5px; BACKGROUND: #f1f1f1; BORDER-LEFT: #707680 1px solid; BORDER-RIGHT: #707680 1px solid; font-size: 12px; ">
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.host-food.tpl' -->
+
+<CENTER><a href="http://www.host-food.ru/" onclick="window.location.href='http://www.host-food.ru/p/2248/'; return false;" target="_blank"><img src="http://www.host-food.ru/images/banners/host-food.gif" border="0" alt="Хостинг HOST-FOOD" width="88" height="31" /></a></CENTER>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.host-food.tpl' -->
+<br>
+			<!-- новости начались -->
+			
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2014-07-27, <a class="text_link" href="/authors/2005/lissyara/" title="Лужу, паяю, Э-Вэ-эМы починяю...">lissyara</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/file_system/gmirror_gpart_glabel/" title="Создание зеракала gmirror с разбивкой gpart и использованием меток glabel ">gmirror </a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Удалённое создание софтверного зеркала средствами gmirror, на диске разбитом с использованием gpart. Использование меток дисков для монтирования разделов.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2013-08-20, <a class="text_link" href="/?id=2172" title="">zentarim</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/scan_print/" title="Scan+Print server FreeBSD 9 для Canon PIXMA MP540">Scan+Print server FreeBSD 9</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка сервера печати и сервера сканирования под управлением операционной системы FreebSD 9 для МФУ Canon PIXMA MP540</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-11-20, <a class="text_link" href="/authors/2007/blackcat/" title="">BlackCat</a><br>
+
+<b><a class="text_link" href="/articles/mad_hands/computers/pluggable_rp_sma_antenna/" title="Установка разъёма на WiFi-карту">Разъём на WiFi-карту</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Делаем съёмной несъёмную антену на WiFi-карте путём установки ВЧ-разъёма</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-09-14, <a class="text_link" href="/authors/2008/manefesto/" title="">manefesto</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/git_gitosis_ssh/" title="Настройка системы контроля версия исходного кода в связке git+gitosis+ssh ">Настройка git+gitosis</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка системы контроля версия исходного кода в связке git+gitosis+ssh </CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-08-14, <a class="text_link" href="/?id=2172" title="">zentarim</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/tuning/wifi_router/" title="Wi-Fi роутер Freebsd 8 + DNS сервер + DHCP сервер">Wi-FI роутер + DHCP + DNS</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка Wi-Fi роутера на Freebsd 8 + DNS сервер + DHCP сервер: чтобы Wi-Fi клиенты были в одной подсети с проводными, проводные и беспроводные клиенты получали адреса автоматически по DHCP, кэширующ</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-06-15, <a class="text_link" href="/authors/2011/-zg-/" title="">-ZG-</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/hardware/lptmon/" title="Охранная система на FreeBSD + LPT c видеорегистрацией">Охранная система на FreeBSD+LPT</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">В этой статье описана попытка реализации простой охранной системы на базе FreeBSD с подключением к ней охранных устройтсв на LPT порт и видеорегистрацией.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-03-13, <a class="text_link" href="/authors/2008/terminus/" title="">terminus</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/tuning/ng_nat/" title="Описание работы с ng_nat">ng_nat</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Описание работы ng_nat, практическое использование, достоинства и недостатки в сравнении с ipfw nat</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-02-20, <a class="text_link" href="/authors/2011/captain/" title="">Капитан</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/nagios+digitemp/" title="Система оповещения о превышении допустимой температуры в серверной на основе связки Nagios + Digitemp.">Nagios+Digitemp</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Статья описывает создание системы оповещения о превышении температуры в специальных помещениях на основе Nagios с использованием программы Digitemp.
+</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-02-17, <a class="text_link" href="/authors/2008/le1/" title="">Le1</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/coding/zyxel_configuration/" title="Скрипт для массового изменения конфига свичей Zyxel">Zyxel Configuration</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Скрипт для массового изменения конфига свичей Zyxel. Берет из файла iplist список ip-шек, заходит последовательно на каждый и выполняет комманды из файла commands, записывая происходящее в лог файл.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-02-16, <a class="text_link" href="/authors/2009/fox/" title="FreeBSD for ever, Windows must die!!!">fox</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/tuning/hast_cluster/" title="hast cluster">hast carp zfs ucarp cluster</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">HAST (Highly Available Storage), CARP, UCARP, ZFS, Cluster настройка и одаптация плюс личные размышления…</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-02-04, <a class="text_link" href="/authors/2007/blackcat/" title="">BlackCat</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/file_system/zfs_recovery/" title="Восстановление ZFS-пула с помощью подручных средств">Восстановление ZFS</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">История о том, как был восстановлен развалившийся RAIDZ ZFS-пул (перешедший в FAULTED) с помощью скотча и подручных средств. Или о том, какие приключения ожидают тех, кто не делает резервных копий.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-02-03, <a class="text_link" href="/authors/2011/captain/" title="">Капитан</a><br>
+
+<b><a class="text_link" href="/articles/mad_hands/computers/ds9097+ds1820/" title="Изготовление простейшего контроллера шины 1-Wire для создания системы мониторинга температуры.">1-Wire</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Статья описывает самостоятельное изготовление контроллера DS9097 для съёма показаний с датчиков температуры DS1820 с помощью программы Digitemp.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-01-28, <a class="text_link" href="/authors/2011/captain/" title="">Капитан</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/mrtg+digitemp/" title="Мониторинг температуры MRTG+Digitemp">Температура в серверной</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Статья описывает построение системы наблюдения за температурой в помещении серверной с использованием программы Digitemp и выводом графиков в MRTG</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-01-21, <a class="text_link" href="/authors/2008/m4rkell/" title="">m4rkell</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/rsyslog+loganalyzer+mysql/" title="Сервер логов на rsyslog+loganalyzer+mysql">Syslog server</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Как то буквально на днях, у нас завалилось, что то в еве) или не в еве не суть. Суть в том, что когда захотели снять логи с хостов esx обнаружили, что хранят эти негодяи логии только за последнии сутк</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2011-01-07, <a class="text_link" href="/authors/2005/lissyara/" title="Лужу, паяю, Э-Вэ-эМы починяю...">lissyara</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/hardware/mount_canon_powershot_using_gphotofs/" title="Монтирование фотоаппарата Canon через gphotofs">Canon/gphotofs</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Монтирование цифровых фотоаппаратов Canon (PTP) как файловой системы, автоматизация этого процесса через события devd и внешние скрипты.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-12-13, <a class="text_link" href="/authors/2007/al/" title="">Al</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/security/ipsec2/" title="IPSec. Теория и практика.">IPSec</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Описание принципов работы IPSEC и способов аутентификации.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-12-07, <a class="text_link" href="/authors/2008/manefesto/" title="">manefesto</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/file_system/install_freebsd_on_usb_flash/" title="Опыт миграции на usb">FreeBSD on flash</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Было принято решении переехать на USB Flash и установить минимальный джентельменский набор для работы своего роутера. Делаем  =)</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-12-05, <a class="text_link" href="/authors/2010/fomalhaut/" title="">Fomalhaut</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/file_system/root_zfs_gpt/" title="'Установка FreeBSD на ZFS/root' или 'Пособие себе на память - 1'">root ZFS, GPT</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Инструкция по установке FreeBSD с использованием в качестве таблицы разделов GPT и в качестве основной файловой системы - ZFS</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-09-05, <a class="text_link" href="/authors/2008/cancer/" title="">Cancer</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/trivia/install_ximp3_music_player/" title="Настройка аудиоплеера с помощью ximp3">Настройка аудиоплеера на ximp3</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Цели: Простенький аудиоплеер, для того что бы тетя продавец в магазине утром пришла нажала на кнопку Power и заиграла в зале музыка, так же был доступ по сети, общая шара куда можно заливать музыку, к</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-08-31, <a class="text_link" href="/authors/2008/cancer/" title="">Cancer</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/security/openvpn+pkcs-12/" title="Установка и настройка OpenVPN с ключом pkcs12">Установка и настройка OpenVPN</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">На днях появилась задача - объединить головной офис и 3 филиала в одну сеть через интернет посредством OpenVPN, чтобы люди могли подключаться через RDP к базам 1С на серверах.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-08-25, <a class="text_link" href="/authors/2008/manefesto/" title="">manefesto</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/file_system/geom_linux_lvm/" title="Монтирование разделов lvm во freebsd">freebsd lvm</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Использование linux_lvm для работы с LVM разделами из-под FreeBSD. Проблемы которые возники при монтирование lvm раздела</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-04-30, <a class="text_link" href="/authors/2010/gonzo111/" title="">gonzo111</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/proftpd_quota_and_auth_from_file/" title="Proftpd - квоты и авторизация из файлов. Мониторинг.">proftpd file auth&amp;quota</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Proftpd - квоты и авторизация из файлов, без использования базы данных и/или системных пользователей</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-04-22, <a class="text_link" href="/authors/2005/lissyara/" title="Лужу, паяю, Э-Вэ-эМы починяю...">lissyara</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/hardware/tw_cli/" title="Исправление ошибок RAID на контроллерах 3ware">tw_cli</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Пошаговая инструкция по восстановлению RAID на контроллере 3ware, из которого выпал один диск. Настройка мониторинга состояния рейда и отчётов о его состоянии на email.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-04-14, <a class="text_link" href="/authors/2009/fox/" title="FreeBSD for ever, Windows must die!!!">fox</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/mysql_master_mater/" title="MySQL Master+Master">MySQL Master+Master</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">MySQL (Master Master) and (Master Slave) Как настроить репликацию…</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-22, <a class="text_link" href="/authors/2010/mufanu/" title="">Mufanu</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/named_9.7.0/" title="Теория и настройка named 9.7.0.">named 9.7.0</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Система доменных имен (Domain Name Service, DNS) - одна из тех незаметных, закулисных программ, которым не уделяется и половины того внимания, которого они заслуживают.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-09, <a class="text_link" href="/authors/2008/terminus/" title="">terminus</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/dns/" title="Заметки про работу с DNS зонами">DNS zones</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Краткий ликбез про управление DNS зонами. Примеры проведения делегирования прямых и обратных DNS зон.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-09, <a class="text_link" href="/?id=2074" title="">aspera</a><br>
+
+<b><a class="text_link" href="/articles/freebsd/programms/squid+ad+group_access/" title="Squid и авторизация пользователей в AD по группам">Squid+AD (group access)</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка прокси сервера SQUID с автроризацией пользователей в AD. Разделение пользователей на группы</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-02, <a class="text_link" href="/authors/2007/blackcat/" title="">BlackCat</a><br>
+
+<b><a class="text_link" href="/articles/openbsd/syntony/router_part4_misc/" title="Часть 4 - Установка мелких сервисов"> Шлюз: Часть 4</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка дополнительных сервисов: синхронизация времени (OpenNTPD), клиент DynDNS.org.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-01, <a class="text_link" href="/authors/2007/blackcat/" title="">BlackCat</a><br>
+
+<b><a class="text_link" href="/articles/openbsd/syntony/router_part3_dns_dhcp_dyndns/" title="Часть 3 - Тонкая настройка: DNS, DHCP, Dynamic DNS"> Шлюз: Часть 3</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Настройка DHCP и DNS серверов для работы внутри частной сети, c поддержкой внутренних (частных зон) DNS, а так же интеграция DHCP и DNS сервисов.</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+
+<CODE style="font-size: 8pt;">2010-03-01, <a class="text_link" href="/authors/2007/blackcat/" title="">BlackCat</a><br>
+
+<b><a class="text_link" href="/articles/openbsd/syntony/router_part2_pf_advanced/" title="Часть 2 - Более функциональная настройка pf(4)"> Шлюз: Часть 2</a></b></CODE><br>
+
+<CODE style="font-size: 8pt;">Конфигурация МСЭ pf для проброса портов с изменением порта назначения и без, а так же поддержки активного режима FTP и ограничения максимального размера сегмента</CODE>
+
+<HR size="1">
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.block.tpl' -->
+<!-- Нет оплаченной рекламы в данный период -->
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.subscribe.form.tpl' -->
+
+<!-- подписка началась -->
+<a name="subscribe"></a>
+<FORM action="/?id=1064" method="POST">
+<CENTER>
+<TABLE width="100%" border="0" cellpadding="0" cellspacing="0">
+<TBODY>
+	<TR>
+		<TD width="100%" bgcolor="#707680">
+			<TABLE border="0" width="100%"  cellspacing="1" cellpadding="2">
+			<TBODY>
+				<TR bgcolor="#B9CCDF">
+					<TD align="center" colspan="2" title="подписаться на новости сайта">
+
+						<CODE><b>подписка</b></CODE>
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1">
+					<TD align="center" colspan="2" title="подписаться на новости сайта">
+						<CODE><INPUT type="text" name="news_subscribe"  style="width: 100%; border: 1px solid #707680; color: #000000;" onMouseOver="if (this.value=='ваш@e-mail') {this.value='';}" value="ваш@e-mail"></CODE>
+					</TD>
+				</TR>
+
+				<TR bgcolor="#DAE0E7">
+					<TD align="center" colspan="2" title="подписаться на новости сайта">
+						<CODE><INPUT type="submit" value="Отправить" name="Submit" style="width: 100%; background-color: #B9CCDF; color: #000000; border: 1px solid #707680; cursor : hand;"></CODE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TBODY>
+
+</TABLE>
+</FORM>
+<!-- подписка закончилась -->
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/news.subscribe.form.tpl' -->
+<!-- Нет оплаченной рекламы в данный период -->
+			<!-- новости закончились -->
+			<br>
+		</TD>
+	</TR>
+<!-- нижняя часть страницы началась -->
+	<TR>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid;">
+			&nbsp;
+		</TD>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid;">&nbsp;
+		</TD>
+		<TD vAlign="top" align="center" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid;">
+			<CODE><a name="down"></a><a href="/doc/man/qemu/#top" class="link_drkbl" title="наверх страницы">вверх</a></CODE>
+		</TD>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid;">&nbsp;
+		</TD>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid;">&nbsp;
+			&nbsp;
+		</TD>
+<!-- нижняя часть страницы закончилось -->
+	</TR>
+
+
+	<TR>
+		<TD vAlign="top" width="170" align="left" style="PADDING-LEFT: 3px; BACKGROUND: #f1f1f1; BORDER-RIGHT: #707680 1px solid; font-size: 12px">
+		
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/counter.people_now_on_site.tpl' -->
+
+<!-- скока  народу на сайте, началось -->
+<TABLE width="160" border="0" cellpadding="0" cellspacing="0">
+<TBODY>
+	<TR>
+		<TD width="100%" bgcolor="#707680">
+			<TABLE border="0" width="100%"  cellspacing="1" cellpadding="2">
+			<TBODY>
+				<TR bgcolor="#B9CCDF">
+					<TD align="center" colspan="2">
+						<CODE style="font-size: 10pt;"><b>Статистика сайта</b></CODE>
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1">
+					<TD align="left" colspan="2">
+						<CODE style="font-size: 10pt;">Сейчас на сайте находится: <b>11</b> чел.</CODE>
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1">
+					<TD align="left" colspan="2">
+						<CODE style="font-size: 10pt;">За последние 30 мин было: <b>49</b> человек</CODE>
+					</TD>
+				</TR>
+				<TR bgcolor="#f1f1f1">
+					<TD align="left" colspan="2">
+						<CODE style="font-size: 10pt;">За сегодня было<br><b>4308</b> показов,<br><b>476</b> уникальных IP</CODE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TBODY>
+</TABLE>
+<!-- скока  народу на сайте, закончилось :) -->
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/counter.people_now_on_site.tpl' -->
+	
+		</TD>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid; BORDER-BOTTOM: #707680 1px solid;">&nbsp;
+		</TD>
+		<TD vAlign="top" width="610" align="left" style="font-size: 12px; PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid; BORDER-BOTTOM: #707680 1px solid;">
+			<p align="justify"><CODE>&nbsp; Этот информационный блок появился по той простой причине,
+			что многие считают нормальным, брать чужую информацию не уведомляя автора
+			(что не так страшно), и не оставляя линк на оригинал и автора &mdash; что более существенно.
+			Я не против распространения информации &mdash; только за. Только условие простое &mdash; извольте
+			подписывать автора, и оставлять линк на оригинальную страницу в виде прямой, активной, нескриптовой,
+			незакрытой от индексирования, и не запрещенной для следования роботов ссылки.
+			<br>
+			&nbsp; Если соизволите поставить автора в известность &mdash; то вообще почёт вам и уважение.</CODE></p>
+			<p align="right"><CODE>&copy; lissyara 2006-10-24 08:47 MSK
+			</CODE></p>
+		</TD>
+		<TD vAlign="top" align="left" width="10" style="PADDING-TOP: 5px; BACKGROUND: #f1f1f1; BORDER-TOP: #707680 1px solid; BORDER-RIGHT: #707680 1px solid; BORDER-BOTTOM: #707680 1px solid;">
+			<img width="10" height="1" src="images/blank.gif">
+		</TD>
+		<TD vAlign="top" align="left" style="PADDING-TOP: 5px; PADDING-LEFT: 10px; BACKGROUND: #f1f1f1;">
+		<CODE><!-- &nbsp; -->
+		<script type="text/javascript">
+<!--
+var _acic={dataProvider:10};(function(){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src="//www.acint.net/aci.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})()
+//-->
+</script> Скачать <a href="http://programswindows.ru/publ/virtualization/qemu/15-3-16" target="_blank" class="text_link">QEMU</a> http://programswindows.ru/publ/virtualization/qemu/15-3-16 для построения ВМ. 
+		</CODE>
+		</TD>
+<!-- нижняя часть страницы закончилось -->
+	</TR>
+</TBODY>
+</TABLE>
+</CENTER>
+</BODY>
+<!--
+data for contact:
+email:	admin@lissyara.su
+mobila:	+7-926-593-39-19
+P.S. Красть - нехорошо!
+-->
+
+<!-- cron run start -->
+<!-- cron not run -->
+<!-- cron run stop -->
+
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.liveinternet.tpl' -->
+
+<!--LiveInternet counter--><script type="text/javascript"><!--
+document.write("<img src='http://counter.yadro.ru/hit?t45.6;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";h"+escape(document.title.substring(0,80))+";"+Math.random()+
+"' alt='' title='LiveInternet' "+
+"border=0 width=1 height=1>")//--></script><!--/LiveInternet-->
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.liveinternet.tpl' -->
+
+
+
+<!-- begin of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.google.analystics.tpl' -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3513918-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+<!-- end of '/home/lissyara_www/data/www/www.lissyara.su/includes/tpl/reklama.google.analystics.tpl' -->
+
+
+<!-- дебаг MySQL отключен -->
+
+</HTML>
+				<p align="center" style="font-size: 11px"><CODE>Время генерации страницы 0.1559 секунд
+				<br>Из них PHP: 49%; SQL: 51%; Число SQL-запросов: 57 шт.
+<br>Исходный размер: 83084;
+ Сжатая: 19492</CODE></p><br>																											

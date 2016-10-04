@@ -4,20 +4,20 @@
 void kernel_init( ulong_t MK_struct, ulong_t magic ) {
 
     //-----------------------------------------------------------------
-    KERNEL_BOOT_INFO = 0;
-    KERNEL_MEM_INFO = 0;
-    KERNEL_INFO_DELAY = 1;
+    KERNEL_BOOT_INFO = 1;
+    KERNEL_MEM_INFO = 1;
+    KERNEL_INFO_DELAY = 20;
 
 
     //-----------------------------------------------------------------
     k_term_clear();
-
+    if (KERNEL_BOOT_INFO) { k_term_clear(); __OS__(); }
+    k_term_clear();
 
     multiboot_reg_global = (multiboot_info_t *) MK_struct;
     multiboot_magic_global = magic;
 
-
-    //if (KERNEL_MEM_INFO) kernel_mem_info( );
+    if (KERNEL_MEM_INFO) kernel_mem_info( );
 
     //-----------------------------------------------------------------
     if (KERNEL_BOOT_INFO) kernel_log_info("kernel: init");
@@ -42,7 +42,6 @@ void kernel_init( ulong_t MK_struct, ulong_t magic ) {
 
     if (KERNEL_BOOT_INFO) kernel_log_info(" ... \n\n");
 
-    //if (KERNEL_BOOT_INFO) { k_term_clear(); __OS__(); }
     //-----------------------------------------------------------------
     k_term_clear();
     //reset_promt();

@@ -1,0 +1,1529 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="description" content="Журнал «Системный администратор», читать, скачать, купить" />
+<meta name="keywords" content="Архитектура файловой системы ext2::Журнал СА 11.2003" />
+<meta name="google-site-verification" content="z35fL65wHZVIsmElkKmEZyhoq7uJArHecswqYwlc7q8" />
+<meta name="yandex-verification" content="502415104067d19a" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/css/content.css" />
+<link rel="stylesheet" type="text/css" href="/css/bb.css" />
+<link rel="stylesheet" type="text/css" href="/css/fancy.css" />
+<link rel="stylesheet" type="text/css" href="/css/social-likes_classic.css" />
+<script language="JavaScript" type="text/javascript" src="/js/jquery.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/jquery.fancybox.js"></script>
+<script language="javascript" type="text/javascript" src="/js/jquery.bbcodeeditor.js?version=1.0"></script>
+<script language="JavaScript" type="text/javascript" src="/js/jquery.cycle.all.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/shop.js"></script>
+<script language="JavaScript" type="text/javascript">
+$(document).ready(function(){
+
+if ($.browser.msie){
+	$(".incart").fancybox({
+        overlayShow: false,
+    	overlayOpacity: 0.8,
+    	zoomSpeedIn: 500,
+    	zoomSpeedOut:500,
+        frameWidth: 550,
+        frameHeight: 300,
+		showBuyButton:true
+     });
+	}
+	else{
+	$(".incart").fancybox({
+        overlayShow: false,
+    	overlayOpacity: 0.8,
+    	zoomSpeedIn: 500,
+    	zoomSpeedOut:500,
+        frameWidth: 550,
+        frameHeight: 230,
+		showBuyButton:true
+     });
+	}
+	
+	$("a.donate").fancybox({
+        overlayShow: false,
+    	zoomSpeedIn: 500,
+    	zoomSpeedOut:500,
+        frameWidth: 1000,
+        frameHeight: 630
+     });
+
+$("a.zoom").fancybox({overlayShow: false});
+$('#slideshow').cycle({ 
+    fx:     'scrollHorz', 
+    speedIn:  800, 
+    speedOut: 500, 
+    timeout: 0, 
+    next:   '#next', 
+    prev:   '#prev', 
+	after:   OnAfter 
+});
+
+
+$('#slidegalery').cycle({ 
+    fx:     'scrollLeft',  
+	delay:   -2000
+});
+
+
+
+
+
+$("a.subscribe").fancybox({
+        overlayShow: false,
+        frameWidth: 600,
+        frameHeight: 370,
+		hideOnContentClick: true
+     });
+	 
+$("a.subedit").fancybox({
+        overlayShow: false,
+        frameWidth: 500,
+        frameHeight: 900,
+		hideOnContentClick: true
+     });
+	 
+$("a.subeditdel").fancybox({
+        overlayShow: false,
+        frameWidth: 400,
+        frameHeight: 400,
+		hideOnContentClick: true
+     });
+	 
+$("a.subeditlegal").fancybox({
+        overlayShow: false,
+        frameWidth: 450,
+        frameHeight: 500,
+		hideOnContentClick: true
+     });
+
+$('#srcSamag').click(function(){
+	if($('#srcSamagValue').attr('value') == ''){
+		$('#srcSamag').attr('src', '/img/checked.png');
+		$('#srcSamagValue').attr('value', 'samag.ru');
+		$('#srcWeb').attr('src', '/img/nonecheck.png');
+	}
+});
+
+$('#srcWeb').click(function(){
+	if($('#srcSamagValue').attr('value') == 'samag.ru'){
+		$('#srcWeb').attr('src', '/img/checked.png');
+		$('#srcSamag').attr('src', '/img/nonecheck.png');
+		$('#srcSamagValue').attr('value', '');
+	}
+});
+
+$('#remMe').click(function(){
+	if($('#remValue').attr('value') == 0){
+		$('#remValue').attr('value', 1);
+		$('#remMe').attr('src', '/img/checked.png');
+	}
+	else{
+		$('#remValue').attr('value', 0);
+		$('#remMe').attr('src', '/img/nonecheck.png');
+	}
+});
+
+$('#subscribe').click(function(){
+	if($('#mailflag').attr('value') == 'n'){
+		$('#mailflag').attr('value', 'y');
+		$('#subscribe').attr('src', '/img/checked.png');
+	}
+	else{
+		$('#mailflag').attr('value', 'n');
+		$('#subscribe').attr('src', '/img/nonecheck.png');
+	}
+});
+
+
+$('#smile').click(function(){
+	$('#smcontaner').show();
+});
+
+$('#smcontaner').hover(
+	function(){
+		$('#smcontaner').show();
+	}, 
+	function(){
+		$('#smcontaner').hide();
+	}
+);
+
+$('.sm_image').click(function(){
+	$('#smcontaner').hide();
+});
+
+$('#selmsg').click(function(){
+	if($('#selmsg').attr('checked')){
+		$('.msgcheck').attr('checked', 'checked');
+	}
+	else{
+		$('.msgcheck').attr('checked', false);
+	}
+});
+
+
+});
+</script>
+<script language="JavaScript" type="text/javascript" src="/js/action.js"></script>
+<script language="javascript" type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+<script language="javascript" type="text/javascript">
+tinymce.init({
+    selector: "textarea#elm_content",
+    theme: "modern",
+    language: "ru",
+    width: 900,
+    height: 400,
+	resize: "both",
+    plugins: [
+         "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+         "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+         "save moxiemanager table contextmenu directionality emoticons template paste textcolor importcss"
+   ],
+   	toolbar1: "newdocument fullpage | save | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
+        toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | insertdatetime preview | forecolor backcolor",
+        toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft", 
+		
+	menubar: true,
+    toolbar_items_size: 'small',
+	image_advtab: true,
+	importcss_append: true,
+	//importcss_file_filter: "/css/style.css",
+	//importcss_selector_filter: ".article-",
+	content_css : "/css/content.css",
+	
+	//style_formats: [{title: 'Arthead1', inline: 'span', classes: 'arthead'},{title: 'Arthead2', inline: 'span', classes: 'arthead2'},{title: 'Paragraph1', inline: 'span', classes: 'paragraph'},{title: 'Paragraph2', inline: 'span', classes: 'paragraph2'},{title: 'Paragraph3', inline: 'span', classes: 'paragraph3'},{title: 'Table Head', inline: 'span', classes: 'tab_head'},{title: 'Table', inline: 'span', classes: 'tab'},{title: 'Console', inline: 'span', classes: 'console'},{title: 'Console_inv', inline: 'span', classes: 'console_inv'},{title: 'Literature', inline: 'span', classes: 'literature'}],
+ });
+</script>
+<title>Архитектура файловой системы ext2::Журнал СА 11.2003</title>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21432215-1']);
+  _gaq.push(['_setDomainName', '.samag.ru']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="height:100%;">
+	<tr>
+    	<td height="150" style="border-top:solid 5px #E6F6FD;">
+        	<table cellspacing="0" cellpadding="0" border="0" width="100%" style="height:150px;">
+            	<tr>
+                	<td width="293"><a href="http://samag.ru/"><img alt="www.samag.ru" src="/img/logo.jpg" /><!--img alt="www.samag.ru" src="/img/logo_new2014.jpg" /--></a></td>
+                    <td align="center" valign="top" width="*" style="padding:0 8px 0 3px;">
+                    	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+                        	<tr>
+                            	<td height="76" style="text-align:right;vertical-align:top;padding:5px 0 5px 0;">
+								<table cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td rowspan="2" width="*" style="text-align:center;">
+                                <a href="http://bit.samag.ru" target="_blank"><img height="61" width="468" alt="Журнал «БИТ. Бизнес&Информационные технологии»" src="/img/upload/banners/1452626677BIT_2.gif" /></a>
+										</td>
+                                        <td width="130">
+                                        <a target="_blank" href="https://plus.google.com/+SamagRu"><img border="0" src="/img/social/gp.gif" /></a>&nbsp;
+                                        <a target="_blank" href="https://www.facebook.com/samag.ru"><img border="0" src="/img/social/fb.gif" /></a>&nbsp;
+                                        <a target="_blank" href="http://vk.com/samag"><img border="0" src="/img/social/vk.gif" /></a>&nbsp;
+                                        <a target="_blank" href="https://twitter.com/samag_journal"><img border="0" src="/img/social/tw.gif" /></a>
+                                        </td>
+										<td width="130">
+										<a target="_blank" href="https://play.google.com/store/apps/details?id=com.quazarteam.systAdmin&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-pwidth="120" y-PartBadge-Mar2515-1"><img alt="Get it on Google Play" height="40" border="0" src="https://play.google.com/intl/en_us/badges/images/generic/ru-play-badge.png" /></a>
+										
+										<!--<a class="donate" href="http://samag.ru/main/donate"><img border="0" src="/img/Kopilka.gif" /></a>-->
+										</td>
+									</tr>
+									<tr>
+									<td>
+									<a target="_blank" href="http://www.magzter.com/RU/Syndicat-13/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BD%D1%8B%D0%B9-%D0%B0%D0%B4%D0%BC%D0%B8%D0%BD%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%BE%D1%80/Computer-and-Mobile/"><img  alt="" width="120" height="40" border="0" src="/img/Magzter.gif" /></a>
+									</td>
+									<td>
+									<a target="_blank" href="https://itunes.apple.com/us/app/sistemnyj-administrator+-bit/id592342612?ls=1&mt=8"><img border="0" src="/img/Download_on_the_App_Store_Badge_RU_135x40.gif" /></a>
+									</td>
+									</tr>
+								</table>
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td height="55" bgcolor="#E6F6FD">
+								
+                                	
+									<form id="srcform" method="get" action="http://www.google.com/search" target="_blank">
+                                    <input type="hidden" name="domains" value="samag.ru" />
+                                    <input id="srcSamagValue" type="hidden" name="sitesearch" value="samag.ru" />
+                                    <input type="hidden" name="sa" value="Поиск в Google" />
+                                    <input type="hidden" name="forid" value="1" />
+                                    <input type="hidden" name="ie" value="utf-8" /><input type="hidden" name="oe" value="utf-8" />
+                                    <input type="hidden" name="hl" value="ru" />
+                                    <table cellspacing="0" cellpadding="0" border="0" height="55" width="100%">
+                                    	<tr>
+                                        	<td width="260" style="text-align:left;vertical-align:middle;padding-left:10px;"><span class="srcBlockText">Поиск</span>&nbsp;<input class="srcField" type="text" value="" name="q" style="vertical-align:middle;width:190px;" />&nbsp;<img alt="" src="/img/src_btn.gif" onclick="OnSubmitSrcForm();" style="vertical-align:middle;cursor:pointer;" />
+                                            </form>
+                                            </td>
+                                            <td width="*">
+                                            
+											<script type='text/javascript'>var us_msg={missing:'Не задано обязательное поле: "%s"',invalid:'Недопустимое значение поля: "%s"',email_or_phone:"Не задан ни email, ни телефон",email_absent:"Не указан электронный адрес",phone_absent:"Не указан телефон",no_list_ids:"Не выбрано ни одного списка рассылки"},us_emailRegexp=/^[a-zA-Z0-9_+=-]+[a-zA-Z0-9\._+=-]*@[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z0-9]([a-zA-Z0-9-]*))*\.([a-zA-Z]{2,6})$/,us_phoneRegexp=/^\s*[\d +()-.]{7,32}\s*$/;if(typeof us_=="undefined")var us_=new function(){function i(a){var b=a.getElementsByTagName("input");for(var c=0;c<b.length;c++){var d=b[c];if(d.getAttribute("name")=="charset"){d.value==""&&(d.value=document.characterSet?document.characterSet:document.charset);return}}}function j(a){var b=document,c=b.createElement("div");c.style.position="absolute",c.style.width="auto",c=b.body.appendChild(c),c.appendChild(a),a.style.display="",d.push(c)}function k(){var a=window,b=document,c=a.innerWidth?a.innerWidth:b.body.clientWidth,e=a.innerHeight?a.innerHeight:b.body.clientHeight;for(var f=0;f<d.length;f++){var g=d[f],h=parseInt(g.offsetWidth+""),i=parseInt(g.offsetHeight+"");g.style.left=(c-h)/2+b.body.scrollLeft+f*10,g.style.top=(e-i)/2+b.body.scrollTop+f*10}}var a=!1,b=window.onload;window.onload=function(){us_.onLoad()};var c=null,d=[],e=!1,f=!1,g={},h=new Event("loadFormJavascript");window.addEventListener("loadFormJavascript",function(){us_.onLoad()},!1),this.onLoad=function(){var d,e=document.getElementsByTagName("form"),f=[];for(d=0;d<e.length;d++)f.push(e[d]);for(d=0;d<f.length;d++){var g=f[d],h=g.getAttribute("us_mode");if(!h)continue;h=="popup"&&j(g),i(g)}k(),c=window.onresize,window.onresize=function(){us_.onResize()},a=!0,b&&b();var l=new Pikaday({field:document.getElementById("formdatepicker"),format:"DD-MM-YYYY"})},this.onResize=function(){k(),c&&c()},trim=function(a){return a==null?"":a.replace(/^\s\s*/,"").replace(/\s\s*$/,"")},this.onSubmit=function(b){return a?(_hideErrorMessages(b),!_validateTextInputs(b)||!_validateCheckboxes(b)||!_validateRadios(b)?!1:!0):(alert("us_.onLoad() has not been called"),!1)},_validateTextInputs=function(a){var b=a.querySelectorAll("input[type=text]");if(b.length==0)return!0;for(var c=0;c<b.length;c++){var d=b[c];g[d.name]&&g[d.name].length>0?d.style["border-color"]=g[d.name]:g[d.name]=d.style["border-color"];var h=d.getAttribute("name");h==="email"&&(e=!0),h==="phone"&&(f=!0);var i=trim(d.value),j=i==="",k=d.getAttribute("_required")==="1";if(k&&j){var l=us_msg.missing.replace("%s",d.getAttribute("_label"));return _showErrorMessage(l,d),d.style["border-color"]="#ff592d",d.focus(),!1}if(j)return!1;var m=d.getAttribute("_validator"),n=null;switch(m){case null:case"":case"date":case"string":case"number":case"text":break;case"email":n=us_emailRegexp;break;case"phone":n=us_phoneRegexp;break;case"float":n=/^[+\-]?\d+(\.\d+)?$/;break;default:return alert('Internal error: unknown validator "'+m+'"'),d.focus(),!1}if(n&&!n.test(i)){var l=us_msg.invalid.replace("%s",d.getAttribute("_label"));return _showErrorMessage(l,d),d.style["border-color"]="#ff592d",d.focus(),!1}}return!0},_validateCheckboxes=function(a){return _validateOptionsList(a,"checkbox")},_validateRadios=function(a){return _validateOptionsList(a,"radio")},_validateOptionsList=function(a,b){function f(a){return!a||a==document?null:a.parentNode.className==="options-list"?a.parentNode:f(a.parentNode)}var c=a.querySelectorAll("input[type="+b+"]");if(c.length==0)return!0;var d=new Array,e="";for(var g=0;g<c.length;g++)c[g].getAttribute("_required")==="1"&&(e=c[g].getAttribute("name").replace(/(:|\.|\[|\])/g,"\\$1"),d.indexOf(e)===-1&&d.push(e));for(var h in d){var e=d[h],i=a.querySelectorAll("input[name="+e+"]:checked").length,j=a.querySelectorAll("input[name="+e+"]");if(i===0){var k=f(j[0]),l=us_msg.missing.replace("%s",j[0].getAttribute("_label"));return _showErrorMessage(l,k),!1}}return!0},_showErrorMessage=function(a,b){if(b){var c=b.parentNode.querySelector(".error-block");c.innerHTML=a,c.style.display="block"}},_hideErrorMessages=function(a){var b=a.querySelectorAll(".error-block");if(b.length==0)return;for(var c=0;c<b.length;c++){var d=b[c];d.innerHtml="",d.style.display="none"}}}</script><script type='text/javascript' src='http://cp.unisender.com/v5/template-editor-new/js/lib/moment/moment-with-langs.min.js'></script><script type='text/javascript' src='http://cp.unisender.com/v5/template-editor-new/js/lib/datepicker/pikaday.js'></script>
+                                            
+                                            <link rel='stylesheet' media='all' href='http://cp.unisender.com/v5/template-editor-new/js/lib/datepicker/pikaday.css'>
+                                            <form method="POST" action="http://cp.unisender.com/ru/subscribe?hash=5d3rmgxyyr8m9f1oien4ggk1o6xq79y4do97317e" name="subscribtion_form" onsubmit="return us_.onSubmit(this);" us_mode="embed">
+                                            
+                                            <div>
+                                            <div>
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                          
+                                            <tbody>
+                                            <tr>
+                                            <td>
+                                            <div>
+												<table cellpadding="0" cellspacing="0" border="0"><tr><td style="vertical-align:middle;width:40px;">
+                                            <label><b>E-mail</b></label></td><td>
+                                           
+                                            <input type="text" name="email" _validator="email" _required="1" _label="E-mail"><div class="error-block">
+                                            </div>
+											</td></tr></table>
+                                            
+                                          
+                                            </div>
+                                            </td>
+<td>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="vertical-align:middle;"><button type="submit">Подписаться</button></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<input type="hidden" name="charset" value="">
+<input type="hidden" name="default_list_id" value="3621341">
+<input type="hidden" name="overwrite" value="2"></form>
+											
+											
+											
+											</td>
+                                            <td width="150" style="text-align:right;vertical-align:middle;padding-right:20px;">
+                                            <a href="http://samag.ru/"><img alt="" src="/img/home.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                            <a href="mailto:sa@samag.ru"><img alt="" src="/img/letter.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                            <a href="http://samag.ru/main/map"><img alt="" src="/img/map.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                            <a href="http://samag.ru/rss/headlines.xml" target="_blank"><img alt="" src="/img/rss.gif" /></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                        	<td style="text-align:left;vertical-align:middle;padding-left:20px;">
+                                            <img alt="" id="srcSamag" height="15" width="16" src="/img/checked.png" style="vertical-align:middle;" />&nbsp;<span class="srcBlockText">www.samag.ru</span>&nbsp;&nbsp;
+                                            <img alt="" id="srcWeb" height="15" width="16" src="/img/nonecheck.png" style="vertical-align:middle;" />&nbsp;<span class="srcBlockText">Web</span>
+                                            </td>
+                                            <td width="*">
+                                            
+                                            </form>
+                                            </td>
+                                            <td valign="middle" style="text-align:left;">
+											
+											
+<a href="http://samag.ru/shop"><img src="/img/cart_16.png" style="vertical-align:middle;" /></a>&nbsp;<span id="cart">0 товаров </span>, сумма&nbsp;<span id="cartsumm">0 руб.</span></span></a>
+                                          
+										   </td>
+                                        </tr>
+                                    </table>
+									
+									
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="223" style="vertical-align:top;padding-top:10px;">
+                        <form action="" method="post" onsubmit="return false">
+                        <input id="remValue" type="hidden" name="remvalue" value="0" />
+                    	<table cellspacing="0" cellpadding="0" border="0" height="125" width="223" background="/img/bg_bottom_auth.gif" style="background-repeat:no-repeat;background-position:bottom left;">
+                        	<tr>
+                            	<td style="text-align:right;vertical-align:middle;padding-left:10px;"><span class="srcBlockText">E-mail</span></td>
+                                <td style="text-align:left;vertical-align:middle;padding:5px;"><input class="srcField" type="text" id="email" name="email" onkeypress="Enter(event,this.form);"  style="vertical-align:middle;width:130px;" /></td>
+                            </tr>
+                            <tr>
+                            	<td style="text-align:right;vertical-align:middle;padding-left:10px;"><span class="srcBlockText">Пароль</span></td>
+                                <td style="text-align:left;vertical-align:middle;padding:5px;"><input class="srcField" type="password" id="pass" name="pass" onkeypress="Enter(event,this.form);"  style="vertical-align:middle;width:130px;" />&nbsp;<img src="/img/enter.gif" onclick="LoginUser();" style="vertical-align:middle;cursor:pointer;" /></td>
+                            </tr>
+                            <tr>
+                            	<td colspan="2" style="text-align:left;vertical-align:middle;padding:5px 0 5px 10px;"><img alt="" id="remMe" height="15" width="16" src="/img/nonecheck.png" style="vertical-align:middle;" />&nbsp;<span class="srcBlockText">Запомнить меня</span></td>
+                            </tr>
+                            <tr>
+                            	<td colspan="2" style="text-align:left;vertical-align:middle;padding:5px 0 10px 10px;"><a class="srcBlockText" href="http://samag.ru/registration">Регистрация</a>&nbsp;<span class="srcBlockText">|</span>&nbsp;<a class="srcBlockText" href="http://samag.ru/confirm">Забыли пароль?</a></td>
+                            </tr>
+                        </table>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+    	<td style="text-align:center;vertical-align:top;">
+        <table cellspacing="0" cellpadding="0" border="0" height="100%" width="100%">
+        	<tr>
+            	<td width="223" style="text-align:center;vertical-align:top;padding-top:10px;">
+                	<table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<tr>
+                                    	<td style="text-align:center;vertical-align:top;padding-left:20px;">
+                                        	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/53">Сетевой агент</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/2">О журнале</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://bit.samag.ru/" target="_blank">Журнал «БИТ»</a>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+													<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;background-color: #99ff66;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/49">Информация для ВАК</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/29">Звезды «СА»</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+													<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/cart_16.png" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;background-color: #99ff66;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+	
+
+                                                    <a class="mainMenuLink1" href="http://samag.ru/main/part/3">Подписка</a>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/4">Где купить</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/5">Авторам</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/6">Рекламодателям</a>
+													
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+													<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/cart_16.png" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;background-color: #99ff66;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+	
+
+                                                    <a class="mainMenuLink1" href="http://samag.ru/catalogue">Магазин</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/archive">Архив номеров</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/event">Мероприятия</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/forum">Форум</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/poll">Опросы</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="/forum/topic/14" target="_blank">Ищу/Предлагаю работу</a>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/legalinfo">Спроси юриста</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://games.samag.ru/" target="_blank">Игры</a>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+												
+												
+                                                	<td height="20" width="30" style="border-bottom:dashed 1px #2F2F2F;text-align:center;vertical-align:bottom;padding:0 0 5px 0;"><img alt="" src="/img/bullet.gif" /></td>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:bottom;padding:0 0 2px 0px;">
+													
+	
+
+                                                    <a class="mainMenuLink" href="http://samag.ru/main/part/32">Контакты</a>
+													
+
+                                                    </td>
+                                                </tr>
+												
+                                                <tr>
+                                                	<td height="25" width="30">&nbsp;</td>
+                                                    <td width="*">&nbsp;</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    
+<table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;">
+<tbody><tr><td><p style="text-align:center;">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:200px;height:200px"
+     data-ad-client="ca-pub-0772945205359099"
+     data-ad-slot="5413496928"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p></td></tr></tbody>
+</table>
+					
+                    <table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;margin-top:10px;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<tr>
+                                    	<td height="47" bgcolor="#ffffff" style="border-top:solid 5px #5D8797;text-align:right; padding-right:10px;">
+                                        <a class="blockTitle" href="http://samag.ru/galery">Слайд шоу</a>&nbsp;&nbsp;<img alt="" src="/img/marker_annons.gif" style="vertical-align:middle;" /><br />
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    	<td style="text-align:center;vertical-align:top;padding-left:0px;border-bottom:solid 1px #5D8797;">
+
+
+                                            <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-top:solid 1px #5D8797;">
+
+                                                <tr>
+                                                    <td width="*" style="text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                    <div id="slidegalery" style="margin-bottom:10px;">
+ <a class="zoom" href="img/upload/galery/b_1400746926Cyber_Currency_Future.gif"><img src="/img/upload/galery/s_1400746926Cyber_Currency_Future.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400747488Error_Accounting_1C_part9.gif"><img src="/img/upload/galery/s_1400747488Error_Accounting_1C_part9.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400747969Five_Alternatives_Bitcoin.gif"><img src="/img/upload/galery/s_1400747969Five_Alternatives_Bitcoin.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748192HP_NNMi_9.gif"><img src="/img/upload/galery/s_1400748192HP_NNMi_9.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748452Indexes_MongoDb.gif"><img src="/img/upload/galery/s_1400748452Indexes_MongoDb.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748520Opinion_Employer.gif"><img src="/img/upload/galery/s_1400748520Opinion_Employer.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748574Quality_Code.gif"><img src="/img/upload/galery/s_1400748574Quality_Code.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748622Siemens_HiPath_3800.gif"><img src="/img/upload/galery/s_1400748622Siemens_HiPath_3800.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748773Backup_Large_Small.gif"><img src="/img/upload/galery/s_1400748773Backup_Large_Small.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400748930Microsoft_Excel_2013.gif"><img src="/img/upload/galery/s_1400748930Microsoft_Excel_2013.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400749792Quality_Code_part2.gif"><img src="/img/upload/galery/s_1400749792Quality_Code_part2.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400749838SCCM_WSUS.gif"><img src="/img/upload/galery/s_1400749838SCCM_WSUS.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400749878Ten_Formuls.gif"><img src="/img/upload/galery/s_1400749878Ten_Formuls.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400749925ZEN_Load_Balancer.gif"><img src="/img/upload/galery/s_1400749925ZEN_Load_Balancer.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750129Distribution_System_Secret.gif"><img src="/img/upload/galery/s_1400750129Distribution_System_Secret.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750136Test_Site_Links_SEO.gif"><img src="/img/upload/galery/s_1400750136Test_Site_Links_SEO.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750341Isolation_Processes_LXC_Skype.gif"><img src="/img/upload/galery/s_1400750341Isolation_Processes_LXC_Skype.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750349Queue_Data_Structures.gif"><img src="/img/upload/galery/s_1400750349Queue_Data_Structures.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750358Software_License.gif"><img src="/img/upload/galery/s_1400750358Software_License.gif" /></a>
+ <a class="zoom" href="img/upload/galery/b_1400750367Tapestry_part3.gif"><img src="/img/upload/galery/s_1400750367Tapestry_part3.gif" /></a>
+                                                     </div>
+                                                     
+                                                    
+                                                     
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+<div style="text-align:left;padding:5px 5px 0 8px;font-size:11px;font-weight:bold;"> Представляем работы Виктора Чумачева</div>
+<div style="text-align:justify;padding:0 5px 5px 8px;font-size:11px; text-align: left;">Виктор Чумачев – известный московский художник, который сотрудничает с «Системным администратором» уже несколько лет. Именно его забавные и воздушные, как ИТ, иллюстрации украшают многие серьезные статьи в журнале. Работы Виктора Чумачева хорошо знакомы читателям в России («Комсомольская правда», «Известия», «Московские новости», Коммерсант и др.) и за рубежом (США, Германия). Каждый раз, получая новый рисунок Виктора, мы в редакции улыбаемся. А улыбка, как известно, смягчает душу. Поэтому смотрите на его рисунки – и пусть у вас будет хорошее настроение!</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+    
+<br />
+                    <table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<!-- <tr>
+                                    	<td height="47" bgcolor="#ffffff" style="border-top:solid 5px #5D8797;text-align:right; padding-right:10px;">
+										<div style="position:relative;">
+						
+                                        <span class="blockTitle"></span>&nbsp;&nbsp;<img alt="" src="/img/marker_annons.gif" style="vertical-align:middle;" />
+										</div>
+                                        </td>
+                                    </tr>  -->
+                                    <tr> 
+                                    	<td style="text-align:center;vertical-align:top;padding-left:0px;border-bottom:solid 1px #5D8797;">
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+                                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            	<tr>
+                                                	<td style="text-align:left;vertical-align:middle;padding:5px 0 0 10px;border-top:solid 1px #5D8797;"><img alt="" src="/img/marker_comment.gif" style="vertical-align:middle;" />&nbsp;&nbsp;<span class="blockTitle">Опросы</span></td>
+                                                </tr>
+                                            </table>
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+                    <table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;margin-top:10px;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<tr>
+                                    	<td height="47" bgcolor="#ffffff" style="border-top:solid 5px #5D8797;text-align:right; padding-right:10px;">
+                                        <a class="blockTitle" href="http://samag.ru/discuss">Дискуссии</a>&nbsp;&nbsp;<img alt="" src="/img/marker_annons.gif" style="vertical-align:middle;" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    	<td style="text-align:center;vertical-align:top;padding-left:0px;border-bottom:solid 1px #5D8797;">
+
+
+                                            <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-top:solid 1px #5D8797;">
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     <strong style="font-size:11px;">17.09.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 8582</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 2</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Красть или не красть? О пиратском ПО как о российском феномене</div>
+                                                     
+                                                     <p style="text-align:left;margin-top:0px;padding-right:10px;">
+                                                     <span class="artText" style="font-size:11px;">
+													 
+
+Тема контрафактного ПО и защиты авторских прав сегодня актуальна как никогда.
+Мы представляем ...
+                                                     </span>
+                                                     </p>
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/discuss/more/4" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     <strong style="font-size:11px;">03.03.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 15346</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Жизнь под дамокловым мечом</div>
+                                                     
+                                                     <p style="text-align:left;margin-top:0px;padding-right:10px;">
+                                                     <span class="artText" style="font-size:11px;">
+													 Политические события как катализатор возникновения уязвимости
+Законодательная инициатива Государственной Думы и силовых структур, ...
+                                                     </span>
+                                                     </p>
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/discuss/more/3" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="*" style="text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     <strong style="font-size:11px;">23.01.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 21591</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 2</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">ИТ-специалист будущего. Кто он?</div>
+                                                     
+                                                     <p style="text-align:left;margin-top:0px;padding-right:10px;">
+                                                     <span class="artText" style="font-size:11px;">
+													 Так уж устроен человек, что взгляд его обращен чаще всего в Будущее, ...
+                                                     </span>
+                                                     </p>
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/discuss/more/2" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+
+
+                    <table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;margin-top:10px;margin-bottom:10px;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<tr>
+                                    	<td height="47" bgcolor="#ffffff" style="border-top:solid 5px #5D8797;text-align:right; padding-right:10px;">
+                                        <a class="blockTitle" href="http://samag.ru/uart/review">1001 и 1 книга</a>&nbsp;&nbsp;<img alt="" src="/img/marker_annons.gif" style="vertical-align:middle;" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    	<td style="text-align:center;vertical-align:top;padding-left:0px;border-bottom:solid 1px #5D8797;">
+
+
+                                            <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-top:solid 1px #5D8797;">
+
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                     
+                                                     <strong style="font-size:11px;">17.05.2016г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 1636</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Теория вычислений для программистов</div>
+                                                     
+                                                     
+
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/uart/more/289" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                     
+                                                     <strong style="font-size:11px;">30.03.2015г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 4898</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">От математики к обобщенному программированию</div>
+                                                     
+                                                     
+
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/uart/more/271" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                     
+                                                     <strong style="font-size:11px;">18.02.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 7634</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Рецензия на книгу «Читаем Тьюринга»</div>
+                                                     
+                                                     
+
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/uart/more/217" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td width="*" style="border-bottom:dashed 1px #2F2F2F;text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                     
+                                                     <strong style="font-size:11px;">13.02.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 5077</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Читайте, размышляйте, действуйте</div>
+                                                     
+                                                     
+
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/uart/more/215" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td width="*" style="text-align:left;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     
+                                                     
+                                                     <strong style="font-size:11px;">12.02.2014г.</strong><br>
+                            <div class="catthegory" style="font-size:11px;">Просмотров: 4174</div>
+                            <div class="catthegory" style="margin-bottom:6px;font-size:11px;">Комментарии: 0</div>
+                            <div style="margin-bottom:6px;font-size:11px; font-weight:bold;">Рисуем наши мысли</div>
+                                                     
+                                                     
+
+                                                     <p style="text-align:right;margin-top:0px;padding-right:10px;">
+                                                     <img alt="" src="/img/src_btn.gif" style="vertical-align:middle;" />&nbsp;<a class="more" href="http://samag.ru/uart/more/214" style="font-size:11px;">Читать далее...</a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+
+
+
+                    
+
+                     <table cellspacing="0" cellpadding="0" background="/img/bg_block_h.gif" border="0" width="223" style="background-repeat:no-repeat;background-position:right top;">
+                    	<tr>
+                        	<td background="/img/bg_block_bottom_h.gif" style="border-right:solid 2px #16A316;background-repeat:no-repeat;background-position:right bottom;padding:10px 10px 10px 0;">
+                            	<table cellspacing="0" cellpadding="0" bgcolor="#E6F6FD" border="0" width="100%">
+                                	<tr>
+                                    	<td height="47" bgcolor="#ffffff" style="border-top:solid 5px #5D8797;border-bottom:solid 1px #5D8797;text-align:right; padding-right:10px;">
+                                        <span class="blockTitle">Друзья сайта</span>&nbsp;&nbsp;<img alt="" src="/img/marker_annons.gif" style="vertical-align:middle;" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    	<td style="text-align:center;vertical-align:top;padding-left:0px;">
+                                        	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                <tr>
+                                                    <td width="*" style="text-align:right;vertical-align:top;padding:10px 5px 2px 10px;">
+                                                     <p style="text-align:right;margin-top:0px;">
+                                                     <span class="blockTitle" style="font-weight:normal;font-size:11px;">Форум системных администраторов</span>&nbsp;&nbsp;<img alt="" src="/img/marker_rubric.gif" style="vertical-align:middle;" />
+                                                     </p>
+                                                     </p>
+                                                     <p style="text-align:center;margin-top:0px;padding-right:10px;">
+                                                     <a class="artText" target="_blank" href="http://sysadmins.ru" style="font-size:11px;"><strong>sysadmins.ru</strong></a>
+                                                     </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+		
+                                        </td>
+                                    </tr>
+									<tr>
+										<td style="text-align:center;vertical-align:top;padding-left:0px;">
+										<!-- trade-links --> 
+										</td>
+									</tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+
+                    
+                </td>
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////End Of Header////////////////////////////////////////////////////////////////////////-->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->  <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////Main Content/////////////////////////////////////////////////////////////////////////-->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+                <td width="*" style="text-align:center;vertical-align:top;padding:0 20px 0 20px;">
+                    <p style="text-align:center;"><a target="_blank" href="http://samag.ru/subscribe"><img height="69" width="468" alt="Редакционная подписка на журнал " src="/img/upload/banners/1452626716SAMAG_Subscribe_2016_468x69.png" /></a></p>
+                     <p class="titlePar"><h1 class="pTitle"><img height="20" width="15" src="/img/partbullet.gif" style="vertical-align:middle; margin-bottom:3px;" />&nbsp;Архитектура файловой системы ext2</h1></p>
+
+<p><a class="catthegory" href="http://samag.ru/archive">Архив номеров</a> <span class="catthegory">/</span> <a class="catthegory" href="http://samag.ru/archive/content/12/2003">2003</a> <span class="catthegory">/</span> <a class="catthegory" href="http://samag.ru/archive/more/14">Выпуск №11 (12)</a> <span class="catthegory">/</span> <span class="catthegory">Архитектура файловой системы ext2</span></p>
+
+
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" background="/img/v_border_dotted.gif" style="border-top:solid 5px #5D8797;background-repeat:repeat-y;background-position:right;margin-bottom:10px;">
+                    	<tr>
+                        	<td background="/img/v_border_dotted.gif" style="border-bottom:solid 1px #5D8797;background-repeat:repeat-y;background-position:left;padding:20px;">
+                            
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            	<tr>
+                                	<td style="text-align:left;">
+                                    <span class="catthegory">Рубрика: </span>
+                                    <span class="catthegory">
+									Администрирование&nbsp;/&nbsp;
+									Архитектура</span>
+                                    </td>
+									<td style="text-align: right;">
+									<div class="social-likes">
+	<div class="facebook" title="Поделиться ссылкой на Фейсбуке">Facebook</div>
+	<div class="twitter" title="Поделиться ссылкой в Твиттере">Twitter</div>
+	<div class="mailru" title="Поделиться ссылкой в Моём мире">Мой мир</div>
+	<div class="vkontakte" title="Поделиться ссылкой во Вконтакте">Вконтакте</div>
+	<div class="odnoklassniki" title="Поделиться ссылкой в Одноклассниках">Одноклассники</div>
+	<div class="plusone" title="Поделиться ссылкой в Гугл-плюсе">Google+</div>
+</div>
+									</td>
+                                </tr>
+                            </table>
+							
+							
+							<div class="Section1">
+<p><strong class="article"><img src="../../../../uploads/articles/Author_Foto/No_foto_man.gif" alt="" width="50" height="54" /></strong><strong class="article">ВЛАДИМИР МЕШКОВ</strong></p>
+<p><span class="arthead">Архитектура файловой системы ext2</span></p>
+<p><strong class="article">В статье рассматривается логическая структура ext2 – файловой системы операционной системы Linux.</strong></p>
+<p><span class="paragraph">Основные компоненты файловой системы ext2</span></p>
+<p><span class="article">Как и в любой файловой системе UNIX, в составе файловой системы ext2 можно выделить следующие составляющие:</span></p>
+<ul>
+<li>блоки и группы блоков;</li>
+<li>информационный узел (information node);</li>
+<li>суперблок (superblock).</li>
+</ul>
+<p><span class="paragraph2">Блоки и группы блоков</span></p>
+<p><span class="article">Все пространство раздела диска разбивается на блоки фиксированного размера, кратные размеру сектора – 1024, 2048 и 4096 байт. Размер блока указывается при создании файловой системы на разделе жесткого диска. Меньший размер блока позволяет экономить место на жестком диске, но также ограничивает максимальный размер файловой системы. Все блоки имеют порядковые номера. С целью уменьшения фрагментации и количества перемещений головок жесткого диска при чтении больших массивов данных блоки объединяются в группы.</span></p>
+<p><span class="paragraph2">Информационный узел</span></p>
+<p><span class="article">Базовым понятием файловой системы является информационный узел, information node, или inode. Это специальная структура, которая содержит информацию об атрибутах и физическом расположении файла. Атрибутами файла являются его тип (обычный файл, каталог и т. д.), права доступа к нему, идентификатор владельца, размер, время создания. Информация о физическом расположении представляет собой последовательность абсолютных номеров блоков, содержащих данные файла.</span></p>
+<p><span class="paragraph2">Суперблок</span></p>
+<p><span class="article">Суперблок – основной элемент файловой системы ext2. Он содержит следующую информацию о файловой системе (список неполный):</span></p>
+<ul>
+<li>общее число блоков и inode в файловой системе;</li>
+<li>число свободных блоков и inode в файловой системе;</li>
+<li>размер блока файловой системы;</li>
+<li>количество блоков и inode в группе;</li>
+<li>размер inode;</li>
+<li>идентификатор файловой системы;</li>
+<li>номер первого блока данных.</li>
+</ul>
+<p><span class="article">Другими словами, это номер блока, содержащего суперблок. Этот номер всегда равен 0, если размер блока файловой системы больше 1024 байт, и 1, если размер блока равен 1024 байт.</span></p>
+<p><span class="article">От целостности суперблока напрямую зависит работоспособность файловой системы. Операционная система создает несколько резервных копий суперблока для возможности его восстановления в случае повреждения. Главная копия находится по смещению 1024 байт от начала раздела, на котором создана файловая система (первые 1024 байта зарезервированы для загрузчика операционной системы).</span></p>
+<p><span class="article">Ранние версии файловой системы ext2 создавали копии суперблока в начале каждой группы блоков. Это приводило к большим потерям дискового пространства, поэтому позже количество резервных копий суперблока было уменьшено, и для их размещения были выделены группы блоков 0, 1, 3, 5 и 7.</span></p>
+<p><span class="paragraph">Формат группы блоков</span></p>
+<p><span class="article">Обобщенная структурная схема файловой системы ext2 представлена на рис. 1.</span></p>
+<p><a class="zoom" href="../../../../uploads/articles/2003/11/26_33_Ext2/image001.gif"><img class="zoom" title="Рисунок 1. Обобщенная структурная схема файловой системы ext2" src="../../../../uploads/articles/2003/11/26_33_Ext2/image001.gif" alt="Рисунок 1. Обобщенная структурная схема файловой системы ext2" width="580" /></a></p>
+<p class="MsoNormal"> </p>
+<p><span class="console">Рисунок 1. Обобщенная структурная схема файловой системы ext2</span></p>
+<p><span class="article">Практически все группы блоков имеют одинаковый формат. В каждой группе, помимо информационных блоков, хранится информация о занятости блоков и inode группы в виде битовой карты. В состав группы блоков 0 входят также суперблок и таблица дескрипторов групп, которую мы рассмотрим ниже.</span></p>
+<p><span class="article">Битовая карта занятости блоков обычно расположена в первом блоке группы. Если в группе присутствует резервная копия суперблока, битовая карта располагается во втором блоке группы. Размер битовой карты – один блок. Каждый бит этой карты обозначает состояние блока. Если бит установлен (1), то блок занят, если сброшен (0) – блок свободен. Первому блоку группы соответствует нулевой бит карты, второму блоку – первый бит и т. д.</span></p>
+<p><span class="article">Inode, находящиеся в пределах одной группы, собраны в таблицу. В битовой карте занятости inode группы каждый бит характеризует состояние элемента в таблице inode группы.</span></p>
+<p><span class="article">Каждая группа блоков описывается при помощи дескриптора группы блоков. Дескриптор группы – это структура, которая содержит информацию об адресах битовой карты занятости блоков, битовой карты занятости inode и таблицы inode соответствующей группы. Все дескрипторы групп собраны в таблицу дескрипторов групп, которая хранится в группе блоков 0. Так же, как и для суперблока, операционная система создает резервные копии таблицы дескрипторов групп.</span></p>
+<p><span class="paragraph">Алгоритм чтения файла</span></p>
+<p><span class="article">Каждый inode, как и блок, имеет порядковый номер, уникальный в пределах файловой системы, и содержит информацию только об одном файле. Таким образом, для получения доступа к содержимому файла необходимо знать порядковый номер соответствующего ему inode.</span></p>
+<p><span class="article">Как было сказано выше, информация о физическом расположении файла содержится в inode. Эта информация представляет собой последовательность 32-битных номеров блоков, содержащих данные файла (рис. 1). Первые 12 номеров – это прямые ссылки на информационные блоки (direct blocks number). 13-й номер является косвенной ссылкой (indirect blocks number). В нем находится адрес блока, в котором хранятся адреса информационных блоков. 14-й номер – двойная косвенная ссылка (double blocks number), 15-й номер – тройная косвенная ссылка (triple blocks number).</span></p>
+<p><span class="article">Имя файла в состав inode не входит, установление соответствия между именами файлов и порядковыми номерами inode выполняется через каталоги.</span></p>
+<p><span class="paragraph2">Каталоги</span></p>
+<p><span class="article">Файлы в UNIX- и POSIX-системах хранятся в древовидной иерархической файловой системе. Корень файловой системы – это корневой каталог, обозначенный символом «/». Каждый промежуточный узел в дереве файловой системы – это каталог. Конечные вершины дерева файловой системы являются либо пустыми каталогами, либо файлами. Абсолютное путевое имя файла состоит из имен всех каталогов, ведущих к указанному файлу, начиная с корневого каталога. Так, путевое имя /home/test.file означает, что файл test.file расположен в каталоге home, который, в свою очередь, находится в корневом каталоге «/».</span></p>
+<p><span class="article">Каталог, так же как и файл, описывается при помощи inode. Содержимое каталога представляет собой массив записей, каждая из которых содержит информацию о файле, который находится «внутри» текущего каталога.</span></p>
+<p><span class="article">Запись каталога имеет следующий формат:</span></p>
+<ul>
+<li>порядковый номер inode файла;</li>
+<li>длина записи в байтах;</li>
+<li>имя файла;</li>
+<li>длина имени файла.</li>
+</ul>
+<p><span class="article">Поиск номера inode файла всегда начинается с корневого каталога. Например, чтобы получить порядковый номер inode файла, находящегося в корневом каталоге, операционная система должна получить содержимое корневого каталога, найти в нем запись с именем этого файла и извлечь из этой записи порядковый номер inode файла.</span></p>
+<p><span class="article">Несколько первых номеров inode зарезервированы файловой системой, их перечень содержится в заголовочном файле :</span></p>
+<p><span class="console">/*</span></p>
+<p><span class="console"> * Special inode numbers</span></p>
+<p><span class="console"> */</span></p>
+<p><span class="console">#define EXT2_BAD_INO 1 /* Bad blocks inode */</span></p>
+<p><span class="console">#define EXT2_ROOT_IN 2 /* Root inode */</span></p>
+<p><span class="console">#define EXT2_ACL_IDX_IN 3 /* ACL inode */</span></p>
+<p><span class="console">#define EXT2_ACL_DATA_INO 4 /* ACL inode */</span></p>
+<p><span class="console">#define EXT2_BOOT_LOADER_INO 5 /* Boot loader inode */</span></p>
+<p><span class="console" lang="EN-US">#define EXT2_UNDEL_DIR_INO 6 /* Undelete directory inode */</span></p>
+<p><span class="article">Для записи корневого каталога зарезервирован inode под номером 2 (root inode). Этот inode находится в группе блоков 0 и занимает вторую позицию в таблице inode этой группы. Номер первого незарезервированного inode хранится в суперблоке.</span></p>
+<p><span class="article">Определив порядковый номер inode файла, ядро вычисляет номер группы, в которой этот inode расположен, и его позицию в таблице inode группы. Считав из этой позиции inode, операционная система получает полную информацию о файле, включая адреса блоков, в которых хранится содержимое файла.</span></p>
+<p><span class="article">Номер группы блоков, в которой расположен inode, вычисляется по формуле:</span></p>
+<p><span class="console" lang="EN-US">group = (inode_num - 1) / inodes_per_group</span></p>
+<p><span class="article">где:</span></p>
+<ul>
+<li><strong>group </strong>– искомый номер группы блоков;</li>
+<li><strong>inode_num</strong> – порядковый номер inode, определяющего файл;</li>
+<li><strong>inodes_per_group</strong> – число inode в группе (эта информация находится в суперблоке).</li>
+</ul>
+<p><span class="article">Позиция inode в таблице inode группы определяется по формуле:</span></p>
+<p><span class="console" lang="EN-US">index = (inode_num - 1) % inodes_per_groupe</span></p>
+<p><span class="article">где index – позиция inode в таблице.</span></p>
+<p><span class="article">Рассмотрим пример получения содержимого файла test.file, находящегося в корневом каталоге. Для чтения файла /test.file необходимо:</span></p>
+<ul>
+<li>в массиве записей корневого каталога найти запись об этом файле;</li>
+<li>извлечь порядковый номер inode файла, вычислить номер группы, в которой этот inode расположен;</li>
+<li>из дескриптора данной группы извлечь адрес таблицы inode группы;</li>
+<li>вычислить позицию inode в этой таблице;</li>
+<li>считать inode файла;</li>
+<li>из inode извлечь адреса информационных блоков и осуществить чтение информации, находящейся в этих блоках.</li>
+</ul>
+<p><span class="article">На рис. 2 подробно показаны этапы чтения файла /test.file.</span></p>
+<p class="MsoNormal"><a class="zoom" href="../../../../uploads/articles/2003/11/26_33_Ext2/image002.gif"><img class="zoom" title="Рисунок 2. Порядок выполнения процедуры чтения файла в файловой системе ext2 (на примере файла /test.file)" src="../../../../uploads/articles/2003/11/26_33_Ext2/image002.gif" alt="Рисунок 2. Порядок выполнения процедуры чтения файла в файловой системе ext2 (на примере файла /test.file)" width="580" /></a></p>
+<p><span class="console">Рисунок 2. Порядок выполнения процедуры чтения файла в файловой системе ext2 (на примере файла /test.file)</span></p>
+<ol>
+<p><span class="article">Этапы 1-6 – чтение корневого каталога:</span></p>
+<li>Из группы блоков 0 считывается таблица дескрипторов групп.</li>
+<li>Из таблицы дескрипторов групп извлекается дескриптор группы блоков 0 и из него считывается адрес таблицы inode группы 0.</li>
+<li>Из группы блоков 0 считывается таблица inode.</li>
+<li>Порядковый номер inode корневого каталога фиксирован и равен 2, поэтому из таблицы inode группы 0 считывается второй элемент, который содержит адрес блока с содержимым корневого каталога. Предположим, что этот блок расположен в группе блоков A.</li>
+<li>Из группы блоков A считывается блок, содержащий записи корневого каталога.</li>
+<li>Выполняется поиск записи с именем «test.file». Если такая запись найдена, из нее извлекается порядковый номер inode файла «test.file».</li>
+<p><span class="article">Определив номер inode, можно получить доступ к информационным блокам файла (этапы 7-11):</span></p>
+<li>Вычисляется номер группы, в которой находится данный inode, и его позицию в таблице inode группы (предположим, что номер группы равен B, а позиция в таблице – X).</li>
+<li>Из таблицы дескрипторов групп извлекаем дескриптор группы блоков B, и из него считывается адрес таблицы inode этой группы блоков.</li>
+<li>Из группы блоков B считывается таблица inode.</li>
+<li>Из таблицы inode группы блоков B считывается inode, находящийся в позиции X.</li>
+<li>Из считанного inode извлекаются адреса блока с содержимым файла /test.file и выполняется чтение информации из блока с указанным адресом.</li>
+</ol>
+<p><span class="paragraph">Программная реализация алгоритма чтения файла</span></p>
+<p><span class="article">Исходные данные: имеется раздел жесткого диска, на котором создана файловая система ext2. Этому разделу соответствует файл устройства /dev/hda3. В корневом каталоге раздела создан подкаталог home, а в нем находится файл test.file следующего содержания:</span></p>
+<p><span class="article">В чащах юга жил бы цитрус?</span></p>
+<p><span class="article">Да, но фальшивый экземпляр!</span></p>
+<p><span class="console">1234567890-=</span></p>
+<p><span class="article">Не подумайте плохого, это не бред, а тестовое упражнение из курса подготовки телеграфистов в войсках связи бывшего СССР!</span></p>
+<p><span class="article">Внимание! Следует учесть один важный момент. Созданный файл не будет сразу записан на диск, а сначала попадет в дисковый буфер. Попытка сразу же получить содержимое файла по вышеприведенному алгоритму ни к чему не приведет, так как информация об этом файле физически на диске отсутствует. Необходимо «заставить» систему записать дисковый буфер на диск. Самый простой способ сделать это – выполнить операцию перезагрузки. Поэтому после того, как файл создан, перезагрузите систему.</span></p>
+<p><span class="article">Наша задача – используя файл устройства /dev/hda3, осуществить чтение файла /home/test.file методом прямого доступа к его информационным блокам.</span></p>
+<p><span class="article">Рассмотрим программную реализацию модуля, выполняющего эту операцию.</span></p>
+<p><span class="article">Заголовочные файлы:</span></p>
+<p><span class="console">#include &lt;stdio.h&gt;</span></p>
+<p><span class="console">#include &lt;sys/types.h&gt;</span></p>
+<p><span class="console">#include &lt;fcntl.h&gt;</span></p>
+<p><span class="console">#include &lt;unistd.h&gt;</span></p>
+<p><span class="console">#include &lt;errno.h&gt;</span></p>
+<p><span class="console">#include &lt;linux/ext2_fs.h&gt;</span></p>
+<p><span class="article">В заголовочном файле  определены структурные типы, описывающие основные компоненты файловой системы ext2 – суперблок, дескриптор группы блоков, информационный узел, запись каталога.</span></p>
+<p><span class="article">Рассмотрим кратко поля, которые входят в каждую из этих структур:</span></p>
+<ol>
+<li>Структура суперблока<span lang="EN-US"> struct ext2_super_block:</span> 
+<ul>
+<li><strong>__u32 s_inodes_count </strong>– общее число inode в файловой системе;</li>
+<li><strong>__u32 s_blocks_count </strong>– общее число блоков в файловой системе;</li>
+<li><strong>__u32 s_free_blocks_count </strong>– количество свободных блоков;</li>
+<li><strong>__u32 s_free_inodes_count </strong>– количество свободных inode;</li>
+<li><strong>__u32 s_first_data_block </strong>– номер первого блока данных (номер блока, в котором находится суперблок);</li>
+<li><strong>__u32 s_log_block_size</strong> – это значение используется для вычисления размера блока. Размер блока определяется по формуле: block size = 1024 &lt;&lt; s_log_block_size;</li>
+<li><strong>__u32 s_blocks_per_group</strong> – количество блоков в группе;</li>
+<li><strong>__u32 s_inodes_per_group</strong> – количество inode в группе;</li>
+<li><strong>__u16 s_magic</strong> – идентификатор файловой системы ext2 (сигнатура 0xEF53);</li>
+<li><strong>__u16 s_inode_size</strong> – размер информационного узла (inode);</li>
+<li><strong>__u32 s_first_ino</strong> – номер первого незарезервированного inode.</li>
+</ul>
+</li>
+<li>Структура дескриптора группы блоков struct ext2_group_desc:   
+<ul>
+<li><strong>__u32 bg_block_bitmap </strong>– битовая карта занятости блоков группы;</li>
+<li><strong>__u32 bg_inode_bitmap </strong>– битовая карта занятости inode группы;</li>
+<li><strong>__u32 bg_inode_table</strong> – адрес таблицы inode группы.</li>
+</ul>
+</li>
+<li>Структура информационного узла struct ext2_inode:  
+<ul>
+<li>__u16 i_mode – тип файла и права доступа к нему. Тип файла определяют биты 12-15 этого поля:         
+<ul>
+<li><strong>0xA000 </strong>– символическая ссылка;</li>
+<li><strong>0x8000 </strong>– обычный файл;</li>
+<li><strong>0x6000 </strong>– файл блочного устройства;</li>
+<li><strong>0x4000 </strong>– каталог;</li>
+<li><strong>0x2000 </strong>– файл символьного устройства;</li>
+<li><strong>0x1000 </strong>– канал FIFO.</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>__u32 i_size</strong> – размер в байтах;</li>
+<li><strong>__u32 i_atime </strong>– время последнего доступа к файлу;</li>
+<li><strong>__u32 i_ctime</strong> – время создания файла;</li>
+<li><strong>__u32 i_mtime </strong>– время последней модификации;</li>
+<li><strong>__u32 i_blocks</strong> – количество блоков, занимаемых файлом;</li>
+<li><strong>__u32 i_block[EXT2_N_BLOCKS]</strong> – адреса информационных блоков (включая все косвенные ссылки).</li>
+</ul>
+</li>
+<p><span class="article">Значение EXT2_N_BLOCKS определено в файле :</span></p>
+<p><span class="console">/*</span></p>
+<p><span class="console"> * Constants relative to the data blocks</span></p>
+<p><span class="console"> */</span></p>
+<p><span class="console">#define EXT2_NDIR_BLOCKS 12</span></p>
+<p><span class="console">#define EXT2_IND_BLOCK     EXT2_NDIR_BLOCKS</span></p>
+<p><span class="console">#define EXT2_DIND_BLOCK (EXT2_IND_BLOCK + 1)</span></p>
+<p><span class="console">#define EXT2_TIND_BLOCK (EXT2_DIND_BLOCK + 1)</span></p>
+<p><span class="console" lang="EN-US">#define EXT2_N_BLOCKS   (EXT2_TIND_BLOCK + 1)</span></p>
+<li>Структура записи каталога struct ext2_dir_entry_2:</li>
+<p><span class="console">#define EXT2_NAME_LEN 255</span></p>
+</ol> 
+<ul>
+<li><strong>__u32 inode</strong> – номер inode файла;</li>
+<li><strong>__u16 rec_len</strong> – длина записи каталога;</li>
+<li><strong>__u8 name_len </strong>– длина имени файла;</li>
+<li><span lang="EN-US"><strong>char name[EXT2_NAME_LEN]</strong> – </span>имя файла<span lang="EN-US">.</span></li>
+</ul>
+<p><span class="article">Определим имя раздела, на котором создана файловая система, глобальные структуры и переменные.</span></p>
+<p><span class="console">#define PART_NAME "/dev/hda3" </span></p>
+<p><span class="console">struct ext2_super_block sb;</span></p>
+<p><span class="console">/* буфер для хранения таблицы дескрипторов групп */</span></p>
+<p><span class="console">unsigned char buff_grp[4096];</span></p>
+<p><span class="console">unsigned char buff[4096]; /* информационный буфер */</span></p>
+<p><span class="console">int indev; /* дескриптор файла устройства */</span></p>
+<p><span class="console">int BLKSIZE; /* размер блока файловой системы */</span></p>
+<p><span class="article">Определим несколько функций, которые нам понадобятся для работы:</span></p>
+<p><span class="article">Функция чтения суперблока:</span></p>
+<p><span class="console">void read_sb()</span></p>
+<p><span class="console">{</span></p>
+<p><span class="console">   memset(&amp;sb,0,1024);</span></p>
+<p><span class="article">Смещаемся на 1024 байта от начала раздела и считываем суперблок в структуру struct ext2_super_block sb:</span></p>
+<p>  <span class="console"> if(lseek(indev,1024,0) &lt; 0) {</span></p>
+<p><span class="console">     perror("lseek");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">   if(read(indev,(char *)&amp;sb,sizeof(sb)) &lt; 0) {</span></p>
+<p><span class="console">     perror("read");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="article">Проверяем идентификатор файловой системы:</span></p>
+<p><span class="console">   if(sb.s_magic != EXT2_SUPER_MAGIC) {</span></p>
+<p><span class="console">     printf("Неизвестный тип файловой системы! ");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="article">Значение EXT2_SUPER_MAGIC определено в заголовочном файле .</span></p>
+<p><span class="article">Отображаем информацию о файловой системе, которая находится в суперблоке:</span></p>
+<p>   <span class="console">printf(" Superblock info ----------- ");</span></p>
+<p><span class="console">   printf("Inodes count		-	%u ",sb.s_inodes_count);</span></p>
+<p><span class="console">   printf("Blocks count		-	%u ",sb.s_blocks_count);</span></p>
+<p><span class="console">   printf("Block size		-	%u ",1024 &lt;&lt; sb.s_log_block_size);</span></p>
+<p><span class="console">   printf("First inode		-	%d ",sb.s_first_ino);</span></p>
+<p><span class="console">   printf("Magic			-	0x%X ",sb.s_magic);</span></p>
+<p><span class="console">   printf("Inode size		-	%d ",sb.s_inode_size);</span></p>
+<p><span class="console">   printf("Inodes per group	-	%u ",sb.s_inodes_per_group);</span></p>
+<p><span class="console">   printf("Blosks per group	-	%u ",sb.s_blocks_per_group);</span></p>
+<p><span class="console">   printf("First data block	-	%u  ",sb.s_first_data_block);</span></p>
+<p><span class="console">    return;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Функция чтения таблицы дескрипторов групп:</span></p>
+<p><span class="console">void read_gdt()</span></p>
+<p><span class="console">{</span></p>
+<p><span class="article">Вычисляем размер блока файловой системы:</span></p>
+<p><span class="console" lang="EN-US">   BLKSIZE = 1024 &lt;&lt; sb.s_log_block_size</span></p>
+<p><span class="article">Таблица дескрипторов групп находится в блоке, который расположен сразу же за первым блоком данных (за суперблоком).</span></p>
+<p><span class="article">Считываем таблицу:</span></p>
+<p> <span class="console">  if(lseek(indev, (sb.s_first_data_block + 1) * BLKSIZE, 0) &lt; 0) {</span></p>
+<p><span class="console">     perror("lseek");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">   if(read(indev,buff_grp,BLKSIZE) &lt; 0) {</span></p>
+<p><span class="console">     perror("read");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">   return;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Функция получения содержимого inode по его номеру:</span></p>
+<p><span class="console">void get_inode(int inode_num, struct ext2_inode *in)</span></p>
+<p><span class="console">{</span></p>
+<p><span class="article">Входные параметры функции – порядковый номер inode и структура struct ext2_inode.</span></p>
+<p><span class="console">   struct ext2_group_desc gd;</span></p>
+<p><span class="console">   __u64 group, index, pos;</span></p>
+<p><span class="article">Вычисляем номер группы блоков, в которой находится inode с порядковым номером inode_num:</span></p>
+<p><span class="console" lang="EN-US">   group = (inode_num - 1) / sb.s_inodes_per_group;</span></p>
+<p><span class="article">Из таблицы дескрипторов групп извлекаем дескриптор группы group и копируем его в структуру struct ext2_group_desc gd:</span></p>
+<p><span class="console">   memset((void *)&amp;gd, 0, sizeof(gd));</span></p>
+<p><span class="console" lang="EN-US">   memcpy((void *)&amp;gd, buff_grp + (group * (sizeof(gd))), sizeof(gd));</span></p>
+<p><span class="article">Вычисляем позицию inode c порядковым номером inode_num в таблице inode группы group и считываем этот inode в структуру struct ext2_inode:</span></p>
+<p>   <span class="console">index = (inode_num - 1) % sb.s_inodes_per_group;</span></p>
+<p><span class="console">   pos = ((__u64)gd.bg_inode_table) * BLKSIZE + (index * sb.s_inode_size);</span></p>
+<p><span class="console">   pread64(indev, in, sb.s_inode_size, pos);</span></p>
+<p><span class="console">   return;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Функция чтения блока данных:</span></p>
+<p><span class="console">void read_iblock(struct ext2_inode *in, int blk_num)</span></p>
+<p><span class="console">{</span></p>
+<p><span class="console">   __u64 pos;</span></p>
+<p><span class="article">Входные параметры функции – структура inode и номер блока (имеется в виду номер из последовательности адресных блоков, расположенных в inode).</span></p>
+<p><span class="article">Вычисляем смещение к информационному блоку на разделе и считываем этот блок в глобальный буфер buff:</span></p>
+<p> <span class="console">  pos = ((__u64)in-&gt;i_block[blk_num]) * BLKSIZE;</span></p>
+<p><span class="console">   pread64(indev, buff, BLKSIZE, pos);</span></p>
+<p><span class="console">   return;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Функция получения содержимого корневого каталога:</span></p>
+<p><span class="console">void get_root_dentry()</span></p>
+<p><span class="console">{</span></p>
+<p><span class="console">   struct ext2_inode in;</span></p>
+<p><span class="article">Порядковый номер inode корневого каталога известен, поэтому получаем содержимое inode корневого каталога и считываем в буфер buff его содержимое:</span></p>
+<p>   <span class="console">get_inode(EXT2_ROOT_INO, &amp;in);</span></p>
+<p><span class="console">   read_iblock(&amp;in, 0);</span></p>
+<p><span class="article">В буфере buff будет находиться содержимое корневого каталога.</span></p>
+<p> <span class="console">  return;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Функция получения номера inode по имени файла:</span></p>
+<p><span class="console">int get_i_num(char *name)</span></p>
+<p><span class="console">{</span></p>
+<p><span class="article">Входные параметры функции – имя файла. Возвращаемое значение – порядковый номер inode файла.</span></p>
+<p><span class="console">   int i = 0, rec_len = 0;</span></p>
+<p><span class="console" lang="EN-US">   struct ext2_dir_entry_2 dent;</span></p>
+<p><span class="article">В буфере buff находится массив записей каталога. Для определения порядкового номера inode файла необходимо найти в этом массиве запись с именем этого файла:</span></p>
+<p> <span class="console">  for(; i &lt; 700; i++) {</span></p>
+<p><span class="console">   memcpy((void *)&amp;dent, (buff + rec_len), sizeof(dent));</span></p>
+<p><span class="console">   if(!memcmp(dent.name, name, dent.name_len)) break;</span></p>
+<p><span class="console">   rec_len += dent.rec_len;</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">   return dent.inode;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">А теперь распишем главную функцию:</span></p>
+<p><span class="console">int main()</span></p>
+<p><span class="console">{</span></p>
+<p><span class="article">Переменные и структуры:</span></p>
+<p>   <span class="console">struct ext2_inode in;</span></p>
+<p><span class="console">   // абсолютное путевое имя файла</span></p>
+<p><span class="console">   unsigned char *full_path = "/home/test.file";</span></p>
+<p><span class="console">   unsigned char buff1[EXT2_NAME_LEN];</span></p>
+<p><span class="console">   static int i = 1;</span></p>
+<p><span class="console" lang="EN-US">   int n, i_num, outf, type;</span></p>
+<p><span class="article">Первым символом в абсолютном путевом имени файла должен быть прямой слэш (/). Проверяем это:</span></p>
+<p><span class="console">   if(full_path[0] != "/") {</span></p>
+<p><span class="console">   perror("slash");</span></p>
+<p><span class="console">   exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="article">Открываем файл устройства, считываем суперблок и таблицу дескрипторов групп:</span></p>
+<p>  <span class="console"> indev = open(PART_NAME,O_RDONLY);</span></p>
+<p><span class="console">   if(indev &lt; 0) {</span></p>
+<p><span class="console">     perror("open");</span></p>
+<p><span class="console">     exit(-1);</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">   read_sb();</span></p>
+<p><span class="console">   read_gdt();</span></p>
+<p><span class="article">Получаем содержимое корневого каталога:</span></p>
+<p>   <span class="console">get_root_dentry();</span></p>
+<p><span class="article">Сейчас в буфере buff находятся все записи корневого каталога (если хотите, можете сохранить их в отдельном файле). Теперь, имея записи корневого каталога, мы можем добраться до содержимого файла test.file, используя вышеприведенный алгоритм чтения файла. С этой целью организуем цикл. В теле цикла проведем разбор абсолютного путевого имени файла, выделяя его элементы – подкаталоги (он у нас один, home) и имя искомого файла (test.file). Для каждого элемента определим порядковый номер inode, считаем этот inode и затем получим содержимое нулевого блока (из последовательности адресных блоков, находящихся в inode):</span></p>
+<p><span class="console">while(1) {</span></p>
+<p><span class="console">   memset(buff1,0,sizeof(buff1));</span></p>
+<p><span class="console">   for(n = 0 ; n &lt; EXT2_NAME_LEN; n++, i++) {</span></p>
+<p><span class="console">     buff1[n] = full_path[i];</span></p>
+<p><span class="console">     if((buff1[n] == "/") || (buff1[n] == "?")) {</span></p>
+<p><span class="console">        i++;</span></p>
+<p><span class="console">        break;</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">}</span></p>
+<p><span class="console">buff1[n] = "?";</span></p>
+<p><span class="article">Для каждого элемента абсолютного путевого имени файла определяем порядковый номер inode, считываем этот inode в память и затем получаем содержимое нулевого блока:</span></p>
+<p> <span class="console">  i_num = get_i_num(buff1);</span></p>
+<p><span class="console">   get_inode(i_num, &amp;in);</span></p>
+<p><span class="console">   read_iblock(&amp;in, 0);</span></p>
+<p><span class="article">Отобразим информацию о файле (имя, порядковый номер inode, размер файла и его тип):</span></p>
+<p><span class="console">   printf("Inode number - %u ", i_num);</span></p>
+<p><span class="console">   printf("File name - %s ", buff1);</span></p>
+<p><span class="console" lang="EN-US">   printf("File size - %u ",in.i_size);</span></p>
+<p><span class="article">Тип файла определяют старшие четыре бита поля i_mode структуры struct ext2_inode:</span></p>
+<p>   <span class="console">type = ((in.i_mode &amp; 0xF000) &gt;&gt; 12);</span></p>
+<p><span class="console">   printf("Type - %d ",type);</span></p>
+<p><span class="console">   switch(type) {</span></p>
+<p><span class="console">       case(0x04) :</span></p>
+<p><span class="console">     printf("(каталог)  ");</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">       case(0x08) :</span></p>
+<p><span class="console">     printf("(обычный файл)  ");</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">       case(0x06) :</span></p>
+<p><span class="console">     printf("(файл блочного устройства)  ");</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">       case(0x02) :</span></p>
+<p><span class="console">     printf("(файл символьного устройства)  ");</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">       default:</span></p>
+<p><span class="console">     printf("(unknown type) ");</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="article">Проверяем тип файла. Если это обычный файл – прерываем цикл:</span></p>
+<p><span class="console">   if(type &amp; 0x08) {</span></p>
+<p><span class="article">В буфере buff будет находиться информация, считанная из информационных блоков файла /home/test.file. Запишем эту информацию в файл:</span></p>
+<p>  <span class="console">   outf = open("out",O_CREAT|O_RDWR,0600);</span></p>
+<p><span class="console">     write(outf, buff, sizeof(buff));</span></p>
+<p><span class="console">     close(outf);</span></p>
+<p><span class="console">     break;</span></p>
+<p><span class="console">   }</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">Выходим:</span></p>
+<p> <span class="console">   close(indev);</span></p>
+<p><span class="console">    return 0;</span></p>
+<p><span class="console">}</span></p>
+<p><span class="article">На этом рассмотрение логической структуры файловой системы ext2 завершим.</span></p>
+<p><span class="paragraph">Ссылки:</span></p>
+<ol>
+<li><span class="literature"><a href="http://www.nongnu.org/ext2-doc" target="_blank">http://www.nongnu.org/ext2-doc</a></span></li>
+<li><span class="literature"><a href="http://e2fsprogs.sourceforge.net/ext2intro.html" target="_blank">http://e2fsprogs.sourceforge.net/ext2intro.html</a></span></li>
+</ol></div><br />
+
+<div class="social-likes">
+	<div class="facebook" title="Поделиться ссылкой на Фейсбуке">Facebook</div>
+	<div class="twitter" title="Поделиться ссылкой в Твиттере">Twitter</div>
+	<div class="mailru" title="Поделиться ссылкой в Моём мире">Мой мир</div>
+	<div class="vkontakte" title="Поделиться ссылкой во Вконтакте">Вконтакте</div>
+	<div class="odnoklassniki" title="Поделиться ссылкой в Одноклассниках">Одноклассники</div>
+	<div class="plusone" title="Поделиться ссылкой в Гугл-плюсе">Google+</div>
+</div>
+
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-0734664070902025";
+/* commercial-0001 */
+google_ad_slot = "5328286772";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" background="/img/v_border_dotted.gif" style="border-top:solid 5px #5D8797;background-repeat:repeat-y;background-position:right;margin-bottom:10px;">
+                    	<tr>
+                        	<td background="/img/v_border_dotted.gif" style="border-bottom:solid 1px #5D8797;background-repeat:repeat-y;background-position:left;padding:5px 20px 5px 20px;">
+                            <span class="blockTitle">Комментарии</span>
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td background="/img/v_border_dotted.gif" style="border-bottom:solid 1px #5D8797;background-repeat:repeat-y;background-position:left;padding:20px;">&nbsp;
+                            
+<div style="width:100%;padding:20px 10px 20px 5px;border-bottom:dotted 1px rgb(93, 135, 151);background-color:#ffffff">
+<img src="/img/bullet_block.gif" style="vertical-align:middle;" />&nbsp;
+                                
+                                 <a name="11829"></a><span class="catthegory">04.05.2014 - 12:49</span>&nbsp;<span class="catthegory">|</span>&nbsp;
+                                 <span class="catthegory">clank</span>
+
+
+                                  <p style="padding:0px 0px 20px 25px;">Очень интересная статья -- спасибо!<br />
+Все четко, подробно, лаконично и понятно написано, как теория, так и практика.</p>                   
+</div>
+                            
+                            </td>
+                        </tr>
+                    </table>
+ 
+
+                     <table cellspacing="0" cellpadding="0" border="0" width="100%" background="/img/v_border_dotted.gif" style="border-top:solid 5px #5D8797;background-repeat:repeat-y;background-position:right;margin-bottom:10px;">
+                    	<tr>
+                        	<td background="/img/v_border_dotted.gif" style="border-bottom:solid 1px #5D8797;background-repeat:repeat-y;background-position:left;padding:5px 20px 5px 20px;">
+                            <span class="blockTitle">Добавить комментарий</span>
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td background="/img/v_border_dotted.gif" style="border-bottom:solid 1px #5D8797;background-repeat:repeat-y;background-position:left;padding:20px;">
+
+							
+							
+		
+								<p>Комментарии могут оставлять только зарегистрированные пользователи</p>
+					
+								
+
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+
+                </td>
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////End Of Main Content//////////////////////////////////////////////////////////////////-->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////--><!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////Footer///////////////////////////////////////////////////////////////////////////////-->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+            </tr>
+        </table>
+        </td>
+    </tr>
+    <tr>
+    	<td height="93" style="padding:0 20px 0 20px;">
+        	<table cellspacing="0" cellpadding="0" border="0" background="/img/bg_left_footer.gif" height="93" width="100%" style="background-repeat:no-repeat;background-position:left;">
+            	<tr>
+                	<td style="text-align:center;vertical-align:top;padding:10px 15px 0 15px;">
+                    	<table cellspacing="0" cellpadding="0" border="0" height="81" width="100%" style="border-top:solid 10px #E6F6FD;">
+                        	<tr>
+                            	<td width="192" background="/img/v_border_dotted.gif" style="text-align:center;vertical-align:top;padding-top:15px;background-repeat:repeat-y;background-position:right;">
+                                <a href="http://samag.ru/"><img src="/img/home.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                <a href="mailto:sa@samag.ru"><img src="/img/letter.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                <a href="http://samag.ru/main/map"><img src="/img/map.gif" /></a>&nbsp;&nbsp;<img height="14" width="4" src="/img/slicer.png" />&nbsp;&nbsp;
+                                <a href="http://samag.ru/rss/headlines.xml" target="_blank"><img src="/img/rss.gif" /></a>
+                                </td>
+                                <td width="*" style="text-align:center;vertical-align:justify;padding-top:10px;">
+                                <span class="Copyright"><!--TplElement-->Copyright © Системный администратор</span><br /><br />
+                                
+<!--Rating@Mail.ru COUNTER--><script language="JavaScript"><!--
+d=document;a='';a+=';r='+escape(d.referrer)
+js=10//--></script><script language="JavaScript1.1"><!--
+a+=';j='+navigator.javaEnabled()
+js=11//--></script><script language="JavaScript1.2"><!--
+s=screen;a+=';s='+s.width+'*'+s.height
+a+=';d='+(s.colorDepth?s.colorDepth:s.pixelDepth)
+js=12//--></script><script language="JavaScript1.3"><!--
+js=13//--></script><script language="JavaScript"><!--
+d.write('<a href="http://top.mail.ru/jump?from=422936"'+' target=_top><img src="http://top.list.ru/counter'+'?id=422936;t=170;js='+js+a+';rand='+Math.random()+'" alt="Рейтинг@Mail.ru"'+' border=0 height=15 width=88></a>')
+//--></script><noscript><a
+target=_top href="http://top.mail.ru/jump?from=422936"><FONT size=1>[AD]</FONT> <AD- /counter?js=na;id=422936;t=170" border=0 height=15 width=88 alt="Рейтинг@Mail.ru"></a></noscript><!--/COUNTER-->
+
+<!-- Yandex.Metrika informer -->
+<a href="https://metrika.yandex.ru/stat/?id=4119916&amp;from=informer"
+target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/4119916/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:4119916,lang:'ru'});return false}catch(e){}"/></a>
+<!-- /Yandex.Metrika informer -->
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter4119916 = new Ya.Metrika({id:4119916,
+                    webvisor:true,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true});
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/4119916" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+                                
+                                
+                                </td>
+<td><script async="async" src="https://w.uptolike.com/widgets/v1/zp.js?pid=1369728" type="text/javascript"></script></td>					
+                                <td width="182" background="/img/v_border_dotted.gif" style="text-align:left;vertical-align:top;background-repeat:repeat-y;background-position:left; padding:10px 0 0 10px;">
+<!--TplElement--><span class="Copyright">
+Tel.: (499) 277-12-41<br />
+Fax: (499) 277-12-45<br />
+E-mail: sa@samag.ru
+</span>                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////End Of Footer////////////////////////////////////////////////////////////////////////-->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->

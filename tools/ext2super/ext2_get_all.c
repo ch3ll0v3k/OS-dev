@@ -13,7 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <linux/ext2_fs.h>
+
 
 #define BLOCK_OFFSET(block) (BASE_OFFSET+(block-1)*block_size)
 #define BASE_OFFSET 1024            // locates beginning of the super block (first group)
@@ -26,8 +28,8 @@ void read_inode(int, int, const struct ext2_group_desc*, struct ext2_inode*);
 int main( unsigned int argc, char *argv[] ) {
 
     // ----------------------------------------------------------------
-    if ( argc < 2 ) {
-        printf("\nUsage: %s ./path/to/device \n\n", argv[0]); return 1;
+    if ( argc < 3 ) {
+        printf("\nUsage: %s ./path/to/device <inode> \n\n", argv[0]); return 1;
     }
 
 
@@ -128,7 +130,7 @@ int main( unsigned int argc, char *argv[] ) {
            group.bg_used_dirs_count);    // directories count
     */
     // ----------------------------------------------------------------
-    unsigned int inode_no;
+    int inode_no;
     /*
     printf("\n-----------------------------------------------------\n");
     printf("DIRECTORY : ['/']\n");
@@ -150,7 +152,13 @@ int main( unsigned int argc, char *argv[] ) {
     */
 
 
-    inode_no = 2; // 2 == root
+    //printf("argv[2][%s]\n", argv[2]);
+
+
+    //inode_no = 2; // 2 == root
+    inode_no = atoi(argv[2]);
+
+
 
     printf("----------------------------------------------\n" );
     read_inode(ext2, inode_no, &group, &inode);   // read inode [2] == [root directory]
@@ -312,9 +320,11 @@ void read_dir(int _ext2, const struct ext2_inode *inode, const struct ext2_group
     ----------------------------------------------------------------------
     */
 
-    void *block;
 
     if (S_ISDIR(inode->i_mode)) {
+
+
+        void *block;
 
         // allocate memory for the data block
         if ((block = malloc(block_size)) == NULL) {
@@ -322,47 +332,105 @@ void read_dir(int _ext2, const struct ext2_inode *inode, const struct ext2_group
             close(_ext2);
             exit(1);
         }
+
         // (block) (BASE_OFFSET+(block-1)*block_size)
         lseek(_ext2, (BASE_OFFSET+ (inode->i_block[0] - 1) * block_size)  , SEEK_SET);
 
 
         printf("OFFSET: [%d]\n", (BASE_OFFSET+ (inode->i_block[0] - 1) * block_size) );
         read(_ext2, block, block_size); // read block from disk
-        struct ext2_dir_entry_2 *entry; // first entry in the directory
-        //printf("sizeof([%d])\n",  sizeof(struct ext2_dir_entry_2));
 
-        entry = (struct ext2_dir_entry_2 *) block;
+
+        struct ext2_dir_entry *entry = (struct ext2_dir_entry *) block;
 
         // Notice that the list may be terminated with a NULL
         //entry (entry->inode == NULL);
 
-        unsigned int size = 0;
+        unsigned int size = 0, _i = 0;
+        int show_dir_num = 8, curr = 0;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
 
         while ((size < inode->i_size) && entry->inode) {
 
             char file_name[EXT2_NAME_LEN+1];
-            char _name[256];
+            memcpy(file_name, entry->name, entry->name_len);
 
-            //printf("entry->name_len: [%d]\n", entry->name_len);
+            //file_name[entry->name_len] = 0;     /* append null character to the file name */
 
-            unsigned int _i=0;
+            printf("%10u %s\n", entry->inode, file_name);
 
-            while ( _i < entry->name_len ) {
-                _name[ _i ] = entry->name[ _i++ ];
-                _name[ _i ] = '\0';
-            }
-
-
-            //memcpy(file_name, entry->name, entry->name_len);
-            // append null character to the file name
-            file_name[entry->name_len] = 0;
-            //printf("%10u %s\n", entry->inode, file_name);
-            printf("%10u %s\n", entry->inode, _name);
             entry = (void*) entry + entry->rec_len;
             size += entry->rec_len;
         }
+        return;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        while ((size < inode->i_size) && entry->inode) {
+
+
+            entry = (struct ext2_dir_entry *) entry;
+
+            // ---------------------------------------------------
+            _i = 0;
+            while ( _i < 20 ) {
+
+                printf("%c", entry->name[ _i++ ]);
+            }
+
+            printf("\n");
+
+
+            // ---------------------------------------------------
+
+            /*
+            if ( show_dir_num == curr ) {
+
+                char _name[255];
+
+                while ( _i < 20 ) {
+
+                    printf("%d, ", entry->name[ _i++ ]);
+
+                    //if ( (int)entry->name[ _i ] == 0 ) break;
+
+                    //_name[ _i ] = entry->name[ _i++ ];
+                    //_name[ _i ] = '\0';
+                }
+
+                printf("\n");
+
+                _i = 0;
+                while ( _i < 20 ) {
+
+                    printf("%c", entry->name[ _i++ ]);
+                }
+
+                printf("\n");
+
+            }
+            */
+            //printf(" [%d] /%s\n", entry->inode, entry->name);
+
+            //printf(" [%d] /%s\n", entry->inode, _name);
+            curr++;
+            // ---------------------------------------------------
+            //char file_name[EXT2_NAME_LEN+1];
+            //memcpy(file_name, entry->name, entry->name_len);
+            //file_name[entry->name_len] = 0;
+
+            // ---------------------------------------------------
+            //printf(" [%d] /%s\n", entry->inode, entry->name);
+            entry = (void*) entry + entry->rec_len;
+            size += entry->rec_len;
+            // ---------------------------------------------------
+
+        }
         free(block);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
 }

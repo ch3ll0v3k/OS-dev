@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# ---------------------------------------------------------------------
+echo -e "-------------------------------------"
+PAT_0="UUID\|Filesystem revision"
+dumpe2fs -h $1 | grep "$PAT_0"
+
+echo -e "-------------------------------------"
+PAT_1="Block size\|Fragment size\|Inode count\|Block count"
+dumpe2fs -h $1 | grep "$PAT_1"
+
+echo -e "-------------------------------------"
+PAT_2="Blocks per group\|Fragments per group\|Inodes per group"
+dumpe2fs -h $1 | grep "$PAT_2"
+
+# ---------------------------------------------------------------------
+#PATTERN="$PAT_0$PAT_1$PAT_2"
+#dumpe2fs -h $1 | grep "$PATTERN"
+# ---------------------------------------------------------------------

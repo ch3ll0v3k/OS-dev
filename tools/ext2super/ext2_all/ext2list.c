@@ -76,7 +76,6 @@ static void read_dir(int fd, const struct ext2_inode *inode, const struct ext2_g
     void *block;
 
     if (S_ISDIR(inode->i_mode)) {
-        struct ext2_dir_entry_2 *entry;
         unsigned int size = 0;
 
         if ((block = malloc(block_size)) == NULL) { /* allocate memory for the data block */
@@ -88,6 +87,7 @@ static void read_dir(int fd, const struct ext2_inode *inode, const struct ext2_g
         lseek(fd, BLOCK_OFFSET(inode->i_block[0]), SEEK_SET);
         read(fd, block, block_size);                /* read block from disk*/
 
+        struct ext2_dir_entry_2 *entry;
         entry = (struct ext2_dir_entry_2 *) block;  /* first entry in the directory */
         /* Notice that the list may be terminated with a NULL
            entry (entry->inode == NULL)*/

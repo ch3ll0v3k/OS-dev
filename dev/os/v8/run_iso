@@ -1,0 +1,40 @@
+#!/bin/bash
+
+BIN="./bin"
+
+# ---------------------------------------------------------------------
+# -full-screen
+
+qemu \
+-m 64 \
+-hda ../rootfs.ext2 -hdb ../rootfs.ext2 \
+-cdrom ./os.iso -boot d \
+-append "console=ttyS0 console=tty0"
+
+
+# ---------------------------------------------------------------------
+# .../mk_fs
+
+# Formatting 'rootfs.ext2', fmt=raw size=33554432 
+# [sudo] password for ch3ll0v3k: 
+# mke2fs 1.42.5 (29-Jul-2012)
+# rootfs.ext2 is not a block special device.
+# Proceed anyway? (y,n) y
+# Discarding device blocks: done
+# Filesystem label=root-fs
+# OS type: Linux
+# Block size=1024 (log=0)
+# Fragment size=1024 (log=0)
+# Stride=0 blocks, Stripe width=0 blocks
+# 8192 inodes, 32768 blocks
+# 1638 blocks (5.00%) reserved for the super user
+# First data block=1
+# Maximum filesystem blocks=33554432
+# 4 block groups
+# 8192 blocks per group, 8192 fragments per group
+# 2048 inodes per group
+# Superblock backups stored on blocks:
+#     8193, 24577
+# ---------------------------------------------------------------------
+
+

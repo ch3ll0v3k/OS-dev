@@ -1,0 +1,909 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>The Ext2 Filesystem</title>
+	<link rel="StyleSheet" type="text/css" href="os.css" />
+</head>
+
+<body>
+        <h1>The Ext2 Filesystem</h1>
+
+        <p><a href="index.html">Back to main page</a></p> 
+
+	<address>
+        Emanuele Altieri (<a
+        href="mailto:ealtieri@cs.smith.edu">ealtieri@cs.smith.edu</a>)<br
+        /> Prof. Nicholas Howe (<a
+        href="mailto:nhowe@cs.smith.edu">nhowe@cs.smith.edu</a>)<br />
+        Smith College, June 2002 </address>
+
+	<h2>Contents</h2>
+	<ol>
+		<li><a href="#create">How to create an Ext2 filesystem on a floppy disk</a></li>
+		<li><a href="#struct">Structure of an Ext2 filesystem</a></li>
+		<li><a href="#super">The super block</a></li>
+		<li><a href="#group">The group descriptors</a></li>
+		<li><a href="#bitmap">The inodes and blocks bitmaps</a></li>
+		<li><a href="#itable">The inode table</a></li>
+		<li><a href="#direntry">Directory inode entries</a></li>
+		<li><a href="#locate_file">Locating a file</a></li>
+	</ol>
+
+<!-- ==================================================================== -->
+<!-- CREATE AN EXT2 FILESYSTEM                                            -->
+<!-- ==================================================================== -->
+	
+        <a name="create" />
+	<h2>How to create an Ext2 filesystem</h2>
+	<p>
+	To create an Ext2 filesystem on a floppy disk we will use the
+	<code><strong>fdformat</strong></code> and
+	<code><strong>mkfs.ext2</strong></code> commands.
+	<code>fdformat</code> is used to format the disk, while
+	<code>mkfs.ext2</code> creates the filesystem. The commands
+	work as following:
+	</p>
+
+<blockquote>
+<pre>[ealtieri@italia os]$ fdformat /dev/fd0
+Double-sided, 80 tracks, 18 sec/track. Total capacity 1440 kB.
+Formatting ... done
+Verifying ... done
+
+[ealtieri@italia os]$ /sbin/mkfs.ext2 /dev/fd0
+mke2fs 1.26 (3-Feb-2002)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+184 inodes, 1440 blocks
+72 blocks (5.00%) reserved for the super user
+First data block=1
+1 block group
+8192 blocks per group, 8192 fragments per group
+184 inodes per group
+
+Writing inode tables: done                            
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 33 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.</pre>
+</blockquote>
+	
+	<p>
+	In the example above, <code>/dev/fd0</code> is the
+	device in charge of raw access to 1.44 MB floppy disks. We
+	will use the same device in our examples later.
+	</p>
+	<p>
+	Once the two commands terminate, you may test the floppy:
+	</p>
+
+<blockquote>
+<pre>[ealtieri@italia os]$ mount /mnt/floppy/
+[ealtieri@italia os]$ ls -sil /mnt/floppy/
+total 12
+     11   12 drwx------    2 root     root        12288 Jun 24 12:14 lost+found
+[ealtieri@italia os]$ umount /mnt/floppy/</pre>
+</blockquote>
+
+	<p>
+	Notice the <code>-sil</code> options in the <code>ls</code>
+	command. The meaning of these options will be explained later.
+	</p>
+
+<!-- ==================================================================== -->
+<!-- STRUCTURE OF THE EXT2 FILESYSTEM                                     -->
+<!-- ==================================================================== -->
+
+        <a name="struct" />
+	<h2>Structure of an Ext2 Filesystem</h2>
+
+	<p>
+	On disk, the Ext2 filesystem is organized as shown in the
+	picture below:
+	</p>
+
+	<center><img src="img/ext2.png" alt="Ext2" /></center>	
+
+	<p>
+	The first 1024 bytes of the disk, the "<i>boot block</i>", are
+	reserved for the partition boot sectors and are unused by the
+	Ext2 filesystem. The rest of the partition is split into block
+	groups, each of which has the layout shown in the figure
+	above. On a 1.44 MB floppy disk, there is only one block
+	group.
+	</p>
+
+	<p>
+	The Ext2 data structures above are defined in <code><a
+	href="kernel/ext2_fs.h">include/linux/ext2_fs.h</a></code>. In
+	the following sections we will go through each of these data
+	structures.
+	</p>
+
+<!-- ==================================================================== --> 
+<!-- SUPERBLOCK                                                           --> 
+<!-- ==================================================================== -->
+
+        <a name="super" />
+	<h2>The SuperBlock</h2>
+
+	<p>
+	The superblock is defined in <code><b>struct
+	ext2_super_block</b></code>, line 339 of <code><a
+	href="kernel/ext2_fs.h">include/linux/ext2_fs.h</a></code>.
+	It contains information such as the total number of blocks on
+	disk, the size of a block (usually 1024 bytes), the number of free
+	blocks, etc. The meaning of each field in the
+	<code>ext2_super_block</code> structure is explained in
+	<code>ext2_fs.h</code>. Part of this structure has been
+	reported below:
+	</p>
+
+<blockquote>
+<pre>struct ext2_super_block {
+	__u32	s_inodes_count;		/* Inodes count */
+	__u32	s_blocks_count;		/* Blocks count */
+	...
+	__u32	s_free_blocks_count;	/* Free blocks count */
+	__u32	s_free_inodes_count;	/* Free inodes count */
+	__u32	s_first_data_block;	/* First Data Block */
+	__u32	s_log_block_size;	/* Block size */
+	...
+	__u32	s_blocks_per_group;	/* # Blocks per group */
+	...
+	__u16	s_magic;		/* Magic signature */
+	...</pre>
+</blockquote>
+
+        <p>
+	The <code>__u32</code>, <code>__u16</code> and
+	<code>__u8</code> data types denote unsigned 32-, 16- and
+	8-bit integer numbers.
+	</p>
+
+        <p>
+	<code>s_inodes_count</code> and <code>s_blocks_count</code>
+	store the number of inodes and blocks on disk. If you look
+	back at the output of <code>mkfs.ext2</code>, you will see
+	that the total number of blocks on a floppy disk is 1440 and
+	the number of inodes is 184. Also notice from the same output
+	that the size of a block is 1024 bytes, therefore 1440 blocks
+	* 1024 bytes = 1440 KB, the total size of a floppy disk.
+	</p>
+
+	<p>
+	The size of a block is given by
+	<code>s_log_block_size</code>. This value expresses the size
+	of a block as a power of 2, using 1024 bytes as the
+	unit. Thus, 0 denotes 1024-byte blocks, 1 denotes 2048-byte
+	blocks, and so on. To calculate the size in bytes of a block:
+	</p>
+
+<blockquote>
+<pre>unsigned int block_size = 1024 &lt;&lt; super.s_log_block_size;   /* block size in bytes */</pre>
+</blockquote>
+
+	<p>
+	The super block also tells us the number of blocks per group
+	with <code>s_blocks_per_group</code>. Using
+	<code>mkfs.ext2</code>, we can see that this value is 8192 on
+	a floppy disk. Because there are 1440 blocks on a floppy,
+	there can only be one group.
+	</p>
+
+	<!-- questions -->
+	
+	<table class="questions">
+        <a name="Q1"></a> 
+
+	     <tr><td><img src="img/question.png" alt="question"
+	     /></td> <td> Q1.  What is the difference in terms of internal
+	     fragmentation and average file size between using a small
+	     block size (1024) and a big block size (e.g. 8192)?
+	     </td> </tr>
+
+        <a name="Q2"></a> 
+    	     <tr><td><img src="img/question.png" alt="question"
+	     /></td> <td> Q2.  What is the size in bytes of a block if
+	     <code>s_log_block_size=3</code> in the super-block?</td></tr>
+	</table>
+
+	<p>
+	The superblock is located at offset 1024 of a floppy. The code
+	to read the superblock from a floppy is shown below. This code
+	also checks the magic number of the super block
+	(<code>EXT2_SUPER_MAGIC</code>) to see if we are reading from
+	an Ext2 filesystem. For simplicity, error checking has been
+	omitted.
+	</p>
+
+<blockquote>
+<pre>#include &lt;linux/ext2_fs.h&gt;
+
+...
+
+int main()
+{
+        int fd;
+	struct ext2_super_block super;
+
+	fd = open("/dev/fd0", O_RDONLY);    /* open floppy device */
+
+	lseek(fd, 1024, SEEK_SET);                    /* position head above super-block */
+	read(fd, &amp;super, sizeof(super));              /* read super-block */
+
+	if (super.s_magic != EXT2_SUPER_MAGIC)
+	        exit(1); /* bad file system */	
+
+        block_size = 1024 &lt;&lt; super.s_log_block_size;  /* calculate block size in bytes */
+
+        ...</pre>
+</blockquote>
+
+        <table>
+         	<tr> <td><a href="src/ext2super.c"> <img border="0"
+	        src="img/c-source.png" alt="ext2super.c" /></a></td>
+	        <td><a
+	        href="src/ext2super.c"><code>ext2super.c</code></a>
+	        reads the superblock from a floppy disk and prints it
+	        to screen.</td> </tr> 
+	</table>
+
+<!-- ==================================================================== -->
+<!-- GROUP DESCRIPTORS                                                    -->
+<!-- ==================================================================== -->
+
+        <a name="group" />
+	<h2>Group Descriptors</h2>
+
+	<p>
+	In the blocks immediately following the super-block reside the
+	list of block-group descriptors. This list contains a
+	descriptor for each block group on the disk. In the case of a
+	floppy, there is only one block group and therefore one group
+	descriptor. For a bigger disk, we would have to calculate the
+	size of this list by using <code>s_blocks_count</code> and
+	<code>s_blocks_per_group</code> in the superblock:
+	</p>
+
+<blockquote>
+<pre>/* calculate number of block groups on the disk */
+unsigned int group_count = 1 + (super.s_blocks_count-1) / super.s_blocks_per_group;
+
+/* calculate size of the group descriptor list in bytes */
+unsigned int descr_list_size = group_count * sizeof(struct ext2_group_descr);</pre>
+</blockquote>
+
+        <p>
+	A group descriptor is defined by the <code>ext2_group_descr</code> structure, line 148
+	of <code>ext2_fs.h</code>. This structure is reported below:
+	</p>
+
+<blockquote>
+<pre>struct ext2_group_desc
+{
+	__u32	bg_block_bitmap;	/* Blocks bitmap block */
+	__u32	bg_inode_bitmap;	/* Inodes bitmap block */
+	__u32	bg_inode_table;		/* Inodes table block */
+	__u16	bg_free_blocks_count;	/* Free blocks count */
+	__u16	bg_free_inodes_count;	/* Free inodes count */
+	__u16	bg_used_dirs_count;	/* Directories count */
+	__u16	bg_pad;
+	__u32	bg_reserved[3];
+};</pre>
+</blockquote>
+
+        <p>
+	A 1.44 MB floppy has one group descriptor only, which can be read using the following code:
+	</p>
+	
+<blockquote>
+<pre>struct ext2_group_descr group_descr;
+
+...
+
+lseek(fd, 1024 + block_size, SEEK_SET);  /* position head above the group descriptor block */
+read(fd, &amp;group_descr, sizeof(group_descr));
+</pre>
+</blockquote>
+
+        <table>
+         	<tr> <td><a href="src/ext2group.c"> <img border="0"
+	        src="img/c-source.png" alt="ext2group.c" /></a></td>
+	        <td><a
+	        href="src/ext2group.c"><code>ext2group.c</code></a>
+	        reads the first (and only) group descriptor of a
+	        floppy disk and prints it to screen.</td> </tr>
+	</table>
+
+
+        <p>
+	The group descriptor tells us the location of the block/inode
+	bitmaps and of the inode table (described later) through the
+	<code>bg_block_bitmap</code>, <code>bg_inode_bitmap</code> and
+	<code>bg_inode_table</code> fields. These values indicate the
+	blocks where the bitmaps and the table are located. It is
+	handy to have a function to convert a block number to an
+	offset on disk, which can be easily done by knowing that all
+	blocks on disk have the same size of <code>block_size</code>
+	bytes (calculated earlier from the super-block):
+	</p>
+
+<blockquote>
+<pre>#define BASE_OFFSET 1024  /* location of the super-block in the first group */
+
+#define BLOCK_OFFSET(block) (BASE_OFFSET + (block-1)*block_size)</pre>
+</blockquote>
+
+        <p>
+	Blocks are numbered starting from 1. Block 1 is the superblock
+	of the first group, block 2 contains the group descriptors,
+	and so on. Block 0 is the NULL block and does not correspond
+	to any disk offset.
+	</p>
+
+<!-- ==================================================================== -->
+<!-- BLOCKS AND INODES BITMAPS                                            -->
+<!-- ==================================================================== -->
+
+
+        <a name="bitmap" />
+	<h2>The blocks and inodes bitmaps</h2>
+
+	<p>
+	A bitmap is a sequence of bits. Each bit represents a specific
+	block (blocks bitmap) or inode (inode bitmap) in the block
+	group. A bit value of 0 indicates that the block/inode is
+	free, while a value of 1 indicates that the block/inode is
+	being used. A bitmap always refers to the block-group it
+	belongs to, and its size must fit in one block.
+	</p>
+
+	<center><img src="img/ext2_bitmap.png" alt="blocks bitmap" /></center>
+
+	<p>
+	Limiting the size of a bitmap to one block also limits the
+	size of a block-group, because a bitmap always refers to the
+	blocks/inodes in the group it belongs to. Consider the blocks
+	bitmap: given a block size of 1024 bytes, and knowing that
+	each byte is made of 8 bits, we can calculate the maximum
+	number of blocks that the blocks bitmap can represent: 8 *
+	1024 = 8192 blocks. Therefore, 8192 blocks is the size of a
+	block-group using a 1024-byte block size, as we also see from
+	the output of <code>mkfs.ext2</code> in the first section.
+	</p>
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q3"></a> 
+	     <tr><td><img src="img/question.png" alt="question"/></td> 
+	     <td>Q3.  Calculate the number of blocks in a block-group given a 
+	     block size of 4096 bytes.</td></tr>
+	</table>	
+
+	<p>
+	The following code fragment reads the block bitmap from disk:
+	</p>
+
+<blockquote>
+<pre>struct ext2_super_block super;  /* the super block */
+struct ext2_group_desc group;   /* the group descritopr */
+unsigned char *bitmap;
+
+/* ... [read superblock and group descriptor] ... */
+
+bitmap = malloc(block_size);    /* allocate memory for the bitmap */
+lseek(fd, BLOCK_OFFSET(group->bg_block_bitmap), SEEK_SET);
+read(fd, bitmap, block_size);   /* read bitmap from disk */
+
+...
+
+free(bitmap);</pre>
+</blockquote>
+
+<!-- ==================================================================== -->
+<!-- INODE TABLE                                                          -->
+<!-- ==================================================================== -->
+
+        <a name="itable" />
+	<h2>The inode table</h2>
+
+	<p>
+	The inode table consists of a series of consecutive blocks,
+	each of which contains a predefined number of inodes. The
+	block number of the first block of the inode table is stored
+	in the <code>bg_inode_table</code> field of the group
+	descriptor. To figure out how many blocks are occupied by the
+	inode table, divide the total number of inodes in a group
+	(stored in the <code>s_inodes_per_group</code> field of the
+	superblock) by the number of inodes per block:
+	</p>
+
+<blockquote>
+<pre>/* number of inodes per block */
+unsigned int inodes_per_block = block_size / sizeof(struct ext2_inode);
+
+/* size in blocks of the inode table */
+unsigned int itable_blocks = super.s_inodes_per_group / inodes_per_block;</pre>
+</blockquote>
+
+        <p>
+        In the case of our floppy disk, we can see from the output of
+        <code>mkfs.ext2</code> that we have 184 inodes per group and a
+        block size of 1024 bytes. The size of an inode is 128 bytes,
+        therefore the inode table will take 184 / (1024/128) = 23
+        blocks.
+        </p>
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q4"></a> 
+	     <tr><td><img src="img/question.png" alt="question"/></td> 
+	     <td>Q4.  Assume a block size of 2048 bytes. What is the	offset of the inode table if
+	     <code>bg_inode_table=5</code> in the group	descritor?</td></tr>
+	</table>	
+
+
+        <p>
+        The inode table contains everything the operating system needs
+        to know about a file, including the type of file, permissions,
+        owner, and, most important, where its data blocks are located
+        on disk. It is no surprise therefore that this table needs to
+        be accessed very frequently and its read access time should be
+        minimized as much as possible. <!-- Reading an inode from disk
+        every time is out of question.  For floppy disks, where the
+        inode table is only 23 blocks, it is possible to store the
+        entire table in memory (23 * 1024 = 23 KB). With hard-disks
+        things get more complicated, also because there are may be
+        several block groups each with its own inode table. -->
+        Reading an inode from disk every time it is needed is usually
+        a very bad idea.  However, in this context we will adopt this
+        method to keep the example code as simple as possible. We
+        provide a general function to read an inode from the inode
+        table:
+        </p>
+
+<blockquote>
+<pre>static void read_inode(fd, inode_no, group, inode)
+     int                           fd;        /* the floppy disk file descriptor */
+     int                           inode_no;  /* the inode number to read  */
+     const struct ext2_group_desc *group;     /* the block group to which the inode belongs */
+     struct ext2_inode            *inode;     /* where to put the inode */
+{
+	lseek(fd, BLOCK_OFFSET(group->bg_inode_table)+(inode_no-1)*sizeof(struct ext2_inode), SEEK_SET);
+	read(fd, inode, sizeof(struct ext2_inode));
+}</pre>
+</blockquote>
+
+        <p>
+	The offset of the inode to read is calculated by adding
+	together the absolute offset of the inode table and the
+	distance of the desired inode from the beginning of the inode
+	table.
+	</p>
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q5"></a> 
+	    
+	    <tr><td><img src="img/question.png" alt="question"/></td>
+	     <td>Q5.  Calculate the offset of inode 93 on disk. Assume a
+	     block size of 1024 bytes and
+	     <code>bg_inode_table=5</code>. To which block does the inode
+	     belong to? (The size of an inode structure is 128 bytes)</td></tr>
+
+	</table>
+
+        <p>
+	Inodes are numbered starting from 1. An inode is defined as a
+	<code><strong>struct ext2_inode</strong></code>, in
+	<code>ext2_fs.h</code>. The most important fields of this
+	structure have been reported below:
+	</p>
+
+<blockquote>
+<pre>struct ext2_inode {
+        __u16   <b>i_mode</b>;         /* File type and access rights */
+        __u16   i_uid;          /* Low 16 bits of Owner Uid */
+        __u32   i_size;         /* Size in bytes */
+        __u32   i_atime;        /* Access time */
+        __u32   i_ctime;        /* Creation time */
+        __u32   i_mtime;        /* Modification time */
+        __u32   i_dtime;        /* Deletion Time */
+        __u16   i_gid;          /* Low 16 bits of Group Id */
+        __u16   i_links_count;  /* Links count */
+        __u32   <b>i_blocks</b>;       /* Blocks count */
+        __u32   i_flags;        /* File flags */
+	...
+	__u32   <b>i_block</b>[EXT2_N_BLOCKS];  /* Pointers to blocks */
+	...
+};</pre>
+</blockquote>
+
+        <p>
+	Most of the fields in this structure are
+	self-explanatory. Particular atttention should be paid to the
+	fields in bold, explained in the following paragraphs.
+	</p>
+
+	<p>
+	<code><b>i_mode</b></code> determines the type and access
+	rights of a file. Possible file types are listed below. For
+	each file type is defined a macro (<code>sys/stat.h</code>)
+	that can be used to test for that specific file type.
+	</p>
+	<blockquote>
+	<table>
+	    <tr><td><i>Type</i></td><td><i>Macro</i></td></tr>
+	    <tr><td>Regular file</td><td><code>S_ISREG(m)</code></td></tr>
+	    <tr><td>Directory</td> <td><code>S_ISDIR(m)</code></td></tr>
+	    <tr><td>Character Device&nbsp;&nbsp;</td><td><code>S_ISCHR(m)</code></td></tr>
+	    <tr><td>Block Device</td><td><code>S_ISBLK(m)</code></td></tr>
+	    <tr><td>Fifo</td><td><code>S_ISIFO(m)</code></td></tr>
+	    <tr><td>Socket</td><td><code>S_ISSOCK(m)</code></td></tr>
+	    <tr><td>Symbolic Link</td><td><code>S_ISLNK(m)</code></td></tr>
+	</table>
+	</blockquote>
+
+	<p>
+	The file permissions are also stored in
+	<code>i_mode</code>. These permissions can be tested by ANDing
+	<code>i_mode</code> with a set of symbols defined in
+	<code>sys/stat.h</code>:
+	</p>
+
+	<blockquote>
+	<table width="600px">
+	<thead style="font-style:italic">
+	<tr><td>Domain</td><td>Read</td><td>Write</td><td>Exec</td><td>All</td></tr>
+	</thead>
+	<tbody style="font-family: courier; font-size: 11pt">
+	<tr><td>User</td><td>S_IRUSR</td><td>S_IWUSR</td><td>S_IXUSR</td><td>S_IRWXU</td></tr>
+	<tr><td>Group</td><td>S_IRGRP</td><td>S_IWGRP</td><td>S_IXGRP</td><td>S_IRWXG</td></tr>
+	<tr><td>All</td><td>S_IROTH</td><td>S_IWOTH</td><td>S_IXOTH</td><td>S_IRWXO</td></tr>
+	</tbody>
+	</table>
+	</blockquote>
+
+	<p>
+	For example, to test if a file has user-execute permissions:
+	</p>
+
+	<blockquote>
+	<pre>if (inode.i_mode &amp; S_IXUSR) ... </pre>
+	</blockquote>
+
+	<p>
+	The <code><b>i_blocks</b></code> field of the inode structure
+	counts the number of blocks used by the file. Pointers to the
+	actual data blocks of the file are stored in the
+	<code><b>i_block[EXT2_N_BLOCKS]</b></code> array. The
+	<code>EXT2_N_BLOCKS</code> symbol is defined in
+	<code>ext2_fs.h</code> (line 177) as following:
+	</p>
+
+<blockquote>
+<pre>#define	EXT2_NDIR_BLOCKS		12                      /* number of direct blocks */
+#define	EXT2_IND_BLOCK			EXT2_NDIR_BLOCKS        /* single indirect block   */
+#define	EXT2_DIND_BLOCK			(EXT2_IND_BLOCK + 1)    /* double indirect block   */
+#define	EXT2_TIND_BLOCK			(EXT2_DIND_BLOCK + 1)   /* trible indirect block   */
+<b>#define	EXT2_N_BLOCKS			(EXT2_TIND_BLOCK + 1)</b>   /* total number of blocks  */</pre>
+</blockquote>
+
+        <p>
+	In total there are <b>15</b> pointers in the
+	<code>i_block[]</code> array. The meaning of each of these
+	pointers is explained below:
+	</p>
+
+	<ul>
+	<li>&nbsp;<code>i_block[0..11]</code> point directly to the first
+	12 data blocks of the file.</li>
+	<li>&nbsp;<code>i_block[12]</code> points to a single indirect block</li>
+	<li>&nbsp;<code>i_block[13]</code> points to a double indirect block</li>
+	<li>&nbsp;<code>i_block[14]</code> points to a triple indirect block</li>
+	</ul>
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q6"></a> 
+	
+            <tr><td><img src="img/question.png" alt="question"/></td>
+	    <td>Q6.  Given a block size of 4096 bytes, what is the maximum
+	    size (in blocks and bytes) of a file <u>without
+	    indirection</u>? What is the total maximum size of a file?
+	    (Remember that each "block pointer" is declared as __u32,
+	    that is 4 bytes)</td></tr>
+
+	</table>
+
+	<p>
+	The following example prints the blocks used by the <i>root</i>
+	directory of the floppy disk, which is always on inode 2 of
+	the inode table:
+	</p>
+
+<blockquote>
+<pre>struct ext2_inode inode;
+struct ext2_group_desc group;
+
+/* ... [ read superblock and group descriptor ] ... */
+
+read_inode(fd, 2, &amp;group, &amp;inode);   /* read root inode (#2) from the floppy disk */
+
+for(i=0; i&lt;EXT2_N_BLOCKS; i++)
+	if (i &lt; EXT2_NDIR_BLOCKS)                                 /* direct blocks */
+		printf("Block %2u : %u\n", i, inode.i_block[i]);
+	else if (i == EXT2_IND_BLOCK)                             /* single indirect block */
+		printf("Single   : %u\n", inode.i_block[i]);
+	else if (i == EXT2_DIND_BLOCK)                            /* double indirect block */
+		printf("Double   : %u\n", inode.i_block[i]);
+	else if (i == EXT2_TIND_BLOCK)                            /* triple indirect block */
+		printf("Triple   : %u\n", inode.i_block[i]);</pre>
+</blockquote>
+
+
+        <table>
+         	<tr> <td><a href="src/ext2root.c"> <img border="0"
+	        src="img/c-source.png" alt="ext2root.c" /></a></td>
+	        <td><a
+	        href="src/ext2root.c"><code>ext2root.c</code></a>
+		reads the root inode (#2) from the inode table of a floppy disk.</td> </tr> 
+	</table>
+
+<!-- ==================================================================== -->
+<!-- DIRECTORY ENTRIES                                                    -->
+<!-- ==================================================================== -->
+
+        <a name="direntry" />
+	<h2>Directory entries in the inode table</h2>
+
+	<p>
+	Directory entries in the inode table require special
+	attention. To test if an inode refers to a directory file we
+	can use the <code>S_ISDIR(<i>mode</i>)</code> macro:
+	</p>
+
+<blockquote>
+<pre>if (S_ISDIR(inode.i_mode)) ... </pre>
+</blockquote>
+
+        <p>
+	In the case of directory entries, the data blocks pointed by
+	<code>i_block[]</code> contain a list of the files in the
+	directory and their respective inode numbers. 
+	</p>
+
+	<center><img src="img/dir_entry.png" alt="Directory Entry" /></center>
+	<p class="caption">Directory inode</p>
+
+	<p>
+	The list is composed of <code>ext2_dir_entry_2</code>
+	structures:
+	</p>
+
+<blockquote>
+<pre>struct ext2_dir_entry_2 {
+	__u32	inode;			/* Inode number */
+	__u16	rec_len;		/* Directory entry length */
+	__u8	name_len;		/* Name length */
+	__u8	file_type;
+	char	name[EXT2_NAME_LEN];	/* File name */
+};</pre>
+</blockquote>
+
+        <p>
+	The <code>file_type</code> field indicates what kind of file
+	the entry is referring to. Possible values are:
+	</p>
+	
+	<blockquote>
+	<table>
+	<tr><td width="80px"><b>file_type</b></td><td><b>Description</b></td></tr>
+	<tr><td>0</td><td>Unknown</td></tr>
+	<tr><td>1</td><td>Regular File</td></tr>
+	<tr><td>2</td><td>Directory</td></tr>
+	<tr><td>3</td><td>Character Device</td></tr>
+	<tr><td>4</td><td>Block Device</td></tr>
+	<tr><td>5</td><td>Named pipe</td></tr>
+	<tr><td>6</td><td>Socket</td></tr>
+	<tr><td>7</td><td>Symbolic Link</td></tr>
+	</table>
+	</blockquote>
+
+        <p>
+	Each entry has a variable size depending on the length of the
+	file name. The maximum length of a file name is
+	<code>EXT2_NAME_LEN</code>, which is usually 255. The
+	<code>name_len</code> field stores the length of the file name,
+	while <code>rec_len</code> stores the total size of the entry
+	and is used to locate the next entry in the list.
+	</p>
+
+	<center><img src="img/ext2_dir.png" alt="dir entries" /></center>
+	<p class="caption">Example of EXT2 directory</p>
+	
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q7"></a> 
+	
+            <tr><td><img src="img/question.png" alt="question"/></td>
+	    <td>Q7.  Can you explain when and why NULL characters ("\0") are
+	    appended to the end of the file name?</td></tr>
+
+	</table>
+
+
+	<p>
+	The following code reads the entries of a directory. Assume
+	that the inode of the directory is stored in
+	<code>inode</code>:
+	</p>
+
+<blockquote>
+<pre>struct ext2_dir_entry_2 *entry;
+unsigned int size;
+unsigned char block[BLOCK_SIZE];
+
+...
+
+lseek(fd, BLOCK_OFFSET(inode->i_block[0]), SEEK_SET);
+read(fd, block, block_size);                         /* read block from disk*/
+
+size = 0;                                            /* keep track of the bytes read */
+entry = (struct ext2_dir_entry_2 *) block;           /* first entry in the directory */
+while(size &lt; inode-&gt;i_size) {
+        char file_name[EXT2_NAME_LEN+1];
+        memcpy(file_name, entry-&gt;name, entry-&gt;name_len);
+        file_name[entry-&gt;name_len] = 0;              /* append null char to the file name */
+        printf("%10u %s\n", entry-&gt;inode, file_name);
+        entry = (void*) entry + entry-&gt;rec_len;      /* move to the next entry */
+        size += entry-&gt;rec_len;
+}</pre>
+</blockquote>
+
+        <p>
+	The code above reads the first data block of a directory
+	from disk. The block is stored in the <code>block</code>
+	array. As explained earlier, this block contains a list of the
+	directory's entries. The problem is that entries in this list
+	have a variable size. This is the reason why we cannot just
+	read the data block into an array of <code>struct
+	ext2_dir_entry_2</code> elements.
+	</p>
+
+	<p>
+	The <code>entry</code> pointer points to the current entry in
+	the directory. The file name of the entry is copied from
+	<code>entry->name</code> into <code>file_name</code> so that a
+	null character can be appended to it. The inode and name of
+	the file is then displayed.
+	</p>
+	<p>
+	Finally, the position of the following entry in the list is
+	given by <code>entry->rec_len</code>. This field indicates the
+	length in bytes of the current entry record. Therefore, the next
+	entry is located at address <code>(void*) entry +
+	entry->rec_len</code>.
+	</p>
+
+	<p>
+	Notice that the code above only works if the size of the
+	directory is less than a block. If the entries list takes more
+	than one block, the program will crash.
+	</p>
+
+        <table>
+         	<tr> <td><a href="src/ext2list.c"> <img border="0"
+	        src="img/c-source.png" alt="source" /></a></td> <td><a
+	        href="src/ext2list.c"><code>ext2list.c</code></a>
+	        lists the contents of the root directory of the floppy
+	        disk.</td> </tr> </table>
+
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q8"></a> 
+	
+            <tr><td><img src="img/question.png"
+	    alt="question"/></td> <td>Q8.  To speed up deletion of an entry from a
+	    directory, the Linux kernel sets the <code>inode</code> field of the
+	    entry to be deleted to 0, and suitably increments the value of the
+	    <code>rec_len</code> field of the previous valid entry. Redraw
+	    the figure above after deletion of the <code>test.txt</code> entry.</td></tr>
+        <a name="Q9"></a> 
+
+            <tr><td><img src="img/question.png"
+	    alt="question"/></td><td>Q9.  Modify <code>ext2list.c</code> so that it shows
+	    the contents of the <u>whole</u> disk</td></tr>
+
+	</table>
+
+<!-- ==================================================================== -->
+<!-- FINDING A FILE                                                       -->
+<!-- ==================================================================== -->
+
+        <a name="locate_file" />
+	<h2>Locating a file</h2>
+	<p>
+	Locating the data blocks belonging to a file implies locating
+	its inode in the inode table first. The inode of the desired
+	file is generally not known at the time the open operation is
+	issued. What we know is the <i>path</i> of the file. For
+	example:
+	</p>
+
+<blockquote>
+<pre>int fd = open("<b>/home/ealtieri/hello.txt</b>", O_RDONLY);</pre>
+</blockquote>
+
+        <p>
+	The desired file is <code>hello.txt</code>, while its path is
+	<code>/home/ealtieri/hello.txt</code>.
+	</p>
+	<p>
+	To find out the inode belonging to the file we first need to
+	descend through its path, starting from the root directory,
+	until we reach the file's parent directory. At this point we
+	can locate the <code>ext2_dir_entry_2</code> entry
+	corresponding to <code>hello.txt</code> and then its inode
+	number.
+	</p>
+
+	<center><img src="img/ext2_locate.png" alt="locate" /></center>
+
+	<p>
+	Once the inode of the file is known, the data blocks belonging
+	to the <code>hello.txt</code> are specified by the
+	<code>inode.block[]</code> array.
+	</p>
+
+	<p>
+	The root directory is always located at inode 2.
+	</p>
+
+	<!-- questions -->
+
+	<table class="questions"> 
+        <a name="Q9"></a> 
+	
+            <tr><td><img src="img/question.png" alt="question"/></td>
+	    <td>Q9.  Illustrate the process of looking up the file
+	    <code>/usr/local/bin/gcc</code> similarly to the figure
+	    above. You are free to assign any number to the inodes as
+	    long as your numbers are consistent and do not exceed the
+	    maximum inode number (see
+	    <code>mkfs.ext2</code>).</td></tr>
+
+	</table>
+
+<!-- ==================================================================== -->
+<!-- XHTML                                                                -->
+<!-- ==================================================================== -->
+
+	<hr />
+	<p><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid
+	XHTML 1.0!" height="31" width="88" border="0"/> &nbsp; <img
+	src="powered_by.gif" alt="Powered by RedHat Linux" border="0"
+	/></p>
+
+	<script language="JavaScript" type="text/javascript">
+	<!-- 
+	if (Date.parse(document.lastModified) != 0)
+	   document.write("<p><small><i>Last Modified:"+
+	                  document.lastModified+"</i></small>"); 
+	--> 
+	</script> 
+</body>
+</html>

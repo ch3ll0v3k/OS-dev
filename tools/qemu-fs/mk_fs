@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # =====================================================================
-EXT_2_FS="rootfs.ext2"
-MSODS_FS="rootfs.msdos"
-FAT32_FS="rootfs.fat32"
+EXT_2_FS="_fs.ext2"
+MSODS_FS="_fs.msdos"
+FAT32_FS="_fs.fat32"
 
 MNT_P="./mnt/"
 
+HDD_SIZE="512M"
 
 HDD_FORMAT="raw"; # raw: [default] | qcow2: |qcow: | cow: | vmdk: | cloop:
-HDD_SIZE="32M"
 
-qemu-img create -f $HDD_FORMAT $EXT_2_FS $HDD_SIZE
-sudo mkfs.ext2  -L "root-fs" $EXT_2_FS
+qemu-img create -f $HDD_FORMAT "$HDD_SIZE$EXT_2_FS" $HDD_SIZE
+sudo mkfs.ext2  -L "$HDD_SIZE$EXT_2_FS" "$HDD_SIZE$EXT_2_FS"
 
 
 
