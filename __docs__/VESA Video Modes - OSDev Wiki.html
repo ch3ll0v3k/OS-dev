@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>VESA Video Modes - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "VESA_Video_Modes", "wgTitle": "VESA Video Modes", "wgCurRevisionId": 19462, "wgArticleId": 1904, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Video", "FAQ"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-VESA_Video_Modes action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">VESA Video Modes</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#VESA_Functions"><span class="tocnumber">1</span> <span class="toctext">VESA Functions</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Will_it_work_with_Bochs.3F"><span class="tocnumber">2</span> <span class="toctext">Will it work with Bochs?</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#How_to_pick_the_mode_I_wish_.3F"><span class="tocnumber">3</span> <span class="toctext">How to pick the mode I wish&#160;?</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Common_Mistakes"><span class="tocnumber">4</span> <span class="toctext">Common Mistakes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#VESA_Defined_Mode_Numbers"><span class="tocnumber">4.1</span> <span class="toctext">VESA Defined Mode Numbers</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Use_.22Bytes_Between_Lines.22"><span class="tocnumber">4.2</span> <span class="toctext">Use "Bytes Between Lines"</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Don.27t_Assume_Pixel_Formats"><span class="tocnumber">4.3</span> <span class="toctext">Don't Assume Pixel Formats</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Don.27t_Assume_Unused_Bits_Are_Unused"><span class="tocnumber">4.4</span> <span class="toctext">Don't Assume Unused Bits Are Unused</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Don.27t_Assume_VGA_Compatibility"><span class="tocnumber">4.5</span> <span class="toctext">Don't Assume VGA Compatibility</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Don.27t_Assume_The_Monitor_Supports_A_Video_Mode"><span class="tocnumber">4.6</span> <span class="toctext">Don't Assume The Monitor Supports A Video Mode</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#See_Also"><span class="tocnumber">5</span> <span class="toctext">See Also</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#Articles"><span class="tocnumber">5.1</span> <span class="toctext">Articles</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Threads"><span class="tocnumber">5.2</span> <span class="toctext">Threads</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#External_Links"><span class="tocnumber">5.3</span> <span class="toctext">External Links</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="VESA_Functions"> VESA Functions </span></h2>
+<p>You'll want to look in the VESA VBE docs for these functions:
+All VESA functions return 0x4F in AL if they are supported and use AH as a status flag, with 0x00 being success. This means that you should check that AX is 0x004F after each VESA call to see if it succeeded.
+</p>
+<dl><dt>INT 0x10, AX=0x4F00
+</dt><dd> Get Controller Info.  This is the one that returns the array of all supported video modes.
+</dd></dl>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">struct</span> VbeInfoBlock <span class="br0">&#123;</span>
+   <span class="kw4">char</span> VbeSignature<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span><span class="sy0">;</span>             <span class="co1">// == &quot;VESA&quot;</span>
+   <span class="kw4">uint16_t</span> VbeVersion<span class="sy0">;</span>                 <span class="co1">// == 0x0300 for VBE 3.0</span>
+   <span class="kw4">uint16_t</span> OemStringPtr<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span><span class="sy0">;</span>            <span class="co1">// isa vbeFarPtr</span>
+   <span class="kw4">uint8_t</span> Capabilities<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span><span class="sy0">;</span>
+   <span class="kw4">uint16_t</span> VideoModePtr<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span><span class="sy0">;</span>         <span class="co1">// isa vbeFarPtr</span>
+   <span class="kw4">uint16_t</span> TotalMemory<span class="sy0">;</span>             <span class="co1">// as # of 64KB blocks</span>
+<span class="br0">&#125;</span> __attribute__<span class="br0">&#40;</span><span class="br0">&#40;</span>packed<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+VbeInfoBlock <span class="sy0">*</span>vib <span class="sy0">=</span> dos_alloc<span class="br0">&#40;</span><span class="nu0">512</span><span class="br0">&#41;</span><span class="sy0">;</span>
+v86_bios<span class="br0">&#40;</span><span class="nu12">0x10</span><span class="sy0">,</span> <span class="br0">&#123;</span>ax<span class="sy0">:</span><span class="nu12">0x4f00</span><span class="sy0">,</span> es<span class="sy0">:</span>SEG<span class="br0">&#40;</span>vib<span class="br0">&#41;</span><span class="sy0">,</span> di<span class="sy0">:</span>OFF<span class="br0">&#40;</span>vib<span class="br0">&#41;</span><span class="br0">&#125;</span><span class="sy0">,</span> <span class="sy0">&amp;</span>out<span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="kw1">if</span> <span class="br0">&#40;</span>out.<span class="me1">ax</span><span class="sy0">!=</span><span class="nu12">0x004f</span><span class="br0">&#41;</span> die<span class="br0">&#40;</span><span class="st0">&quot;Something wrong with VBE get info&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<dl><dt>INT 0x10, AX=0x4F01, CX=mode
+</dt><dd> Get Mode Info.  Call this for each member of the mode array to find out the details of that mode.
+</dd></dl>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">struct</span> ModeInfoBlock <span class="br0">&#123;</span>
+  <span class="kw4">uint16_t</span> attributes<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> winA<span class="sy0">,</span>winB<span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> granularity<span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> winsize<span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> segmentA<span class="sy0">,</span> segmentB<span class="sy0">;</span>
+  VBE_FAR<span class="br0">&#40;</span>realFctPtr<span class="br0">&#41;</span><span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> pitch<span class="sy0">;</span> <span class="co1">// bytes per scanline</span>
+&#160;
+  <span class="kw4">uint16_t</span> Xres<span class="sy0">,</span> Yres<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> Wchar<span class="sy0">,</span> Ychar<span class="sy0">,</span> planes<span class="sy0">,</span> bpp<span class="sy0">,</span> banks<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> memory_model<span class="sy0">,</span> bank_size<span class="sy0">,</span> image_pages<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> reserved0<span class="sy0">;</span>
+&#160;
+  <span class="kw4">uint8_t</span> red_mask<span class="sy0">,</span> red_position<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> green_mask<span class="sy0">,</span> green_position<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> blue_mask<span class="sy0">,</span> blue_position<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> rsv_mask<span class="sy0">,</span> rsv_position<span class="sy0">;</span>
+  <span class="kw4">uint8_t</span> directcolor_attributes<span class="sy0">;</span>
+&#160;
+  <span class="kw4">uint32_t</span> physbase<span class="sy0">;</span>  <span class="co1">// your LFB (Linear Framebuffer) address&#160;;)</span>
+  <span class="kw4">uint32_t</span> reserved1<span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> reserved2<span class="sy0">;</span>
+<span class="br0">&#125;</span> __attribute__<span class="br0">&#40;</span><span class="br0">&#40;</span>packed<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p><b>INT 0x10, AX=0x4F02, BX=mode, ES:DI=CRTCInfoBlock</b>
+</p>
+<dl><dd>Set Video Mode.  Call this with the mode number you decide to use.  If you choose a mode that makes use of a linear framebuffer, you should OR the mode number with 0x4000. This sets the "Use LFB" bit in the mode number. Set the bit 11 of BX to instruct the BIOS to use the passed CRTCInfoBlock structure, see the specification for more information.
+</dd></dl>
+<dl><dd>BIOSs can switch to protected mode to implement this, and might reset the GDT. This is observable on QEMU 2.2.x.
+</dd></dl>
+<h2> <span class="mw-headline" id="Will_it_work_with_Bochs.3F"> Will it work with Bochs? </span></h2>
+<p>For VBE to work in Bochs you need the "VGABIOS-lgpl" BIOS and have a version of Bochs that was compiled with the <tt>--enable-vbe</tt> option... See <a href="http://forum.osdev.org/viewtopic.php?t=9655" class="extiw" title="topic:9655">Vesa Information in Bochs</a> thread for more info. Also read about <a href="/Bochs_Graphics_Adaptor" title="Bochs Graphics Adaptor" class="mw-redirect">Bochs Graphics Adaptor</a>.
+</p>
+<h2> <span class="mw-headline" id="How_to_pick_the_mode_I_wish_.3F">How to pick the mode I wish&#160;?</span></h2>
+<p>VESA stopped assigning codes for video modes long ago -- instead they standardized a much better solution: you can query the video card for what modes it supports, and query it about the attributes of each mode. In your OS, you can  have a function that you call with a desired width, height, and depth, and it returns the video mode number for it (or the closest match). Then, just set that mode
+</p><p>Here's a sample code, assuming you have a VirtualMonitor already ... Basically, you will scan the 'modes list' referenced by the VbeInfoBlock.videomodes[] and then call 'get mode info' for each mode. You can then compare width, height and colordepth of each mode with the desired one.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">uint16_t</span> findMode<span class="br0">&#40;</span><span class="kw4">int</span> x<span class="sy0">,</span> <span class="kw4">int</span> y<span class="sy0">,</span> <span class="kw4">int</span> d<span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+  <span class="kw4">struct</span> VbeInfoBlock <span class="sy0">*</span>ctrl <span class="sy0">=</span> <span class="br0">&#40;</span>VbeInfoBlock <span class="sy0">*</span><span class="br0">&#41;</span><span class="nu12">0x2000</span><span class="sy0">;</span>
+  <span class="kw4">struct</span> ModeInfoBlock <span class="sy0">*</span>inf <span class="sy0">=</span> <span class="br0">&#40;</span>ModeInfoBlock <span class="sy0">*</span><span class="br0">&#41;</span><span class="nu12">0x3000</span><span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> <span class="sy0">*</span>modes<span class="sy0">;</span>
+  <span class="kw4">int</span> i<span class="sy0">;</span>
+  <span class="kw4">uint16_t</span> best <span class="sy0">=</span> <span class="nu12">0x13</span><span class="sy0">;</span>
+  <span class="kw4">int</span> pixdiff<span class="sy0">,</span> bestpixdiff <span class="sy0">=</span> DIFF<span class="br0">&#40;</span><span class="nu0">320</span> <span class="sy0">*</span> <span class="nu0">200</span><span class="sy0">,</span> x <span class="sy0">*</span> y<span class="br0">&#41;</span><span class="sy0">;</span>
+  <span class="kw4">int</span> depthdiff<span class="sy0">,</span> bestdepthdiff <span class="sy0">=</span> <span class="nu0">8</span> <span class="sy0">&gt;=</span> d <span class="sy0">?</span> <span class="nu0">8</span> <span class="sy0">-</span> d <span class="sy0">:</span> <span class="br0">&#40;</span>d <span class="sy0">-</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">2</span><span class="sy0">;</span>
+&#160;
+  <span class="kw3">strncpy</span><span class="br0">&#40;</span>ctrl<span class="sy0">-&gt;</span>VbeSignature<span class="sy0">,</span> <span class="st0">&quot;VBE2&quot;</span><span class="sy0">,</span> <span class="nu0">4</span><span class="br0">&#41;</span><span class="sy0">;</span>
+  intV86<span class="br0">&#40;</span><span class="nu12">0x10</span><span class="sy0">,</span> <span class="st0">&quot;ax,es:di&quot;</span><span class="sy0">,</span> <span class="nu12">0x4F00</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> ctrl<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Get Controller Info</span>
+  <span class="kw1">if</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span><span class="kw4">uint16_t</span><span class="br0">&#41;</span>v86.<span class="me1">tss</span>.<span class="me1">eax</span> <span class="sy0">!=</span> <span class="nu12">0x004F</span> <span class="br0">&#41;</span> <span class="kw1">return</span> best<span class="sy0">;</span>
+&#160;
+  modes <span class="sy0">=</span> <span class="br0">&#40;</span><span class="kw4">uint16_t</span><span class="sy0">*</span><span class="br0">&#41;</span>REALPTR<span class="br0">&#40;</span>ctrl<span class="sy0">-&gt;</span>VideoModePtr<span class="br0">&#41;</span><span class="sy0">;</span>
+  <span class="kw1">for</span> <span class="br0">&#40;</span> i <span class="sy0">=</span> <span class="nu0">0</span> <span class="sy0">;</span> modes<span class="br0">&#91;</span>i<span class="br0">&#93;</span> <span class="sy0">!=</span> <span class="nu12">0xFFFF</span> <span class="sy0">;</span> <span class="sy0">++</span>i <span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      intV86<span class="br0">&#40;</span><span class="nu12">0x10</span><span class="sy0">,</span> <span class="st0">&quot;ax,cx,es:di&quot;</span><span class="sy0">,</span> <span class="nu12">0x4F01</span><span class="sy0">,</span> modes<span class="br0">&#91;</span>i<span class="br0">&#93;</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> inf<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Get Mode Info</span>
+&#160;
+      <span class="kw1">if</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span><span class="kw4">uint16_t</span><span class="br0">&#41;</span>v86.<span class="me1">tss</span>.<span class="me1">eax</span> <span class="sy0">!=</span> <span class="nu12">0x004F</span> <span class="br0">&#41;</span> <span class="kw1">continue</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// Check if this is a graphics mode with linear frame buffer support</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span>inf<span class="sy0">-&gt;</span>attributes <span class="sy0">&amp;</span> <span class="nu12">0x90</span><span class="br0">&#41;</span> <span class="sy0">!=</span> <span class="nu12">0x90</span> <span class="br0">&#41;</span> <span class="kw1">continue</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// Check if this is a packed pixel or direct color mode</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span> inf<span class="sy0">-&gt;</span>memory_model <span class="sy0">!=</span> <span class="nu0">4</span> <span class="sy0">&amp;&amp;</span> inf<span class="sy0">-&gt;</span>memory_model <span class="sy0">!=</span> <span class="nu0">6</span> <span class="br0">&#41;</span> <span class="kw1">continue</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// Check if this is exactly the mode we're looking for</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span> x <span class="sy0">==</span> inf<span class="sy0">-&gt;</span>XResolution <span class="sy0">&amp;&amp;</span> y <span class="sy0">==</span> inf<span class="sy0">-&gt;</span>YResolution <span class="sy0">&amp;&amp;</span>
+          d <span class="sy0">==</span> inf<span class="sy0">-&gt;</span>BitsPerPixel <span class="br0">&#41;</span> <span class="kw1">return</span> modes<span class="br0">&#91;</span>i<span class="br0">&#93;</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// Otherwise, compare to the closest match so far, remember if best</span>
+      pixdiff <span class="sy0">=</span> DIFF<span class="br0">&#40;</span>inf<span class="sy0">-&gt;</span>Xres <span class="sy0">*</span> inf<span class="sy0">-&gt;</span>Yres<span class="sy0">,</span> x <span class="sy0">*</span> y<span class="br0">&#41;</span><span class="sy0">;</span>
+      depthdiff <span class="sy0">=</span> <span class="br0">&#40;</span>inf<span class="sy0">-&gt;</span>bpp <span class="sy0">&gt;=</span> d<span class="br0">&#41;</span><span class="sy0">?</span> inf<span class="sy0">-&gt;</span>bpp <span class="sy0">-</span> d <span class="sy0">:</span> <span class="br0">&#40;</span>d <span class="sy0">-</span> inf<span class="sy0">-&gt;</span>bpp<span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">2</span><span class="sy0">;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span> bestpixdiff <span class="sy0">&gt;</span> pixdiff <span class="sy0">||</span>
+          <span class="br0">&#40;</span>bestpixdiff <span class="sy0">==</span> pixdiff <span class="sy0">&amp;&amp;</span> bestdepthdiff <span class="sy0">&gt;</span> depthdiff<span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        best <span class="sy0">=</span> modes<span class="br0">&#91;</span>i<span class="br0">&#93;</span><span class="sy0">;</span>
+        bestpixdiff <span class="sy0">=</span> pixdiff<span class="sy0">;</span>
+        bestdepthdiff <span class="sy0">=</span> depthdiff<span class="sy0">;</span>
+      <span class="br0">&#125;</span>
+  <span class="br0">&#125;</span>
+  <span class="kw1">if</span> <span class="br0">&#40;</span> x <span class="sy0">==</span> <span class="nu0">640</span> <span class="sy0">&amp;&amp;</span> y <span class="sy0">==</span> <span class="nu0">480</span> <span class="sy0">&amp;&amp;</span> d <span class="sy0">==</span> <span class="nu0">1</span> <span class="br0">&#41;</span> <span class="kw1">return</span> <span class="nu12">0x11</span><span class="sy0">;</span>
+  <span class="kw1">return</span> best<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Common_Mistakes"> Common Mistakes </span></h2>
+<p>There's some mistakes that beginners seem to make fairly often when they first start working with VBE.
+</p>
+<h3> <span class="mw-headline" id="VESA_Defined_Mode_Numbers">VESA Defined Mode Numbers</span></h3>
+<p>For older versions of the VBE specification (VBE 1.0, VBE 1.1 and VBE 1.2) VESA defined some standard mode numbers. For example, mode 0x0113 was 800 * 600 * 15-bpp. In VBE 2.0 these mode numbers were deprecated - VESA decided not to define any more of them, told video card manufacturers they don't need to use the old standard mode numbers, and told programmers to search for the mode they want without relying on any of the old standard mode numbers. Despite this, it's still possible to find obsolete information on the internet suggesting to use these old standard mode numbers.
+</p>
+<h3> <span class="mw-headline" id="Use_.22Bytes_Between_Lines.22">Use "Bytes Between Lines"</span></h3>
+<p>People tend to assume that pixel data is contiguous (e.g. line 1, then line 2, then line 3, ...). This isn't always the case, and for a variety of reasons there may be padding between lines (e.g. line 1, padding, then line 2, padding, then line 3, ...). The "Get Mode Information" VBE function returns the number of bytes between lines, and this value should be used. For example, for a 640 * 480 * 16-bpp video mode, the offset of a line is found by "offset = line * bytes_per_line" and not by "offset = line * (640 * 2)". In the same way, you can't use one "rep stosb/w/d/q" or "memset()" to fill the entire display, and you should fill each line separately to avoid writing to any padding.
+</p><p>Note that (for VBE 3.0) there may be 2 "bytes between lines" values returned by the "Get Mode Information" VBE function. The first one is used when the video mode is setup for bank switching and the second one is used when linear frame buffer is being used. For older versions of VBE there is no "bytes between lines for linear frame buffer" value, and the "bytes between lines for bank switched" value is used for both bank switching and linear frame buffer.
+</p>
+<h3> <span class="mw-headline" id="Don.27t_Assume_Pixel_Formats">Don't Assume Pixel Formats</span></h3>
+<p>Usually pixel data is in "RGB" format, but this isn't always the case. A pixel can be in "BGR" format or anything else, and may not even use Red, Green and Blue components - it could use "YUV" where there's one luma/brightness component (Y) and two chrominance (UV) components. Always check the "memory_model" field and (for 15-bpp and higher video modes) all of the "component mask" and "field position" fields (e.g. "red_mask_size", "red_field_position", etc) in the structure returned by the "Get Mode Information" VBE function.
+</p>
+<h3> <span class="mw-headline" id="Don.27t_Assume_Unused_Bits_Are_Unused">Don't Assume Unused Bits Are Unused</span></h3>
+<p>For some colour depths there's "unused" bits in the pixel data (one "unused" bit per pixel in 15-bpp modes, and 8 "unused" bits per pixel for 32-bpp modes). These unused bits may actually be used by some video cards for a variety of extra features. For one example, I know of a video card where (in 15-bpp modes) if the highest/unused bit is set then it uses the lowest 8 bits of the pixel data as an index into the palette.
+</p>
+<h3> <span class="mw-headline" id="Don.27t_Assume_VGA_Compatibility">Don't Assume VGA Compatibility</span></h3>
+<p>For 8-bpp video modes people assume that they can use the VGA I/O ports to change the palette. It's much better to use the VBE functions instead, but if you don't then at least test if the video mode uses VGA I/O ports by testing the "VGA compatible mode" flag (bit 5) in "mode_attributes" field returned by the "Get Mode Information" VBE function.
+</p><p>In a similar way, for 4-bpp "planar" video modes some people assume that the VGA I/O ports can be used to switch between planes rather than testing if the "VGA compatible mode" flag is set first.
+</p>
+<h3> <span class="mw-headline" id="Don.27t_Assume_The_Monitor_Supports_A_Video_Mode">Don't Assume The Monitor Supports A Video Mode</span></h3>
+<p>We all like pretty graphics and high resolution video modes. Unfortunately, if VBE says that a video mode is supported by the video card it does not mean that the video mode is also supported by the monitor. VESA has defined 2 video mode timings that are meant to be supported by all monitors (640 * 480 standard VGA timing and 720 * 480 standard VGA timing). For all other video modes you should either use <a href="/EDID" title="EDID">EDID</a> to find out if the monitor supports the video mode's timing (or not), or provide a way for the user to test the video mode and change it if it doesn't work. This is the approach used by Windows, with a dialog box appearing with the option to accept or revert. No action within 15 seconds reverts. Just an idea&#160;;).
+</p><p>Using EDID for this purpose is complicated. Unless you provide a "CRTC information block" structure when you set the video mode you can't be entirely sure what timing the video card will use; and only some video cards that support VBE 3.0 support the "CRTC information" correctly.
+</p><p>The other alternative is to only ever use video modes that (should) use 640 * 480 and 720 * 480 standard VGA timing. For video modes with lower horizontal resolutions the video card sends the each pixel twice, and for video modes with lower vertical resolutions the video card sends the each row of pixels twice (called "double scanning"); and in both cases the video timing is the same as it would be for the corresponding higher resolution video mode. This gives the following list of "safe" resolutions:
+</p>
+<ul><li> 720 * 480
+</li><li> 640 * 480
+</li><li> 360 * 480 (actually uses "720 * 480" timing)
+</li><li> 320 * 480 (actually uses "640 * 480" timing)
+</li><li> 720 * 240 (actually uses "720 * 480" timing)
+</li><li> 640 * 240 (actually uses "640 * 480" timing)
+</li><li> 360 * 240 (actually uses "720 * 480" timing)
+</li><li> 320 * 240 (actually uses "640 * 480" timing)
+</li></ul>
+<p>Colour depth doesn't/shouldn't effect the video timing signals. This means that the best possible safe video mode would be 720 * 480 * 24/32-bpp.
+</p>
+<h2> <span class="mw-headline" id="See_Also">See Also</span></h2>
+<h3> <span class="mw-headline" id="Articles">Articles</span></h3>
+<ul><li> <a href="/User:Omarrx024/VESA_Tutorial" title="User:Omarrx024/VESA Tutorial">VESA Tutorial</a>
+</li></ul>
+<h3> <span class="mw-headline" id="Threads">Threads</span></h3>
+<ul><li> <a href="http://forum.osdev.org/viewtopic.php?t=9700" class="extiw" title="topic:9700">VESA, higher modes</a> - Initial Thread, reply by Dreamsmith (aka DaidalosGuy)
+</li></ul>
+<h3> <span class="mw-headline" id="External_Links"> External Links </span></h3>
+<ul><li> VBE at <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/VESA_BIOS_Extensions">Wikipedia</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.delorie.com/djgpp/doc/ug/graphics/vesa.html">Guide: VESA graphics modes</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.petesqbsite.com/sections/tutorials/tuts/vbe3.pdf">The VESA VBE 3.0 specification</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 106/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1904-0!*!0!!en!*!* and timestamp 20161004212642 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=VESA_Video_Modes&amp;oldid=19462">http://wiki.osdev.org/index.php?title=VESA_Video_Modes&amp;oldid=19462</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/Category:Video" title="Category:Video">Video</a></li><li><a href="/Category:FAQ" title="Category:FAQ">FAQ</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=VESA_Video_Modes" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/VESA_Video_Modes"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:VESA_Video_Modes"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/VESA_Video_Modes" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=VESA_Video_Modes&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=VESA_Video_Modes&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/VESA_Video_Modes" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/VESA_Video_Modes" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=VESA_Video_Modes&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=VESA_Video_Modes&amp;oldid=19462" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 14 July 2016, at 13:41.</li>
+											<li id="footer-info-viewcount">This page has been accessed 61,510 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.054 secs. -->
+	</body>
+</html>

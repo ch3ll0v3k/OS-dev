@@ -1,0 +1,134 @@
+#!/bin/bash
+
+BIN="./bin"
+
+# ARGS=' -m 64 -hda ../rootfs.ext2 -hdb ../rootfs.ext2 -serial console=ttyS0 -nographic'; #  | tee log.txt'
+# ---------------------------------------------------------------------
+# [-full-screen]
+# [-vga] [std|cirrus|vmware|qxl|xenfb|none]
+# [-rtc] [base=utc|localtime|date][,clock=host|rt|vm][,driftfix=none|slew]
+# [-nographic] disable graphical output and redirect serial I/Os to console
+
+# [-serial stdio] -append "root=/dev/ram0 console=ttyAMA0  console=ttyS0"
+
+# [-append] cmdline use 'cmdline' as kernel command line
+# console=ttyAMA0,115200
+# -append "root=/dev/sda console=ttyAMA0  console=ttyS0" 
+# -serial stdio
+HDD_0="../256M_fs.ext2"
+HDD_1="../128M_fs.ext2"
+HDD_2="../64M_fs.ext2"
+
+gnome-terminal --geometry=80x25 -x \
+qemu-system-i386 -k fr-be \
+-show-cursor \
+-m 256 \
+-hda "$HDD_0" -hdb "$HDD_1" \
+-kernel "$BIN/kernel.bin"
+
+exit
+-display curses,frame=on \
+-append "console=ttyS0 console=tty0" \
+-vga std
+-full-screen \
+
+-redir tcp:2222::22 -nographic
+-boot menu=on
+-vga qxl
+-vga std 
+
+-display sdl
+-display gtk,gl=on
+-vga std -nographic -vnc :0
+
+# --------------------------------------------------
+_l /usr/share/qemu/keymaps/ 
+-k fr-be
+# --------------------------------------------------
+# qemu -vga std -nographic -vnc :0
+# $ gvncviewer :0
+# --------------------------------------------------
+
+# qemu -redir tcp:2222::22
+# $ ssh -p 2222 localhost
+
+# --------------------------------------------------
+
+-sdl -no-frame
+
+-display sdl[,frame=on|off][,alt_grab=on|off][,ctrl_grab=on|off]
+-curses         use a curses/ncurses interface instead of SDL
+-no-frame       open SDL window without a frame and window decorations
+-no-quit        disable SDL window close capability
+-sdl            enable SDL
+
+#-curses \
+#-curses -monitor telnet:127.0.0.1:1234,server,nowait
+
+qemu-system-ppc \
+-m 64 \
+-hda ../rootfs.ext2 -hdb ../rootfs.ext2 \
+-kernel $BIN/kernel.bin \
+-redir tcp:2222::22
+
+
+exit;
+-serial pipe:logfile \
+-d int
+
+-std-vga 
+-nographic \
+-append "console=ttyS1"
+
+#-serial file:bootlog
+# -append "console=tty1"
+#-chardev tty,id=pts4,path=/dev/pts/4 \
+#-device isa-serial,chardev=pts4 
+
+qemu  -smp 2 \
+-m 64 \
+-hda ../rootfs.ext2 -hdb ../rootfs.ext2 \
+-kernel $BIN/kernel.bin \
+-append "console=/dev/pts/4" \
+-serial file:/dev/pts/4
+
+
+
+# -enable-kvm
+
+
+#-chardev tty,id=pts2,path=/dev/pts/2 \
+#-device isa-serial,chardev=pts2 [-nographic]
+
+
+# qemu -nographic -serial mon:stdio -append 'console=ttyS0' binary.img
+# ---------------------------------------------------------------------
+# qemu -nographic binary.img # simply no display
+# qemu -curses binary.img # nice text output, but not directly flowing in the terminal
+# qemu -noframe -curses binary.img # same as above
+# qemu -nographic -curses binary.img
+
+# ---------------------------------------------------------------------
+# .../mk_fs
+
+# Formatting 'rootfs.ext2', fmt=raw size=33554432
+# [sudo] password for ch3ll0v3k:
+# mke2fs 1.42.5 (29-Jul-2012)
+# rootfs.ext2 is not a block special device.
+# Proceed anyway? (y,n) y
+# Discarding device blocks: done
+# Filesystem label=root-fs
+# OS type: Linux
+# Block size=1024 (log=0)
+# Fragment size=1024 (log=0)
+# Stride=0 blocks, Stripe width=0 blocks
+# 8192 inodes, 32768 blocks
+# 1638 blocks (5.00%) reserved for the super user
+# First data block=1
+# Maximum filesystem blocks=33554432
+# 4 block groups
+# 8192 blocks per group, 8192 fragments per group
+# 2048 inodes per group
+# Superblock backups stored on blocks:
+#     8193, 24577
+# ---------------------------------------------------------------------

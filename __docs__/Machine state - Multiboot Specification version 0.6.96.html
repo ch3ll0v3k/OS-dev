@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Machine state - Multiboot Specification version 0.6.96</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Multiboot Specification version 0.6.96">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Specification.html#Specification" title="Specification">
+<link rel="prev" href="OS-image-format.html#OS-image-format" title="OS image format">
+<link rel="next" href="Boot-information-format.html#Boot-information-format" title="Boot information format">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 1995,96 Bryan Ford <baford@cs.utah.edu>
+
+Copyright (C) 1995,96 Erich Stefan Boleyn <erich@uruk.org>
+
+Copyright (C) 1999,2000,2001,2002,2005,2006,2009 Free Software Foundation, Inc.
+
+     Permission is granted to make and distribute verbatim copies of
+     this manual provided the copyright notice and this permission
+     notice are preserved on all copies.
+
+     Permission is granted to copy and distribute modified versions of
+     this manual under the conditions for verbatim copying, provided
+     also that the entire resulting derived work is distributed under
+     the terms of a permission notice identical to this one.
+
+     Permission is granted to copy and distribute translations of this
+     manual into another language, under the above conditions for
+     modified versions.
+   -->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Machine-state"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Boot-information-format.html#Boot-information-format">Boot information format</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="OS-image-format.html#OS-image-format">OS image format</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Specification.html#Specification">Specification</a>
+<hr>
+</div>
+
+<h3 class="section">3.2 Machine state</h3>
+
+<p>When the boot loader invokes the 32-bit operating system, the machine
+must have the following state:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">EAX</span></samp>&rsquo;<dd>Must contain the magic value &lsquo;<samp><span class="samp">0x2BADB002</span></samp>&rsquo;; the presence of this
+value indicates to the operating system that it was loaded by a
+Multiboot-compliant boot loader (e.g. as opposed to another type of
+boot loader that the operating system can also be loaded from).
+
+     <br><dt>&lsquo;<samp><span class="samp">EBX</span></samp>&rsquo;<dd>Must contain the 32-bit physical address of the Multiboot
+information structure provided by the boot loader (see <a href="Boot-information-format.html#Boot-information-format">Boot information format</a>).
+
+     <br><dt>&lsquo;<samp><span class="samp">CS</span></samp>&rsquo;<dd>Must be a 32-bit read/execute code segment with an offset of &lsquo;<samp><span class="samp">0</span></samp>&rsquo;
+and a limit of &lsquo;<samp><span class="samp">0xFFFFFFFF</span></samp>&rsquo;. The exact value is undefined.
+
+     <br><dt>&lsquo;<samp><span class="samp">DS</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">ES</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">FS</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">GS</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">SS</span></samp>&rsquo;<dd>Must be a 32-bit read/write data segment with an offset of &lsquo;<samp><span class="samp">0</span></samp>&rsquo;
+and a limit of &lsquo;<samp><span class="samp">0xFFFFFFFF</span></samp>&rsquo;. The exact values are all undefined.
+
+     <br><dt>&lsquo;<samp><span class="samp">A20 gate</span></samp>&rsquo;<dd>Must be enabled.
+
+     <br><dt>&lsquo;<samp><span class="samp">CR0</span></samp>&rsquo;<dd>Bit 31 (PG) must be cleared. Bit 0 (PE) must be set. Other bits are
+all undefined.
+
+     <br><dt>&lsquo;<samp><span class="samp">EFLAGS</span></samp>&rsquo;<dd>Bit 17 (VM) must be cleared. Bit 9 (IF) must be cleared. Other bits
+are all undefined. 
+</dl>
+
+   <p>All other processor registers and flag bits are undefined. This
+includes, in particular:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">ESP</span></samp>&rsquo;<dd>The OS image must create its own stack as soon as it needs one.
+
+     <br><dt>&lsquo;<samp><span class="samp">GDTR</span></samp>&rsquo;<dd>Even though the segment registers are set up as described above, the
+&lsquo;<samp><span class="samp">GDTR</span></samp>&rsquo; may be invalid, so the OS image must not load any segment
+registers (even just reloading the same values!) until it sets up its
+own &lsquo;<samp><span class="samp">GDT</span></samp>&rsquo;.
+
+     <br><dt>&lsquo;<samp><span class="samp">IDTR</span></samp>&rsquo;<dd>The OS image must leave interrupts disabled until it sets up its own
+<code>IDT</code>. 
+</dl>
+
+   <p>However, other machine state should be left by the boot loader in
+<dfn>normal working order</dfn>, i.e. as initialized by the <span class="sc">bios</span> (or
+DOS, if that's what the boot loader runs from). In other words, the
+operating system should be able to make <span class="sc">bios</span> calls and such after
+being loaded, as long as it does not overwrite the <span class="sc">bios</span> data
+structures before doing so. Also, the boot loader must leave the
+<span class="sc">pic</span> programmed with the normal <span class="sc">bios</span>/DOS values, even if it
+changed them during the switch to 32-bit mode.
+
+   </body></html>
+
