@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>CMOS - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "CMOS", "wgTitle": "CMOS", "wgCurRevisionId": 19794, "wgArticleId": 1717, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["X86", "Time"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-CMOS action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">CMOS</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><p>"CMOS" is a tiny bit of very low power static memory that lives on the same chip as the Real-Time Clock. It
+is fairly convenient to actually think of the RTC as being "part" of CMOS.
+CMOS (and the Real-Time Clock) can only be accessed through IO Ports 0x70 and 0x71. The function of the CMOS
+memory is to store 50 (or 114) bytes of "Setup" information for the BIOS while the computer is turned off --
+because there is a separate battery that keeps the Clock and the CMOS information active.
+</p><p>CMOS values are accessed a byte at a time, and each byte is individually addressable. Each CMOS address is
+traditionally called a "register". The first 14 CMOS registers access and control the Real-Time Clock. In
+fact, the only truly useful registers remaining in CMOS are the Real-Time Clock registers, and register 0x10.
+All other registers in CMOS are almost entirely obsolete (or are not standardized), and are therefore useless.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Non-Maskable_Interrupts"><span class="tocnumber">1</span> <span class="toctext">Non-Maskable Interrupts</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#CMOS_Registers"><span class="tocnumber">2</span> <span class="toctext">CMOS Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Accessing_CMOS_Registers"><span class="tocnumber">2.1</span> <span class="toctext">Accessing CMOS Registers</span></a>
+<ul>
+<li class="toclevel-3 tocsection-4"><a href="#Checksums"><span class="tocnumber">2.1.1</span> <span class="toctext">Checksums</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-5"><a href="#Register_0x10"><span class="tocnumber">2.2</span> <span class="toctext">Register 0x10</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Memory_Size_Registers"><span class="tocnumber">2.3</span> <span class="toctext">Memory Size Registers</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Hard_Disk_Registers"><span class="tocnumber">2.4</span> <span class="toctext">Hard Disk Registers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#The_Real-Time_Clock"><span class="tocnumber">3</span> <span class="toctext">The Real-Time Clock</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Getting_Current_Date_and_Time_from_RTC"><span class="tocnumber">3.1</span> <span class="toctext">Getting Current Date and Time from RTC</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Century_Register"><span class="tocnumber">3.2</span> <span class="toctext">Century Register</span></a>
+<ul>
+<li class="toclevel-3 tocsection-11"><a href="#Century_Register_As_Time_and_Date_Sanity_Check"><span class="tocnumber">3.2.1</span> <span class="toctext">Century Register As Time and Date Sanity Check</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-12"><a href="#Weekday_Register"><span class="tocnumber">3.3</span> <span class="toctext">Weekday Register</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#RTC_Update_In_Progress"><span class="tocnumber">3.4</span> <span class="toctext">RTC Update In Progress</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Format_of_Bytes"><span class="tocnumber">3.5</span> <span class="toctext">Format of Bytes</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Interpreting_RTC_Values"><span class="tocnumber">3.6</span> <span class="toctext">Interpreting RTC Values</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-16"><a href="#Examples"><span class="tocnumber">4</span> <span class="toctext">Examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-17"><a href="#Reading_from_the_CMOS"><span class="tocnumber">4.1</span> <span class="toctext">Reading from the CMOS</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Writing_to_the_CMOS"><span class="tocnumber">4.2</span> <span class="toctext">Writing to the CMOS</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#Reading_All_RTC_Time_and_Date_Registers"><span class="tocnumber">4.3</span> <span class="toctext">Reading All RTC Time and Date Registers</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-20"><a href="#See_Also"><span class="tocnumber">5</span> <span class="toctext">See Also</span></a></li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Non-Maskable_Interrupts"> Non-Maskable Interrupts </span></h2>
+<p>For frugality in the olden days, many functions were merged together on chips where there was "room" -- even
+if they did not belong together. An example is putting the <a href="/A20" title="A20" class="mw-redirect">A20</a> address enable on the PS2 keyboard controller.
+In the same way, the "NMI disable" control was put together with the CMOS controller and the Real-Time Clock.
+</p><p>NMI is meant to communicate a "panic" status from the hardware to the CPU in a way that the CPU cannot
+ignore. It is typically used to signal memory errors. For more information about NMI, see the <a href="/NMI" title="NMI" class="mw-redirect">NMI</a> article.
+</p><p>Whenever you send a byte to IO port 0x70, the high order bit tells the hardware whether to disable NMIs from
+reaching the CPU. If the bit is on, NMI is disabled (until the next time you send a byte to Port 0x70).
+The low order 7 bits of any byte sent to Port 0x70 are used to address CMOS registers.
+</p>
+<h2> <span class="mw-headline" id="CMOS_Registers"> CMOS Registers </span></h2>
+<p>The most updated CMOS register map, showing all of the conflicting register definitions between the various
+BIOSes, is in <a href="/RBIL" title="RBIL" class="mw-redirect">RBIL</a> in the file called CMOS.LST.
+</p>
+<h3> <span class="mw-headline" id="Accessing_CMOS_Registers"> Accessing CMOS Registers </span></h3>
+<p>Accessing CMOS is extremely simple, but you always need to take into account how you want to handle NMI.
+You "select" a CMOS register (for reading or writing) by sending the register number to IO Port 0x70.
+Since the 0x80 bit of Port 0x70 controls NMI, you always end up setting that, too. So your CMOS controller
+always needs to know whether your OS wants NMI to be enabled or not. Selecting a CMOS register is done
+as follows:
+</p>
+<ul><li> outb (0x70, (NMI_disable_bit &lt;&lt; 7) | (selected CMOS register number));
+</li></ul>
+<p>Once a register is selected, you either read the value of that register on Port 0x71 (with inb or an equivalent
+function), or you write a new value to that register -- also on Port 0x71 (with outb, for example):
+</p>
+<ul><li> val_8bit = inb (0x71);
+</li></ul>
+<p>Note1: Reading or writing Port 0x71 seems to default the "selected register" back to 0xD. So you need to
+<b>reselect</b> the register every single time you want to access a CMOS register.
+</p><p>Note2: It is probably a good idea to have a reasonable delay after selecting a CMOS register on Port 0x70,
+before reading/writing the value on Port 0x71.
+</p>
+<h4> <span class="mw-headline" id="Checksums"> Checksums </span></h4>
+<p>The proper functioning of the BIOS during bootup depends on the values in CMOS. So the values are protected
+against random changes with checksums. It is very unwise ever to write a value into any of the CMOS registers
+(except for the RTC) -- because when you change a value you also have to go fix a BIOS-specific checksum in a
+different register -- or else the next boot will crash with an "invalid checksum" error. And since the checksum
+is located at a proprietary BIOS-specific register number, good luck finding it.
+</p>
+<h3> <span class="mw-headline" id="Register_0x10"> Register 0x10 </span></h3>
+<p>This register contains the only CMOS value that an OS might ever find to be useful. It describes the "type"
+of each of the two floppy drives that may be attached to the system. The high nibble describes the "master"
+floppy drive on the primary bus, and the low nibble has an identical description for the "slave" floppy drive.
+</p><p>Value of each 4 bit nibble, and associated floppy drive type:
+</p>
+<pre>
+Value   Drive Type
+ 00h	no drive
+ 01h	360 KB 5.25 Drive
+ 02h	1.2 MB 5.25 Drive
+ 03h	720 KB 3.5 Drive
+ 04h	1.44 MB 3.5 Drive
+ 05h	2.88 MB 3.5 drive
+</pre>
+<p>Bits 0 to 3 = slave floppy type, bits 4 to 7 = master floppy type
+</p>
+<h3> <span class="mw-headline" id="Memory_Size_Registers"> Memory Size Registers </span></h3>
+<p>There are several CMOS registers that are standardized, and that seem to report useful information about the
+total memory on the system. However, each of them is lacking vital information that your OS will need. It is
+always better to use a BIOS function call to get information about memory than to use the information in CMOS.
+See <a href="/Detecting_Memory_(x86)" title="Detecting Memory (x86)">Detecting Memory (x86)</a>.
+</p><p>(Register 0x16 (high byte) | Register 0x15 (low byte)) &lt;&lt; 10 = 640K = size of low memory (without taking the
+<a href="/Memory_Map_(x86)#EBDA" title="Memory Map (x86)">EBDA</a> into account.
+</p><p>(Register 0x18 (high byte) | Register 0x17 (low byte)) &lt;&lt; 10 = total memory between 1M and 16M, or maybe 65M
+... usually. But this number is extra untrustworthy when the system has more than 64M, it ignores "memory
+holes", it ignores memory mapped hardware, and it ignores memory reserved for important ACPI system tables.
+</p><p>(Register 0x31 (high byte) | Register 0x30 (low byte)) &lt;&lt; 16 = total memory between 16M and 4G ... usually.
+But this number is untrustworthy when the system has more than 4G, it ignores "memory holes", it ignores
+memory mapped hardware, and it ignores memory reserved for important ACPI system tables.
+</p>
+<h3> <span class="mw-headline" id="Hard_Disk_Registers"> Hard Disk Registers </span></h3>
+<p>There are many CMOS registers in various locations, used by various ancient BIOSes, to store a "hard disk type" or
+other hard disk information. Any such information is strictly for use on obsolete CHS-based disk drives.
+Better information can always be obtained via BIOS function INT13h AH=8, or by sending an ATA 'Identify'
+command to the disk in <a href="/ATA_PIO_Mode" title="ATA PIO Mode">ATA PIO Mode</a>.
+</p>
+<h2> <span class="mw-headline" id="The_Real-Time_Clock"> The Real-Time Clock </span></h2>
+<p>The RTC keeps track of the date and time, even when the computer's power is off. The only other way that a
+computer used to be able to do this was to ask a human for the date/time on every bootup. Now, if the computer
+has an internet connection, an OS has another (arguably better) way to get the same information.
+</p><p>The RTC also can generate clock ticks on IRQ8 (similarly to what the <a href="/PIT" title="PIT" class="mw-redirect">PIT</a> does on IRQ0). The highest feasible
+clock frequency is 8KHz. Using the RTC clock this way may actually generate more stable clock pulses than the PIT
+can generate. It also frees up the PIT for timing events that really need near-microsecond accuracy.
+Additionally, the RTC can generate an IRQ8 at a particular time of day. See the <a href="/RTC" title="RTC">RTC</a> article for more
+detailed information about using RTC interrupts.
+</p>
+<h3> <span class="mw-headline" id="Getting_Current_Date_and_Time_from_RTC"> Getting Current Date and Time from RTC </span></h3>
+<p>To get each of the following date/time values from the RTC, you should first ensure that you won't be effected by an update (<a href="#RTC_Update_In_Progress">see below</a>). Then select the associated "CMOS register" in the
+<a href="#Accessing_CMOS_Registers">usual way</a>, and read the value from Port 0x71.
+</p>
+<pre>
+Register  Contents
+ 0x00      Seconds
+ 0x02      Minutes
+ 0x04      Hours
+ 0x06      Weekday
+ 0x07      Day of Month
+ 0x08      Month
+ 0x09      Year
+ 0x32      Century (maybe)
+ 0x0A      Status Register A
+ 0x0B      Status Register B
+</pre>
+<h3> <span class="mw-headline" id="Century_Register"> Century Register </span></h3>
+<p>Originally the RTC didn't have a century register at all. In the 1990s (as the year 2000 got closer) hardware manufacturers started realising that this might become a problem; so they starting adding century registers to their RTC. Unfortunately, because there was no official standard to follow, different manufacturers used different registers.
+</p><p>This meant that software didn't know if there was a century register, and (if there is) which register it might be. To fix that problem the ACPI specification included a "RTC century register" field at offset 108 in its "Fixed ACPI Description Table". If this field contains zero then the RTC doesn't have a century register, and if the field is non-zero then it contains the number of the RTC register to use for century.
+</p><p>If there is no century register then software can guess. For example, a piece of software written in 1990 can use the (2 digit) year register to determine the most likely century - if the RTC year register is higher than or equal to 90 then the year is probably be "19YY" and if the RTC year register is less than 90 than the year must be "20YY". In this way, software can correctly determine the century for up to 99 years after the software is written.
+</p>
+<h4> <span class="mw-headline" id="Century_Register_As_Time_and_Date_Sanity_Check"> Century Register As Time and Date Sanity Check </span></h4>
+<p>If the CMOS/RTC has a century register, your software was released 2014, and the CMOS/RTC says the century and year are 2008; then obviously the CMOS/RTC must be wrong.
+</p><p>Similarly, people tend to update their OS occasionally. If the CMOS/RTC has a century register, your software was released 2014, and the CMOS/RTC says the century and year are 2154; then it's unlikely that the OS hasn't been updated for 140 years, and far more likely that the CMOS/RTC is wrong.
+</p><p>Essentially; the method (described above) for guessing the century when there is no century register is much more reliable than the CMOS/RTC century register (if it exists). This means that the century register (if/when present) can be used in reverse, as a way to check if the CMOS/RTC time and date are sane (or if the CMOS/RTC has a flat battery or something).
+</p><p>Basically, you'd guess the century (based on the software's release date and RTC's year), then check if the CMOS/RTC century is the same as your guess and if it's not then assume all CMOS/RTC time and date fields are invalid.
+</p>
+<h3> <span class="mw-headline" id="Weekday_Register"> Weekday Register </span></h3>
+<p>The RTC chip is able to keep track of the current day of the week. All it does is increment its "Weekday" register at midnight and reset it to zero if it reaches 7. Unfortunately there is no guarantee that this register was ever set correctly by anything (including when the user changes the time and date using the BIOS configuration screen). It is entirely unreliable and should not be used.
+</p><p>The correct way to determine the current day of the week is to calculate it from the date (see <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Weekday_determination">the article on Wikipedia</a> for details of this calculation).
+</p>
+<h3> <span class="mw-headline" id="RTC_Update_In_Progress"> RTC Update In Progress </span></h3>
+<p>When the chip updates the time and date (once per second) it increases "seconds" and checks if it rolled over. If "seconds" did roll over it increases "minutes" and checks if that rolled over. This can continue through all the time and date registers (e.g. all the way up to "if year rolled over, increase century"). However, the RTC circuitry is typically relatively slow. This means that it's entirely possible to read the time and date while an update is in progress and get dodgy/inconsistent values (for example, at 9:00 o'clock you might read 8:59, or 8:60, or 8:00, or 9:00).
+</p><p>To help guard against this problem the RTC has an "Update in progress" flag (bit 7 of Status Register A). To read the time and date properly you have to wait until the "Update in progress" flag goes from "set" to "clear". This is not the same as checking that the "Update in progress" flag is clear.
+</p><p>For example, if code does "<i>while(update_in_progress_flag&#160;!= clear)</i>" and then starts reading all the time and date registers, then the update could begin immediately after the "Update in progress" flag was checked and the code could still read dodgy/inconsistent values. To avoid this, code should wait until the flag becomes set and then wait until the flag becomes clear. That way there's almost 1 second of time to read all of the registers correctly.
+</p><p>Unfortunately, doing it correctly (waiting until the "Update in progress" flag becomes set and then waiting until it becomes clear) is very slow - it may take an entire second of waiting/polling before you can read the registers. There are 2 alternatives.
+</p><p>The first alternative is to rely on the "update interrupt". When the RTC finishes an update it generates an "update interrupt" (if it's enabled), and the IRQ handler can safely read the time and date registers without worrying about the update at all (and without checking the "Update in progress" flag); as long as the IRQ handler doesn't take almost a full second to do it. In this case you're not wasting up to 1 second of CPU time waiting/polling, but it may still take a full second before the time and date has been read. Despite this it can be a useful technique during OS boot - e.g. setup the "update interrupt" and its IRQ handler as early as you can and then do other things (e.g. loading files from disk), in the hope that the IRQ occurs before you need the time and date.
+</p><p>The second alternative is to be prepared for dodgy/inconsistent values and cope with them if they occur. To do this, make sure the "Update in progress" flag is clear (e.g. "<i>while(update_in_progress_flag&#160;!= clear)</i>") then read all the time and date registers; then make sure the "Update in progress" flag is clear again (e.g. "<i>while(update_in_progress_flag&#160;!= clear)</i>") and read all the time and date registers again. If the values that were read the first time are the same as the value that were read the second time then the values must be correct. If any of the values are different you need to do it again, and keep doing it again until the newest values are the same as the previous values.
+</p>
+<h3> <span class="mw-headline" id="Format_of_Bytes"> Format of Bytes </span></h3>
+<p>There are 4 formats possible for the date/time RTC bytes:
+</p>
+<ul><li> Binary or BCD Mode
+</li><li> Hours in 12 hour format or 24 hour format
+</li></ul>
+<p>The format is controlled by Status Register B. On some CMOS/RTC chips, the format bits in Status Reg B
+<b>cannot be changed</b>. So your code needs to be able to handle all four possibilities, and it should
+not try to modify Status Register B's settings. So you always need to read Status Register B first, to
+find out what format your date/time bytes will arrive in.
+</p>
+<ul><li> Status Register B, Bit 1 (value = 2): Enables 24 hour format if set
+</li><li> Status Register B, Bit 2 (value = 4): Enables Binary mode if set
+</li></ul>
+<p>Binary mode is exactly what you would expect the value to be. If the time is 1:59:48 AM, then the value
+of hours would be 1, minutes would be 59 = 0x3b, and seconds would be 48 = 0x30.
+</p><p>In BCD mode, each of the two hex nibbles of the byte is modified to "display" a <b>decimal</b> number.
+So 1:59:48 has hours = 1, minutes = 0x59 = 89, seconds = 0x48 = 72. To convert BCD back into a "good" binary value, use: binary = ((bcd / 16) * 10) + (bcd &amp; 0xf) <i>[Optimised: binary = ( (bcd &amp; 0xF0) &gt;&gt; 1) + ( (bcd &amp; 0xF0) &gt;&gt; 3) + (bcd &amp; 0xf)]</i>.
+</p><p>24 hour time is exactly what you would expect. Hour 0 is midnight to 1am, hour 23 is 11pm.
+</p><p>12 hour time is annoying to convert back to 24 hour time. If the hour is pm, then the 0x80 bit is set on the hour byte. So you need to
+mask that off. (This is true for <b>both</b> binary and BCD modes.) Then, midnight is 12, 1am is 1, etc.
+Note that carefully: midnight is not 0 -- it is 12 -- this needs to be handled as a special
+case in the calculation from 12 hour format to 24 hour format (by setting 12 back to 0)!
+</p><p>For the weekday format: Sunday = 1, Saturday = 7.
+</p>
+<h3> <span class="mw-headline" id="Interpreting_RTC_Values"> Interpreting RTC Values </span></h3>
+<p>On the surface, these values from the RTC seem extremely obvious. The main difficulty comes in deciding which timezone the values represent. The two possibilities are usually UTC, or the system's timezone, including Daylight Savings. See the <a href="/Time_And_Date" title="Time And Date">Time And Date</a> article for a much more complete discussion of how to handle this issue.
+</p>
+<h2> <span class="mw-headline" id="Examples"> Examples </span></h2>
+<h3> <span class="mw-headline" id="Reading_from_the_CMOS"> Reading from the CMOS </span></h3>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">ReadFromCMOS <span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> array <span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span> tvalue<span class="sy0">,</span> index<span class="sy0">;</span>
+&#160;
+   <span class="kw1">for</span><span class="br0">&#40;</span>index <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> index <span class="sy0">&lt;</span> <span class="nu0">128</span><span class="sy0">;</span> index<span class="sy0">++</span><span class="br0">&#41;</span>
+   <span class="br0">&#123;</span>
+      _asm
+      <span class="br0">&#123;</span>
+         cli             <span class="coMULTI">/* Disable interrupts*/</span>
+         mov al<span class="sy0">,</span> index   <span class="coMULTI">/* Move index address*/</span>
+         <span class="coMULTI">/* since the 0x80 bit of al is not set, NMI is active */</span>
+         out <span class="nu12">0x70</span><span class="sy0">,</span>al     <span class="coMULTI">/* Copy address to CMOS register*/</span>
+         <span class="coMULTI">/* some kind of real delay here is probably best */</span>
+         in al<span class="sy0">,</span><span class="nu12">0x71</span>      <span class="coMULTI">/* Fetch 1 byte to al*/</span>
+         sti             <span class="coMULTI">/* Enable interrupts*/</span>
+         mov tvalue<span class="sy0">,</span>al
+       <span class="br0">&#125;</span>
+&#160;
+       array<span class="br0">&#91;</span>index<span class="br0">&#93;</span> <span class="sy0">=</span> tvalue<span class="sy0">;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="Writing_to_the_CMOS"> Writing to the CMOS </span></h3>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">WriteTOCMOS<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> array<span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span> index<span class="sy0">;</span>
+&#160;
+   <span class="kw1">for</span><span class="br0">&#40;</span>index <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> index <span class="sy0">&lt;</span> <span class="nu0">128</span><span class="sy0">;</span> index<span class="sy0">++</span><span class="br0">&#41;</span>
+   <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> tvalue <span class="sy0">=</span> array<span class="br0">&#91;</span>index<span class="br0">&#93;</span><span class="sy0">;</span>
+      _asm
+      <span class="br0">&#123;</span>
+         cli             <span class="coMULTI">/* Clear interrupts*/</span>
+         mov al<span class="sy0">,</span>index    <span class="coMULTI">/* move index address*/</span>
+         out <span class="nu12">0x70</span><span class="sy0">,</span>al     <span class="coMULTI">/* copy address to CMOS register*/</span>
+         <span class="coMULTI">/* some kind of real delay here is probably best */</span>
+         mov al<span class="sy0">,</span>tvalue   <span class="coMULTI">/* move value to al*/</span>
+         out <span class="nu12">0x71</span><span class="sy0">,</span>al     <span class="coMULTI">/* write 1 byte to CMOS*/</span>
+         sti             <span class="coMULTI">/* Enable interrupts*/</span>
+      <span class="br0">&#125;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h3> <span class="mw-headline" id="Reading_All_RTC_Time_and_Date_Registers"> Reading All RTC Time and Date Registers </span></h3>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define CURRENT_YEAR        2014                            // Change this each year!</span>
+&#160;
+<span class="kw4">int</span> century_register <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>                                <span class="co1">// Set by ACPI table parsing code if possible</span>
+&#160;
+<span class="kw4">unsigned</span> <span class="kw4">char</span> second<span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">char</span> minute<span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">char</span> hour<span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">char</span> day<span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">char</span> month<span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">int</span> year<span class="sy0">;</span>
+&#160;
+<span class="kw4">void</span> out_byte<span class="br0">&#40;</span><span class="kw4">int</span> port<span class="sy0">,</span> <span class="kw4">int</span> value<span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="kw4">int</span> in_byte<span class="br0">&#40;</span><span class="kw4">int</span> port<span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+<span class="kw2">enum</span> <span class="br0">&#123;</span>
+      cmos_address <span class="sy0">=</span> <span class="nu12">0x70</span><span class="sy0">,</span>
+      cmos_data    <span class="sy0">=</span> <span class="nu12">0x71</span>
+<span class="br0">&#125;</span><span class="sy0">;</span>
+&#160;
+<span class="kw4">int</span> get_update_in_progress_flag<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      out_byte<span class="br0">&#40;</span>cmos_address<span class="sy0">,</span> <span class="nu12">0x0A</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">return</span> <span class="br0">&#40;</span>in_byte<span class="br0">&#40;</span>cmos_data<span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0x80</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span>
+&#160;
+<span class="kw4">unsigned</span> <span class="kw4">char</span> get_RTC_register<span class="br0">&#40;</span><span class="kw4">int</span> reg<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      out_byte<span class="br0">&#40;</span>cmos_address<span class="sy0">,</span> reg<span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">return</span> in_byte<span class="br0">&#40;</span>cmos_data<span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span>
+&#160;
+<span class="kw4">void</span> read_rtc<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> century<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_second<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_minute<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_hour<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_day<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_month<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_year<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> last_century<span class="sy0">;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> registerB<span class="sy0">;</span>
+&#160;
+      <span class="co1">// Note: This uses the &quot;read registers until you get the same values twice in a row&quot; technique</span>
+      <span class="co1">//       to avoid getting dodgy/inconsistent values due to RTC updates</span>
+&#160;
+      <span class="kw1">while</span> <span class="br0">&#40;</span>get_update_in_progress_flag<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>                <span class="co1">// Make sure an update isn't in progress</span>
+      second <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x00</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      minute <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x02</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      hour <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x04</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      day <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x07</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      month <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x08</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      year <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x09</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">if</span><span class="br0">&#40;</span>century_register <span class="sy0">!=</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            century <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span>century_register<span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span>
+&#160;
+      <span class="kw1">do</span> <span class="br0">&#123;</span>
+            last_second <span class="sy0">=</span> second<span class="sy0">;</span>
+            last_minute <span class="sy0">=</span> minute<span class="sy0">;</span>
+            last_hour <span class="sy0">=</span> hour<span class="sy0">;</span>
+            last_day <span class="sy0">=</span> day<span class="sy0">;</span>
+            last_month <span class="sy0">=</span> month<span class="sy0">;</span>
+            last_year <span class="sy0">=</span> year<span class="sy0">;</span>
+            last_century <span class="sy0">=</span> century<span class="sy0">;</span>
+&#160;
+            <span class="kw1">while</span> <span class="br0">&#40;</span>get_update_in_progress_flag<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>           <span class="co1">// Make sure an update isn't in progress</span>
+            second <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x00</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            minute <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x02</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            hour <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x04</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            day <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x07</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            month <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x08</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            year <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x09</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="kw1">if</span><span class="br0">&#40;</span>century_register <span class="sy0">!=</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+                  century <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span>century_register<span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="br0">&#125;</span>
+      <span class="br0">&#125;</span> <span class="kw1">while</span><span class="br0">&#40;</span> <span class="br0">&#40;</span>last_second <span class="sy0">!=</span> second<span class="br0">&#41;</span> <span class="sy0">||</span> <span class="br0">&#40;</span>last_minute <span class="sy0">!=</span> minute<span class="br0">&#41;</span> <span class="sy0">||</span> <span class="br0">&#40;</span>last_hour <span class="sy0">!=</span> hour<span class="br0">&#41;</span> <span class="sy0">||</span>
+               <span class="br0">&#40;</span>last_day <span class="sy0">!=</span> day<span class="br0">&#41;</span> <span class="sy0">||</span> <span class="br0">&#40;</span>last_month <span class="sy0">!=</span> month<span class="br0">&#41;</span> <span class="sy0">||</span> <span class="br0">&#40;</span>last_year <span class="sy0">!=</span> year<span class="br0">&#41;</span> <span class="sy0">||</span>
+               <span class="br0">&#40;</span>last_century <span class="sy0">!=</span> century<span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+      registerB <span class="sy0">=</span> get_RTC_register<span class="br0">&#40;</span><span class="nu12">0x0B</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// Convert BCD to binary values if necessary</span>
+&#160;
+      <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span><span class="br0">&#40;</span>registerB <span class="sy0">&amp;</span> <span class="nu12">0x04</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            second <span class="sy0">=</span> <span class="br0">&#40;</span>second <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>second <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            minute <span class="sy0">=</span> <span class="br0">&#40;</span>minute <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>minute <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            hour <span class="sy0">=</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span>hour <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span><span class="br0">&#40;</span>hour <span class="sy0">&amp;</span> <span class="nu12">0x70</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>hour <span class="sy0">&amp;</span> <span class="nu12">0x80</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            day <span class="sy0">=</span> <span class="br0">&#40;</span>day <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>day <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            month <span class="sy0">=</span> <span class="br0">&#40;</span>month <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>month <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            year <span class="sy0">=</span> <span class="br0">&#40;</span>year <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>year <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="kw1">if</span><span class="br0">&#40;</span>century_register <span class="sy0">!=</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+                  century <span class="sy0">=</span> <span class="br0">&#40;</span>century <span class="sy0">&amp;</span> <span class="nu12">0x0F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>century <span class="sy0">/</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">10</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="br0">&#125;</span>
+      <span class="br0">&#125;</span>
+&#160;
+      <span class="co1">// Convert 12 hour clock to 24 hour clock if necessary</span>
+&#160;
+      <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span><span class="br0">&#40;</span>registerB <span class="sy0">&amp;</span> <span class="nu12">0x02</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>hour <span class="sy0">&amp;</span> <span class="nu12">0x80</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            hour <span class="sy0">=</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>hour <span class="sy0">&amp;</span> <span class="nu12">0x7F</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu0">12</span><span class="br0">&#41;</span> <span class="sy0">%</span> <span class="nu0">24</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span>
+&#160;
+      <span class="co1">// Calculate the full (4-digit) year</span>
+&#160;
+      <span class="kw1">if</span><span class="br0">&#40;</span>century_register <span class="sy0">!=</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            year <span class="sy0">+=</span> century <span class="sy0">*</span> <span class="nu0">100</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+            year <span class="sy0">+=</span> <span class="br0">&#40;</span>CURRENT_YEAR <span class="sy0">/</span> <span class="nu0">100</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">100</span><span class="sy0">;</span>
+            <span class="kw1">if</span><span class="br0">&#40;</span>year <span class="sy0">&lt;</span> CURRENT_YEAR<span class="br0">&#41;</span> year <span class="sy0">+=</span> <span class="nu0">100</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<ul><li> <a rel="nofollow" class="external text" href="https://web.archive.org/web/20111209041013/http://www-ivs.cs.uni-magdeburg.de/~zbrog/asm/cmos.html">Old CMOS Map</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.bioscentral.com/misc/cmosmap.htm">Better CMOS Map</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 167/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1717-0!*!0!!en!*!* and timestamp 20161001034102 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=CMOS&amp;oldid=19794">http://wiki.osdev.org/index.php?title=CMOS&amp;oldid=19794</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/Category:X86" title="Category:X86">X86</a></li><li><a href="/Category:Time" title="Category:Time">Time</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=CMOS" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/CMOS"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:CMOS"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/CMOS" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=CMOS&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=CMOS&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/CMOS" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/CMOS" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=CMOS&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=CMOS&amp;oldid=19794" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+<div class="portal" id='p-lang'>
+	<h5>In other languages</h5>
+	<div class="body">
+		<ul>
+			<li class="interwiki-de"><a href="http://www.lowlevel.eu/wiki/CMOS" title="CMOS">Deutsch</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 7 September 2016, at 02:11.</li>
+											<li id="footer-info-viewcount">This page has been accessed 89,808 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.034 secs. -->
+	</body>
+</html>

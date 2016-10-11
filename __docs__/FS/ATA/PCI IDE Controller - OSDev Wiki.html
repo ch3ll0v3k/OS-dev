@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>PCI IDE Controller - OSDev Wiki</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.0" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="OSDev Wiki (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.osdev.org/api.php?action=rsd" />
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&amp;only=styles&amp;skin=vector&amp;*" />
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "PCI_IDE_Controller", "wgTitle": "PCI IDE Controller", "wgCurRevisionId": 19390, "wgArticleId": 2716, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["Disputed Pages", "ATA"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script>
+<style type="text/css">/*<![CDATA[*/
+.source-c {line-height: normal;}
+.source-c li, .source-c pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for c
+ * CSS class: source-c, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.c.source-c .de1, .c.source-c .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.c.source-c  {font-family:monospace;}
+.c.source-c .imp {font-weight: bold; color: red;}
+.c.source-c li, .c.source-c .li1 {font-weight: normal; vertical-align:top;}
+.c.source-c .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.c.source-c .li2 {font-weight: bold; vertical-align:top;}
+.c.source-c .kw1 {color: #b1b100;}
+.c.source-c .kw2 {color: #000000; font-weight: bold;}
+.c.source-c .kw3 {color: #000066;}
+.c.source-c .kw4 {color: #993333;}
+.c.source-c .co1 {color: #666666; font-style: italic;}
+.c.source-c .co2 {color: #339933;}
+.c.source-c .coMULTI {color: #808080; font-style: italic;}
+.c.source-c .es0 {color: #000099; font-weight: bold;}
+.c.source-c .es1 {color: #000099; font-weight: bold;}
+.c.source-c .es2 {color: #660099; font-weight: bold;}
+.c.source-c .es3 {color: #660099; font-weight: bold;}
+.c.source-c .es4 {color: #660099; font-weight: bold;}
+.c.source-c .es5 {color: #006699; font-weight: bold;}
+.c.source-c .br0 {color: #009900;}
+.c.source-c .sy0 {color: #339933;}
+.c.source-c .st0 {color: #ff0000;}
+.c.source-c .nu0 {color: #0000dd;}
+.c.source-c .nu6 {color: #208080;}
+.c.source-c .nu8 {color: #208080;}
+.c.source-c .nu12 {color: #208080;}
+.c.source-c .nu16 {color:#800080;}
+.c.source-c .nu17 {color:#800080;}
+.c.source-c .nu18 {color:#800080;}
+.c.source-c .nu19 {color:#800080;}
+.c.source-c .me1 {color: #202020;}
+.c.source-c .me2 {color: #202020;}
+.c.source-c .ln-xtra, .c.source-c li.ln-xtra, .c.source-c div.ln-xtra {background-color: #ffc;}
+.c.source-c span.xtra { display:block; }
+
+/*]]>*/
+</style>
+<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-PCI_IDE_Controller action-view skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">PCI IDE Controller</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From OSDev Wiki</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div lang="en" dir="ltr" class="mw-content-ltr"><center>
+<table style="border: 1px solid #cfcfbf; padding: .0em .25em .0em; background-color: #f0f0ff; text-align: center;">
+<tr>
+<td>
+<p><font color="black">The factual accuracy of this article or section is <a href="/Category:Disputed_Pages" title="Category:Disputed Pages">disputed</a>.</font><br /><small><font color="red">Please see the relevant discussion on the <a href="/Talk:IDE" title="Talk:IDE" class="mw-redirect">talk page</a>.</font></small>
+</p>
+</td>
+<td>
+</td></tr></table>
+</center>
+<p>IDE is a keyword which refers to the electrical specification of the cables which connect ATA drives (like hard drives) to another device. The drives use the ATA (Advanced Technology Attachment) interface. An IDE cable also can terminate at an IDE card connected to PCI.
+</p><p><a href="/ATAPI" title="ATAPI">ATAPI</a> is an extension to ATA (recently renamed to PATA) which adds support for the SCSI command set.
+</p>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Parallel.2FSerial_ATA.2FATAPI"><span class="tocnumber">1</span> <span class="toctext">Parallel/Serial ATA/ATAPI</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#IDE_Interface"><span class="tocnumber">2</span> <span class="toctext">IDE Interface</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Serial_IDE"><span class="tocnumber">3</span> <span class="toctext">Serial IDE</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Detecting_a_PCI_IDE_Controller"><span class="tocnumber">4</span> <span class="toctext">Detecting a PCI IDE Controller</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Detecting_IDE_Drives"><span class="tocnumber">5</span> <span class="toctext">Detecting IDE Drives</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="#Status"><span class="tocnumber">5.1</span> <span class="toctext">Status</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Errors"><span class="tocnumber">5.2</span> <span class="toctext">Errors</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Commands"><span class="tocnumber">5.3</span> <span class="toctext">Commands</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-9"><a href="#Read.2FWrite_From_ATA_Drive"><span class="tocnumber">6</span> <span class="toctext">Read/Write From ATA Drive</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Reading_from_an_ATAPI_Drive"><span class="tocnumber">7</span> <span class="toctext">Reading from an ATAPI Drive</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Reading_from_an_ATA.2FATAPI_Drive"><span class="tocnumber">8</span> <span class="toctext">Reading from an ATA/ATAPI Drive</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Writing_to_an_ATA_drive"><span class="tocnumber">9</span> <span class="toctext">Writing to an ATA drive</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Ejecting_an_ATAPI_Drive"><span class="tocnumber">10</span> <span class="toctext">Ejecting an ATAPI Drive</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#See_Also"><span class="tocnumber">11</span> <span class="toctext">See Also</span></a>
+<ul>
+<li class="toclevel-2 tocsection-15"><a href="#Wiki_Pages"><span class="tocnumber">11.1</span> <span class="toctext">Wiki Pages</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Threads"><span class="tocnumber">11.2</span> <span class="toctext">Threads</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#External_Links"><span class="tocnumber">11.3</span> <span class="toctext">External Links</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Parallel.2FSerial_ATA.2FATAPI"> Parallel/Serial ATA/ATAPI </span></h2>
+<p>IDE can connect up to 4 drives. Each drive can be one of the following:
+</p>
+<ul><li> ATA (Serial): Used for most modern hard drives.
+</li><li> ATA (Parallel): Commonly used for hard drives.
+</li><li> ATAPI (Serial): Used for most modern optical drives.
+</li><li> ATAPI (Parallel): Commonly used for optical drives.
+</li></ul>
+<p>Accessing an ATA/PATA drive works the same way as accessing a SATA drive. This also implicitly states that accessing a PATAPI ODD is the same as accessing a SATAPI ODD. An IDE driver does not need to know whether a drive is parallel or serial, it only has to know whether it's using ATA or ATAPI.
+</p>
+<h2> <span class="mw-headline" id="IDE_Interface"> IDE Interface </span></h2>
+<p>If you open your case up and take a look at your motherboard, you will most likely see one or two (or possibly more) of the slots that can be seen in the picture to the right.
+</p><p>The white and green ports are IDE ports, also known as <i>channels</i>. In this example there are both primary and secondary IDE channels which only PATA can be connected to; this means that it only supports PATA/PATAPI drives.
+</p><p>Each port can have a PATA cable connected to it (see the image on the right). One master drive, or two drives (master and slave), can be connected to one PATA cable. So that leaves us with the following possibilities:
+</p>
+<ul><li> Primary Master Drive.
+</li><li> Primary Slave Drive.
+</li><li> Secondary Master Drive.
+</li><li> Secondary Slave Drive.
+</li></ul>
+<p>Each drive can be either PATA or PATAPI.
+</p>
+<h2> <span class="mw-headline" id="Serial_IDE"> Serial IDE </span></h2>
+<p>Almost every modern motherboard has a Serial IDE channel which allows <a href="/SATA" title="SATA">SATA</a> and SATAPI Drives to be connected to it. There are 4 Serial IDE Ports (you can see these in the photo to the right). Each port is connected to a drive with a SATA Cable. Basically (looking at the pictures), you can only have one drive connected to the Serial IDE port. Each pair of ports (every 2 ports) form one channel.
+</p><p>Serial IDE also has a few possibilities:
+</p>
+<ul><li> Primary Master, also called SATA1.
+</li><li> Primary Slave, also called SATA2.
+</li><li> Secondary Master, also called SATA3.
+</li><li> Secondary Slave, also called SATA4.
+</li></ul>
+<h2> <span class="mw-headline" id="Detecting_a_PCI_IDE_Controller"> Detecting a PCI IDE Controller </span></h2>
+<p>Each IDE controller appears as a device on the <a href="/PCI" title="PCI">PCI</a> bus. If the class code is 0x01 (Mass Storage Controller) and the subclass code is 0x1, (IDE) this device is an IDE Device.
+The IDE device only uses five BARs out of the six
+</p>
+<ul><li> BAR0: Base address of primary channel (I/O space), if it is 0x0 or 0x1, the port is 0x1F0.
+</li><li> BAR1: Base address of primary channel control port (I/O space), if it is 0x0 or 0x1, the port is 0x3F6.
+</li><li> BAR2: Base address of secondary channel (I/O space), if it is 0x0 or 0x1, the port is 0x170.
+</li><li> BAR3: Base address of secondary channel control port, if it is 0x0 or 0x1, the port is 0x376.
+</li><li> BAR4: Bus Master IDE; refers to the base of I/O range consisting of 16 ports. Each 8 ports controls DMA on the primary and secondary channel respectively.
+</li></ul>
+<p>A parallel IDE controller will use IRQs 14 and 15; a serial IDE uses only one IRQ. To read this IRQ, we look through the device's PCI configuration space:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">outl<span class="br0">&#40;</span><span class="br0">&#40;</span><span class="nu0">1</span> <span class="sy0">&lt;&lt;</span> <span class="nu0">31</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>bus <span class="sy0">&lt;&lt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>device <span class="sy0">&lt;&lt;</span> <span class="nu0">11</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>func <span class="sy0">&lt;&lt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="nu0">8</span><span class="sy0">,</span> <span class="nu12">0xCF8</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Send the parameters.</span>
+<span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>inl<span class="br0">&#40;</span><span class="nu12">0xCFC</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">!=</span> <span class="nu12">0xFFFF</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> <span class="co1">// If device exists (class isn't 0xFFFF)</span>
+   <span class="co1">// Check if this device needs an IRQ assignment:</span>
+   outl<span class="br0">&#40;</span><span class="br0">&#40;</span><span class="nu0">1</span> <span class="sy0">&lt;&lt;</span> <span class="nu0">31</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>bus <span class="sy0">&lt;&lt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>device <span class="sy0">&lt;&lt;</span> <span class="nu0">11</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>func <span class="sy0">&lt;&lt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="nu12">0x3C</span><span class="sy0">,</span> <span class="nu12">0xCF8</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Read the interrupt line field</span>
+   outb<span class="br0">&#40;</span><span class="nu12">0xFE</span><span class="sy0">,</span> <span class="nu12">0xCFC</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Change the IRQ field to 0xFE</span>
+   outl<span class="br0">&#40;</span><span class="br0">&#40;</span><span class="nu0">1</span> <span class="sy0">&lt;&lt;</span> <span class="nu0">31</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>bus <span class="sy0">&lt;&lt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>device <span class="sy0">&lt;&lt;</span> <span class="nu0">11</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="br0">&#40;</span>func <span class="sy0">&lt;&lt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">|</span> <span class="nu12">0x3C</span><span class="sy0">,</span> <span class="nu12">0xCF8</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Read the interrupt line field</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>inl<span class="br0">&#40;</span><span class="nu12">0xCFC</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="br0">&#41;</span> <span class="sy0">==</span> <span class="nu12">0xFE</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="co1">// This device needs an IRQ assignment.</span>
+   <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="co1">// The device doesn't use IRQs, check if this is an Parallel IDE:</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>class <span class="sy0">==</span> <span class="nu12">0x01</span> <span class="sy0">&amp;&amp;</span> subclass <span class="sy0">==</span> <span class="nu12">0x01</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>ProgIF <span class="sy0">==</span> <span class="nu12">0x8A</span> <span class="sy0">||</span> ProgIF <span class="sy0">==</span> <span class="nu12">0x80</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+         <span class="co1">// This is a Parallel IDE Controller which uses IRQs 14 and 15.</span>
+      <span class="br0">&#125;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Detecting_IDE_Drives"> Detecting IDE Drives </span></h2>
+<p>To initialise the IDE driver, we call ide_initialise:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_initialize<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> BAR0<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR1<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR2<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR3<span class="sy0">,</span>
+<span class="kw4">unsigned</span> <span class="kw4">int</span> BAR4<span class="br0">&#41;</span> <span class="br0">&#123;</span></pre></div></div>
+<p>If you only want to support the parallel IDE, you can use these parameters:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">ide_initialize<span class="br0">&#40;</span><span class="nu12">0x1F0</span><span class="sy0">,</span> <span class="nu12">0x3F6</span><span class="sy0">,</span> <span class="nu12">0x170</span><span class="sy0">,</span> <span class="nu12">0x376</span><span class="sy0">,</span> <span class="nu12">0x000</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>We can assume that BAR4 is 0x0 because we are not going to use it yet.
+We will return to ide_initialize, which searches for drives connected to the IDE. Before we go into this function, we should write some support functions and definitions which will help us a lot.
+</p>
+<h3> <span class="mw-headline" id="Status"> Status </span></h3>
+<p>The Command/Status Port returns a bit mask referring to the status of a channel when read.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define ATA_SR_BSY     0x80    // Busy</span>
+<span class="co2">#define ATA_SR_DRDY    0x40    // Drive ready</span>
+<span class="co2">#define ATA_SR_DF      0x20    // Drive write fault</span>
+<span class="co2">#define ATA_SR_DSC     0x10    // Drive seek complete</span>
+<span class="co2">#define ATA_SR_DRQ     0x08    // Data request ready</span>
+<span class="co2">#define ATA_SR_CORR    0x04    // Corrected data</span>
+<span class="co2">#define ATA_SR_IDX     0x02    // Inlex</span>
+<span class="co2">#define ATA_SR_ERR     0x01    // Error</span></pre></div></div>
+<h3> <span class="mw-headline" id="Errors"> Errors </span></h3>
+<p>The Features/Error Port, which returns the most recent error upon read, has these possible bit masks
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define ATA_ER_BBK      0x80    // Bad sector</span>
+<span class="co2">#define ATA_ER_UNC      0x40    // Uncorrectable data</span>
+<span class="co2">#define ATA_ER_MC       0x20    // No media</span>
+<span class="co2">#define ATA_ER_IDNF     0x10    // ID mark not found</span>
+<span class="co2">#define ATA_ER_MCR      0x08    // No media</span>
+<span class="co2">#define ATA_ER_ABRT     0x04    // Command aborted</span>
+<span class="co2">#define ATA_ER_TK0NF    0x02    // Track 0 not found</span>
+<span class="co2">#define ATA_ER_AMNF     0x01    // No address mark</span></pre></div></div>
+<h3> <span class="mw-headline" id="Commands"> Commands </span></h3>
+<p>When you write to the Command/Status port, you are executing one of the commands below.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define ATA_CMD_READ_PIO          0x20</span>
+<span class="co2">#define ATA_CMD_READ_PIO_EXT      0x24</span>
+<span class="co2">#define ATA_CMD_READ_DMA          0xC8</span>
+<span class="co2">#define ATA_CMD_READ_DMA_EXT      0x25</span>
+<span class="co2">#define ATA_CMD_WRITE_PIO         0x30</span>
+<span class="co2">#define ATA_CMD_WRITE_PIO_EXT     0x34</span>
+<span class="co2">#define ATA_CMD_WRITE_DMA         0xCA</span>
+<span class="co2">#define ATA_CMD_WRITE_DMA_EXT     0x35</span>
+<span class="co2">#define ATA_CMD_CACHE_FLUSH       0xE7</span>
+<span class="co2">#define ATA_CMD_CACHE_FLUSH_EXT   0xEA</span>
+<span class="co2">#define ATA_CMD_PACKET            0xA0</span>
+<span class="co2">#define ATA_CMD_IDENTIFY_PACKET   0xA1</span>
+<span class="co2">#define ATA_CMD_IDENTIFY          0xEC</span></pre></div></div>
+<p>The commands below are for ATAPI devices, which will be understood soon.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define      ATAPI_CMD_READ       0xA8</span>
+<span class="co2">#define      ATAPI_CMD_EJECT      0x1B</span></pre></div></div>
+<p>ATA_CMD_IDENTIFY_PACKET and ATA_CMD_IDENTIFY return a buffer of 512 bytes called the identification space; the following definitions are used to read information from the identification space.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define ATA_IDENT_DEVICETYPE   0</span>
+<span class="co2">#define ATA_IDENT_CYLINDERS    2</span>
+<span class="co2">#define ATA_IDENT_HEADS        6</span>
+<span class="co2">#define ATA_IDENT_SECTORS      12</span>
+<span class="co2">#define ATA_IDENT_SERIAL       20</span>
+<span class="co2">#define ATA_IDENT_MODEL        54</span>
+<span class="co2">#define ATA_IDENT_CAPABILITIES 98</span>
+<span class="co2">#define ATA_IDENT_FIELDVALID   106</span>
+<span class="co2">#define ATA_IDENT_MAX_LBA      120</span>
+<span class="co2">#define ATA_IDENT_COMMANDSETS  164</span>
+<span class="co2">#define ATA_IDENT_MAX_LBA_EXT  200</span></pre></div></div>
+<p>When you select a drive, you should specify the interface type and whether it is the master or slave:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define IDE_ATA        0x00</span>
+<span class="co2">#define IDE_ATAPI      0x01</span>
+&#160;
+<span class="co2">#define ATA_MASTER     0x00</span>
+<span class="co2">#define ATA_SLAVE      0x01</span></pre></div></div>
+<p>Task File is a range of 8 ports which are offsets from BAR0 (primary channel) and/or BAR2 (secondary channel). To exemplify:
+</p>
+<ul><li> BAR0 + 0 is first port.
+</li><li> BAR0 + 1 is second port.
+</li><li> BAR0 + 2 is the third
+</li></ul>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co2">#define ATA_REG_DATA       0x00</span>
+<span class="co2">#define ATA_REG_ERROR      0x01</span>
+<span class="co2">#define ATA_REG_FEATURES   0x01</span>
+<span class="co2">#define ATA_REG_SECCOUNT0  0x02</span>
+<span class="co2">#define ATA_REG_LBA0       0x03</span>
+<span class="co2">#define ATA_REG_LBA1       0x04</span>
+<span class="co2">#define ATA_REG_LBA2       0x05</span>
+<span class="co2">#define ATA_REG_HDDEVSEL   0x06</span>
+<span class="co2">#define ATA_REG_COMMAND    0x07</span>
+<span class="co2">#define ATA_REG_STATUS     0x07</span>
+<span class="co2">#define ATA_REG_SECCOUNT1  0x08</span>
+<span class="co2">#define ATA_REG_LBA3       0x09</span>
+<span class="co2">#define ATA_REG_LBA4       0x0A</span>
+<span class="co2">#define ATA_REG_LBA5       0x0B</span>
+<span class="co2">#define ATA_REG_CONTROL    0x0C</span>
+<span class="co2">#define ATA_REG_ALTSTATUS  0x0C</span>
+<span class="co2">#define ATA_REG_DEVADDRESS 0x0D</span></pre></div></div>
+<p>The ALTSTATUS/CONTROL port returns the alternate status when read and controls a channel when written to.
+</p>
+<ul><li> For the primary channel, ALTSTATUS/CONTROL port is BAR1 + 2.
+</li><li> For the secondary channel, ALTSTATUS/CONTROL port is BAR3 + 2.
+</li></ul>
+<p>We can now say that each channel has 13 registers. For the primary channel, we use these values:
+</p>
+<ul><li> Data Register: BAR0 + 0; // Read-Write
+</li><li> Error Register: BAR0 + 1; // Read Only
+</li><li> Features Register: BAR0 + 1; // Write Only
+</li><li> SECCOUNT0: BAR0 + 2; // Read-Write
+</li><li> LBA0: BAR0 + 3; // Read-Write
+</li><li> LBA1: BAR0 + 4; // Read-Write
+</li><li> LBA2: BAR0 + 5; // Read-Write
+</li><li> HDDEVSEL: BAR0 + 6; // Read-Write, used to select a drive in the channel.
+</li><li> Command Register: BAR0 + 7; // Write Only.
+</li><li> Status Register: BAR0 + 7; // Read Only.
+</li><li> Alternate Status Register: BAR1 + 2; // Read Only.
+</li><li> Control Register: BAR1 + 2; // Write Only.
+</li><li> DEVADDRESS: BAR1 + 3; // I don't know what is the benefit from this register.
+</li></ul>
+<p>The map above is the same with the secondary channel, but it uses BAR2 and BAR3 instead of BAR0 and BAR1.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="co1">// Channels:</span>
+<span class="co2">#define      ATA_PRIMARY      0x00</span>
+<span class="co2">#define      ATA_SECONDARY    0x01</span>
+&#160;
+<span class="co1">// Directions:</span>
+<span class="co2">#define      ATA_READ      0x00</span>
+<span class="co2">#define      ATA_WRITE     0x01</span></pre></div></div>
+<p>We have defined everything needed by the driver, now lets move to an important part. We said that
+</p>
+<ul><li> BAR0 is the start of the I/O ports used by the primary channel.
+</li><li> BAR1 is the start of the I/O ports which control the primary channel.
+</li><li> BAR2 is the start of the I/O ports used by secondary channel.
+</li><li> BAR3 is the start of the I/O ports which control secondary channel.
+</li><li> BAR4 is the start of 8 I/O ports controls the primary channel's Bus Master IDE.
+</li><li> BAR4 + 8 is the Base of 8 I/O ports controls secondary channel's Bus Master IDE.
+</li></ul>
+<p>So we can make this global structure:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">struct</span> IDEChannelRegisters <span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> base<span class="sy0">;</span>  <span class="co1">// I/O Base.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> ctrl<span class="sy0">;</span>  <span class="co1">// Control Base</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> bmide<span class="sy0">;</span> <span class="co1">// Bus Master IDE</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  nIEN<span class="sy0">;</span>  <span class="co1">// nIEN (No Interrupt);</span>
+<span class="br0">&#125;</span> channels<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span><span class="sy0">;</span></pre></div></div>
+<p>We also need a buffer to read the identification space into, we need a variable that indicates if an irq is invoked or not, and finally we need an array of 6 words [12 bytes] for ATAPI Drives:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">unsigned</span> <span class="kw4">char</span> ide_buf<span class="br0">&#91;</span><span class="nu0">2048</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span><span class="nu0">0</span><span class="br0">&#125;</span><span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">static</span> <span class="kw4">char</span> ide_irq_invoked <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+<span class="kw4">unsigned</span> <span class="kw4">static</span> <span class="kw4">char</span> atapi_packet<span class="br0">&#91;</span><span class="nu0">12</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#123;</span><span class="nu12">0xA8</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="sy0">,</span> <span class="nu0">0</span><span class="br0">&#125;</span><span class="sy0">;</span></pre></div></div>
+<p>We said the the IDE can contain up to 4 drives:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">struct</span> ide_device <span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  Reserved<span class="sy0">;</span>    <span class="co1">// 0 (Empty) or 1 (This Drive really exists).</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  Channel<span class="sy0">;</span>     <span class="co1">// 0 (Primary Channel) or 1 (Secondary Channel).</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  Drive<span class="sy0">;</span>       <span class="co1">// 0 (Master Drive) or 1 (Slave Drive).</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> Type<span class="sy0">;</span>        <span class="co1">// 0: ATA, 1:ATAPI.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> Signature<span class="sy0">;</span>   <span class="co1">// Drive Signature</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> Capabilities<span class="sy0">;</span><span class="co1">// Features.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   CommandSets<span class="sy0">;</span> <span class="co1">// Command Sets Supported.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   Size<span class="sy0">;</span>        <span class="co1">// Size in Sectors.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  Model<span class="br0">&#91;</span><span class="nu0">41</span><span class="br0">&#93;</span><span class="sy0">;</span>   <span class="co1">// Model in string.</span>
+<span class="br0">&#125;</span> ide_devices<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span><span class="sy0">;</span></pre></div></div>
+<p>When we read a register in a channel, like STATUS Register, it is easy to execute:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+<span class="kw4">unsigned</span> <span class="kw4">char</span> ide_read<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> channel<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> reg<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span> result<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> <span class="nu12">0x80</span> <span class="sy0">|</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x08</span><span class="br0">&#41;</span>
+      result <span class="sy0">=</span> inb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span> <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x00</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      result <span class="sy0">=</span> inb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x06</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0E</span><span class="br0">&#41;</span>
+      result <span class="sy0">=</span> inb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">ctrl</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0A</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x16</span><span class="br0">&#41;</span>
+      result <span class="sy0">=</span> inb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">bmide</span> <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0E</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">return</span> result<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>We also need a function for writing to registers:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_write<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> channel<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> reg<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> data<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> <span class="nu12">0x80</span> <span class="sy0">|</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x08</span><span class="br0">&#41;</span>
+      outb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x00</span><span class="sy0">,</span> data<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      outb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x06</span><span class="sy0">,</span> data<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0E</span><span class="br0">&#41;</span>
+      outb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">ctrl</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0A</span><span class="sy0">,</span> data<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x16</span><span class="br0">&#41;</span>
+      outb<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">bmide</span> <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0E</span><span class="sy0">,</span> data<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>To read the identification space, we should read the Data Register as a double word 128 times. We can then copy them to our buffer.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_read_buffer<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> channel<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> reg<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> buffer<span class="sy0">,</span>
+                     <span class="kw4">unsigned</span> <span class="kw4">int</span> quads<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="coMULTI">/* WARNING: This code contains a serious bug. The inline assembly trashes ES and
+    *           ESP for all of the code the compiler generates between the inline
+    *           assembly blocks.
+    */</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> <span class="nu12">0x80</span> <span class="sy0">|</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   asm<span class="br0">&#40;</span><span class="st0">&quot;pushw&#160;%es; movw&#160;%ds,&#160;%ax; movw&#160;%ax,&#160;%es&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x08</span><span class="br0">&#41;</span>
+      insl<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x00</span><span class="sy0">,</span> buffer<span class="sy0">,</span> quads<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      insl<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x06</span><span class="sy0">,</span> buffer<span class="sy0">,</span> quads<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x0E</span><span class="br0">&#41;</span>
+      insl<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">ctrl</span>  <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0A</span><span class="sy0">,</span> buffer<span class="sy0">,</span> quads<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&lt;</span> <span class="nu12">0x16</span><span class="br0">&#41;</span>
+      insl<span class="br0">&#40;</span>channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">bmide</span> <span class="sy0">+</span> reg <span class="sy0">-</span> <span class="nu12">0x0E</span><span class="sy0">,</span> buffer<span class="sy0">,</span> quads<span class="br0">&#41;</span><span class="sy0">;</span>
+   asm<span class="br0">&#40;</span><span class="st0">&quot;popw&#160;%es;&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>reg <span class="sy0">&gt;</span> <span class="nu12">0x07</span> <span class="sy0">&amp;&amp;</span> reg <span class="sy0">&lt;</span> <span class="nu12">0x0C</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>When we send a command, we should wait for 400 nanosecond, then read the Status port. If the Busy bit is on, we should read the status port again until the Busy bit is 0; then we can read the results of the command. This operation is called "Polling". We can also use IRQs instead of polling.
+</p><p>After many commands, if the Device Fault bit is set, there is a failure; if DRQ is not set, there is an error. If the ERR bit is set, there is an error which is described in Error port.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">unsigned</span> <span class="kw4">char</span> ide_polling<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> channel<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> advanced_check<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&#160;
+   <span class="co1">// (I) Delay 400 nanosecond for BSY to be set:</span>
+   <span class="co1">// -------------------------------------------------</span>
+   <span class="kw1">for</span><span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> <span class="nu0">4</span><span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+      ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_ALTSTATUS<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Reading the Alternate Status port wastes 100ns; loop four times.</span>
+&#160;
+   <span class="co1">// (II) Wait for BSY to be cleared:</span>
+   <span class="co1">// -------------------------------------------------</span>
+   <span class="kw1">while</span> <span class="br0">&#40;</span>ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span> <span class="sy0">&amp;</span> ATA_SR_BSY<span class="br0">&#41;</span>
+      <span class="sy0">;</span> <span class="co1">// Wait for BSY to be zero.</span>
+&#160;
+   <span class="kw1">if</span> <span class="br0">&#40;</span>advanced_check<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> state <span class="sy0">=</span> ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Read Status Register.</span>
+&#160;
+      <span class="co1">// (III) Check For Errors:</span>
+      <span class="co1">// -------------------------------------------------</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>state <span class="sy0">&amp;</span> ATA_SR_ERR<span class="br0">&#41;</span>
+         <span class="kw1">return</span> <span class="nu0">2</span><span class="sy0">;</span> <span class="co1">// Error.</span>
+&#160;
+      <span class="co1">// (IV) Check If Device fault:</span>
+      <span class="co1">// -------------------------------------------------</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>state <span class="sy0">&amp;</span> ATA_SR_DF<span class="br0">&#41;</span>
+         <span class="kw1">return</span> <span class="nu0">1</span><span class="sy0">;</span> <span class="co1">// Device Fault.</span>
+&#160;
+      <span class="co1">// (V) Check DRQ:</span>
+      <span class="co1">// -------------------------------------------------</span>
+      <span class="co1">// BSY = 0; DF = 0; ERR = 0 so we should check for DRQ now.</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>state <span class="sy0">&amp;</span> ATA_SR_DRQ<span class="br0">&#41;</span> <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+         <span class="kw1">return</span> <span class="nu0">3</span><span class="sy0">;</span> <span class="co1">// DRQ should be set</span>
+&#160;
+   <span class="br0">&#125;</span>
+&#160;
+   <span class="kw1">return</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// No Error.</span>
+&#160;
+<span class="br0">&#125;</span></pre></div></div>
+<p>If there is an error, we have a function which prints errors on screen:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">unsigned</span> <span class="kw4">char</span> ide_print_error<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> drive<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> err<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+      <span class="kw1">return</span> err<span class="sy0">;</span>
+&#160;
+   printk<span class="br0">&#40;</span><span class="st0">&quot;IDE:&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Device Fault<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span> err <span class="sy0">=</span> <span class="nu0">19</span><span class="sy0">;</span><span class="br0">&#125;</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">2</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> st <span class="sy0">=</span> ide_read<span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">channel</span><span class="sy0">,</span> ATA_REG_ERROR<span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_AMNF<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- No Address Mark Found<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>   err <span class="sy0">=</span> <span class="nu0">7</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_TK0NF<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- No Media or Media Error<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>   err <span class="sy0">=</span> <span class="nu0">3</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_ABRT<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Command Aborted<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>      err <span class="sy0">=</span> <span class="nu0">20</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_MCR<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- No Media or Media Error<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>   err <span class="sy0">=</span> <span class="nu0">3</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_IDNF<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- ID mark not Found<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>      err <span class="sy0">=</span> <span class="nu0">21</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_MC<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- No Media or Media Error<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>   err <span class="sy0">=</span> <span class="nu0">3</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_UNC<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Uncorrectable Data Error<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>   err <span class="sy0">=</span> <span class="nu0">22</span><span class="sy0">;</span><span class="br0">&#125;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>st <span class="sy0">&amp;</span> ATA_ER_BBK<span class="br0">&#41;</span>   <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Bad Sectors<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>       err <span class="sy0">=</span> <span class="nu0">13</span><span class="sy0">;</span><span class="br0">&#125;</span>
+   <span class="br0">&#125;</span> <span class="kw1">else</span>  <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">3</span><span class="br0">&#41;</span>           <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Reads Nothing<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span> err <span class="sy0">=</span> <span class="nu0">23</span><span class="sy0">;</span><span class="br0">&#125;</span>
+     <span class="kw1">else</span>  <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">4</span><span class="br0">&#41;</span>  <span class="br0">&#123;</span>printk<span class="br0">&#40;</span><span class="st0">&quot;- Write Protected<span class="es1">\n</span>     &quot;</span><span class="br0">&#41;</span><span class="sy0">;</span> err <span class="sy0">=</span> <span class="nu0">8</span><span class="sy0">;</span><span class="br0">&#125;</span>
+   printk<span class="br0">&#40;</span><span class="st0">&quot;- [%s&#160;%s]&#160;%s<span class="es1">\n</span>&quot;</span><span class="sy0">,</span>
+      <span class="br0">&#40;</span><span class="kw4">const</span> <span class="kw4">char</span> <span class="sy0">*</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="br0">&#123;</span><span class="st0">&quot;Primary&quot;</span><span class="sy0">,</span> <span class="st0">&quot;Secondary&quot;</span><span class="br0">&#125;</span><span class="br0">&#91;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">channel</span><span class="br0">&#93;</span><span class="sy0">,</span> <span class="co1">// Use the channel as an index into the array</span>
+      <span class="br0">&#40;</span><span class="kw4">const</span> <span class="kw4">char</span> <span class="sy0">*</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="br0">&#123;</span><span class="st0">&quot;Master&quot;</span><span class="sy0">,</span> <span class="st0">&quot;Slave&quot;</span><span class="br0">&#125;</span><span class="br0">&#91;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">drive</span><span class="br0">&#93;</span><span class="sy0">,</span> <span class="co1">// Same as above, using the drive</span>
+      ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">model</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+   <span class="kw1">return</span> err<span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>Now let's return to the initialization function:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_initialize<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> BAR0<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR1<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR2<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> BAR3<span class="sy0">,</span>
+<span class="kw4">unsigned</span> <span class="kw4">int</span> BAR4<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&#160;
+   <span class="kw4">int</span> j<span class="sy0">,</span> k<span class="sy0">,</span> count <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+&#160;
+   <span class="co1">// 1- Detect I/O Ports which interface IDE Controller:</span>
+   channels<span class="br0">&#91;</span>ATA_PRIMARY  <span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">=</span> <span class="br0">&#40;</span>BAR0 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu12">0x1F0</span> <span class="sy0">*</span> <span class="br0">&#40;</span><span class="sy0">!</span>BAR0<span class="br0">&#41;</span><span class="sy0">;</span>
+   channels<span class="br0">&#91;</span>ATA_PRIMARY  <span class="br0">&#93;</span>.<span class="me1">ctrl</span>  <span class="sy0">=</span> <span class="br0">&#40;</span>BAR1 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu12">0x3F6</span> <span class="sy0">*</span> <span class="br0">&#40;</span><span class="sy0">!</span>BAR1<span class="br0">&#41;</span><span class="sy0">;</span>
+   channels<span class="br0">&#91;</span>ATA_SECONDARY<span class="br0">&#93;</span>.<span class="me1">base</span>  <span class="sy0">=</span> <span class="br0">&#40;</span>BAR2 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu12">0x170</span> <span class="sy0">*</span> <span class="br0">&#40;</span><span class="sy0">!</span>BAR2<span class="br0">&#41;</span><span class="sy0">;</span>
+   channels<span class="br0">&#91;</span>ATA_SECONDARY<span class="br0">&#93;</span>.<span class="me1">ctrl</span>  <span class="sy0">=</span> <span class="br0">&#40;</span>BAR3 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu12">0x376</span> <span class="sy0">*</span> <span class="br0">&#40;</span><span class="sy0">!</span>BAR3<span class="br0">&#41;</span><span class="sy0">;</span>
+   channels<span class="br0">&#91;</span>ATA_PRIMARY  <span class="br0">&#93;</span>.<span class="me1">bmide</span> <span class="sy0">=</span> <span class="br0">&#40;</span>BAR4 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Bus Master IDE</span>
+   channels<span class="br0">&#91;</span>ATA_SECONDARY<span class="br0">&#93;</span>.<span class="me1">bmide</span> <span class="sy0">=</span> <span class="br0">&#40;</span>BAR4 <span class="sy0">&amp;</span> <span class="nu12">0xFFFFFFFC</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu0">8</span><span class="sy0">;</span> <span class="co1">// Bus Master IDE</span></pre></div></div>
+<p>Then we should disable IRQs in both channels by setting bit 1 (nIEN) in the Control port:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// 2- Disable IRQs:</span>
+   ide_write<span class="br0">&#40;</span>ATA_PRIMARY  <span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> <span class="nu0">2</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   ide_write<span class="br0">&#40;</span>ATA_SECONDARY<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> <span class="nu0">2</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Now we need to check for drives which could be connected to each channel. We will select the master drive of each channel, and send the ATA_IDENTIFY command (which is supported by ATA Drives). If there's no error, there are values returned in registers which determine the type of Drive; if no drive is present, there will be strange values.
+</p><p>Notice that if bit 4 in HDDEVSEL is set to 1, we are selecting the slave drive, if set to 0, we are selecting the master drive.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// 3- Detect ATA-ATAPI Devices:</span>
+   <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> <span class="nu0">2</span><span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+      <span class="kw1">for</span> <span class="br0">&#40;</span>j <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> j <span class="sy0">&lt;</span> <span class="nu0">2</span><span class="sy0">;</span> j<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&#160;
+         <span class="kw4">unsigned</span> <span class="kw4">char</span> err <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">,</span> type <span class="sy0">=</span> IDE_ATA<span class="sy0">,</span> status<span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Reserved</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Assuming that no drive here.</span>
+&#160;
+         <span class="co1">// (I) Select Drive:</span>
+         ide_write<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_HDDEVSEL<span class="sy0">,</span> <span class="nu12">0xA0</span> <span class="sy0">|</span> <span class="br0">&#40;</span>j <span class="sy0">&lt;&lt;</span> <span class="nu0">4</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Select Drive.</span>
+         sleep<span class="br0">&#40;</span><span class="nu0">1</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Wait 1ms for drive select to work.</span>
+&#160;
+         <span class="co1">// (II) Send ATA Identify Command:</span>
+         ide_write<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> ATA_CMD_IDENTIFY<span class="br0">&#41;</span><span class="sy0">;</span>
+         sleep<span class="br0">&#40;</span><span class="nu0">1</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// This function should be implemented in your OS. which waits for 1 ms.</span>
+                   <span class="co1">// it is based on System Timer Device Driver.</span>
+&#160;
+         <span class="co1">// (III) Polling:</span>
+         <span class="kw1">if</span> <span class="br0">&#40;</span>ide_read<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span> <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="kw1">continue</span><span class="sy0">;</span> <span class="co1">// If Status = 0, No Device.</span>
+&#160;
+         <span class="kw1">while</span><span class="br0">&#40;</span><span class="nu0">1</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            status <span class="sy0">=</span> ide_read<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>status <span class="sy0">&amp;</span> ATA_SR_ERR<span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>err <span class="sy0">=</span> <span class="nu0">1</span><span class="sy0">;</span> <span class="kw2">break</span><span class="sy0">;</span><span class="br0">&#125;</span> <span class="co1">// If Err, Device is not ATA.</span>
+            <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span><span class="br0">&#40;</span>status <span class="sy0">&amp;</span> ATA_SR_BSY<span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>status <span class="sy0">&amp;</span> ATA_SR_DRQ<span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="kw2">break</span><span class="sy0">;</span> <span class="co1">// Everything is right.</span>
+         <span class="br0">&#125;</span>
+&#160;
+         <span class="co1">// (IV) Probe for ATAPI Devices:</span>
+&#160;
+         <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">!=</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            <span class="kw4">unsigned</span> <span class="kw4">char</span> cl <span class="sy0">=</span> ide_read<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_LBA1<span class="br0">&#41;</span><span class="sy0">;</span>
+            <span class="kw4">unsigned</span> <span class="kw4">char</span> ch <span class="sy0">=</span> ide_read<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_LBA2<span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+            <span class="kw1">if</span> <span class="br0">&#40;</span>cl <span class="sy0">==</span> <span class="nu12">0x14</span> <span class="sy0">&amp;&amp;</span> ch <span class="sy0">==</span><span class="nu12">0xEB</span><span class="br0">&#41;</span>
+               type <span class="sy0">=</span> IDE_ATAPI<span class="sy0">;</span>
+            <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>cl <span class="sy0">==</span> <span class="nu12">0x69</span> <span class="sy0">&amp;&amp;</span> ch <span class="sy0">==</span> <span class="nu12">0x96</span><span class="br0">&#41;</span>
+               type <span class="sy0">=</span> IDE_ATAPI<span class="sy0">;</span>
+            <span class="kw1">else</span>
+               <span class="kw1">continue</span><span class="sy0">;</span> <span class="co1">// Unknown Type (may not be a device).</span>
+&#160;
+            ide_write<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> ATA_CMD_IDENTIFY_PACKET<span class="br0">&#41;</span><span class="sy0">;</span>
+            sleep<span class="br0">&#40;</span><span class="nu0">1</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         <span class="br0">&#125;</span>
+&#160;
+         <span class="co1">// (V) Read Identification Space of the Device:</span>
+         ide_read_buffer<span class="br0">&#40;</span>i<span class="sy0">,</span> ATA_REG_DATA<span class="sy0">,</span> <span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span><span class="br0">&#41;</span> ide_buf<span class="sy0">,</span> <span class="nu0">128</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+         <span class="co1">// (VI) Read Device Parameters:</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Reserved</span>     <span class="sy0">=</span> <span class="nu0">1</span><span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Type</span>         <span class="sy0">=</span> type<span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Channel</span>      <span class="sy0">=</span> i<span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Drive</span>        <span class="sy0">=</span> j<span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Signature</span>    <span class="sy0">=</span> <span class="sy0">*</span><span class="br0">&#40;</span><span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">short</span> <span class="sy0">*</span><span class="br0">&#41;</span><span class="br0">&#40;</span>ide_buf <span class="sy0">+</span> ATA_IDENT_DEVICETYPE<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Capabilities</span> <span class="sy0">=</span> <span class="sy0">*</span><span class="br0">&#40;</span><span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">short</span> <span class="sy0">*</span><span class="br0">&#41;</span><span class="br0">&#40;</span>ide_buf <span class="sy0">+</span> ATA_IDENT_CAPABILITIES<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">CommandSets</span>  <span class="sy0">=</span> <span class="sy0">*</span><span class="br0">&#40;</span><span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> <span class="sy0">*</span><span class="br0">&#41;</span><span class="br0">&#40;</span>ide_buf <span class="sy0">+</span> ATA_IDENT_COMMANDSETS<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+         <span class="co1">// (VII) Get Size:</span>
+         <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">CommandSets</span> <span class="sy0">&amp;</span> <span class="br0">&#40;</span><span class="nu0">1</span> <span class="sy0">&lt;&lt;</span> <span class="nu0">26</span><span class="br0">&#41;</span><span class="br0">&#41;</span>
+            <span class="co1">// Device uses 48-Bit Addressing:</span>
+            ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Size</span>   <span class="sy0">=</span> <span class="sy0">*</span><span class="br0">&#40;</span><span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> <span class="sy0">*</span><span class="br0">&#41;</span><span class="br0">&#40;</span>ide_buf <span class="sy0">+</span> ATA_IDENT_MAX_LBA_EXT<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         <span class="kw1">else</span>
+            <span class="co1">// Device uses CHS or 28-bit Addressing:</span>
+            ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Size</span>   <span class="sy0">=</span> <span class="sy0">*</span><span class="br0">&#40;</span><span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">int</span> <span class="sy0">*</span><span class="br0">&#41;</span><span class="br0">&#40;</span>ide_buf <span class="sy0">+</span> ATA_IDENT_MAX_LBA<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+         <span class="co1">// (VIII) String indicates model of device (like Western Digital HDD and SONY DVD-RW...):</span>
+         <span class="kw1">for</span><span class="br0">&#40;</span>k <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> k <span class="sy0">&lt;</span> <span class="nu0">40</span><span class="sy0">;</span> k <span class="sy0">+=</span> <span class="nu0">2</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Model</span><span class="br0">&#91;</span>k<span class="br0">&#93;</span> <span class="sy0">=</span> ide_buf<span class="br0">&#91;</span>ATA_IDENT_MODEL <span class="sy0">+</span> k <span class="sy0">+</span> <span class="nu0">1</span><span class="br0">&#93;</span><span class="sy0">;</span>
+            ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Model</span><span class="br0">&#91;</span>k <span class="sy0">+</span> <span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> ide_buf<span class="br0">&#91;</span>ATA_IDENT_MODEL <span class="sy0">+</span> k<span class="br0">&#93;</span><span class="sy0">;</span><span class="br0">&#125;</span>
+         ide_devices<span class="br0">&#91;</span>count<span class="br0">&#93;</span>.<span class="me1">Model</span><span class="br0">&#91;</span><span class="nu0">40</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Terminate String.</span>
+&#160;
+         count<span class="sy0">++;</span>
+      <span class="br0">&#125;</span>
+&#160;
+   <span class="co1">// 4- Print Summary:</span>
+   <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> <span class="nu0">4</span><span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>i<span class="br0">&#93;</span>.<span class="me1">Reserved</span> <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+         printk<span class="br0">&#40;</span><span class="st0">&quot; Found&#160;%s Drive&#160;%dGB -&#160;%s<span class="es1">\n</span>&quot;</span><span class="sy0">,</span>
+            <span class="br0">&#40;</span><span class="kw4">const</span> <span class="kw4">char</span> <span class="sy0">*</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="br0">&#123;</span><span class="st0">&quot;ATA&quot;</span><span class="sy0">,</span> <span class="st0">&quot;ATAPI&quot;</span><span class="br0">&#125;</span><span class="br0">&#91;</span>ide_devices<span class="br0">&#91;</span>i<span class="br0">&#93;</span>.<span class="me1">Type</span><span class="br0">&#93;</span><span class="sy0">,</span>         <span class="coMULTI">/* Type */</span>
+            ide_devices<span class="br0">&#91;</span>i<span class="br0">&#93;</span>.<span class="me1">Size</span> <span class="sy0">/</span> <span class="nu0">1024</span> <span class="sy0">/</span> <span class="nu0">1024</span> <span class="sy0">/</span> <span class="nu0">2</span><span class="sy0">,</span>               <span class="coMULTI">/* Size */</span>
+            ide_devices<span class="br0">&#91;</span>i<span class="br0">&#93;</span>.<span class="me1">Model</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Read.2FWrite_From_ATA_Drive"> Read/Write From ATA Drive </span></h2>
+<p>Now we're moving to a slightly more advanced part, it is to read and write from/to an ATA drive.
+There is 3 ways of addressing a sector:
+</p>
+<ul><li> CHS (Cylinder-Head-Sector): an old way of addressing sectors in ATA drives, all ATA drives should support this way of addressing.
+</li><li> LBA28: Accessing a sector by its 28-bit LBA address. All ATA drives should support this way of addressing, the problem with LBA28 Addressing is that it only allows access 128GB to be accessed, so if the disk is bigger than 128GB, it should support the LBA48 Feature Set.
+</li><li> LBA48: Accessing a sector by its 48-bit LBA address. As we use integers in GCC, our maximum address in this tutorial is 32-bit long, which allows accessing a drive with a size of up to 2TB.
+</li></ul>
+<p>So we can conclude an algorithm to determine which type of Addressing we are going to use:
+</p>
+<pre>
+if (No LBA support)
+   Use CHS.
+else if (the LBA Sector Address &gt; 0x0FFFFFFF)
+   Use LBA48.
+else
+   Use LBA28.
+</pre>
+<p>Reading the buffer may be done by polling or DMA.
+PIO: After sending the command to read or write sectors, we read or write to the Data Port (as words). This is the same way of reading identification space.
+DMA: After sending the command, you should wait for an IRQ, while you are waiting, Buffer is written directly to memory automatically.
+</p><p>We are going to use PIO as it is less complex.
+</p><p>We can conclude also this table:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="coMULTI">/* ATA/ATAPI Read/Write Modes:
+    * ++++++++++++++++++++++++++++++++
+    *  Addressing Modes:
+    *  ================
+    *   - LBA28 Mode.     (+)
+    *   - LBA48 Mode.     (+)
+    *   - CHS.            (+)
+    *  Reading Modes:
+    *  ================
+    *   - PIO Modes (0&#160;: 6)       (+) // Slower than DMA, but not a problem.
+    *   - Single Word DMA Modes (0, 1, 2).
+    *   - Double Word DMA Modes (0, 1, 2).
+    *   - Ultra DMA Modes (0&#160;: 6).
+    *  Polling Modes:
+    *  ================
+    *   - IRQs
+    *   - Polling Status   (+) // Suitable for Singletasking   
+    */</span></pre></div></div>
+<p>There is something needed to be expressed here, I have told before that Task-File is like that:
+</p>
+<ul><li> Register 0: [Word] Data Register. (Read-Write).
+</li><li> Register 1: [Byte] Error Register. (Read).
+</li><li> Register 1: [Byte] Features Register. (Write).
+</li><li> Register 2: [Byte] SECCOUNT0 Register. (Read-Write).
+</li><li> Register 3: [Byte] LBA0 Register. (Read-Write).
+</li><li> Register 4: [Byte] LBA1 Register. (Read-Write).
+</li><li> Register 5: [Byte] LBA2 Register. (Read-Write).
+</li><li> Register 6: [Byte] HDDEVSEL Register. (Read-Write).
+</li><li> Register 7: [Byte] Command Register. (Write).
+</li><li> Register 7: [Byte] Status Register. (Read).
+</li></ul>
+<p>So each register between 2 to 5 should be 8-bits long. Really each of them are 16-bits long.
+</p>
+<ul><li> Register 2: [Bits 0-7] SECCOUNT0, [Bits 8-15] SECOUNT1
+</li><li> Register 3: [Bits 0-7] LBA0, [Bits 8-15] LBA3
+</li><li> Register 4: [Bits 0-7] LBA1, [Bits 8-15] LBA4
+</li><li> Register 5: [Bits 0-7] LBA2, [Bits 8-15] LBA5
+</li></ul>
+<p>The word [(SECCOUNT1 &lt;&lt; 8) | SECCOUNT0] expresses the number of sectors which can be read when you access by LBA48.
+When you access in CHS or LBA28, SECCOUNT0 only expresses number of sectors.
+</p>
+<ul><li> LBA0 makes up bits 0&#160;: 7 of the LBA address when you read in LBA28 or LBA48; it can also be the sector number of CHS.
+</li><li> LBA1 makes up bits 8&#160;: 15 of the LBA address when you read in LBA28 or LBA48; it can also be the low byte of the cylinder number of CHS.
+</li><li> LBA2 makes up bits 16&#160;: 23 of the LBA address when you read in LBA28 or LBA48; it can also be the high byte of the cylinder number of CHS.
+</li><li> LBA3 makes up bits 24&#160;: 31 of the LBA48 address.
+</li><li> LBA4 makes up bits 32&#160;: 39 of the LBA48 address.
+</li><li> LBA5 makes up bits 40&#160;: 47 of LBA48 address.
+</li></ul>
+<p>Notice that the LBA0, 1 and 2 registers are 24 bits long in total, which is not enough for LBA28; the higher 4-bits can be written to the lower 4-bits of the HDDEVSEL register.
+</p><p>Also notice that if bit 6 of this register  is set, we are going to use LBA, if not, we are going to use CHS. There is a mode which is called extended CHS.
+</p><p>Lets go into the code:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">unsigned</span> <span class="kw4">char</span> ide_ata_access<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> direction<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> drive<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> lba<span class="sy0">,</span> 
+                             <span class="kw4">unsigned</span> <span class="kw4">char</span> numsects<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">short</span> selector<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> edi<span class="br0">&#41;</span> <span class="br0">&#123;</span></pre></div></div>
+<p>This function reads/writes sectors from ATA-Drive. If direction is 0 we are reading, else we are writing.
+</p>
+<ul><li> drive is the drive number which can be from 0 to 3.
+</li><li> lba is the LBA address which allows us to access disks up to 2TB.
+</li><li> numsects is the number of sectors to be read, it is a char, as reading more than 256 sector immediately may performance issues. If numsects is 0, the ATA controller will know that we want 256 sectors.
+</li><li> selector is the segment selector to read from, or write to.
+</li><li> edi is the offset in that segment.
+</li></ul>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="kw4">unsigned</span> <span class="kw4">char</span> lba_mode <span class="coMULTI">/* 0: CHS, 1:LBA28, 2: LBA48 */</span><span class="sy0">,</span> dma <span class="coMULTI">/* 0: No DMA, 1: DMA */</span><span class="sy0">,</span> cmd<span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span> lba_io<span class="br0">&#91;</span><span class="nu0">6</span><span class="br0">&#93;</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>  channel      <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Channel</span><span class="sy0">;</span> <span class="co1">// Read the Channel.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>  slavebit      <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Drive</span><span class="sy0">;</span> <span class="co1">// Read the Drive [Master/Slave]</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>  bus <span class="sy0">=</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">Base</span><span class="sy0">;</span> <span class="co1">// Bus Base, like 0x1F0 which is also data port.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>  words      <span class="sy0">=</span> <span class="nu0">256</span><span class="sy0">;</span> <span class="co1">// Almost every ATA drive has a sector-size of 512-byte.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">short</span> cyl<span class="sy0">,</span> i<span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span> head<span class="sy0">,</span> sect<span class="sy0">,</span> err<span class="sy0">;</span></pre></div></div>
+<p>We don't need IRQs, so we should disable it to prevent problems from happening. We said before that if bit 1 of the Control Register (which is called nIEN bit), is set, no IRQs will be invoked from any drives on this channel, either master or slave.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span> <span class="sy0">=</span> <span class="br0">&#40;</span>ide_irq_invoked <span class="sy0">=</span> <span class="nu12">0x0</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu12">0x02</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Now lets read the parameters:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (I) Select one from LBA28, LBA48 or CHS;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba <span class="sy0">&gt;=</span> <span class="nu12">0x10000000</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> <span class="co1">// Sure Drive should support LBA in this case, or you are</span>
+                            <span class="co1">// giving a wrong LBA.</span>
+      <span class="co1">// LBA48:</span>
+      lba_mode  <span class="sy0">=</span> <span class="nu0">2</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x000000FF</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">0</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x0000FF00</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x00FF0000</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0xFF000000</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">24</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// LBA28 is integer, so 32-bits are enough to access 2TB.</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// LBA28 is integer, so 32-bits are enough to access 2TB.</span>
+      head      <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Lower 4-bits of HDDEVSEL are not used here.</span>
+   <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Capabilities</span> <span class="sy0">&amp;</span> <span class="nu12">0x200</span><span class="br0">&#41;</span>  <span class="br0">&#123;</span> <span class="co1">// Drive supports LBA?</span>
+      <span class="co1">// LBA28:</span>
+      lba_mode  <span class="sy0">=</span> <span class="nu0">1</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x00000FF</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">0</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x000FF00</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0x0FF0000</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// These Registers are not used here.</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// These Registers are not used here.</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// These Registers are not used here.</span>
+      head      <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&amp;</span> <span class="nu12">0xF000000</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">24</span><span class="sy0">;</span>
+   <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="co1">// CHS:</span>
+      lba_mode  <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+      sect      <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">%</span> <span class="nu0">63</span><span class="br0">&#41;</span> <span class="sy0">+</span> <span class="nu0">1</span><span class="sy0">;</span>
+      cyl       <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">+</span> <span class="nu0">1</span>  <span class="sy0">-</span> sect<span class="br0">&#41;</span> <span class="sy0">/</span> <span class="br0">&#40;</span><span class="nu0">16</span> <span class="sy0">*</span> <span class="nu0">63</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> sect<span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>cyl <span class="sy0">&gt;&gt;</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>cyl <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+      lba_io<span class="br0">&#91;</span><span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+      head      <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">+</span> <span class="nu0">1</span>  <span class="sy0">-</span> sect<span class="br0">&#41;</span> <span class="sy0">%</span> <span class="br0">&#40;</span><span class="nu0">16</span> <span class="sy0">*</span> <span class="nu0">63</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="br0">&#40;</span><span class="nu0">63</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Head number is written to HDDEVSEL lower 4-bits.</span>
+   <span class="br0">&#125;</span></pre></div></div>
+<p>Now we are going to choose the way of reading the buffer [PIO or DMA]:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (II) See if drive supports DMA or not;</span>
+   dma <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// We don't support DMA</span></pre></div></div>
+<p>Lets poll the Status port while the channel is busy:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (III) Wait if the drive is busy;</span>
+   <span class="kw1">while</span> <span class="br0">&#40;</span>ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span> <span class="sy0">&amp;</span> ATA_SR_BSY<span class="br0">&#41;</span>
+      <span class="sy0">;</span> <span class="co1">// Wait if busy.</span></pre></div></div>
+<p>The HDDDEVSEL register now looks like this:
+</p>
+<ul><li> Bits 0&#160;: 3: Head Number for CHS.
+</li><li> Bit 4: Slave Bit. (0: Selecting Master Drive, 1: Selecting Slave Drive).
+</li><li> Bit 5: Obsolete and isn't used, but should be set.
+</li><li> Bit 6: LBA (0: CHS, 1: LBA).
+</li><li> Bit 7: Obsolete and isn't used, but should be set.
+</li></ul>
+<p>Lets write all these information to the register, while the obsolete bits are set (0xA0):
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (IV) Select Drive from the controller;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_HDDEVSEL<span class="sy0">,</span> <span class="nu12">0xA0</span> <span class="sy0">|</span> <span class="br0">&#40;</span>slavebit <span class="sy0">&lt;&lt;</span> <span class="nu0">4</span><span class="br0">&#41;</span> <span class="sy0">|</span> head<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Drive &amp; CHS.</span>
+   <span class="kw1">else</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_HDDEVSEL<span class="sy0">,</span> <span class="nu12">0xE0</span> <span class="sy0">|</span> <span class="br0">&#40;</span>slavebit <span class="sy0">&lt;&lt;</span> <span class="nu0">4</span><span class="br0">&#41;</span> <span class="sy0">|</span> head<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Drive &amp; LBA</span></pre></div></div>
+<p>Let's write the parameters to registers:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (V) Write Parameters;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">2</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_SECCOUNT1<span class="sy0">,</span>   <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA3<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA4<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA5<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">5</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="br0">&#125;</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_SECCOUNT0<span class="sy0">,</span>   numsects<span class="br0">&#41;</span><span class="sy0">;</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA0<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA1<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA2<span class="sy0">,</span>   lba_io<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>If you are using LBA48 and want to write to the LBA0 and LBA3 registers, you should write LBA3 to Register 3, then write LBA0 to Register 3. ide_write function makes it quite simple, refer to the function and you will fully understand the code.
+</p><p>Now, we have a great set of commands described in ATA/ATAPI-8 Specification, we should choose the suitable command to execute:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (VI) Select the command and send it;</span>
+   <span class="co1">// Routine that is followed:</span>
+   <span class="co1">// If ( DMA &amp; LBA48)   DO_DMA_EXT;</span>
+   <span class="co1">// If ( DMA &amp; LBA28)   DO_DMA_LBA;</span>
+   <span class="co1">// If ( DMA &amp; LBA28)   DO_DMA_CHS;</span>
+   <span class="co1">// If (!DMA &amp; LBA48)   DO_PIO_EXT;</span>
+   <span class="co1">// If (!DMA &amp; LBA28)   DO_PIO_LBA;</span>
+   <span class="co1">// If (!DMA &amp;&#160;!LBA#)   DO_PIO_CHS;</span></pre></div></div>
+<p>There isn't a command for doing CHS with DMA.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_PIO<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_PIO<span class="sy0">;</span>   
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">2</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_PIO_EXT<span class="sy0">;</span>   
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_DMA<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_DMA<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">2</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_READ_DMA_EXT<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_PIO<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_PIO<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">2</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_PIO_EXT<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">0</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_DMA<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_DMA<span class="sy0">;</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>lba_mode <span class="sy0">==</span> <span class="nu0">2</span> <span class="sy0">&amp;&amp;</span> dma <span class="sy0">==</span> <span class="nu0">1</span> <span class="sy0">&amp;&amp;</span> direction <span class="sy0">==</span> <span class="nu0">1</span><span class="br0">&#41;</span> cmd <span class="sy0">=</span> ATA_CMD_WRITE_DMA_EXT<span class="sy0">;</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> cmd<span class="br0">&#41;</span><span class="sy0">;</span>               <span class="co1">// Send the Command.</span></pre></div></div>
+<p>This ATA_CMD_READ_PIO command is used for reading in LBA28 or CHS, and the IDE controller refers to bit 6 of the HDDEVSEL register to find out the mode of reading (LBA or CHS).
+</p><p>After sending the command, we should poll, then we read/write a sector, then we should poll, then we read/write a sector, until we read/write all sectors needed, if an error has happened, the function will return a specific error code.
+</p><p>Notice that after writing, we should execute the CACHE FLUSH command, and we should poll after it, but without checking for errors.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="kw1">if</span> <span class="br0">&#40;</span>dma<span class="br0">&#41;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         <span class="co1">// DMA Read.</span>
+      <span class="kw1">else</span><span class="sy0">;</span>
+         <span class="co1">// DMA Write.</span>
+   <span class="kw1">else</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>direction <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+         <span class="co1">// PIO Read.</span>
+      <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> numsects<span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+         <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">=</span> ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span>
+            <span class="kw1">return</span> err<span class="sy0">;</span> <span class="co1">// Polling, set error and exit if there is.</span>
+         asm<span class="br0">&#40;</span><span class="st0">&quot;pushw&#160;%es&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         asm<span class="br0">&#40;</span><span class="st0">&quot;mov&#160;%%ax,&#160;%%es&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;a&quot;</span><span class="br0">&#40;</span>selector<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         asm<span class="br0">&#40;</span><span class="st0">&quot;rep insw&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;c&quot;</span><span class="br0">&#40;</span>words<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;d&quot;</span><span class="br0">&#40;</span>bus<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;D&quot;</span><span class="br0">&#40;</span>edi<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Receive Data.</span>
+         asm<span class="br0">&#40;</span><span class="st0">&quot;popw&#160;%es&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         edi <span class="sy0">+=</span> <span class="br0">&#40;</span>words<span class="sy0">*</span><span class="nu0">2</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="co1">// PIO Write.</span>
+         <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> numsects<span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Polling.</span>
+            asm<span class="br0">&#40;</span><span class="st0">&quot;pushw&#160;%ds&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            asm<span class="br0">&#40;</span><span class="st0">&quot;mov&#160;%%ax,&#160;%%ds&quot;</span><span class="sy0">::</span><span class="st0">&quot;a&quot;</span><span class="br0">&#40;</span>selector<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            asm<span class="br0">&#40;</span><span class="st0">&quot;rep outsw&quot;</span><span class="sy0">::</span><span class="st0">&quot;c&quot;</span><span class="br0">&#40;</span>words<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;d&quot;</span><span class="br0">&#40;</span>bus<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;S&quot;</span><span class="br0">&#40;</span>edi<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Send Data</span>
+            asm<span class="br0">&#40;</span><span class="st0">&quot;popw&#160;%ds&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+            edi <span class="sy0">+=</span> <span class="br0">&#40;</span>words<span class="sy0">*</span><span class="nu0">2</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         <span class="br0">&#125;</span>
+         ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> <span class="br0">&#40;</span><span class="kw4">char</span> <span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>   ATA_CMD_CACHE_FLUSH<span class="sy0">,</span>
+                        ATA_CMD_CACHE_FLUSH<span class="sy0">,</span>
+                        ATA_CMD_CACHE_FLUSH_EXT<span class="br0">&#125;</span><span class="br0">&#91;</span>lba_mode<span class="br0">&#93;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+         ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Polling.</span>
+      <span class="br0">&#125;</span>
+&#160;
+   <span class="kw1">return</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Easy, isn't it?</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Reading_from_an_ATAPI_Drive"> Reading from an ATAPI Drive </span></h2>
+<p>Let's move to an easier part - reading from an ATAPI drive. I will not make the function write to an ATAPI drive, because the write Operation is very complex and is outside of the scope of this tutorial.
+</p><p>An ATAPI drive is different from an ATA drive, as it uses the SCSI command set, not the ATA command set. Parameters are sent as packets, so it is called the ATA-Packet Interface [ATAPI].
+</p><p>Notice also that ATAPI drives always use IRQs, you can't disable them. We should create a function which waits for an IRQ to be caused:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_wait_irq<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="kw1">while</span> <span class="br0">&#40;</span><span class="sy0">!</span>ide_irq_invoked<span class="br0">&#41;</span>
+      <span class="sy0">;</span>
+   ide_irq_invoked <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>When an IRQ happens, the following function should be executed by ISR:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_irq<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   ide_irq_invoked <span class="sy0">=</span> <span class="nu0">1</span><span class="sy0">;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>ide_wait_irq will go into a while loop, which waits for the variable ide_irq_invoked to be set, then clears it.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">unsigned</span> <span class="kw4">char</span> ide_atapi_read<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> drive<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> lba<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> numsects<span class="sy0">,</span>
+          <span class="kw4">unsigned</span> <span class="kw4">short</span> selector<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> edi<span class="br0">&#41;</span> <span class="br0">&#123;</span></pre></div></div>
+<ul><li> drive is the drive number, which is from 0 to 3.
+</li><li> lba is the LBA address.
+</li><li> numsects is the number of sectors. It should always be 1, and if you want to read more than one sector, re-execute this function with th updated LBA address.
+</li><li> selector is the Segment Selector.
+</li><li> edi is the offset in the selector.
+</li></ul>
+<p>Let's read the parameters of the drive:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="kw4">unsigned</span> <span class="kw4">int</span>   channel  <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Channel</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   slavebit <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Drive</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   bus      <span class="sy0">=</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">Base</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   words    <span class="sy0">=</span> <span class="nu0">1024</span><span class="sy0">;</span> <span class="co1">// Sector Size. ATAPI drives have a sector size of 2048 bytes.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  err<span class="sy0">;</span>
+   <span class="kw4">int</span> i<span class="sy0">;</span></pre></div></div>
+<p>We need IRQs:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// Enable IRQs:</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span> <span class="sy0">=</span> ide_irq_invoked <span class="sy0">=</span> <span class="nu12">0x0</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>Let's setup the SCSI Packet, which is 6 words (12 bytes) long:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (I): Setup SCSI Packet:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> ATAPI_CMD_READ<span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&gt;&gt;</span> <span class="nu0">24</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&gt;&gt;</span> <span class="nu0">16</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="br0">&#40;</span>lba <span class="sy0">&gt;&gt;</span> <span class="nu0">0</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">6</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">7</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">8</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span> <span class="nu0">9</span><span class="br0">&#93;</span> <span class="sy0">=</span> numsects<span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span><span class="nu0">10</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span>
+   atapi_packet<span class="br0">&#91;</span><span class="nu0">11</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x0</span><span class="sy0">;</span></pre></div></div>
+<p>Now we should select the drive:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (II): Select the drive:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_HDDEVSEL<span class="sy0">,</span> slavebit <span class="sy0">&lt;&lt;</span> <span class="nu0">4</span><span class="br0">&#41;</span><span class="sy0">;</span></pre></div></div>
+<p>400 nanoseconds delay after this select is a good idea:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (III): Delay 400 nanoseconds for select to complete:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   <span class="kw1">for</span><span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> <span class="nu0">4</span><span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+       ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_ALTSTATUS<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Reading the Alternate Status port wastes 100ns.</span></pre></div></div>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (IV): Inform the Controller that we use PIO mode:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_FEATURES<span class="sy0">,</span> <span class="nu0">0</span><span class="br0">&#41;</span><span class="sy0">;</span>         <span class="co1">// PIO mode.</span></pre></div></div>
+<p>Tell the controller the size of the buffer
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (V): Tell the Controller the size of buffer:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA1<span class="sy0">,</span> <span class="br0">&#40;</span>words <span class="sy0">*</span> <span class="nu0">2</span><span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="nu12">0xFF</span><span class="br0">&#41;</span><span class="sy0">;</span>   <span class="co1">// Lower Byte of Sector Size.</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_LBA2<span class="sy0">,</span> <span class="br0">&#40;</span>words <span class="sy0">*</span> <span class="nu0">2</span><span class="br0">&#41;</span> <span class="sy0">&gt;&gt;</span> <span class="nu0">8</span><span class="br0">&#41;</span><span class="sy0">;</span>   <span class="co1">// Upper Byte of Sector Size.</span></pre></div></div>
+<p>Now that we want to send the packet, we should first send the command "Packet":
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (VI): Send the Packet Command:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> ATA_CMD_PACKET<span class="br0">&#41;</span><span class="sy0">;</span>      <span class="co1">// Send the Command.</span>
+&#160;
+   <span class="co1">// (VII): Waiting for the driver to finish or return an error code:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">=</span> ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="kw1">return</span> err<span class="sy0">;</span>         <span class="co1">// Polling and return if error.</span>
+&#160;
+   <span class="co1">// (VIII): Sending the packet data:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   asm<span class="br0">&#40;</span><span class="st0">&quot;rep   outsw&quot;</span> <span class="sy0">:</span> <span class="sy0">:</span> <span class="st0">&quot;c&quot;</span><span class="br0">&#40;</span><span class="nu0">6</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;d&quot;</span><span class="br0">&#40;</span>bus<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;S&quot;</span><span class="br0">&#40;</span>atapi_packet<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>   <span class="co1">// Send Packet Data</span></pre></div></div>
+<p>Here we cannot poll. We should wait for an IRQ, then read the sectors. These two operations should be repeated for each sector.
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (IX): Receiving Data:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> numsects<span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      ide_wait_irq<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>                  <span class="co1">// Wait for an IRQ.</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">=</span> ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span>
+         <span class="kw1">return</span> err<span class="sy0">;</span>      <span class="co1">// Polling and return if error.</span>
+      asm<span class="br0">&#40;</span><span class="st0">&quot;pushw&#160;%es&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      asm<span class="br0">&#40;</span><span class="st0">&quot;mov&#160;%%ax,&#160;%%es&quot;</span><span class="sy0">::</span><span class="st0">&quot;a&quot;</span><span class="br0">&#40;</span>selector<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      asm<span class="br0">&#40;</span><span class="st0">&quot;rep insw&quot;</span><span class="sy0">::</span><span class="st0">&quot;c&quot;</span><span class="br0">&#40;</span>words<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;d&quot;</span><span class="br0">&#40;</span>bus<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;D&quot;</span><span class="br0">&#40;</span>edi<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span><span class="co1">// Receive Data.</span>
+      asm<span class="br0">&#40;</span><span class="st0">&quot;popw&#160;%es&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      edi <span class="sy0">+=</span> <span class="br0">&#40;</span>words <span class="sy0">*</span> <span class="nu0">2</span><span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="br0">&#125;</span></pre></div></div>
+<p>Now we should wait for an IRQ and poll until the Busy and DRQ bits are clear:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1">   <span class="co1">// (X): Waiting for an IRQ:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   ide_wait_irq<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+   <span class="co1">// (XI): Waiting for BSY &amp; DRQ to clear:</span>
+   <span class="co1">// ------------------------------------------------------------------</span>
+   <span class="kw1">while</span> <span class="br0">&#40;</span>ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_STATUS<span class="br0">&#41;</span> <span class="sy0">&amp;</span> <span class="br0">&#40;</span>ATA_SR_BSY <span class="sy0">|</span> ATA_SR_DRQ<span class="br0">&#41;</span><span class="br0">&#41;</span>
+      <span class="sy0">;</span>
+&#160;
+   <span class="kw1">return</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// Easy, ... Isn't it?</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Reading_from_an_ATA.2FATAPI_Drive"> Reading from an ATA/ATAPI Drive </span></h2>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_read_sectors<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> drive<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> numsects<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> lba<span class="sy0">,</span>
+                      <span class="kw4">unsigned</span> <span class="kw4">short</span> es<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> edi<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&#160;
+   <span class="co1">// 1: Check if the drive presents:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>drive <span class="sy0">&gt;</span> <span class="nu0">3</span> <span class="sy0">||</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Reserved</span> <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span> package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x1</span><span class="sy0">;</span>      <span class="co1">// Drive Not Found!</span>
+&#160;
+   <span class="co1">// 2: Check if inputs are valid:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span><span class="br0">&#40;</span>lba <span class="sy0">+</span> numsects<span class="br0">&#41;</span> <span class="sy0">&gt;</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Size</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATA<span class="br0">&#41;</span><span class="br0">&#41;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x2</span><span class="sy0">;</span>                     <span class="co1">// Seeking to invalid position.</span>
+&#160;
+   <span class="co1">// 3: Read in PIO Mode through Polling &amp; IRQs:</span>
+   <span class="co1">// ============================================</span>
+   <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> err<span class="sy0">;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATA<span class="br0">&#41;</span>
+         err <span class="sy0">=</span> ide_ata_access<span class="br0">&#40;</span>ATA_READ<span class="sy0">,</span> drive<span class="sy0">,</span> lba<span class="sy0">,</span> numsects<span class="sy0">,</span> es<span class="sy0">,</span> edi<span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATAPI<span class="br0">&#41;</span>
+         <span class="kw1">for</span> <span class="br0">&#40;</span>i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> numsects<span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+            err <span class="sy0">=</span> ide_atapi_read<span class="br0">&#40;</span>drive<span class="sy0">,</span> lba <span class="sy0">+</span> i<span class="sy0">,</span> <span class="nu0">1</span><span class="sy0">,</span> es<span class="sy0">,</span> edi <span class="sy0">+</span> <span class="br0">&#40;</span>i<span class="sy0">*</span><span class="nu0">2048</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> ide_print_error<span class="br0">&#40;</span>drive<span class="sy0">,</span> err<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span>
+<span class="co1">// package[0] is an entry of an array. It contains the Error Code.</span></pre></div></div>
+<h2> <span class="mw-headline" id="Writing_to_an_ATA_drive"> Writing to an ATA drive </span></h2>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_write_sectors<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> drive<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">char</span> numsects<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> lba<span class="sy0">,</span>
+                       <span class="kw4">unsigned</span> <span class="kw4">short</span> es<span class="sy0">,</span> <span class="kw4">unsigned</span> <span class="kw4">int</span> edi<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&#160;
+   <span class="co1">// 1: Check if the drive presents:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>drive <span class="sy0">&gt;</span> <span class="nu0">3</span> <span class="sy0">||</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Reserved</span> <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x1</span><span class="sy0">;</span>      <span class="co1">// Drive Not Found!</span>
+   <span class="co1">// 2: Check if inputs are valid:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span><span class="br0">&#40;</span><span class="br0">&#40;</span>lba <span class="sy0">+</span> numsects<span class="br0">&#41;</span> <span class="sy0">&gt;</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Size</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATA<span class="br0">&#41;</span><span class="br0">&#41;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x2</span><span class="sy0">;</span>                     <span class="co1">// Seeking to invalid position.</span>
+   <span class="co1">// 3: Read in PIO Mode through Polling &amp; IRQs:</span>
+   <span class="co1">// ============================================</span>
+   <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="kw4">unsigned</span> <span class="kw4">char</span> err<span class="sy0">;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATA<span class="br0">&#41;</span>
+         err <span class="sy0">=</span> ide_ata_access<span class="br0">&#40;</span>ATA_WRITE<span class="sy0">,</span> drive<span class="sy0">,</span> lba<span class="sy0">,</span> numsects<span class="sy0">,</span> es<span class="sy0">,</span> edi<span class="br0">&#41;</span><span class="sy0">;</span>
+      <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATAPI<span class="br0">&#41;</span>
+         err <span class="sy0">=</span> <span class="nu0">4</span><span class="sy0">;</span> <span class="co1">// Write-Protected.</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> ide_print_error<span class="br0">&#40;</span>drive<span class="sy0">,</span> err<span class="br0">&#41;</span><span class="sy0">;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<h2> <span class="mw-headline" id="Ejecting_an_ATAPI_Drive"> Ejecting an ATAPI Drive </span></h2>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="c source-c"><pre class="de1"><span class="kw4">void</span> ide_atapi_eject<span class="br0">&#40;</span><span class="kw4">unsigned</span> <span class="kw4">char</span> drive<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   channel      <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Channel</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   slavebit      <span class="sy0">=</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Drive</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   bus      <span class="sy0">=</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">Base</span><span class="sy0">;</span>
+   <span class="kw4">unsigned</span> <span class="kw4">int</span>   words      <span class="sy0">=</span> <span class="nu0">2048</span> <span class="sy0">/</span> <span class="nu0">2</span><span class="sy0">;</span>               <span class="co1">// Sector Size in Words.</span>
+   <span class="kw4">unsigned</span> <span class="kw4">char</span>  err <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+   ide_irq_invoked <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span>
+&#160;
+   <span class="co1">// 1: Check if the drive presents:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">if</span> <span class="br0">&#40;</span>drive <span class="sy0">&gt;</span> <span class="nu0">3</span> <span class="sy0">||</span> ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Reserved</span> <span class="sy0">==</span> <span class="nu0">0</span><span class="br0">&#41;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x1</span><span class="sy0">;</span>      <span class="co1">// Drive Not Found!</span>
+   <span class="co1">// 2: Check if drive isn't ATAPI:</span>
+   <span class="co1">// ==================================</span>
+   <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>ide_devices<span class="br0">&#91;</span>drive<span class="br0">&#93;</span>.<span class="me1">Type</span> <span class="sy0">==</span> IDE_ATA<span class="br0">&#41;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu0">20</span><span class="sy0">;</span>         <span class="co1">// Command Aborted.</span>
+   <span class="co1">// 3: Eject ATAPI Driver:</span>
+   <span class="co1">// ============================================</span>
+   <span class="kw1">else</span> <span class="br0">&#123;</span>
+      <span class="co1">// Enable IRQs:</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_CONTROL<span class="sy0">,</span> channels<span class="br0">&#91;</span>channel<span class="br0">&#93;</span>.<span class="me1">nIEN</span> <span class="sy0">=</span> ide_irq_invoked <span class="sy0">=</span> <span class="nu12">0x0</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// (I): Setup SCSI Packet:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> ATAPI_CMD_EJECT<span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">4</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x02</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">5</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">6</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">7</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">8</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span> <span class="nu0">9</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span><span class="nu0">10</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+      atapi_packet<span class="br0">&#91;</span><span class="nu0">11</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="nu12">0x00</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// (II): Select the Drive:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_HDDEVSEL<span class="sy0">,</span> slavebit <span class="sy0">&lt;&lt;</span> <span class="nu0">4</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&#160;
+      <span class="co1">// (III): Delay 400 nanosecond for select to complete:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      <span class="kw1">for</span><span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> i <span class="sy0">&lt;</span> <span class="nu0">4</span><span class="sy0">;</span> i<span class="sy0">++</span><span class="br0">&#41;</span>
+         ide_read<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_ALTSTATUS<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Reading Alternate Status Port wastes 100ns.</span>
+&#160;
+      <span class="co1">// (IV): Send the Packet Command:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      ide_write<span class="br0">&#40;</span>channel<span class="sy0">,</span> ATA_REG_COMMAND<span class="sy0">,</span> ATA_CMD_PACKET<span class="br0">&#41;</span><span class="sy0">;</span>      <span class="co1">// Send the Command.</span>
+&#160;
+      <span class="co1">// (V): Waiting for the driver to finish or invoke an error:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      err <span class="sy0">=</span> ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">1</span><span class="br0">&#41;</span><span class="sy0">;</span>            <span class="co1">// Polling and stop if error.</span>
+&#160;
+      <span class="co1">// (VI): Sending the packet data:</span>
+      <span class="co1">// ------------------------------------------------------------------</span>
+      <span class="kw1">else</span> <span class="br0">&#123;</span>
+         asm<span class="br0">&#40;</span><span class="st0">&quot;rep   outsw&quot;</span><span class="sy0">::</span><span class="st0">&quot;c&quot;</span><span class="br0">&#40;</span><span class="nu0">6</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;d&quot;</span><span class="br0">&#40;</span>bus<span class="br0">&#41;</span><span class="sy0">,</span> <span class="st0">&quot;S&quot;</span><span class="br0">&#40;</span>atapi_packet<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span><span class="co1">// Send Packet Data</span>
+         ide_wait_irq<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>                  <span class="co1">// Wait for an IRQ.</span>
+         err <span class="sy0">=</span> ide_polling<span class="br0">&#40;</span>channel<span class="sy0">,</span> <span class="nu0">1</span><span class="br0">&#41;</span><span class="sy0">;</span>            <span class="co1">// Polling and get error code.</span>
+         <span class="kw1">if</span> <span class="br0">&#40;</span>err <span class="sy0">==</span> <span class="nu0">3</span><span class="br0">&#41;</span> err <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="co1">// DRQ is not needed here.</span>
+      <span class="br0">&#125;</span>
+      package<span class="br0">&#91;</span><span class="nu0">0</span><span class="br0">&#93;</span> <span class="sy0">=</span> ide_print_error<span class="br0">&#40;</span>drive<span class="sy0">,</span> err<span class="br0">&#41;</span><span class="sy0">;</span> <span class="co1">// Return;</span>
+   <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div></div>
+<p>When this method is invoked, the optical device on the given channel is ejected.
+</p>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<h3> <span class="mw-headline" id="Wiki_Pages"> Wiki Pages </span></h3>
+<ul><li> <a href="/MBR_(x86)" title="MBR (x86)">Master Boot Record (x86)</a>
+</li><li> <a href="/Partition_Table" title="Partition Table">Partition Table (x86)</a>
+</li></ul>
+<h3> <span class="mw-headline" id="Threads"> Threads </span></h3>
+<ul><li> <a rel="nofollow" class="external text" href="http://www.osdev.org/phpBB2/viewtopic.php?t=12268">How to w/r harddisk in pmode? (ASM Code from Dex)</a>
+</li><li> <a rel="nofollow" class="external text" href="http://www.osdev.org/phpBB2/viewtopic.php?t=15314">ATA PIO code library (ASM code from XCHG)</a>
+</li><li> <a rel="nofollow" class="external text" href="http://forum.osdev.org/viewtopic.php?f=1&amp;p=167798#p167798">IDE Tutorial (C code from <i>mostafazizo</i>)</a>
+</li></ul>
+<h3> <span class="mw-headline" id="External_Links"> External Links </span></h3>
+<ul><li> <a rel="nofollow" class="external text" href="http://www.t13.org">T13</a> -- The group that creates the ATA standard
+</li><li> <a rel="nofollow" class="external text" href="http://www.ata-atapi.com">ATA-ATAPI</a> -- Public Domain C driver sources (including SATA, Busmatering DMA, ATAPI), fairly good.
+</li><li> <a rel="nofollow" class="external text" href="http://hddguru.com/content/en/documentation/">HDD Guru</a> -- The actual ATA specs from the first one that was released in 1994 to the 7th one in 2003.
+</li><li> <a rel="nofollow" class="external text" href="http://www.ranish.com/part/primer.htm">Partitioning Primer</a> -- A .HTM file containing some information about partitioning.
+</li><li> <a rel="nofollow" class="external text" href="http://www.bswd.com/pciide.pdf">PCI IDE Controller Specification</a> -- Small specification containing information on "legacy mode" and "native mode" (and switching between them)
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 562/1000000
+Post-expand include size: 391/2097152 bytes
+Template argument size: 8/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:2716-0!*!0!!en!*!* and timestamp 20161010081902 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://wiki.osdev.org/index.php?title=PCI_IDE_Controller&amp;oldid=19390">http://wiki.osdev.org/index.php?title=PCI_IDE_Controller&amp;oldid=19390</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/Category:Disputed_Pages" title="Category:Disputed Pages">Disputed Pages</a></li><li><a href="/Category:ATA" title="Category:ATA">ATA</a></li></ul></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=PCI_IDE_Controller" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li  id="ca-nstab-main" class="selected"><span><a href="/PCI_IDE_Controller"  title="View the content page [c]" accesskey="c">Page</a></span></li>
+					<li  id="ca-talk"><span><a href="/Talk:PCI_IDE_Controller"  title="Discussion about the content page [t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="/PCI_IDE_Controller" >Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="/index.php?title=PCI_IDE_Controller&amp;action=edit"  title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="/index.php?title=PCI_IDE_Controller&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/index.php" id="searchform">
+		<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search OSDev Wiki [f]" accesskey="f" id="searchInput" />		<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />		<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/skins/common/images/osdev.png);" href="/Main_Page"  title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id='p-navigation'>
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+			<li id="n-portal"><a href="http://forum.osdev.org/" rel="nofollow" title="About the project, what you can do, where to find things">Forums</a></li>
+			<li id="n-FAQ"><a href="/Category:FAQ">FAQ</a></li>
+			<li id="n-OS-Projects"><a href="/Projects">OS Projects</a></li>
+			<li id="n-randompage"><a href="/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- about -->
+<div class="portal" id='p-about'>
+	<h5>About</h5>
+	<div class="body">
+		<ul>
+			<li id="n-This-site"><a href="/OSDevWiki:About">This site</a></li>
+			<li id="n-Joining"><a href="/OSDevWiki:Joining">Joining</a></li>
+			<li id="n-Editing-help"><a href="/OSDevWiki:Editing">Editing help</a></li>
+			<li id="n-recentchanges"><a href="/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /about -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id='p-tb'>
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="/Special:WhatLinksHere/PCI_IDE_Controller" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="/Special:RecentChangesLinked/PCI_IDE_Controller" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+			<li><a href="/index.php?title=PCI_IDE_Controller&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="/index.php?title=PCI_IDE_Controller&amp;oldid=19390" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+<div class="portal" id='p-lang'>
+	<h5>In other languages</h5>
+	<div class="body">
+		<ul>
+			<li class="interwiki-de"><a href="http://www.lowlevel.eu/wiki/AT_Attachment" title="AT Attachment">Deutsch</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 1 July 2016, at 09:42.</li>
+											<li id="footer-info-viewcount">This page has been accessed 71,564 times.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<script src="/load.php?debug=false&amp;lang=en&amp;modules=skins.vector&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;skin=vector&amp;*"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wikidb:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 0.062 secs. -->
+	</body>
+</html>

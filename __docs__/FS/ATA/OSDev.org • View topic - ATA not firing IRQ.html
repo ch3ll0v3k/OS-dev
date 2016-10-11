@@ -1,0 +1,1264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>OSDev.org &bull; View topic - ATA not firing IRQ</title>
+
+<link rel="alternate" type="application/atom+xml" title="Feed - OSDev.org" href="http://forum.osdev.org/feed.php" /><link rel="alternate" type="application/atom+xml" title="Feed - News" href="http://forum.osdev.org/feed.php?mode=news" /><link rel="alternate" type="application/atom+xml" title="Feed - All forums" href="http://forum.osdev.org/feed.php?mode=forums" /><link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="http://forum.osdev.org/feed.php?mode=topics" /><link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="http://forum.osdev.org/feed.php?mode=topics_active" /><link rel="alternate" type="application/atom+xml" title="Feed - Forum - OS Development" href="http://forum.osdev.org/feed.php?f=1" /><link rel="alternate" type="application/atom+xml" title="Feed - Topic - ATA not firing IRQ" href="http://forum.osdev.org/feed.php?f=1&amp;t=30405" />
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+</head>
+<body class="ltr">
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php"><img src="./styles/subsilver2/imageset/osdev.png" width="120" height="100" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>OSDev.org</h1><span class="gen">The Place to Start for Operating System Developers</span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=logout&amp;sid=b5e372e81596e8ee26e2bc3cc35b5acf"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Logout [ ch3ll0v3k ]</a>&nbsp; &nbsp;<a href="./ucp.php?i=pm&amp;folder=inbox"><img src="./styles/subsilver2/theme/images/icon_mini_message.gif" width="12" height="13" alt="*" /> <strong>0</strong> new messages</a>
+			</td>
+			<td class="genmed" align="right">
+<a href="http://wiki.osdev.org/" style="font-size: 125%; font-weight: bold;">The OSDev.org Wiki - Got a question? Search this first!</a>
+				<a href="./faq.php"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>&nbsp; &nbsp;<a href="./memberlist.php"><img src="./styles/subsilver2/theme/images/icon_mini_members.gif" width="12" height="13" alt="*" /> Members</a>&nbsp; &nbsp;<a href="./ucp.php"><img src="./styles/subsilver2/theme/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> User Control Panel</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall">Last visit was: Mon Oct 10, 2016 6:20 am</td>
+			<td class="gensmall" align="right">It is currently Mon Oct 10, 2016 8:48 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered">View unanswered posts</a> | <a href="./search.php?search_id=active_topics">View active topics</a></span>
+		
+		<span style="float: right;"><a href="./search.php?search_id=unreadposts">View unread posts</a> | <a href="./search.php?search_id=newposts">View new posts</a> | <a href="./search.php?search_id=egosearch">View your posts</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=1&amp;t=30405&amp;start=0&amp;hilit=ata+write">ATA not firing IRQ</a></h2>
+
+
+	<p class="moderators">Moderators: <a href="./memberlist.php?mode=viewprofile&amp;u=3016">mystran</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=67">JAAman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4866">Owen</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1906">Combuster</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1922">quok</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2600">os64dev</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1902">Candy</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2">chase</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=2477">pcmattman</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=12891">sortie</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=1950">AJ</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=356">Brendan</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3731">01000101</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=155">carbonBased</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=13448">Antti</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=4287">thepowersgang</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=3781">JamesM</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=117">kmcguire</a></p>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=30405"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 12 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				<a href="./viewtopic.php?uid=17250&amp;f=1&amp;t=30405&amp;watch=topic&amp;start=0&amp;hash=a08f7618" title="Subscribe topic">Subscribe topic</a> | <a href="./viewtopic.php?f=1&amp;t=30405&amp;start=0&amp;hilit=ata+write&amp;bookmark=1&amp;hash=a08f7618" title="Bookmark topic">Bookmark topic</a> | <a href="./viewtopic.php?f=1&amp;t=30405&amp;start=0&amp;hilit=ata+write&amp;view=print" title="Print view">Print view</a> | <a href="./memberlist.php?mode=email&amp;t=30405" title="E-mail friend">E-mail friend</a>
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=1&amp;t=30405&amp;view=previous">Previous topic</a> | <a href="./viewtopic.php?f=1&amp;t=30405&amp;view=next">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p260899"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260899#p260899"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat May 28, 2016 8:38 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br />I am having a problem trying to make an <span class="posthilit">ATA</span> disk fire an interrupt.<br /><br />I can detect all the disks and extract fw, model, serial, and disk size correctly.<br /><br />When I try to <span class="posthilit">write</span> to one of the attached detected disks the interrupt does not fire. Here is the code that I expect to fire the interrupt:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">// io_port = 0xf0<br />// drv_selector = 0xB0<br />// ATA_PRIMARY_DCR_AS = 0x3F6<br />// addr is the sector number and I use the value 100.<br /><br />&nbsp; &nbsp; Ports::outportb(io_port + ATA_REG_HDDEVSEL,drv_selector); // select disk<br />&nbsp; &nbsp; Ports::outportb(ATA_PRIMARY_DCR_AS,0b00001000);&nbsp; &nbsp; // clearing nIEN bit<br />&nbsp; &nbsp; <br />&nbsp; &nbsp; Ports::outportb(io_port + 1, 0x00);<br />&nbsp; &nbsp; Ports::outportb(io_port + 2, 0x01);<br />&nbsp; &nbsp; Ports::outportb(io_port + 3, (uint8_t)addr);<br />&nbsp; &nbsp; Ports::outportb(io_port + 4, (uint8_t)(addr &gt;&gt; 8));<br />&nbsp; &nbsp; Ports::outportb(io_port + 5, (uint8_t)(addr &gt;&gt; 16));<br />&nbsp; &nbsp; Ports::outportb(io_port + 6, 0xE0+slavebit | (slavebit &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp; Ports::outportb(io_port + 7, 0x30);<br /></div><br /><br />I expect that at the end of the above code an interrupt fires.<br /><br />The IVT handler for the primary and the secondary (14 and 15) is called once at the time I identify the disks and then no interrupts fires again.<br /><br />A copy of the same interrupt handler works fine wit my network driver (E1000) and send EOI at the end of the <span class="posthilit">ATA</span> interrupt as well. I also read the status register at the end of the interrupt.<br /><br />Also it is worth mentioning that I have tried this code from with and system call so it occurs within an interrupt, and from the main body of my kernel avoiding executing the code from within an interrupt.<br /><br /><br />Any ideas what might be the problem?<br /><br />Thanks.<br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260899"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260899"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260899"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p260903"></a>
+				<b class="postauthor">omarrx024</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260903#p260903"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat May 28, 2016 10:22 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Dec 27, 2014 10:11 am<br /><b>Posts:</b> 636<br /><b>Location:</b> Cairo, Egypt
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">kemosparc wrote:</div><div class="quotecontent"><div class="codetitle"><b>Code:</b></div><div class="codecontent">Ports::outportb(ATA_PRIMARY_DCR_AS,0b00001000);</div></div><br />Why are you setting bit 3? What does this bit do?<br />BTW, I usually reset the <span class="posthilit">ATA</span> bus by setting then clearing bit 2, and then enable interrupts by clearing bit 1. You should do this before every <span class="posthilit">ATA</span> command, or at least I do and it works on emulators and real HW.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Byte me; <a href="https://github.com/omarrx024/xos" class="postlink">my OS</a>.<br /><span style="font-style: italic">Aspire to inspire before we expire.</span></span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260903"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15866"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260903"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260903"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p260909"></a>
+				<b class="postauthor">BenLunt</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260909#p260909"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sat May 28, 2016 1:13 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15788_1463804611.png" width="65" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 22, 2014 7:33 pm<br /><b>Posts:</b> 107<br /><b>Location:</b> USA
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">kemosparc wrote:</div><div class="quotecontent">The IVT handler for the primary and the secondary (14 and 15) is called once at the time I identify the disks and then no interrupts fires again.<br /><br />A copy of the same interrupt handler works fine wit my network driver (E1000) and send EOI at the end of the <span class="posthilit">ATA</span> interrupt as well. I also read the status register at the end of the interrupt.<br /></div><br />Just a few thoughts.<br /> - You have acknowledged the primary *and* secondary PIC's after the interrupt?  (first the secondary, then the primary)<br /> - You have read the STATUS register, not the ALT_STATUS register?<br /> - You actually wait long enough for the interrupt to happen before checking to see if it did?<br /><br />&gt;&gt; Ports::outportb(io_port + 6, 0xE0+slavebit | (slavebit &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br /><br />Using the &quot;+ slavebit | (slavebit &lt;&lt; 4)&quot; code, you actually are setting bit 0 in the [LBA27:24] if you are on the slave drive.<br />Should you change the above to:<br /><br />&gt;&gt; Ports::outportb(io_port + 6, 0xE0 | (slavebit &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br /><br />I don't recommend resetting of the controller each time you send a command, since a proper reset sequence can take up to 7mS.  This is a 7mS wait every time you wish to send a command.  If you can only read 256 sectors at a time, this is 7mS between reads.  A lot can happen in 7mS. <img src="./images/smilies/icon_smile.gif" alt=":-)" title="Smile" /><br /><br />Ben<br /><!-- m --><a class="postlink" href="http://www.fysnet.net/media_storage_devices.htm">http://www.fysnet.net/media_storage_devices.htm</a><!-- m --></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260909"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15788"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260909"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260909"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p260956"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260956#p260956"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun May 29, 2016 3:15 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br />Okay I have managed to get the IRQ fire but with some symptoms that I cannot explain.<br /><br />The main problem was that I do select drive before issuing the <span class="posthilit">write</span> commands.<br /><br />Here is the code I have right now for the <span class="posthilit">write</span>:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent"><br />&nbsp; &nbsp; Ports::outportb(io_port + 6, 0xE0 | (slavebit &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp; Ports::outportb(io_port + 1, 0x00);<br />&nbsp; &nbsp; Ports::outportb(io_port + 2, 0x01);<br />&nbsp; &nbsp; Ports::outportb(io_port + 3, (uint8_t)addr);<br />&nbsp; &nbsp; Ports::outportb(io_port + 4, (uint8_t)(addr &gt;&gt; 8));<br />&nbsp; &nbsp; Ports::outportb(io_port + 5, (uint8_t)(addr &gt;&gt; 16));<br />&nbsp; &nbsp; Ports::outportb(io_port + 7, 0x30);<br />&nbsp; &nbsp; Ports::outportb(io_port + 7, 0xE7);<br /> <br />&nbsp; &nbsp; if (Ports::inportb(io_port + ATA_REG_STATUS))<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; for ( int i = 0 ; ; i++)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; uint8_t status = Ports::inportb(io_port+ATA_REG_STATUS);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ( status &amp; ATA_SR_DRQ ) break;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if(status &amp; ATA_SR_ERR) <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; video-&gt;setPosition(30,5);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; video-&gt;putString(&quot;Error on <span class="posthilit">Write</span> Sector&quot;,COLOR_BLUE,COLOR_LIGHT_BROWN);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return; <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; }<br />// if I remove this part the IRQ does not fire for the <span class="posthilit">write</span><br />&nbsp; &nbsp; for (int idx = 0; idx &lt; 256; idx++)<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; uint16_t writeword = p_buffer&#91;idx * 2&#93; | (p_buffer&#91;idx * 2 + 1&#93; &lt;&lt; 8);<br />&nbsp; &nbsp; &nbsp; &nbsp; Ports::outportw(io_port, writeword);<br />&nbsp; &nbsp; &nbsp; &nbsp; Ports::outportb(io_port + 7, 0xE7);<br />&nbsp; &nbsp; }<br />// if I remove this part the IRQ does not fire for the <span class="posthilit">write</span><br />&nbsp; &nbsp; for (int idx = 0; idx &lt; 10; idx++)<br />&nbsp; &nbsp; &nbsp; &nbsp; ide_400ns_delay();<br /><br /></div><br /><br />The problem that I can not understand is that if I remove the code for the sector data writing the interrupt does not appear, so what is the purpose of the interrupt anyway.<br /><br />I was targeting to put the code loop for writing the sector in the interrupt handler.<br /><br />Any help is much appreciated.<br /><br />Thanks,<br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260956"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260956"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260956"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p260962"></a>
+				<b class="postauthor">BenLunt</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260962#p260962"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun May 29, 2016 6:40 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15788_1463804611.png" width="65" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 22, 2014 7:33 pm<br /><b>Posts:</b> 107<br /><b>Location:</b> USA
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I think you have misunderstood where the IRQ should fire.  The IRQ only fires *after* a sector has been read or written, a whole sector.<br /><br />The IRQ won't fire after you have written the parameter registers, only after you have written 256 16-bit words.<br /><br />Also, the IRQ will not fire immediately after the last word written, it will take a few nS before it does.<br /><br />And don't <span class="posthilit">write</span> the Flush Cache command until after the whole sector has been written, in fact at the moment, until you<br />get a working read/<span class="posthilit">write</span> routine, I would forget about flushing the cache.<br /><br />Here is what I would do (please see my notes afterward):<div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp; Ports::outportb(io_port + 6, 0xE0 | (slavebit &lt;&lt; 4) | ((addr &gt;&gt; 24) &amp; 0x0F));<br />&nbsp; &nbsp; Ports::inportb(io_port + ATA_REG_STATUS));<br />&nbsp; &nbsp; Ports::outportb(io_port + 1, 0x00);<br />&nbsp; &nbsp; Ports::outportb(io_port + 2, 0x01);<br />&nbsp; &nbsp; Ports::outportb(io_port + 3, (uint8_t)addr);<br />&nbsp; &nbsp; Ports::outportb(io_port + 4, (uint8_t)(addr &gt;&gt; 8));<br />&nbsp; &nbsp; Ports::outportb(io_port + 5, (uint8_t)(addr &gt;&gt; 16));<br />&nbsp; &nbsp; Ports::outportb(io_port + 7, 0x30);<br />&nbsp; &nbsp; <br />&nbsp; &nbsp; if (Ports::inportb(io_port + ATA_REG_STATUS))<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; // for ( int i = 0 ; ; i++)&nbsp; &nbsp;// why increment 'i'?&nbsp; Unneeded instruction<br />&nbsp; &nbsp; &nbsp; &nbsp; for (;;)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; uint8_t status = Ports::inportb(io_port+ATA_REG_STATUS);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ( status &amp; ATA_SR_DRQ ) break;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if(status &amp; ATA_SR_ERR)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; video-&gt;setPosition(30,5);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; video-&gt;putString(&quot;Error on <span class="posthilit">Write</span> Sector&quot;,COLOR_BLUE,COLOR_LIGHT_BROWN);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; }<br />&nbsp; &nbsp; for (int idx = 0; idx &lt; 256; idx++)<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; uint16_t writeword = p_buffer&#91;idx * 2&#93; | (p_buffer&#91;idx * 2 + 1&#93; &lt;&lt; 8);<br />&nbsp; &nbsp; &nbsp; &nbsp; Ports::outportw(io_port, writeword);<br />&nbsp; &nbsp; }<br /><br />&nbsp; &nbsp; // here is where the IRQ should fire.<br /></div><br />Here are some notes about the <span class="posthilit">ATA</span> interface.<br /><ul>- You should only select the drive once.  For example, don't select the same drive again for the next sector.  Only <span class="posthilit">write</span> to the DRV_HEAD register if the value to <span class="posthilit">write</span> is different from the last time.  The <span class="posthilit">ATA</span> controller takes a considerable amount of time to 'select' itself. (400ns is a long time, really) <img src="./images/smilies/icon_smile.gif" alt=":-)" title="Smile" /><br />- You should read the status register after selecting the drive, giving it enough time to actually select itself.<br />- If you cast your p_buffer from a byte buffer to a word buffer, you can do something like:<div class="codetitle"><b>Code:</b></div><div class="codecontent">uint16_t *ptr = (uint16_t *) p_buffer;<br />for (int idx = 0; idx &lt; 256; idx++)<br />&nbsp; Ports::outportw(io_port, *ptr++);</div></ul><br />Here is a condensed version of my &quot;transfer a sector&quot; function from my book:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; // select drive<br />&nbsp; // (reads the status register to clear any pending interrupts)<br />&nbsp; ata_select_drv(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base, <span class="posthilit">ata</span>-&gt;drv, ATA_DH_ISLBA, (bit8u) ((bit64u) (lba &amp; (bit64u) 0x00000F000000) &gt;&gt; 24));<br />&nbsp; <br />&nbsp; // wait for the controller to not be busy (i.e: wait for it to be ready)<br />&nbsp; if (ata_wait(<span class="posthilit">ata</span>, ATA_STATUS_RDY, wait)) {<br />&nbsp; &nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_FEATURES, (features &amp; 0xFF));<br />&nbsp; &nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_SECTOR_COUNT, ((buflen / 512) &amp; 0xFF));<br />&nbsp; &nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_LBA_LOW_BYTE,&nbsp; (bit8u) (((bit32u) lba &amp; 0x000000FF) &gt;&gt;&nbsp; 0));<br />&nbsp; &nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_LBA_MID_BYTE,&nbsp; (bit8u) (((bit32u) lba &amp; 0x0000FF00) &gt;&gt;&nbsp; 8));<br />&nbsp; &nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_LBA_HIGH_BYTE, (bit8u) (((bit32u) lba &amp; 0x00FF0000) &gt;&gt; 16));<br />&nbsp; } else<br />&nbsp; &nbsp; return FALSE;<br />&nbsp; <br />&nbsp; // send the command<br />&nbsp; outportb(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_COMMAND, command);<br />&nbsp; // wait for the drive to be ready for the transfer<br />&nbsp; if (ata_wait(<span class="posthilit">ata</span>, ATA_STATUS_DRQ, wait)) {<br />&nbsp; &nbsp; if (ttype == ATA_TRNS_TYPE_PIO) {<br />&nbsp; &nbsp; &nbsp; // All sector transfers on an <span class="posthilit">ATA</span> call are 512 byte sectors...<br />&nbsp; &nbsp; &nbsp; bit32u addr = (bit32u) buf;<br />&nbsp; &nbsp; &nbsp; while (buflen &gt; 0) {<br />&nbsp; &nbsp; &nbsp; &nbsp; if (<span class="posthilit">ata</span>-&gt;dword_io) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bit32u *ptr = (bit32u *) addr;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; j = ((buflen &gt; 512) ? 512 : buflen) / sizeof(bit32u);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (i=0; i&lt;j; i++) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dir == ATA_DIR_RECV)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *ptr++ = inportl(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_DATA);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; outportl(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_DATA, *ptr++);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; } else {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bit16u *ptr = (bit16u *) addr;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; j = ((buflen &gt; 512) ? 512 : buflen) / sizeof(bit16u);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (i=0; i&lt;j; i++) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dir == ATA_DIR_RECV)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *ptr++ = inportw(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_DATA);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; outportw(<span class="posthilit">ata</span>-&gt;cntrlr-&gt;base + ATA_DATA, *ptr++);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; buflen -= 512;<br />&nbsp; &nbsp; &nbsp; &nbsp; addr += 512;<br />&nbsp; &nbsp; &nbsp; &nbsp; // wait for the drive to be ready for the next transfer<br />&nbsp; &nbsp; &nbsp; &nbsp; if ((buflen &gt; 0) &amp;&amp; !ata_wait(<span class="posthilit">ata</span>, ATA_STATUS_DRQ, wait))<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return FALSE;<br />&nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; } else {<br />&nbsp; &nbsp; &nbsp; &nbsp;// is DMA, do the DMA code<br />&nbsp; &nbsp; &nbsp; &nbsp;//&nbsp; not included for this post.<br />&nbsp; &nbsp; }<br />&nbsp; }<br /></div><br />Please note that this is a stripped down version and allows transfers less than 512 bytes, since the same code is used to send 12- and 16-byte packets.<br /><br />Hope this helps.<br />Ben<br /><!-- m --><a class="postlink" href="http://www.fysnet.net/media_storage_devices.htm">http://www.fysnet.net/media_storage_devices.htm</a><!-- m --></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260962"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15788"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260962"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260962"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p260970"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260970#p260970"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon May 30, 2016 7:25 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br />Thank you very very much for your thorough reply. I really appreciate it.<br /><br />Two verification questions though:<br />     1.You said that the IRQ fires when the whole sector is transferred to the disk which explains the symptom I got, but in that case what is the need for the interrupt? what I should handle in the interrupt? I mean in case of writing sectors polling is obviously mandated? For me there is no need for the interrupt.<br />     2. In case of reading what happens is that my IRQ fires as soon as I issue &quot;Ports::outportb(io_port + 7, 0x20)&quot; followed by reading the status, so in that case I should do the sector reading within the interrupt handler, right? So in reading it does not wait until the whole sector is read, or am I getting something wrong?<br /><br />On another note, I am planning to start on <span class="posthilit">ATA</span>/DMA, do you have any easy source for that which can explain the subject from scratch (without assuming that some issues are clear by themselves <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" />)) ) and  with important implementation details. Most of the online material tackles it in a general form, that will suite DMA with any device and without going into implementation details, but I need documentation on <span class="posthilit">ATA</span>/DMA in specific with some examples and tutorial approach (something like James Molloy tutorial)<br /><br />Thanks a lot again for the help,<br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260970"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260970"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260970"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p260982"></a>
+				<b class="postauthor">BenLunt</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=260982#p260982"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon May 30, 2016 12:53 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15788_1463804611.png" width="65" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 22, 2014 7:33 pm<br /><b>Posts:</b> 107<br /><b>Location:</b> USA
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">When transferring using PIO, yes, there is really no need to use interrupts.  You must poll for the DRQ bit anyway.<br /><br />Section 9.5 of ATAPI 6 states that you will receive an interrupt just after sending the READ command, and then another after each sector read.  You do not receive an interrupt after sending the <span class="posthilit">write</span> command.<br /><br />As far as using DMA, if the drive is ATAPI compatible, i.e.: uses Packets, you cannot use the same commands as PIO and DMA transfers.  You must use the packet interface for all DMA transfers.<br /><br />Sending packets are a little different.  You first send the packet to the drive just like you would if you are writing sectors, though you use the PACKET command and send 12 to 16 bytes only.  Then you wait for the drive ready, if using PIO, or wait for an interrupt if using DMA.<br /><br />Give it a try and then if you get stuck, let us know.<br /><br />Ben<br /><!-- m --><a class="postlink" href="http://www.fysnet.net/media_storage_devices.htm">http://www.fysnet.net/media_storage_devices.htm</a><!-- m --></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=260982"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15788"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=260982"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=260982"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p261000"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ [DETECTNG PCI]</div><div style="float: right;"><a href="./viewtopic.php?p=261000#p261000"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 31, 2016 3:56 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi Ben,<br /><br />I got your book on kindle and I started reading it; so I am going step by step.<br /><br />Now I am trying to detect my drives PCI configuration. <br /><br />I already had a module that reads all PCI, and loads their descriptors into data structure.<br /><br />When I print them all I cannot find any PCI device with class code = 0x1.<br /><br />I run my OS on qemu and vbox and both printed a list of devices and non of them has a class code = 0x1.<br /><br />Does this mean that the disks are configured as ISA and not PCI.<br /><br />In that case how can I force qemu and vbox to show my disks as PCI.<br /><br />Thanks,<br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=261000"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=261000"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=261000"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p261001"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ [ANSWERING MYSELF]</div><div style="float: right;"><a href="./viewtopic.php?p=261001#p261001"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 31, 2016 4:15 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Okay, <br /><br />I am answering my one post.<br /><br />I think that that default in both hypervisors is ISA.<br /><br />For example I used to start my qemu machine like this:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">qemu-system-x86_64 -m 4096 -smp 2 -hda $(IMAGE)/boot.flp -hdb $(IMAGE)/hdd1.qcow2 -hdc $(IMAGE)/hdd2.qcow2 -hdd $(IMAGE)/hdd3.qcow2 -net nic,vlan=0,model=e1000,macaddr=52:54:00:91:46:f6 -net tap,ifname=virbr0_1,script=/etc/cloudsparc/net_scripts/virbr0 --enable-kvm<br /></div><br /><br />When I changed it to the following the PCI was detected:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">qemu-system-x86_64 -m 4096 -smp 2 -drive file=/home/kmsobh/NetBeansProjects/BOSML/images/boot.flp,if=ide,index=0,media=disk -drive file=/home/kmsobh/NetBeansProjects/BOSML/images/hdd1.qcow2,if=ide,index=1,media=disk -drive file=/home/kmsobh/NetBeansProjects/BOSML/images/hdd2.qcow2,if=ide,index=2,media=disk -drive file=/home/kmsobh/NetBeansProjects/BOSML/images/hdd3.qcow2,if=ide,index=3,media=disk&nbsp; -net nic,vlan=0,model=e1000,macaddr=52:54:00:91:46:f6 -net tap,ifname=virbr0_1,script=/etc/cloudsparc/net_scripts/virbr0 --enable-kvm<br /></div><br /><br />Okay, so using the short hand -hd[a|b|c|d] will start the machine with ISA (according to my interpretation; might be wrong), and defining the drives using the &quot;drive&quot; switch will make it work as PCI.<br /><br />In vbox, I had to add a SATA controller and move my disks under it.<br /><br />I thought that this might be of benefit to other who may go through the same route.<br /><br />Thanks,<br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=261001"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=261001"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=261001"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p261017"></a>
+				<b class="postauthor">BenLunt</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=261017#p261017"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 31, 2016 2:07 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/2.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=15788_1463804611.png" width="65" height="80" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 22, 2014 7:33 pm<br /><b>Posts:</b> 107<br /><b>Location:</b> USA
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Yes, most emulators, at least the ones I use, default to ISA compatible <span class="posthilit">ATA</span> controllers.<br /><br />Please note though, that an <span class="posthilit">ATA</span> controller can be in PCI mode and still be compatible with ISA drivers.  This is where the Native and Compatibility bits come into play.  Please read the section starting on page 2-9.<br /><br />SATA controllers, have two capable modes.  SATA IDE and SATA AHCI.  These are PCI(e) only.<br /><br />SATA IDE work (almost) exactly as PATA (Parallel <span class="posthilit">ATA</span>).  They have the same interface between the software and hardware, though the interface between the hardware and the drive is much different.<br /><br />SATA AHCI is quite a bit different that the PATA or SATA IDE interface and needs a lot more work.  However, it now allows 32 drives to be attached, with<br />many more if you use multipliers (hubs in the USB sense of the word).<br /><br />Not all SATA controllers can be AHCI and not all SATA controllers can be IDE, but if a controller is AHCI it most likely can be IDE too.<br /><br />Luckily for you, my book and the CDROM ISO I sent you explains all of these modes. (smile)<br /><br />Also, for a bonus, the book explains the FDC too.  As with recent statements in other posts, floppies are a thing of the past.  However, I like hardware from the past.  It shows the innovations used to accomplish something that was yet to be a common place.  One of the things I work on, sporadically, is to find out the sequence described by  <!-- m --><a class="postlink" href="https://blogs.msdn.microsoft.com/oldnewthing/20090402-00/?p=18643">https://blogs.msdn.microsoft.com/oldnew ... 0/?p=18643</a><!-- m --><br /><br />Good luck,<br />Ben</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=261017"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=15788"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=261017"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=261017"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p261018"></a>
+				<b class="postauthor">kemosparc</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ</div><div style="float: right;"><a href="./viewtopic.php?p=261018#p261018"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Tue May 31, 2016 2:13 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/3.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Oct 29, 2013 2:13 pm<br /><b>Posts:</b> 179
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanks a lot for your explanation,<br /><br />I would like to add that I was not fully about my last post.<br /><br />In addition to the qemu switches my problem was that I did not read all the functions within every bus, only the first one, and that was the second problem by not detecting my drives correctly.<br /><br />I just wanted to add this as documentation for others whom my have the same problem, and I refer to this OSDEV forum post <!-- l --><a class="postlink-local" href="http://forum.osdev.org/viewtopic.php?f=1&amp;t=30125">viewtopic.php?f=1&amp;t=30125</a><!-- l --> which helped me discover the problem.<br /><br />Now it works well and I am in the process of detecting the DMA and setting it up.<br /><br />The book is very good so far, and I am following it for the DMA initialization and set up steps <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /><br /><br />Will let you know when I get it running; probably in a couple of days,<br /><br />Thanks again for the help.<br /><br />Karim.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=261018"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=14801"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=261018"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=261018"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p261030"></a>
+				<b class="postauthor">Kevin</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> Re: <span class="posthilit">ATA</span> not firing IRQ [ANSWERING MYSELF]</div><div style="float: right;"><a href="./viewtopic.php?p=261030#p261030"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Wed Jun 01, 2016 6:30 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Member</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/4.gif" alt="Member" title="Member" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Feb 01, 2009 7:11 am<br /><b>Posts:</b> 942<br /><b>Location:</b> Germany
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">kemosparc wrote:</div><div class="quotecontent">Okay, so using the short hand -hd[a|b|c|d] will start the machine with ISA (according to my interpretation; might be wrong), and defining the drives using the &quot;drive&quot; switch will make it work as PCI.</div><br />You must have changed something else, too, because -hd[abcd] is exactly the same as your -drive options. It is even implemented this way in qemu, the option is first expanded into an explicit -drive option. And I never had problems finding the controller on the PCI bus when using -hda.</div>
+
+					
+						<span class="postbody"><br />_________________<br />Developer of <a href="http://www.tyndur.org" class="postlink">tyndur</a> - community OS of <a href="http://www.lowlevel.eu" class="postlink">Lowlevel</a> (German)</span>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							<a href="./report.php?f=1&amp;p=261030"><img src="./styles/subsilver2/imageset/en/icon_post_report.gif" alt="Report this post" title="Report this post" /></a> 
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=5883"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quotepost&amp;p=261030"><img src="./styles/subsilver2/imageset/en/icon_contact_pm.gif" alt="Send private message" title="Send private message" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=1&amp;p=261030"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=1&amp;t=30405&amp;start=0"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=1"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=1&amp;t=30405"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 12 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=16">Operating System Development</a> &#187; <a href="./viewforum.php?f=1">OS Development</a></p>
+			<p class="datetime">All times are UTC - 6 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: <span style="color: #9E8DA7;" class="username-coloured">Bing [Bot]</span>, <a href="./memberlist.php?mode=viewprofile&amp;u=17250">ch3ll0v3k</a>, <a href="./memberlist.php?mode=viewprofile&amp;u=17259">PandaZero</a> and 7 guests</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>can</strong> post new topics in this forum<br />You <strong>can</strong> reply to topics in this forum<br />You <strong>can</strong> edit your posts in this forum<br />You <strong>can</strong> delete your posts in this forum<br />You <strong>can</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="post" name="search" action="./search.php?t=30405"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /></form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="16">Operating System Development</option>
+		
+			<option value="1" selected="selected">&nbsp; &nbsp;OS Development</option>
+		
+			<option value="15">&nbsp; &nbsp;OS Design &amp; Theory</option>
+		
+			<option value="2">&nbsp; &nbsp;Announcements, Test Requests, &amp; Job openings</option>
+		
+			<option value="17">Everything Else</option>
+		
+			<option value="13">&nbsp; &nbsp;General Programming</option>
+		
+			<option value="11">&nbsp; &nbsp;General Ramblings</option>
+		
+			<option value="7">&nbsp; &nbsp;Auto-Delete Forum</option>
+		
+			<option value="18">OSDev.org</option>
+		
+			<option value="8">&nbsp; &nbsp;OSDev Wiki</option>
+		
+			<option value="6">&nbsp; &nbsp;About this site</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<!--
+	We request you retain the full copyright notice below including the link to www.phpbb.com.
+	This not only gives respect to the large amount of time given freely by the developers
+	but also helps build interest, traffic and use of phpBB3. If you (honestly) cannot retain
+	the full copyright we ask you at least leave in place the "Powered by phpBB" line, with
+	"phpBB" linked to www.phpbb.com. If you refuse to include even this then support on our
+	forums may be affected.
+
+	The phpBB Group : 2006
+//-->
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

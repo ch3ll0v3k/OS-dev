@@ -1,0 +1,50 @@
+
+BINARY-BLOCK-MAP
+
+8192 byte  == 2 ^ 16 / 8
+16 sectors == 2 ^ 16 / 8 / 512
+
+
+G_LBA = (2 ^ 16)
+L_LBA = (2 ^ 16)
+
+G_LBA * L_LBA == 4 GiB Addressing space
+
+
+Each G_LBA + 0 == [BINARY-BLOCK-MAP] == 16 sectors == (2 ^ 16) bit / 8192 KiB
+
+[BINARY-BLOCK-MAP] == (G_LBA * LBA ) + L_LBA == 0
+REAL START OF DATA == (G_LBA * LBA ) + L_LBA == 1
+
+// ====================================================================
+
+1024 MiB * 1024 * 1024 = 1.073.741.824 byte
+
+1 LBA = 512 byte
+
+1.073.741.824 / 512 = 2.097.152 LBAs
+
+OFFSET = 2 LBA = 1024 byte
+
+LBA_GROUP = 0;
+
+OFFSET + ( G_LBA * LBA_GROUP ) + (L_LBA=0) -> [BINARY-BLOCK-MAP=(2^16)]
+
+OFFSET + ( G_LBA * LBA_GROUP ) + (L_LBA=1) -> [DATA]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
