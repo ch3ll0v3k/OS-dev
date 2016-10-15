@@ -1,0 +1,107 @@
+#!/usr/bin/python
+
+# ---------------------------------------------------------------------
+MAIN_OFF            = 4-1;  # LBAs [0-3] == 4
+ADDR_SPACE_LBAs     = 1024; # LBAs // == 64 MiB addrs space // 131.072 32-bit address
+GRP_SIZE            = 8192; # LBAs
+
+GROUPS_TTL          = 16;
+
+BIT_BLK_SIZE        = 2;    # LBAs // (2 * 512 bit)
+DATA_BLK_SIZE       = GRP_SIZE - BIT_BLK_SIZE; # LBA // (8190 * 512 byte)
+
+GRPS_OFF            = MAIN_OFF + ADDR_SPACE_LBAs; # 1028 if MAIN_OFF == 4 else: 1027
+
+# ---------------------------------------------------------------------
+THIS_GROUP = 0; # (16x)
+
+while ( THIS_GROUP < GROUPS_TTL ):
+
+    GRP_START_OFF = GRPS_OFF + ( THIS_GROUP * GRP_SIZE );
+    GRP_END_OFF   = GRPS_OFF + ( THIS_GROUP * GRP_SIZE ) + GRP_SIZE; # -1 if MAIN_OFF == 4 else +0;
+
+    print( "GROUP:["+str(THIS_GROUP)+"] -> "+str( GRP_START_OFF )+" -> "+str( GRP_END_OFF )+" " );
+
+    THIS_GROUP += 1;
+
+# ---------------------------------------------------------------------
+
+ROOT_DATA = READ_HDD( MAIN_OFF, ADDR_SPACE_LBAs ); # 1024 LBAs
+
+
+i=0;
+
+
+while ( i < ADDR_SPACE_LBAs / sizeof( uint32_t ) ):
+    
+    get_addr_info( ROOT_DATA[i] );
+
+
+
+# ---------------------------------------------------------------------
+
+int get_addr_info( uint32_t addr ):
+
+    addr = (0x00fa << 16) | (0x0b4e);
+
+
+    THIS_LBA = GRPS_OFF + (addr >> 16) / GRP_SIZE; # global addr
+
+    THIS_LBA += ((addr & 0xFFFF ) + BIT_BLK_SIZE) / ONE_LBA; # local addr
+
+
+
+
+    0b 00000000 00000000 00000000 00000000 == (GRPS_OFF + 2*ONE_LBA) == "(4|3) + 1024 + ( 2 * 512 )" + 0
+
+
+    0b 00000000 00000000 00000000 0000000 1 == "(4|3) + 1024 + ( 2 == BIT-BLOCK )" + 1
+    ... 
+    0b 00000000 00000000 00000000 000000 10 == "(4|3) + 1024 + ( 2 == BIT-BLOCK )" + 16
+    ... 
+    0b 11111111 11111111 11111111 1111111 1 == "(4|3) + 1024 + ( 2 == BIT-BLOCK )" + 4.294.967.296 - 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------
+# * GROUP:[0]  -> 1027   -> 9219    
+# * GROUP:[1]  -> 9219   -> 17411   
+# * GROUP:[2]  -> 17411  -> 25603   
+# * GROUP:[3]  -> 25603  -> 33795   
+# * GROUP:[4]  -> 33795  -> 41987   
+# * GROUP:[5]  -> 41987  -> 50179   
+# * GROUP:[6]  -> 50179  -> 58371   
+# * GROUP:[7]  -> 58371  -> 66563   
+# * GROUP:[8]  -> 66563  -> 74755   
+# * GROUP:[9]  -> 74755  -> 82947   
+# * GROUP:[10] -> 82947  -> 91139   
+# * GROUP:[11] -> 91139  -> 99331   
+# * GROUP:[12] -> 99331  -> 107523  
+# * GROUP:[13] -> 107523 -> 115715  
+# * GROUP:[14] -> 115715 -> 123907  
+# * GROUP:[15] -> 123907 -> 132099  
+
+# 132099 - 1027 == 131072 == addres 
+
+# 131072 addresses and sectors
+
+# 131072 * 512 / 1024 / 1024 ==  64 MiB
+
+
+# ---------------------------------------------------------------------

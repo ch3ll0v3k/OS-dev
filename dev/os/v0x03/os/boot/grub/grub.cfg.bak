@@ -1,0 +1,62 @@
+set default="0"
+set timeout="3"
+
+# =====================================================================
+function load_video {
+    insmod vbe
+    insmod vga
+    insmod video_bochs
+    insmod video_cirrus
+}
+
+# =====================================================================
+### BEGIN 10 ###
+menuentry "tmx.os" {
+    
+    # ---------------------------------------------------
+    #echo " SETTING ROOT root='(hd0,msdos1)"
+    #set root='(hd0,msdos1)'
+    
+    # ---------------------------------------------------
+    #echo ""
+    #echo " INSMOD: ext2.mod, part_msdos.mod, vbe.mod"
+    #echo " INSMOD: vga.mod, video_bochs.mod, video_cirrus.mod"
+
+    #insmod ext2.mod
+    #insmod part_msdos.mod
+    #insmod vbe.mod
+    #insmod vga.mod
+    #insmod video_bochs.mod
+    #insmod video_cirrus.mod
+    
+    # ** insmod gzio.mod
+    # ** insmod vga_text.mod
+    # ** insmod video.mod
+    # ** insmod videotest.mod
+
+    # ---------------------------------------------------
+    #echo ""
+    #echo " LOADING KERNEL: multiboot /boot/kernel.bin"
+
+    multiboot /boot/kernel.bin
+    #boot
+    echo " LOADING KERNEL: done"
+}
+
+### END 10 ###
+
+# =====================================================================
+### BEGIN 20 ###
+menuentry 'empty' {
+    set root=(hd[XX])
+    multiboot /boot/kernel.bin
+}
+### END 20 ###
+
+# =====================================================================
+
+#search --no-floppy --fs-uuid --set=root cea698cc-e328-49cc-b4c6-22efcc10794d
+#echo    'Loading Linux 3.2.0-4-486 ...'
+#linux   /boot/vmlinuz-3.2.0-4-486 root=UUID=cea698cc-e328-49cc-b4c6-22efcc10794d ro  quiet
+#echo    'Loading initial ramdisk ...'
+#initrd  /boot/initrd.img-3.2.0-4-486

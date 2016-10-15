@@ -1,0 +1,227 @@
+#!/bin/bash
+
+# =====================================================================
+R="\033[01;31m"; G="\033[01;32m"; B="\033[01;34m"; W="\033[01;37m"; E="\033[0m";
+
+P0=$1; P1=$2; P2=$3
+# =====================================================================
+AS="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-as"
+GCC="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-gcc"
+LD="/m-sys/_soft/x86/dev-tools/cross-gcc/gcc/bin/i386-elf-ld"
+
+OS_DIR="./os"
+OS_BOOT_DIR="$OS_DIR/boot"
+OS_GRUB_DIR="$OS_BOOT_DIR/grub"
+
+SRC_DIR="./src"
+BIN_DIR="./bin"
+
+C_DIR="$SRC_DIR/c"
+O_D="$SRC_DIR/obj"
+HDR_DIR="$SRC_DIR/h"
+
+
+# =====================================================================
+#$AS $SRC_DIR/boot.s -o $O_D/boot.o
+#$GCC -c $SRC_DIR/kernel.c -o $O_D/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+#$GCC -T $SRC_DIR/linker.ld -o kernel.bin -ffreestanding -O2 -nostdlib $O_D/boot.o $O_D/kernel.o -lgcc
+# =====================================================================
+LL="----------------------------------------------------------\n"
+
+if [[ $P0 == "" && $P1 == "" && $P2 == "" ]]; then
+    echo -e "./build [ all | 1 1 1 ]";
+
+fi
+
+if [[ $P0 == "all" ]]; then
+    P0=1; P1=1; P2=1
+fi
+
+# =====================================================================
+if [[ $P0 == 1 ]]; then
+
+    echo -e "$LL[+] clean\n"
+    CMD="rm -f ./src/obj/*.o"; 
+    echo -e "$R $CMD $E"; $($CMD) 
+    
+    CMD="rm -f ./os/boot/kernel.bin"; 
+    echo -e "$R $CMD $E"; $($CMD) 
+    
+    CMD="rm -f ./bin/kernel.bin"; 
+    echo -e "$R $CMD $E"; $($CMD) 
+    
+    CMD="rm -f ./os.iso"; 
+    echo -e "$R $CMD $E"; $($CMD) 
+
+    echo -e "$LL\n"
+    sync;
+
+fi
+
+# =====================================================================
+DISABLED_1="kernel_ata_pio.o kernel_fat32.o kernel_acpi.o kernel_ext2.o"
+DISABLED_2="kernel_video.o"
+
+# =====================================================================
+OBJECTS_1="$O_D/kernel_system.o $O_D/kernel_string.o $O_D/kernel_stdio.o $O_D/kernel_terminal.o"
+OBJECTS_2="$O_D/kernel_idt.o $O_D/kernel_isr.o $O_D/kernel_utils.o $O_D/kernel_gdt.o"
+OBJECTS_3="$O_D/kernel_timer.o $O_D/kernel_os.o $O_D/kernel_dev_mod.o $O_D/kernel_datetime.o "
+OBJECTS_4="$O_D/kernel_tmx_fs.o $O_D/kernel_math.o"
+OBJECTS_5=""
+OBJECTS_6=""
+OBJECTS_7=""
+
+OBJECTS_GROUP_0="$OBJECTS_1 $OBJECTS_2 $OBJECTS_3 $OBJECTS_4 $OBJECTS_5 $OBJECTS_6 $OBJECTS_7"
+
+# ------------------------------------
+OBJECTS_1="$O_D/kernel_ata_handlers.o $O_D/kernel_ata_utils.o"
+OBJECTS_2=""
+OBJECTS_3=""
+OBJECTS_4=""
+OBJECTS_5=""
+OBJECTS_6=""
+OBJECTS_7=""
+
+OBJECTS_GROUP_1="$OBJECTS_1 $OBJECTS_2 $OBJECTS_3 $OBJECTS_4 $OBJECTS_5 $OBJECTS_6 $OBJECTS_7"
+
+# ------------------------------------
+OBJECTS_1=""
+OBJECTS_2=""
+OBJECTS_3=""
+OBJECTS_4=""
+OBJECTS_5=""
+OBJECTS_6=""
+OBJECTS_7=""
+
+OBJECTS_GROUP_2="$OBJECTS_1 $OBJECTS_2 $OBJECTS_3 $OBJECTS_4 $OBJECTS_5 $OBJECTS_6 $OBJECTS_7"
+
+
+OBJECTS_ALL="$OBJECTS_GROUP_0 $OBJECTS_GROUP_1 $OBJECTS_GROUP_2"
+
+# ---------------------------------------------------------------------------------------------
+GCC_FLAGS="-std=gnu99 -ffreestanding -O2 -Wall -Wextra"
+
+LD_FLAGS="-ffreestanding -O2 -nostdlib -lgcc"
+LD_CMD="$GCC -T $SRC_DIR/linker.ld -o $BIN_DIR/kernel.bin $O_D/kernel_asm.o $O_D/kernel_c.o $OBJECTS_ALL"
+
+# $GCC -T $SRC_DIR/linker.ld -o kernel.bin -ffreestanding -O2 -nostdlib $O_D/boot.o $O_D/kernel.o -lgcc
+
+# ---------------------------------------------------------------------------------------------
+sync; # && cd $SRC
+
+if [[ $P1 == 1 ]]; then
+
+    # elf-as P="$AS --warn $SRC_DIR/asm/kernel.asm -o $O_D/kernel_asm.o"
+    P="nasm -f elf32  $SRC_DIR/asm/kernel.asm -o $O_D/kernel_asm.o"
+    ALT="[$R $O_D/kernel_asm.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+    
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel.c -o $O_D/kernel_c.o"
+    ALT="[$B $O_D/kernel_c.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_utils.c -o $O_D/kernel_utils.o"
+    ALT="[$B $O_D/kernel_utils.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_isr.c -o $O_D/kernel_isr.o"
+    ALT="[$B $O_D/kernel_isr.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_idt.c -o $O_D/kernel_idt.o"
+    ALT="[$B $O_D/kernel_idt.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_gdt.c -o $O_D/kernel_gdt.o"
+    ALT="[$B $O_D/kernel_gdt.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_timer.c -o $O_D/kernel_timer.o"
+    ALT="[$B $O_D/kernel_timer.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_os.c -o $O_D/kernel_os.o"
+    ALT="[$B $O_D/kernel_os.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_dev_mod.c -o $O_D/kernel_dev_mod.o" # <<< keyboard ??
+    ALT="[$B $O_D/kernel_dev_mod.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_terminal.c -o $O_D/kernel_terminal.o"
+    ALT="[$B $O_D/kernel_terminal.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_stdio.c -o $O_D/kernel_stdio.o"
+    ALT="[$B $O_D/kernel_stdio.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_string.c -o $O_D/kernel_string.o"
+    ALT="[$B $O_D/kernel_string.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_system.c -o $O_D/kernel_system.o"
+    ALT="[$B $O_D/kernel_system.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_math.c -o $O_D/kernel_math.o"
+    ALT="[$B $O_D/kernel_math.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_datetime.c -o $O_D/kernel_datetime.o"
+    ALT="[$B $O_D/kernel_datetime.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_ata_handlers.c -o $O_D/kernel_ata_handlers.o"
+    ALT="[$B $O_D/kernel_ata_handlers.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_ata_utils.c -o $O_D/kernel_ata_utils.o"
+    ALT="[$B $O_D/kernel_ata_utils.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    P="$GCC $GCC_FLAGS -c $C_DIR/kernel_tmx_fs.c -o $O_D/kernel_tmx_fs.o"
+    ALT="[$B $O_D/kernel_tmx_fs.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    #P="$GCC $GCC_FLAGS -c $C_DIR/kernel_video.c -o $O_D/kernel_video.o"
+    #ALT="[$B $O_D/kernel_video.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    #P="$GCC $GCC_FLAGS -c $C_DIR/kernel_ext2.c -o $O_D/kernel_ext2.o"
+    #ALT="[$B $O_D/kernel_ext2.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    #P="$GCC $GCC_FLAGS -c $C_DIR/kernel_ata_pio.c -o $O_D/kernel_ata_pio.o"
+    #ALT="[$B $O_D/kernel_ata_pio.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    #P="$GCC $GCC_FLAGS -c $C_DIR/kernel_acpi.c -o $O_D/kernel_acpi.o"
+    #ALT="[$B $O_D/kernel_acpi.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    #P="$GCC $GCC_FLAGS -c $C_DIR/kernel_fat32.c -o $O_D/kernel_fat32.o"
+    #ALT="[$B $O_D/kernel_fat32.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    sync;
+    echo -e "\n  [$R ../$BIN_DIR/kernel.bin $E]";
+    echo -e "$W $LD_CMD $LD_FLAGS $E"
+    $($LD_CMD $LD_FLAGS)
+    
+    echo -e "$LL [$G ALL-DONE $E]\n";
+
+    # exit;
+fi
+
+# =====================================================================
+sync; # && cd $SRC
+# =====================================================================
+if [[ $P2 == 1 ]]; then
+
+    echo -e "$LL[+] cp $BIN_DIR/kernel.bin $OS_BOOT_DIR"
+    cp $BIN_DIR/kernel.bin $OS_BOOT_DIR
+
+    echo -e "$LL[+] grub-mkrescue --modules=/usr/lib/grub/i386-pc/ -o os.iso\n"
+    grub-mkrescue -o os.iso ./os/
+
+fi
+
+# =====================================================================
+
+
+# echo -e " 1: \033[01;30m grey     \033[0m" # bold -> grey
+# echo -e " 2: \033[01;31m red      \033[0m" # bold -> red
+# echo -e " 3: \033[01;32m green    \033[0m" # bold -> green
+# echo -e " 4: \033[01;33m yellow   \033[0m" # bold -> yellow
+# echo -e " 5: \033[01;34m blue 1   \033[0m" # bold -> blue
+# echo -e " 6: \033[01;35m purple   \033[0m" # bold -> purple
+# echo -e " 7: \033[01;36m blue 2   \033[0m" # bold -> green-blue
+# echo -e " 8: \033[01;37m white    \033[0m" # bold -> white
+
+
+
+
