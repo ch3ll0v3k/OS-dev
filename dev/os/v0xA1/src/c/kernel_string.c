@@ -365,7 +365,17 @@ _while:
 
 
         } else {
-            buff[buff_i++] = _str[i];
+
+            if ( _str[i] == '\t' ) {
+                for (int i = 0; i < 4; i++) buff[buff_i++] = ' ';
+
+
+            } else {
+                buff[buff_i++] = _str[i];
+
+            }
+
+
         }
 
         i++;
@@ -491,8 +501,15 @@ _while:
 
 
         } else {
-            buff[buff_i] = _str[i];
-            buff_i++;
+
+            if ( _str[i] == '\t' ) {
+                for (int i = 0; i < 4; i++) buff[buff_i++] = ' ';
+
+            } else {
+                buff[buff_i++] = _str[i];
+
+            }
+
         }
 
         i++;

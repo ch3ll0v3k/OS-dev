@@ -32,8 +32,20 @@
 
 0x60 = black on orange
 */
-
 // ====================================================================
+typedef struct {
+    uint32_t argc;
+    char raw[1024];
+    char argv[256][256];
+
+} __attribute__ ((packed)) k_term_cmd_line_t;
+
+k_term_cmd_line_t cmd_line;
+
+uint8_t k_term_parse_cmd_line( char * cmd );
+
+
+
 void k_term_status_bar_draw();
 void k_term_clean_up_env();
 

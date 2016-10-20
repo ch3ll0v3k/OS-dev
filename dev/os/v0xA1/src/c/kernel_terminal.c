@@ -401,14 +401,22 @@ void k_term_init() {
     k_term_func[ k_term_cmd_ttl ]  = (uint32_t*) &help;
     k_term_cmds[ k_term_cmd_ttl++ ] = "help";
 
-    // -------------------------------
+    // ------------------------------------------------------------
+    // *******************************
     k_term_func[ k_term_cmd_ttl ]  = (uint32_t*)  &call_TMX_FS_LIST_DIR;
     k_term_cmds[ k_term_cmd_ttl++ ] = "ls";
 
-    // -------------------------------
+    k_term_func[ k_term_cmd_ttl ]  = (uint32_t*)  &call_TMX_FS_MK_DIR;
+    k_term_cmds[ k_term_cmd_ttl++ ] = "mkdir";
+
+
+    // ------------------------------------------------------------
     k_term_func[ k_term_cmd_ttl ]  = (uint32_t*)  &call_TMX_FS_FORMAT;
     k_term_cmds[ k_term_cmd_ttl++ ] = "format";
 
+
+
+    // ------------------------------------------------------------
     /*
     k_term_func[ k_term_cmd_ttl ]  = (uint32_t*)  &get_0_master_info;
     k_term_cmds[ k_term_cmd_ttl++ ] = "ata0-m";
@@ -552,6 +560,102 @@ void k_term_history_walk( int side ) {
     // ----------------------------------------------------------------
 
 }
+
+// ====================================================================
+uint8_t k_term_parse_cmd_line( char * cmd ) {
+
+    // ------------------------------------------------------------
+    // FIXME;
+    // TODO; Replace all externall calls to local implemention ???
+    // FIXME;
+
+    // ------------------------------------------------------------
+    uint32_t i=0;
+
+    for (i=0; i < strlen(cmd); i++) {
+        cmd_line.raw[i] = cmd[i];
+    }
+
+    cmd_line.raw[i] = 0;
+
+    // ------------------------------------------------------------
+    for (i=0; i < 256; i++) {
+        for (uint32_t ix=0; ix < 256; ix++) {
+            cmd_line.argv[i][ix] = 0;
+
+        }
+    }
+
+    // ------------------------------------------------------------
+    cmd_line.argc = 0;
+
+    char tmp[256];
+
+    uint32_t g_i = 0, t_i = 0;
+
+    while ( cmd[g_i] ) {
+
+        if ( cmd[g_i] != ' ' ) {
+            tmp[t_i++] = cmd[g_i];
+            tmp[t_i] = '\0';
+
+        } else {
+
+            for (i=0; i < strlen(tmp); i++) {
+                cmd_line.argv[ cmd_line.argc ][i] = tmp[i];
+
+            }
+
+            //printf("argc: [%d] -> [%s]:[%s]\n", cmd_line.argc, tmp, cmd_line.argv[ cmd_line.argc ] );
+
+            cmd_line.argv[ cmd_line.argc ][i] = 0;
+            cmd_line.argc++;
+
+            tmp[ (t_i = 0) ] = '\0';
+
+            while ( cmd[g_i +1] == ' ' ) {
+                g_i++;
+            }
+
+
+        }
+
+        g_i++;
+    }
+
+    // ------------------------------------------------------------
+    uint32_t len = strlen(tmp);
+    if ( len > 0 ) {
+
+        for (i=0; i < len; i++) {
+            cmd_line.argv[ cmd_line.argc ][i] = tmp[i];
+
+        }
+
+        //printf("argc: [%d] -> [%s]:[%s]\n", cmd_line.argc, tmp, cmd_line.argv[ cmd_line.argc ] );
+
+        cmd_line.argv[ cmd_line.argc ][i] = 0;
+        cmd_line.argc++;
+
+    }
+
+    // ------------------------------------------------------------
+    /*
+    if ( cmd_line.argc > 0 ) {
+
+        printf(" --- --- --- --- \n" );
+        for (i=0; i < cmd_line.argc; i++) {
+            printf("[%d] of [%d] | [%s]\n", i, cmd_line.argc, cmd_line.argv[ i ] );
+
+        }
+    }
+    */
+    // ------------------------------------------------------------
+    return 1;
+    // ------------------------------------------------------------
+
+}
+
 
 // ====================================================================
 uint8_t __br__;
@@ -748,9 +852,13 @@ void k_term_process_input( REG *reg ) {
 
     if ( k_term_process_input_reading == 0 ) {
 
+        // parse cmd line args
+        k_term_parse_cmd_line( k_term_cmd_buff );
+        k_term_history_add();
+
         uint8_t found = 0;
 
-        if ( strcmp( k_term_cmd_buff, "" ) == 0 ) {
+        if ( strcmp( cmd_line.argv[0], "" ) == 0 ) {
             found = 1;
             reset_promt();
 
@@ -761,11 +869,11 @@ void k_term_process_input( REG *reg ) {
             while ( k_term_cmd_c < k_term_cmd_ttl ) {
 
                 char *cmd = (char *) k_term_cmds[ k_term_cmd_c ];
-                if ( strcmp( k_term_cmd_buff, cmd ) == 0 ) {
+                if ( strcmp( cmd_line.argv[0], cmd ) == 0 ) {
 
                     found = 1;
-                    if ( strcmp( k_term_history_map[ k_term_history_items -1 ], k_term_cmd_buff ) != 0 ) {
-                        k_term_history_add();
+                    if ( strcmp( k_term_history_map[ k_term_history_items -1 ], cmd_line.argv[0] ) != 0 ) {
+                        //k_term_history_add();
                     }
 
                     __asm__ __volatile__ ("call *%0 " : : "r" ( (uint32_t *)k_term_func[ k_term_cmd_c ]));

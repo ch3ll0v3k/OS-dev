@@ -25,32 +25,60 @@ while ( THIS_GROUP < GROUPS_TTL ):
     THIS_GROUP += 1;
 
 # ---------------------------------------------------------------------
-
+"""
 ROOT_DATA = READ_HDD( MAIN_OFF, ADDR_SPACE_LBAs ); # 1024 LBAs
 
-
 i=0;
-
 
 while ( i < ADDR_SPACE_LBAs / sizeof( uint32_t ) ):
     
     get_addr_info( ROOT_DATA[i] );
 
-
-
+"""
 # ---------------------------------------------------------------------
+""" """ 
+TTL_GROUPS = 64;
 
+i=0;
+
+CURR_OFFSET = 1028;
+
+GROUP_SIZE = 8192;
+
+BIT_BLK_SIZE = 2;
+DATA_BLK_SIZE = 8190; # GROUP_SIZE - BIT_BLK_SIZE; 
+
+
+while ( i < TTL_GROUPS ):
+    
+    print( "---------------------");
+    print( "GROUP ["+str(i)+"]: [+"+str(GROUP_SIZE)+"]");
+    
+    print( "    "+str(CURR_OFFSET)+" -> +2      BIT-BLOCK");
+    CURR_OFFSET += BIT_BLK_SIZE; # 2
+
+    if( i+1 == TTL_GROUPS ):
+        print( "    "+str(CURR_OFFSET+DATA_BLK_SIZE)+" -> +"+str(GROUP_SIZE - BIT_BLK_SIZE )+"   DATA-BLOCK");
+
+    else:
+        print( "    "+str(CURR_OFFSET)+" -> +"+str(GROUP_SIZE - BIT_BLK_SIZE )+"   DATA-BLOCK");
+
+
+    CURR_OFFSET += DATA_BLK_SIZE; # 8190
+    i += 1;
+
+
+#last elemen + 65542 + 1022 = 66564 << LBA
+
+""" """ 
+# ---------------------------------------------------------------------
+"""
 int get_addr_info( uint32_t addr ):
 
     addr = (0x00fa << 16) | (0x0b4e);
 
-
     THIS_LBA = GRPS_OFF + (addr >> 16) / GRP_SIZE; # global addr
-
     THIS_LBA += ((addr & 0xFFFF ) + BIT_BLK_SIZE) / ONE_LBA; # local addr
-
-
-
 
     0b 00000000 00000000 00000000 00000000 == (GRPS_OFF + 2*ONE_LBA) == "(4|3) + 1024 + ( 2 * 512 )" + 0
 
@@ -62,23 +90,7 @@ int get_addr_info( uint32_t addr ):
     0b 11111111 11111111 11111111 1111111 1 == "(4|3) + 1024 + ( 2 == BIT-BLOCK )" + 4.294.967.296 - 1
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""
 # ---------------------------------------------------------------------
 # * GROUP:[0]  -> 1027   -> 9219    
 # * GROUP:[1]  -> 9219   -> 17411   

@@ -26,7 +26,13 @@ uint8_t TMX_FS_CAT( char path[], char name[] );
 
 uint8_t TMX_FS_RM( char path[], char name[] );
 uint8_t TMX_FS_MK_FILE( char path[], char name[] );
+
+
 uint8_t TMX_FS_MK_DIR( char path[], char name[] );
+void call_TMX_FS_MK_DIR();
+
+
+uint8_t get_file_info( uint32_t addr );
 
 // ====================================================================
 #endif

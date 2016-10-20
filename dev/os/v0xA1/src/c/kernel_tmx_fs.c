@@ -7,7 +7,7 @@ uint32_t BIT_MAP_LBAs       = 2;    // size in LBAs
 uint32_t BIT_MAP_BASE       = 1024; // First bit-map entry at LBAs
 uint32_t LBAs_IN_DATA_BLOCK = 8192; // 64 * 128 == 8192
 
-uint16_t ZERO[256];
+uint16_t ZERO[256]          = { 0 };
 
 uint8_t DEBUG_LBA_WRITE     = 0;
 
@@ -113,9 +113,10 @@ void call_TMX_FS_FORMAT() {
 
 uint8_t TMX_FS_FORMAT( uint16_t hd_num ) {
 
-    // -----------------------------------------------------------
-    if ( hd_num >= HDDS_TTL_CNT || HD_INFO[ hd_num ].available == 0 ) {
+    // ------------------------------------------------------------
+    // for (int i = 0; i < 256; i++) ZERO[ i ] = (uint16_t) 0;
 
+    if ( hd_num >= HDDS_TTL_CNT || HD_INFO[ hd_num ].available == 0 ) {
         printf(" Can't format drive: [0x%x] [%d]\n", HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].available );
         return 0;
 
@@ -124,86 +125,187 @@ uint8_t TMX_FS_FORMAT( uint16_t hd_num ) {
         usleep(250);
     }
 
+    printf(
+        "TMX_FS_FORMAT: DRIVE: [0x%x] -> MODE: [0x%x]\n\tS_D: [%s]\n\tS_M: [%s]\n\tDMA: [%s]\n\tCAP: [%s]\n\tLBA: [%d]\n\tMiB: [%d]\n\tGiB: [%d]\n\n",
+        HD_INFO[ hd_num ].i_drive,
+        HD_INFO[ hd_num ].i_mode,
+
+        HD_INFO[ hd_num ].s_drive,
+        HD_INFO[ hd_num ].s_mode,
+        HD_INFO[ hd_num ].tDMA,
+        HD_INFO[ hd_num ].capability,
+
+        HD_INFO[ hd_num ].P_lba_capacity,
+        HD_INFO[ hd_num ].size_MiB,
+        HD_INFO[ hd_num ].size_GiB
+
+    );
+
+    usleep( 250 );
+    /*  -----------------------------------------------------------
+    (1024 * 8) * 64            == 524288 LBAs
+    (1024 * 8) * 64 / 2        == 262144 KiB
+    (1024 * 8) * 64 / 2 / 1024 == 256    MiB
+
+
+    HD -> LBAs
+    ----------
+
+        BASE-OFFESET  [+4]
+        ------------
+            0    -> +2      RESERVED-SYS
+            2    -> +2      RESERVED-FS
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        BASE-OFFESET ++ GROUP-BLOCK [0] == 64 MiB: [+ 1024 + (8192 * 64) ] == 66560
+        ------------
+
+        GROUP-BLOCK [0]: [+1024] [+65536] [=66560]
+
+            ADDR-BLOCK [0]: [+1024]
+                4    -> +1024
+
+            ----------------------------------------------------------------------
+            GROUP [0]: [+8192]
+                1028 -> +2      BIT-BLOCK
+                1030 -> +8190   DATA-BLOCK
+
+            GROUP [1]: [+8192]
+                9220 -> +2      BIT-BLOCK
+                9222 -> +8190   DATA-BLOCK
+
+            - - -                              TTL: 64 GROUPs x 4 MiB == 256 MiB
+
+            GROUP [62]: [+8192]
+                508932 -> +2      BIT-BLOCK
+                508934 -> +8190   DATA-BLOCK
+
+            GROUP [63]: [+8192]
+                517124 -> +2      BIT-BLOCK
+                525316 -> +8190   DATA-BLOCK
+            ----------------------------------------------------------------------
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    */
     // -----------------------------------------------------------
-    for (int i = 0; i < 256; i++) {
-        /*
-        if ( i % 64 == 0 )
-            ZERO[ i ] = (uint16_t) 0xABCD;
-        else
-            ZERO[ i ] = (uint16_t) 0x00;
-        */
-
-        ZERO[ i ] = (uint16_t) 0;
-    }
-
-    // -----------------------------------------------------------
-    // 1022 * 512 = 523264 byte | from LBA-2 -> LBA-1024 == 1022-LBAs
-    // 1022 * 512 / 8 = 65408 64-bit addrs
-    // 1022 * 512 / 4 = 130816 32-bit addrs
-
-    printf(" FORMATING: [INFO-BLOCKS] ...\n");
-
-    uint32_t CURR_LBA = 0, SEC_CNT = 0;
-    CURR_LBA = MAIN_BASE;
+    uint32_t CURR_LBA = 0;
+    uint32_t LBA_DIST = 0;
+    //uint32_t FISRT_GROUP_LBAs = 66564;
 
 
-    while ( CURR_LBA < MAIN_BASE+1022 ) { // 1022 LBA
+    // ****** ****** ****** ****** ****** ****** ******
+    uint32_t SIZE_OF_SYS_HEADER = 2;
+    LBA_DIST += SIZE_OF_SYS_HEADER;
 
-        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+    printf("\tHDD[0][%d] -> SYS-HEADER\n", CURR_LBA);
+    while ( CURR_LBA +1 < LBA_DIST ) {
 
-        LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+        //printf(" HDD[0][%d] -> SYS-HEADER\n", CURR_LBA);
+
+        // SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+        // LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
         CURR_LBA++;
 
     }
 
-    // -----------------------------------------------------------
-    /*
-    uint32_t _32_B_H_;
-    // _32_B_H_ = 0b11111111111111110000000000000000; // OK
-    // _32_B_H_ = 0b00000000000000001111111111111111; // OK
-    // _32_B_H_ = 0b00000000111111110000000011111111; // OK
-    // _32_B_H_ = 0b11111111000000001111111100000000; // OK
-    // _32_B_H_ = 0x12345678; // OK
 
-    uint32_t ZERO_32_BIT[ 128 ];
+    // ****** ****** ****** ****** ****** ****** ******
+    printf("\tHDD[0][%d] PARTITION-HEADER: FORMATING: LBA: [%d]\n", hd_num, CURR_LBA);
 
-    for (int i = 0; i < 128; i++) {
-        //if ( i % 2 == 0 )
-        ZERO_32_BIT[ i ] = _32_B_H_ + (i*2)-1;
+    uint32_t SIZE_OF_PARTITION_HEADER = 2;
+    LBA_DIST += SIZE_OF_PARTITION_HEADER;
+
+    while ( CURR_LBA +1 < LBA_DIST ) {
+        //printf(" HDD[0][%d] -> PARTITION-HEADER\n", CURR_LBA);
+
+        // SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+        // LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
+        CURR_LBA++;
 
     }
-    */
-    // -----------------------------------------------------------
+
+
+    // ****** ****** ****** ****** ****** ****** ******
+    printf("\tADDR-SPACE: FORMATING: LBA:[ %d ] ...\n\n", CURR_LBA);
+
+    uint32_t SIZE_OF_ADDR_SPACE = 1024; // current offset 4 LBAs
+    LBA_DIST += SIZE_OF_ADDR_SPACE;
+
+    while ( CURR_LBA +1 < LBA_DIST ) {
+
+        if ( CURR_LBA % 256 == 0 )
+            printf("\t\t\tADDR-SPACE: LBA: [ %d ] of  [ %d ] \n", CURR_LBA, SIZE_OF_ADDR_SPACE );
+
+        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+        LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
+        CURR_LBA++;
+
+    }
+
+    // ****** ****** ****** ****** ****** ****** ******
+    // current offset [4 + 1024] LBAs
+    printf("\n\tDATA-GROUP: [ 0-63 ] FORMATING: LBA: [%d] ...\n\n", CURR_LBA );
+
+    int grp_cnt = 0;
+
+    for (; grp_cnt < 64; grp_cnt++ ) {
+
+
+        //if ( grp_cnt % 16 == 0 ) // 1[64], 2[32], 4[16], 8[8], 16[4], 32[2], 64[1-0] -1
+        //    printf("\t\tDATA-GROUP: [ %d ] LBA: [%d] MiB: [%d]\n", grp_cnt, CURR_LBA, (CURR_LBA - 1024 - 2 - 2) / 2 / 1024);
+
+        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA++, 1 );
+        LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
+        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA++, 1 );
+        LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
+        CURR_LBA += 8190; // LBA DATA-BLOCK (just skip)
+
+    }
+
+    printf("\n DRIVE: [0x%x] FORMATED\n\t [%d] of [%d]\n\n",
+           HD_INFO[ hd_num ].i_drive, CURR_LBA, HD_INFO[ hd_num ].P_lba_capacity );
+
+
+
+    return 1;
+    // ------------------------------------------------------------
+    /*
+    SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+
+    LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
+
+
     uint32_t BIT_MAP_CURR_LBA = 0;
 
-    CURR_LBA = 0;
-
-    printf(" FORMATING: [BIT-BLOCKS] ...\n");
     while ( HD_INFO[ hd_num ].P_lba_capacity > CURR_LBA ) {
 
 
         // -----------------------------
         CURR_LBA = BIT_MAP_BASE + ( BIT_MAP_CURR_LBA * LBAs_IN_DATA_BLOCK ); // 1024 + ( [*] * 8192 )
-        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA++, 1 );
-
+        SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
         LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
-        // *^* LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO_32_BIT );
 
         // -----------------------------
+        CURR_LBA += 1; // +
         SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 ); // BIT_MAP_LBAs
-
         LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO );
-        // *^* LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ZERO_32_BIT );
 
 
         BIT_MAP_CURR_LBA++;
 
 
     }
+    */
 
+    // -----------------------------------------------------------
     printf("TMX_FS_FORMAT: DRIVE: [0x%x] is formated.\n", HD_INFO[ hd_num ].i_drive );
 
-    // -----------------------------------------------------------
     return 1;
     // -----------------------------------------------------------
 
@@ -212,39 +314,23 @@ uint8_t TMX_FS_FORMAT( uint16_t hd_num ) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-uint8_t TMX_FS_MK_DIR( char path[], char name[] ) {
-
-    // ------------------------------------------------------------
-    k_term_hist_off();
-    // ------------------------------------------------------------
-
-
-
-
-    // ------------------------------------------------------------
-    k_term_hist_on();
-    return 1;
-    // ------------------------------------------------------------
-}
-
-// ====================================================================
 uint8_t TMX_FS_GET_PWD( char path[], char name[] ) {
     // ------------------------------------------------------------
-    return 1;
+    return path[0]+name[0];
     // ------------------------------------------------------------
 }
 
 // ====================================================================
 uint8_t TMX_FS_RM( char path[], char name[] ) {
     // ------------------------------------------------------------
-    return 1;
+    return path[0]+name[0];
     // ------------------------------------------------------------
 }
 
 // ====================================================================
 uint8_t TMX_FS_MK_FILE( char path[], char name[] ) {
     // ------------------------------------------------------------
-    return 1;
+    return path[0]+name[0];
     // ------------------------------------------------------------
 }
 
@@ -258,86 +344,263 @@ void call_TMX_FS_LIST_DIR() {
 uint8_t TMX_FS_LIST_DIR( char path[], char name[] ) {
 
     // ------------------------------------------------------------
-    /* 32-bit Structure */
-
     uint8_t hd_num = 0;
-    printf("-------------------------------------------------\n" );
-
     uint16_t MAIN_BASE_DATA_0[ 256 ] = { 0 };
-
-    uint32_t ii = 1020, _ADDR_ = 0;
+    uint32_t _ADDR_ = 0;
 
     uint16_t _16bit_H_ = 0, _16bit_L_ = 0;
 
+    uint32_t SIZE_OF_ADDR_SPACE = 1024;
+    uint32_t CURR_LBA = 0;
 
-    while ( MAIN_BASE + ii < 1028 ) {
 
-        SET_LBA_READ( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, MAIN_BASE + ii, 1 );
+    // printf(" skipping header: [4 x LBAs]\n");
+    while ( CURR_LBA + 1 < 4 ) { // HEADERS_TTL
+        CURR_LBA++;
+
+    }
+
+    //printf(" getting : [4 x LBAs] START LBA: [%d]\n", CURR_LBA );
+    while ( CURR_LBA < SIZE_OF_ADDR_SPACE ) { // SIZE_OF_ADDR_SPACE == 1024 LBAs
+
+        SET_LBA_READ( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
         LBA_READ( HD_INFO[ hd_num ].i_drive, (void *)MAIN_BASE_DATA_0 );
 
+
         uint16_t i = 0;
+
         while ( i < 256 ) {
+
+            _16bit_H_ = MAIN_BASE_DATA_0[ i+1 ]; // BIT-REVERCED
+            _16bit_L_ = MAIN_BASE_DATA_0[ i ];   // BIT-REVERCED
+
+            _ADDR_ = ( _16bit_H_ << 16 ) | ( _16bit_L_ );
+
+
+            if ( _ADDR_ == 0x00 && i == 0x00 ) {
+                printf(" ['/'] is empty. \n");
+                break;
+
+            } else if ( _ADDR_ != 0x00 ) {
+
+                printf("\t[0x%x -> 0x%x] >> [0x%x] \n", _16bit_H_, _16bit_L_, _ADDR_ );
+                get_file_info( _ADDR_ );
+
+
+            } else {
+                break;
+
+            }
+
+            i += 2;
+
+        }
+
+        break; // just first ADDR-BLOCK: LBA
+        usleep(10);
+
+    }
+
+    return path[0]+name[0];
+
+    // ------------------------------------------------------------
+}
+
+// ====================================================================
+uint8_t get_file_info( uint32_t addr ) {
+
+    // ------------------------------------------------------------
+    printf(" ------------------------------ \n" );
+    printf("get_file_info: [0x%x]\n", addr );
+
+    uint16_t _16_BIT_ARR[ 256 ] = { 0 };
+    uint32_t CURR_LBA = 2048 * 8;
+
+    SET_LBA_READ( HD_INFO[ 0 ].i_drive, HD_INFO[ 0 ].i_mode, CURR_LBA, 1 );
+    LBA_READ( HD_INFO[ 0 ].i_drive, (void *)_16_BIT_ARR );
+
+    printf(" [%s] \n", (char *) _16_BIT_ARR );
+
+    tmx_fs_file_node_t file_node =  *(( tmx_fs_file_node_t *)_16_BIT_ARR);
+    file_node.i_name[ file_node.i_name_l ] = 0;
+
+    //printf( "i_name:        [%s]\n",        file_node.i_name );
+
+    // k_term_print( "i_name:        [" );
+    // uint8_t _c=0;
+    // while ( file_node.i_name[_c] )
+    //      k_term_print( file_node.i_name[_c++] );
+    // k_term_printnl( "]" );
+
+    k_term_print( file_node.i_name[0] );
+    k_term_print( file_node.i_name[1] );
+    k_term_print( file_node.i_name[2] );
+    k_term_print( file_node.i_name[3] );
+    k_term_printnl( file_node.i_name[4] );
+
+
+    printf( "i_name_l:      [%d]:[0x%x]\n", file_node.i_name_l );
+    printf( "i_parent:      [%d]:[0x%x]\n", file_node.i_parent );
+    printf( "i_type:        [%d]:[0x%x]\n", file_node.i_type );
+    // i_type >> 16 == type
+    // i_type & 0xffff == flags
+    printf( "i_start:       [%d]:[0x%x]\n", file_node.i_start );
+    printf( "i_length:      [%d]:[0x%x]\n", file_node.i_length );
+
+    return 1;
+    // ------------------------------------------------------------
+
+}
+
+// ====================================================================
+void call_TMX_FS_MK_DIR() {
+    TMX_FS_MK_DIR( "---",  "---" );
+
+}
+
+uint8_t TMX_FS_MK_DIR( char path[], char name[] ) {
+
+    // ------------------------------------------------------------
+    uint8_t hd_num = 0;
+    uint16_t MAIN_BASE_DATA_0[ 256 ] = { 0 };
+    uint32_t ONE_LBA_DATA[ 128 ] = { 0 };
+    uint32_t ONE_LBA_DATA_i = 0;
+
+    uint32_t _ADDR_ = 0;
+
+    uint16_t _16bit_H_ = 0, _16bit_L_ = 0;
+
+    uint32_t SIZE_OF_ADDR_SPACE = 1024;
+    uint32_t CURR_LBA = 0;
+
+
+    //printf("mkdir: argv: [%s]\n", cmd_line.argv[1] );
+
+    //printf(" skipping header: [4 x LBAs]\n");
+    while ( CURR_LBA +1 < 4 ) { // HEADERS_TTL
+        CURR_LBA++;
+
+    }
+
+    uint32_t _get = CURR_LBA+1;
+
+    while ( CURR_LBA < _get ) {
+
+        SET_LBA_READ( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+        LBA_READ( HD_INFO[ hd_num ].i_drive, (void *)MAIN_BASE_DATA_0 );
+
+
+        uint16_t i = 0;
+        while ( i < 256 ) { // == 256
 
             _16bit_H_ = MAIN_BASE_DATA_0[ i+1 ]; // BIT-REVERCED
             _16bit_L_ = MAIN_BASE_DATA_0[ i ];   // BIT-REVERCED
 
             _ADDR_ = ( MAIN_BASE_DATA_0[ i+1 ] << 16 ) | ( MAIN_BASE_DATA_0[ i ] );
 
-            if ( _ADDR_ != 0 )
-                printf("[0x%x -> 0x%x] >> [0x%x] \n", _16bit_H_, _16bit_L_, _ADDR_ );
+            if ( _ADDR_ == 0x00 ) break;
+
+            //printf("\t[0x%x -> 0x%x] >> [0x%x] \n", _16bit_H_, _16bit_L_, _ADDR_ );
+            ONE_LBA_DATA[ ONE_LBA_DATA_i ] = _ADDR_;
 
             i += 2;
+            ONE_LBA_DATA_i++;
 
         }
 
-        usleep(10);
 
-        ii++;
+        CURR_LBA++;
+
+        //break; // just first ADDR-BLOCK: LBA
 
     }
 
-    return 1;
+    //printf("mkdir :: @ [%d]\n", ONE_LBA_DATA_i);
+    if ( ONE_LBA_DATA_i >= 128 ) {
+        printf("['/'] node MAX-LIMIT of 128 x 32-bit int addr\n");
+        return 0;
+
+    }
+
+    // ----------------------------------------------------
+    // NOTE:
+    CURR_LBA = 3;
+    // NOTE:
+
+    uint32_t NODE_LBA_ADDRESS = ( 2 + 2 + 1024 ) + ONE_LBA_DATA_i; // BLK [ NUM ]
+
+    ONE_LBA_DATA[ ONE_LBA_DATA_i ] = NODE_LBA_ADDRESS;
+
+    SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+    LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ONE_LBA_DATA );
+
+    // ----------------------------------------------------
+    /*printf(
+        "mkdir :: NODE_LBA_ADDRESS [%d] - [0x%x] - ONE_LBA_DATA_i: [%d] \n",
+        NODE_LBA_ADDRESS, NODE_LBA_ADDRESS, ONE_LBA_DATA_i
+    );*/
+
+    CURR_LBA = ( 2 + 2 ) - 1; // without [0]
+
+    //printf("mkdir :: CURR_LBA [%d] - [0x%x] - \n", CURR_LBA, CURR_LBA);
+
+    tmx_fs_file_node_t *ppp_file_node;
+
+    ppp_file_node->i_name[0] = 'T'; ppp_file_node->i_name[1] = 'e';
+    ppp_file_node->i_name[2] = 's'; ppp_file_node->i_name[3] = 't';
+    ppp_file_node->i_name[4] = '\0';
+
+    ppp_file_node->i_name_l  = 4;
+    ppp_file_node->i_parent  = 0xabcd;
+    ppp_file_node->i_type    = 0x8000;
+    ppp_file_node->i_start   = 0x1000;
+    ppp_file_node->i_length  = 0x0001;
+
+
+    printf(
+        "[%c %c %c %c %c ]\n",
+        ppp_file_node->i_name[0],
+        ppp_file_node->i_name[1],
+        ppp_file_node->i_name[2],
+        ppp_file_node->i_name[3],
+        ppp_file_node->i_name[4]
+
+    );
+
+    CURR_LBA = 2048 * 8;
+
+
+    SET_LBA_WRITE( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, CURR_LBA, 1 );
+    LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)ppp_file_node );
+
+
+    /*
+    uint16_t _16[256] = { 0 };
+
+    uint16_t d = 0x1000;
+    _16[0] = d++;
+    _16[1] = d++;
+    _16[2] = d++;
+    _16[3] = d++;
+    _16[4] = d++;
+    _16[5] = d++;
+
+    LBA_WRITE( HD_INFO[ hd_num ].i_drive , (void *)_16 );
+    */
+
+
+    //printf("mkdir :: END\n");
+
 
     // ------------------------------------------------------------
-    /* 16-bit Structure
-
-    uint8_t hd_num = 0;
-    printf("-------------------------------------------------\n" );
-
-    uint16_t MAIN_BASE_DATA_0[ 256 ] = { 0 };
-
-    uint32_t ii = 1020;
-
-    while ( MAIN_BASE + ii < 1028 ) {
-
-        SET_LBA_READ( HD_INFO[ hd_num ].i_drive, HD_INFO[ hd_num ].i_mode, MAIN_BASE + ii, 1 );
-        LBA_READ( HD_INFO[ hd_num ].i_drive, (void *)MAIN_BASE_DATA_0 );
-
-        printf("------------------------\nLBA-[%d]\n", MAIN_BASE + ii );
-        for (int i = 0; i < 256; i++)
-            if ( MAIN_BASE_DATA_0[i] != 0 ) printf("[%d] -> [0x%x]\n", ii, MAIN_BASE_DATA_0[i] );
-
-        usleep(10);
-
-
-        for ( uint16_t ix=0; ix<256; ix++) {
-            MAIN_BASE_DATA_0[ ix ] = 0;
-        }
-
-
-        ii++;
-
-    }
-
-    return 1;
-    */
+    return path[0]+name[0];
     // ------------------------------------------------------------
 }
 
 // ====================================================================
 uint8_t TMX_FS_CAT( char path[], char name[] ) {
     // ------------------------------------------------------------
-    return 1;
+    return path[0]+name[0];
     // ------------------------------------------------------------
 }
 

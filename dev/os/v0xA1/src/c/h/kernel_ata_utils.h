@@ -11,6 +11,23 @@ uint8_t get_hd_info( uint8_t i);
 
 // ====================================================================
 typedef struct {
+
+    int8_t i_name[111];
+    uint8_t i_name_l;
+    uint32_t i_parent;
+    uint32_t i_type;
+    // i_type >> 16 == type
+    // i_type & 0xffff == flags
+
+    uint32_t i_start;
+    uint32_t i_length;
+    uint8_t rest[512-128];
+
+} __attribute__((packed)) tmx_fs_file_node_t;
+
+
+// ====================================================================
+typedef struct {
     uint8_t available;      //
     uint32_t i_drive;       // (int) ATA_0 || ATA_1
     uint32_t i_mode;        // (int) ATA_MASTER || ATA_SLAVE

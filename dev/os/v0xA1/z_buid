@@ -69,6 +69,8 @@ OBJECTS_3="$O_D/kernel_timer.o $O_D/kernel_os.o $O_D/kernel_dev_mod.o $O_D/kerne
 OBJECTS_4="$O_D/kernel_tmx_fs.o $O_D/kernel_math.o"
 OBJECTS_5=""
 OBJECTS_6=""
+
+OBJECTS_7="$O_D/multiboot.o $O_D/kernel_types.o  $O_D/kernel_stdarg.o"; # >>> XX
 OBJECTS_7=""
 
 OBJECTS_GROUP_0="$OBJECTS_1 $OBJECTS_2 $OBJECTS_3 $OBJECTS_4 $OBJECTS_5 $OBJECTS_6 $OBJECTS_7"
@@ -113,7 +115,7 @@ if [[ $P1 == 1 ]]; then
 
     # elf-as P="$AS --warn $SRC_DIR/asm/kernel.asm -o $O_D/kernel_asm.o"
     P="nasm -f elf32  $SRC_DIR/asm/kernel.asm -o $O_D/kernel_asm.o"
-    ALT="[$R $O_D/kernel_asm.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
+    ALT="[$B $O_D/kernel_asm.o $E] \n"; echo -e "\n $ALT $W $P $E "; $($P)
     
     # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     P="$GCC $GCC_FLAGS -c $C_DIR/kernel.c -o $O_D/kernel_c.o"
@@ -188,7 +190,7 @@ if [[ $P1 == 1 ]]; then
     # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     sync;
-    echo -e "\n  [$R ../$BIN_DIR/kernel.bin $E]";
+    echo -e "\n  [$B ../$BIN_DIR/kernel.bin $E]";
     echo -e "$W $LD_CMD $LD_FLAGS $E"
     $($LD_CMD $LD_FLAGS)
     
@@ -199,7 +201,7 @@ fi
 
 # =====================================================================
 sync; # && cd $SRC
-# =====================================================================
+
 if [[ $P2 == 1 ]]; then
 
     echo -e "$LL[+] cp $BIN_DIR/kernel.bin $OS_BOOT_DIR"
