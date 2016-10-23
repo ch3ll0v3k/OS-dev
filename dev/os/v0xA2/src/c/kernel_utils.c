@@ -1,0 +1,184 @@
+#ifndef _KERNEL_UTILS_H_
+#define _KERNEL_UTILS_H_
+
+// https://www.gnu.org/software/grub/manual/multiboot/html_node/Example-OS-code.html
+// Check if the bit BIT in FLAGS is set.
+
+#include "h/kernel.h"
+#define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
+
+// ====================================================================
+
+void kernel_mem_info() {
+
+    //-----------------------------------------------------------------
+    multiboot_info_t *mbi =  (multiboot_info_t *) multiboot_reg_global;
+    //-----------------------------------------------------------------
+    printf( "vbe_control_info:       [%d] [0x%x]\n", mbi->vbe_control_info );
+    printf( "vbe_mode_info:          [%d] [0x%x]\n", mbi->vbe_mode_info );
+    printf( "vbe_mode:               [%d] [0x%x]\n", mbi->vbe_mode );
+    printf( "vbe_interface_seg:      [%d] [0x%x]\n", mbi->vbe_interface_seg );
+    printf( "vbe_interface_off:      [%d] [0x%x]\n", mbi->vbe_interface_off );
+    printf( "vbe_interface_len:      [%d] [0x%x]\n", mbi->vbe_interface_len );
+    usleep(KERNEL_INFO_DELAY);
+    usleep(KERNEL_INFO_DELAY);
+    usleep(KERNEL_INFO_DELAY);
+
+    //-----------------------------------------------------------------
+
+    // Am I booted by a Multiboot-compliant boot loader?
+    if (multiboot_magic_global != MULTIBOOT_BOOTLOADER_MAGIC ) {
+        printf ("\nINVALID MAGIC NUMBER: 0x%x\n", (unsigned) multiboot_magic_global);
+        return;
+    } else {
+        printf ("\nMULTIBOOT-COMPLIANT BOOT LOADER: 0x%x \n", (unsigned) multiboot_magic_global);
+
+    }
+    usleep(KERNEL_INFO_DELAY);
+    k_term_printnl(" ------------------------------------------------------ \n");
+
+    // Set MBI to the address of the Multiboot information structure.
+
+    // Print out the flags.
+    printf ("    MULTIBOOT FLAGS: 0x%x\n", (unsigned) mbi->flags);
+    usleep(KERNEL_INFO_DELAY);
+
+
+    // Are mem_* valid?
+    if (CHECK_FLAG (mbi->flags, 0)) {
+
+        k_term_color = K_TERM_L_RED;
+        printf ("    MEM_LOWER: [%u] KiB | MEM_UPPER: [%u] KiB\n",
+                (unsigned) mbi->mem_lower, (unsigned) mbi->mem_upper);
+
+        k_term_print("\n"); usleep(KERNEL_INFO_DELAY);
+    }
+
+
+    // Is boot_device valid?
+    if (CHECK_FLAG (mbi->flags, 1)) {
+        k_term_color = K_TERM_L_BLUE;
+        printf ("    BOOT_DEVICE: [0x%x]\n", (unsigned) mbi->boot_device);
+        k_term_print("\n"); usleep(KERNEL_INFO_DELAY);
+    }
+
+    // Is the command line passed?
+    if (CHECK_FLAG (mbi->flags, 2)) {
+        k_term_color = K_TERM_L_GREEN;
+        printf ("    CMDLINE: [%s]\n", (char *) mbi->cmdline);
+        k_term_print("\n"); usleep(KERNEL_INFO_DELAY);
+    }
+
+
+    // Are mods_* valid?
+    if (CHECK_FLAG (mbi->flags, 3)) {
+        multiboot_module_t *mod;
+        uint32_t i;
+
+        k_term_color = K_TERM_L_GREEN;
+        printf ("    MODS_COUNT: [%d], MODS_ADDR: [0x%x]\n", (int) mbi->mods_count, (int) mbi->mods_addr);
+
+        k_term_color = K_TERM_WHITE;
+        k_term_printnl(" --- --- --- --- --- --- --- --- --- \n");
+
+        k_term_color = K_TERM_L_BLUE;
+        for (i = 0, mod = (multiboot_module_t *) mbi->mods_addr; i < mbi->mods_count; i++, mod++) {
+
+            k_term_color = K_TERM_L_GREEN;
+            printf ("    MOD_START: [0x%x], MOD_END: [0x%x], CMDLINE: [%s]\n",
+                    (unsigned) mod->mod_start,
+                    (unsigned) mod->mod_end,
+                    (char *) mod->cmdline);
+
+            usleep(KERNEL_INFO_DELAY);
+        }
+
+        k_term_color = K_TERM_WHITE;
+        k_term_print("\n");
+
+    }
+
+    // Bits 4 and 5 are mutually exclusive!
+    if (CHECK_FLAG (mbi->flags, 4) && CHECK_FLAG (mbi->flags, 5)) {
+        printf ("    BOTH BITS 4 AND 5 ARE SET.\n");
+        return;
+    }
+
+
+    // Is the symbol table of a.out valid?
+    if (CHECK_FLAG (mbi->flags, 4)) {
+        multiboot_aout_symbol_table_t *multiboot_aout_sym = &(mbi->u.aout_sym);
+
+        k_term_color = K_TERM_L_GREEN;
+        printf ("\n    MULTIBOOT_AOUT_SYMBOL_TABLE:\n    TABSIZE: [0x%0x], "
+                "STRSIZE: [0x%x], ADDR: [0x%x]\n",
+                (unsigned) multiboot_aout_sym->tabsize,
+                (unsigned) multiboot_aout_sym->strsize,
+                (unsigned) multiboot_aout_sym->addr);
+
+        k_term_color = K_TERM_WHITE;
+        k_term_print("\n"); usleep(KERNEL_INFO_DELAY);
+    }
+
+
+    // Is the section header table of ELF valid?
+    if (CHECK_FLAG (mbi->flags, 5)) {
+        multiboot_elf_section_header_table_t *multiboot_elf_sec = &(mbi->u.elf_sec);
+
+        k_term_color = K_TERM_L_GREEN;
+        printf ("\n MULTIBOOT_ELF_SEC:\n    NUM: [%u], SIZE: [0x%x],"
+                " ADDR: [0x%x], SHNDX: [0x%x]\n",
+                (unsigned) multiboot_elf_sec->num, (unsigned) multiboot_elf_sec->size,
+                (unsigned) multiboot_elf_sec->addr, (unsigned) multiboot_elf_sec->shndx);
+
+        k_term_color = K_TERM_WHITE;
+        k_term_print("\n"); usleep(KERNEL_INFO_DELAY);
+
+    }
+
+    /*
+    // Are mmap_* valid?
+    if (CHECK_FLAG (mbi->flags, 6)) {
+        multiboot_memory_map_t *mmap;
+
+        k_term_color = K_TERM_L_GREEN;
+        printf ("\nMMAP_ADDR: [0x%x], MMAP_LENGTH: [0x%x]\n",
+                (unsigned) mbi->mmap_addr, (unsigned) mbi->mmap_length);
+
+        k_term_color = K_TERM_WHITE;
+        k_term_printnl(" --- --- --- --- --- --- --- --- --- \n");
+
+        k_term_color = K_TERM_L_BLUE;
+        for (
+            mmap = (multiboot_memory_map_t *) mbi->mmap_addr; (ulong_t) mmap < mbi->mmap_addr + mbi->mmap_length;
+            mmap = (multiboot_memory_map_t *) ((ulong_t) mmap + mmap->size + sizeof (mmap->size))
+        ) {
+
+            printf (
+                " SIZE: [0x%x], BASE_ADDR: [0x%x%x],"
+                " LENGTH: [0x%x%x], TYPE: [0x%x]\n",
+                (unsigned) mmap->size,
+                mmap->addr >> 32,
+                mmap->addr & 0xffffffff,
+                mmap->len >> 32,
+                mmap->len & 0xffffffff,
+                (unsigned) mmap->type
+            );
+            usleep(KERNEL_INFO_DELAY/2);
+        }
+
+        k_term_color = K_TERM_WHITE;
+
+    }
+
+    k_term_printnl(" -------------------------------------------------- \n\n");
+    */
+
+    usleep(KERNEL_INFO_DELAY*5);
+
+}
+
+
+// ====================================================================
+#endif
+
